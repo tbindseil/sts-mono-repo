@@ -1,6 +1,12 @@
 import json
+import requests
+
+url = 'https://icanhazdadjoke.com'
 
 def lambda_handler(event, context):
+    r = requests.get(url, headers={"Accept": "application/json"})
+    result = json.loads(r.text)
+    # return
 
     return {
         'statusCode': 200,
@@ -12,6 +18,6 @@ def lambda_handler(event, context):
             "Access-Control-Allow-Origin" : "*",
             "X-Requested-With" : "*"
         },
-        'body': json.dumps('Hello from Lambda!')
+        'body': json.dumps('joke is: ' + result['joke'])
     }
 

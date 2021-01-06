@@ -10,4 +10,8 @@ cdk.out
 # Parcel default cache directory
 .parcel-cache
 
+# venv
+**/venv/*
+*.zip
+
 Session.vim

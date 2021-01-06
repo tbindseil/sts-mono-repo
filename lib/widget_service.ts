@@ -11,8 +11,8 @@ export class WidgetService extends core.Construct {
 
         const handler = new lambda.Function(this, "WidgetHandler", {
             runtime: lambda.Runtime.PYTHON_3_8,
-            code: lambda.Code.fromAsset("resources"),
-            handler: "widgets.lambda_handler",
+            code: lambda.Code.fromAsset("resources/dad-jokes-lambda/my-deployment-package.zip"),
+            handler: "lambda_function.lambda_handler",
             environment: {
                 BUCKET: bucket.bucketName
             }

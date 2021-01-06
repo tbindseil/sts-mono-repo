@@ -1,7 +1,6 @@
 import json
 
 def lambda_handler(event, context):
-
     return {
         'statusCode': 200,
         'headers': {
@@ -14,4 +13,3 @@ def lambda_handler(event, context):
         },
         'body': json.dumps('Hello from Lambda!')
     }
-
