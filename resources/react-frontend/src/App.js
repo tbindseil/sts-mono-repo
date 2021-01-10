@@ -28,7 +28,7 @@ const Home = () => {
 
         <ul>
           <li>
-            <Link to="/">Home</Link>
+            <Link to="/">Home-DEV</Link>
           </li>
           <li>
             <Link to="/register">Register</Link>
