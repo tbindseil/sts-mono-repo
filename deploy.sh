@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# aws configure
+# npm install -g aws-cdk
+
 # determine stage and checkout branch
 STAGE=$1
 case $STAGE in
@@ -14,7 +17,7 @@ git checkout $STAGE
 FILE_SEPARATOR="/"
 ROOT_FULL_PATH="$(pwd)"
 LAMBDA_ROOT="${ROOT_FULL_PATH}/resources/"
-DEPENDENCIES_SUBDIR="venv/lib/python3.8/site-packages/"
+DEPENDENCIES_SUBDIR="venv/lib/python3.7/site-packages/"
 ZIP_FILE_NAME="my-deployment-package.zip"
 ZIP_INPUT_DIR="."
 LAMBDA_FUNCTION_FILE_NAME="lambda_function.py"
@@ -30,8 +33,10 @@ for LAMBDA_SUBDIR in $(ls $LAMBDA_ROOT | grep lambda); do
 done
 
 # build and deploy cdk app
+# TODO node install
 npm run build && cdk synth && cdk deploy --all
 
 # build react app and move into statically served directory
 # sym links are made to the directories as part of apache setup, outside scope of this script directory is sim
+# TODO node install
 cd resources/react-frontend/ && npm run build
