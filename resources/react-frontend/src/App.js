@@ -28,7 +28,8 @@ const Home = () => {
 
         <ul>
           <li>
-            <Link to="/">Home-DEV</Link>
+	    // TODO use app config or something to differentiate between dev and prod
+            <Link to="/">Home</Link>
           </li>
           <li>
             <Link to="/register">Register</Link>
