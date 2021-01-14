@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {Navbar, Nav} from 'react-bootstrap';
 
 export const Header = ({screenTitle}) => {
@@ -25,11 +24,4 @@ export const Header = ({screenTitle}) => {
 
     </div>
   );
-};
-
-Header.propTypes = {
-  name: PropTypes.string.isRequired,
-  price: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
 };

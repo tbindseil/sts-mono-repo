@@ -1,6 +1,7 @@
 import logo from './logo_no_outline.svg';
 import './App.css';
 import {Header} from './components/Header';
+import {Layout} from './components/Layout';
 import {Switch, Route} from 'react-router-dom';
 
 const App = () => {
@@ -41,61 +42,25 @@ const Home = () => {
 
 const AboutUs = () => {
   return (
-    <div className="AboutUs">
-
-      <Header/>
-
-      <header className="App-header">
-        <p>
-          About Us
-        </p>
-      </header>
-    </div>
+    <Layout text="About Us"/>
   );
 }
 
 const GetInvolved = () => {
   return (
-    <div className="GetInvolved">
-
-      <Header/>
-
-      <header className="App-header">
-        <p>
-          Get Involved
-        </p>
-      </header>
-    </div>
+    <Layout text="Get Involved"/>
   );
 }
 
 const RequestATutor = () => {
   return (
-    <div className="RequestATutor">
-
-      <Header/>
-
-      <header className="App-header">
-        <p>
-          Request A Tutor
-        </p>
-      </header>
-    </div>
+    <Layout text="Request a Tutor"/>
   );
 }
 
 const Contacts = () => {
   return (
-    <div className="Contacts">
-
-      <Header/>
-
-      <header className="App-header">
-        <p>
-          Contacts
-        </p>
-      </header>
-    </div>
+    <Layout text="Contacts"/>
   );
 }
 
