@@ -20,21 +20,19 @@ const App = () => {
 }
 
 const Home = () => {
+  const sectionStyle = {
+    border: '5px solid blue'
+  };
+
   return (
     <div className="Home">
 
       <Header/>
 
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-
-        <p>
-          Welcome to Students Teaching Students!
-        <br/>
-          We empower students to help other students.
-        </p>
-
-      </header>
+      <section style={sectionStyle}>
+        <h1>Students Teaching Students</h1>
+        <p>Empowering students to help other students</p>
+      </section>
 
     </div>
   );

@@ -4,7 +4,8 @@ import {Navbar, Nav} from 'react-bootstrap';
 export const Header = ({screenTitle}) => {
 
   const navbarStyle = {
-    border: '5px solid blue'
+    border: '5px solid blue',
+    width: '100%'
   };
 
   return (
