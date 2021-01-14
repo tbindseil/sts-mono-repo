@@ -14,8 +14,11 @@ export const Header = ({screenTitle}) => {
       <Navbar style={sectionStyle}>
         <Navbar.Collapse>
           <Nav>
-            <Nav.Link href="/register">Register</Nav.Link>
-            <Nav.Link href="/signin">Sign In</Nav.Link>
+            <Nav.Link href="/">Home</Nav.Link>
+            <Nav.Link href="/about-us">About Us</Nav.Link>
+            <Nav.Link href="/get-involved">Get Involved</Nav.Link>
+            <Nav.Link href="/request-a-tutor">Request A Tutor</Nav.Link>
+            <Nav.Link href="/contacts">Contacts</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Navbar>

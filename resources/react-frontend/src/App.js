@@ -1,15 +1,18 @@
 import logo from './logo_no_outline.svg';
 import './App.css';
 import {Header} from './components/Header';
-import {Switch, Route, Link} from 'react-router-dom';
+import {Switch, Route} from 'react-router-dom';
 
 const App = () => {
+  // TODO compose Switch somehow?
   return (
     <div className="App">
       <Switch>
         <Route exact path="/" component={Home}/>
-        <Route path="/register" component={Register}/>
-        <Route path="/signin" component={SignIn}/>
+        <Route path="/about-us" component={AboutUs}/>
+        <Route path="/get-involved" component={GetInvolved}/>
+        <Route path="/request-a-tutor" component={RequestATutor}/>
+        <Route path="/contacts" component={Contacts}/>
       </Switch>
     </div>
   );
@@ -30,41 +33,66 @@ const Home = () => {
           We empower students to help other students.
         </p>
 
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/register">Register</Link>
-          </li>
-          <li>
-            <Link to="/signin">Sign In</Link>
-          </li>
-        </ul>
       </header>
 
     </div>
   );
 }
 
-const Register = () => {
+const AboutUs = () => {
   return (
-    <div className="Register">
+    <div className="AboutUs">
+
+      <Header/>
+
       <header className="App-header">
         <p>
-          Register here.
+          About Us
         </p>
       </header>
     </div>
   );
 }
 
-const SignIn = () => {
+const GetInvolved = () => {
   return (
-    <div className="SignIn">
+    <div className="GetInvolved">
+
+      <Header/>
+
       <header className="App-header">
         <p>
-          Sign in here.
+          Get Involved
+        </p>
+      </header>
+    </div>
+  );
+}
+
+const RequestATutor = () => {
+  return (
+    <div className="RequestATutor">
+
+      <Header/>
+
+      <header className="App-header">
+        <p>
+          Request A Tutor
+        </p>
+      </header>
+    </div>
+  );
+}
+
+const Contacts = () => {
+  return (
+    <div className="Contacts">
+
+      <Header/>
+
+      <header className="App-header">
+        <p>
+          Contacts
         </p>
       </header>
     </div>
