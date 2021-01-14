@@ -1,5 +1,6 @@
-import logo from './logo.svg';
+import logo from './logo_no_outline.svg';
 import './App.css';
+import {Header} from './components/Header';
 import {Switch, Route, Link} from 'react-router-dom';
 
 const App = () => {
@@ -17,6 +18,9 @@ const App = () => {
 const Home = () => {
   return (
     <div className="Home">
+
+      <Header/>
+
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
 
@@ -28,7 +32,6 @@ const Home = () => {
 
         <ul>
           <li>
-	    // TODO use app config or something to differentiate between dev and prod
             <Link to="/">Home</Link>
           </li>
           <li>
