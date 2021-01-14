@@ -12,7 +12,7 @@ export const Header = ({screenTitle}) => {
 
       <Navbar style={navbarStyle}>
         <Navbar.Collapse>
-          <Nav className="ml-auto">
+          <Nav className="navbar-right">
             <Nav.Link href="/">Home</Nav.Link> |
             <Nav.Link href="/about-us"> About Us</Nav.Link> |
             <Nav.Link href="/get-involved"> Get Involved</Nav.Link> |
