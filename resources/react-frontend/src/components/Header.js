@@ -1,5 +1,6 @@
 import React from 'react';
-import {Navbar, Nav} from 'react-bootstrap';
+import logo from '../images/logo_no_outline.svg';
+import {Navbar} from 'react-bootstrap';
 
 export const Header = ({screenTitle}) => {
 
@@ -9,20 +10,18 @@ export const Header = ({screenTitle}) => {
   };
 
   return (
-    <div className="row justify-content-center">
 
-      <Navbar style={navbarStyle}>
-        <Navbar.Collapse>
-          <Nav className="navbar-right">
-            <Nav.Link href="/">Home</Nav.Link> |
-            <Nav.Link href="/about-us"> About Us</Nav.Link> |
-            <Nav.Link href="/get-involved"> Get Involved</Nav.Link> |
-            <Nav.Link href="/request-a-tutor"> Request A Tutor</Nav.Link> |
-            <Nav.Link href="/contacts"> Contacts</Nav.Link>
-          </Nav>
-        </Navbar.Collapse>
-      </Navbar>
+    <Navbar style={navbarStyle} classname="navbar navbar-default navbar-static-top">
+      <Navbar.Collapse>
+        <a href="/" class="navbar-left">
+          <img src={logo} alt="logo"/>
+        </a>
+        <a href="/about-us" class="navbar-right">About Us</a>
+        <a href="/get-involved" class="navbar-right">Get Involved | </a>
+        <a href="/request-a-tutor" class="navbar-right">Request A Tutor | </a>
+        <a href="/contacts" class="navbar-right">Contacts | </a>
+      </Navbar.Collapse>
+    </Navbar>
 
-    </div>
   );
 };

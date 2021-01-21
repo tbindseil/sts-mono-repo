@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # aws configure
 # npm install -g aws-cdk
 
@@ -10,7 +12,7 @@ case $STAGE in
     *) echo "stage must be prod or dev" && exit
 esac
 
-git fetch
+git pull
 git checkout $STAGE
 
 # zip lambda and dependencies
