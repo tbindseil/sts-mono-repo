@@ -25,22 +25,14 @@ const Home = () => {
   };
 
   const sectionStyle = {
-    border: '5px solid blue'
+    border: '10px solid blue'
   };
 
   return (
-    <div className="container-fluid">
-
-      <Header/>
-
-      <hr style={horizontalBreakStyle}/>
-
-      <section style={sectionStyle}>
-        <h1>Students Teaching Students</h1>
-        <p>Empowering students to help other students</p>
-      </section>
-
-    </div>
+    <Layout
+      title="Students Teaching Students"
+      text="Empowering students to help other students"
+    />
   );
 }
 

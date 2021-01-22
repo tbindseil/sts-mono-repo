@@ -16,6 +16,7 @@
   align-items: center;
   font-size: calc(10px + 2vmin);
   color: black;
+  border: '10px solid blue';
 }
 
 .App-link {
