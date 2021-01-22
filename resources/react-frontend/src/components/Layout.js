@@ -3,22 +3,24 @@ import {Header} from './Header';
 import stock_photo from '../images/annie-spratt-loRO40167Xg-unsplash.jpg';
 
 const horizontalBreakStyle = {
-  backgroundColor: "grey",
+  backgroundColor: "#b4c7e7",
   margin: '0px',
-  height: "20px"
+  height: "10px"
 };
 
 const imgStyle = {
-  border: '10px solid blue',
+  border: '10px solid #005D8c',
   maxWidth: '100%',
   height: 'auto'
 };
 
+
+
 const borderedStyle = {
-  border: '10px solid blue'
+  border: '10px solid #005D8c',
 };
 
-export const Layout = ({text, title}) => (
+export const Layout = ({text, title, link}) => (
 
     <div className="Layout">
 
@@ -37,6 +39,10 @@ export const Layout = ({text, title}) => (
         <p>
           {text}
         </p>
+		<p>
+			{link}
+			</p>
+		
       </header>
     </div>
 );
