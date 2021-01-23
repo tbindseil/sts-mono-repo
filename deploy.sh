@@ -33,6 +33,7 @@ for LAMBDA_SUBDIR in $(ls $LAMBDA_ROOT | grep lambda); do
     zip -r $LAMBDA_FULL_PATH$FILE_SEPARATOR$ZIP_FILE_NAME $ZIP_INPUT_DIR
     cd "$LAMBDA_FULL_PATH"
     zip -g $ZIP_FILE_NAME $LAMBDA_FUNCTION_FILE_NAME
+    zip -g $ZIP_FILE_NAME "__init__.py"
     cd "$ROOT_FULL_PATH"
 done
 
