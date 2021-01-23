@@ -37,6 +37,36 @@ import json
 def lambda_handler(event, context):
     print(event)
 
+    method = event['httpMethod']
+    username = event['path'].split('/')[-1]
+
+
+
+
+    # based off endpoint
+
+    # / - GET
+    # return all users
+
+    # /{username} - GET
+    # extract username, password
+    # return token if things check out
+    # return error otherwise
+
+    # /{username} - POST
+    # extract username, password
+    # register user and return token if things check out
+    # return error otherwise
+
+
+
+
+    # /{username} - DELETE
+    # extract username, token
+    # invalidate token and return success if possible
+    # return error otherwise
+
+
     return {
         'statusCode': 200,
         'headers': {
@@ -47,6 +77,6 @@ def lambda_handler(event, context):
             "Access-Control-Allow-Origin" : "*",
             "X-Requested-With" : "*"
         },
-        'body': json.dumps('it works!')
+        'body': json.dumps('method is ' + method + ' and username is ' + username)
     }
 
