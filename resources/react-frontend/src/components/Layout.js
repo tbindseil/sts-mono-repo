@@ -20,7 +20,7 @@ const borderedStyle = {
 
 export const Layout = ({text, title}) => (
 
-    <div className="Layout">
+    <div>
 
       <Header/>
 

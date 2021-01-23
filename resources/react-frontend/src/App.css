@@ -2,23 +2,14 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-  vertical-align: top;
-}
+.Navbar-Style = {
+  border: 10px solid blue;
+  margin-bottom: 0px;
+  width: 100%;
+};
 
-.App-header {
-  background-color: #FFFFFF;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: calc(10px + 2vmin);
-  color: black;
-  border: '10px solid blue';
-}
-
-.App-link {
-  color: #61dafb;
-}
+.Horizontal-Break-Style = {
+  background-color: grey;
+  margin: 0px;
+  height: 20px;
+};

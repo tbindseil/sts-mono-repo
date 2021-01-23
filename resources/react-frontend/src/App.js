@@ -1,5 +1,4 @@
 import './App.css';
-import {Header} from './components/Header';
 import {Layout} from './components/Layout';
 import {Switch, Route} from 'react-router-dom';
 
@@ -19,15 +18,6 @@ const App = () => {
 }
 
 const Home = () => {
-  const horizontalBreakStyle = {
-    backgroundColor: "grey",
-    height: "20px"
-  };
-
-  const sectionStyle = {
-    border: '10px solid blue'
-  };
-
   return (
     <Layout
       title="Students Teaching Students"
