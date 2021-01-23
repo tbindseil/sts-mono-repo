@@ -5,6 +5,7 @@ import { UsersStack } from '../lib/users-stack';
 import { VpcStack } from '../lib/vpc-stack';
 import { RDSStack } from "../lib/rds-stack";
 import { MyWidgetServiceStack } from "../lib/my_widget_service-stack";
+import { UserLambdaServiceStack } from "../lib/user-lambda-stack";
 
 const app = new cdk.App();
 
@@ -16,6 +17,7 @@ const rdsStack = new RDSStack(app, 'RDSStack', {
 });
 
 const myWidgetServiceStack = new MyWidgetServiceStack(app, 'MyWidgetServiceStack');
+const myUserServiceStack = new UserLambdaServiceStack(app, 'UserLambdaServiceStack');
 
 vpcStack.grantDeployPrivileges(userStack.buildScriptsUser);
 rdsStack.grantDeployPrivileges(userStack.buildScriptsUser);
