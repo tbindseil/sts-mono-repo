@@ -12,6 +12,8 @@ import {LoginForm} from "./components/auth/login-form";
 import Amplify from '@aws-amplify/core'
 import awsConfig from "./configs/aws-configs";
 
+import {Auth} from "aws-amplify";
+
 Amplify.configure(awsConfig);
 
 const App = () => {
@@ -38,12 +40,27 @@ const App = () => {
   );
 }
 
+const printToConsoleOnClick = () => {
+  console.log("Logging to console:")
+
+  Auth.currentAuthenticatedUser({
+    bypassCache: false  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
+  })
+    .then(user => console.log(user))
+    .catch(err => console.log(err));
+
+  console.log("done Logging to console:")
+}
+
 const Home = () => {
   return (
-    <Layout
-      title="Students Teaching Students"
-      text="Empowering students to help other students"
-    />
+    <>
+      <Layout
+        title="Students Teaching Students"
+        text="Empowering students to help other students"
+      />
+      <button onClick={printToConsoleOnClick}>Print user info to console</button>
+    </>
   );
 }
 
