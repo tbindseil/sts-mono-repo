@@ -5,6 +5,8 @@ import {Hub, Logger} from '@aws-amplify/core';
 import {AuthService} from "../../services/auth-service";
 import {LockOutlined, UserOutlined} from "@ant-design/icons";
 
+import {Header} from '../Header';
+
 export function RegisterForm() {
 
     const logger = new Logger("RegisterForm");
@@ -65,6 +67,9 @@ export function RegisterForm() {
     };
 
     return <div>
+
+        <Header/>
+
         <Row style={{display: 'flex', justifyContent: 'center', margin: "15px"}}>
             Register
         </Row>

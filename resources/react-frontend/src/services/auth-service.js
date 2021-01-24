@@ -9,6 +9,7 @@ export class AuthService {
         REGISTER: 'register',
         REGISTER_CONFIRM: 'register_confirm',
         LOGIN: 'login',
+        LOGOUT: 'logotu',
         PASSWORD_RESET: 'forgot_password_1',
         PASSWORD_RESET_2: 'forgot_password_2',
         PASSWORD_CHANGE: 'password_change',
@@ -73,6 +74,31 @@ export class AuthService {
 
                 Hub.dispatch(AuthService.CHANNEL, {
                     event: AuthService.AUTH_EVENTS.LOGIN,
+                    success: false,
+                    message: err.message,
+                    error: err
+                }, AuthService.CHANNEL);
+            });
+    };
+
+    static logout = (username) => {
+        Auth.signOut({ global: true })
+            .then(() => {
+                logger.info("logout complete");
+
+                Hub.dispatch(AuthService.CHANNEL, {
+                    event: AuthService.AUTH_EVENTS.LOGOUT,
+                    success: true,
+                    message: "",
+                    username: username,
+                }, AuthService.CHANNEL);
+
+            })
+            .catch(err => {
+                logger.warn("Couldn't logout: ", err);
+
+                Hub.dispatch(AuthService.CHANNEL, {
+                    event: AuthService.AUTH_EVENTS.LOGOUT,
                     success: false,
                     message: err.message,
                     error: err

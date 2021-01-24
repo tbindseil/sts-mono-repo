@@ -5,6 +5,8 @@ import {AuthService} from "../../services/auth-service";
 import {Link, useHistory} from "react-router-dom";
 import {LockOutlined, UserOutlined} from "@ant-design/icons";
 
+import {Header} from '../Header';
+
 export function RegisterConfirmForm() {
 
     const logger = new Logger("RegisterConfirmForm");
@@ -71,6 +73,9 @@ export function RegisterConfirmForm() {
     };
 
     return <div>
+
+        <Header/>
+
         <Row style={{display: 'flex', justifyContent: 'center', margin: "15px"}}>
             Use the emailed code to confirm your email
         </Row>

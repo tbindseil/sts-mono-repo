@@ -4,6 +4,7 @@ import {Link, useHistory} from 'react-router-dom';
 import {Hub, Logger} from "@aws-amplify/core";
 import {AuthService} from "../../services/auth-service";
 import {LockOutlined, UserOutlined} from "@ant-design/icons";
+import {Header} from '../Header';
 
 export function ForgotPasswordEmailCodeForm() {
     const logger = new Logger("ForgotPasswordEmailCodeForm");
@@ -68,6 +69,8 @@ export function ForgotPasswordEmailCodeForm() {
     };
 
     return <div>
+
+        <Header/>
 
         <Row style={{display: 'flex', justifyContent: 'center'}}>
             Forgot Password (step 2)

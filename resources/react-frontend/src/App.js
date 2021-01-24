@@ -8,6 +8,7 @@ import {ForgotPasswordEmailForm} from "./components/auth/forgot-password-email-f
 import {ForgotPasswordEmailCodeForm} from "./components/auth/forgot-password-email-code-form";
 import {RegisterConfirmForm} from "./components/auth/register-confirm-form";
 import {LoginForm} from "./components/auth/login-form";
+import {LogoutForm} from "./components/auth/logout-form";
 
 import Amplify from '@aws-amplify/core'
 import awsConfig from "./configs/aws-configs";
@@ -34,6 +35,7 @@ const App = () => {
         <Route path={"/forgotpassword1"} component={ForgotPasswordEmailForm}/>
         <Route path={"/forgotpassword2"} component={ForgotPasswordEmailCodeForm}/>
         <Route path={"/forgotpassword2/:email"} component={ForgotPasswordEmailCodeForm}/>
+        <Route path={"/logout"} component={LogoutForm}/>
 
       </Switch>
     </div>
