@@ -1,6 +1,18 @@
 import './App.css';
 import {Layout} from './components/Layout';
 import {Switch, Route} from 'react-router-dom';
+import {AuthScreen} from './components/auth/auth-screen';
+
+import {RegisterForm} from "./components/auth/register-form";
+import {ForgotPasswordEmailForm} from "./components/auth/forgot-password-email-form";
+import {ForgotPasswordEmailCodeForm} from "./components/auth/forgot-password-email-code-form";
+import {RegisterConfirmForm} from "./components/auth/register-confirm-form";
+import {LoginForm} from "./components/auth/login-form";
+
+import Amplify from '@aws-amplify/core'
+import awsConfig from "./configs/aws-configs";
+
+Amplify.configure(awsConfig);
 
 const App = () => {
   // TODO compose Switch somehow?
@@ -12,6 +24,15 @@ const App = () => {
         <Route path="/get-involved" component={GetInvolved}/>
         <Route path="/request-a-tutor" component={RequestATutor}/>
         <Route path="/contacts" component={Contacts}/>
+        <Route path="/auth" component={AuthScreen}/>
+
+        <Route path={"/login"} component={LoginForm}/>
+        <Route path={"/register"} component={RegisterForm}/>
+        <Route path={"/registerconfirm"} component={RegisterConfirmForm}/>
+        <Route path={"/forgotpassword1"} component={ForgotPasswordEmailForm}/>
+        <Route path={"/forgotpassword2"} component={ForgotPasswordEmailCodeForm}/>
+        <Route path={"/forgotpassword2/:email"} component={ForgotPasswordEmailCodeForm}/>
+
       </Switch>
     </div>
   );

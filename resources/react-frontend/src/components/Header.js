@@ -21,6 +21,7 @@ export const Header = ({screenTitle}) => {
         <a href="/get-involved" className="navbar-right">Get Involved | </a>
         <a href="/request-a-tutor" className="navbar-right">Request A Tutor | </a>
         <a href="/contacts" className="navbar-right">Contacts | </a>
+        <a href="/auth" className="navbar-right">Auth | </a>
       </Navbar.Collapse>
     </Navbar>
 
