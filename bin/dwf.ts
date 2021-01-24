@@ -7,6 +7,7 @@ import { RDSStack } from "../lib/rds-stack";
 import { CognitoStack } from "../lib/cognito-stack";
 import { MyWidgetServiceStack } from "../lib/my_widget_service-stack";
 import { UserLambdaServiceStack } from "../lib/user-lambda-stack";
+import { UserRegisteredLambdaServiceStack } from "../lib/user-registered-stack";
 
 const app = new App();
 
@@ -17,7 +18,10 @@ const rdsStack = new RDSStack(app, 'RDSStack', {
     vpc: vpcStack.vpc
 });
 
-const cognitoStack = new CognitoStack(app, 'CognitoStack');
+const userRegisteredLambdaServiceStack = new UserRegisteredLambdaServiceStack(app, 'UserRegisteredLambdaServiceStack');
+const cognitoStack = new CognitoStack(app, 'CognitoStack', {
+    userRegisteredLambda: userRegisteredLambdaServiceStack.userRegisteredService.handler
+});
 
 const myWidgetServiceStack = new MyWidgetServiceStack(app, 'MyWidgetServiceStack');
 const myUserServiceStack = new UserLambdaServiceStack(app, 'UserLambdaServiceStack', {

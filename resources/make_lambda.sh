@@ -35,3 +35,6 @@ def lambda_handler(event, context):
         'body': json.dumps('hello world!')
     }
 EOF
+
+
+# TODO maybe make cdk stack also?
