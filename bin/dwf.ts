@@ -20,7 +20,9 @@ const rdsStack = new RDSStack(app, 'RDSStack', {
 const cognitoStack = new CognitoStack(app, 'CognitoStack');
 
 const myWidgetServiceStack = new MyWidgetServiceStack(app, 'MyWidgetServiceStack');
-const myUserServiceStack = new UserLambdaServiceStack(app, 'UserLambdaServiceStack');
+const myUserServiceStack = new UserLambdaServiceStack(app, 'UserLambdaServiceStack', {
+    userPoolArn: cognitoStack.userPool.userPoolArn
+});
 
 vpcStack.grantDeployPrivileges(userStack.buildScriptsUser);
 rdsStack.grantDeployPrivileges(userStack.buildScriptsUser);

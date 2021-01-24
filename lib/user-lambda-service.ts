@@ -1,9 +1,13 @@
 import { Construct, StackProps, Stack } from '@aws-cdk/core';
-import { LambdaIntegration, RestApi } from "@aws-cdk/aws-apigateway";
+import { AuthorizationType, CfnAuthorizer, LambdaIntegration, RestApi } from "@aws-cdk/aws-apigateway";
 import { Code, Function, Runtime } from "@aws-cdk/aws-lambda";
 
+export interface UserLambdaServiceProps {
+    userPoolArn: string;
+}
+
 export class UserLambdaService extends Construct {
-    constructor(scope: Construct, id: string) {
+    constructor(scope: Construct, id: string, props: UserLambdaServiceProps) {
         super(scope, id);
 
 
@@ -18,7 +22,22 @@ export class UserLambdaService extends Construct {
             description: "This service serves users."
         });
 
+        const auth = new CfnAuthorizer(this, 'CognitoAuthorizer', {
+            name: "CognitoAuthorizer",
+            type: AuthorizationType.COGNITO,
+            authorizerResultTtlInSeconds: 300,
+            identitySource: "method.request.header.Authorization",
+            restApiId: api.restApiId,
+            providerArns: [props.userPoolArn],
+        });
+
         const user = api.root.addResource("{username}");
+
+        const authorizationOptions = {
+            apiKeyRequired: false,
+            authorizer: {authorizerId: auth.ref},
+            authorizationType: AuthorizationType.COGNITO
+        };
 
         const getUsersIntegration = new LambdaIntegration(handler, {
             requestTemplates: { "application/json": '{ "statusCode": "200" }' }
@@ -35,7 +54,13 @@ export class UserLambdaService extends Construct {
 
         api.root.addMethod("GET", getUsersIntegration); // GET /
 
-        user.addMethod("POST", postUserIntegration); // POST /{username}
+
+
+        // this one is authorized for now
+        user.addMethod("POST", postUserIntegration, authorizationOptions); // POST /{username}
+
+
+
         user.addMethod("GET", getUserIntegration); // GET /{username}
         user.addMethod("DELETE", deleteUserIntegration); // DELETE /{username}
     }
