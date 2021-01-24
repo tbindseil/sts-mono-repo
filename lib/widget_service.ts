@@ -1,10 +1,10 @@
-import * as core from "@aws-cdk/core";
+import { Construct, StackProps, Stack } from '@aws-cdk/core';
 import * as apigateway from "@aws-cdk/aws-apigateway";
 import * as lambda from "@aws-cdk/aws-lambda";
 import * as s3 from "@aws-cdk/aws-s3";
 
-export class WidgetService extends core.Construct {
-    constructor(scope: core.Construct, id: string) {
+export class WidgetService extends Construct {
+    constructor(scope: Construct, id: string) {
         super(scope, id);
 
         const bucket = new s3.Bucket(this, "WidgetStore");

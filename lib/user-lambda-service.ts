@@ -1,10 +1,9 @@
-import * as core from "@aws-cdk/core";
+import { Construct, StackProps, Stack } from '@aws-cdk/core';
 import { LambdaIntegration, RestApi } from "@aws-cdk/aws-apigateway";
 import { Code, Function, Runtime } from "@aws-cdk/aws-lambda";
-import * as s3 from "@aws-cdk/aws-s3";
 
-export class UserLambdaService extends core.Construct {
-    constructor(scope: core.Construct, id: string) {
+export class UserLambdaService extends Construct {
+    constructor(scope: Construct, id: string) {
         super(scope, id);
 
 
