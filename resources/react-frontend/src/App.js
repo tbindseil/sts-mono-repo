@@ -18,18 +18,6 @@ const App = () => {
 }
 
 const Home = () => {
-<<<<<<< HEAD
-  const horizontalBreakStyle = {
-    backgroundColor: "grey",
-    height: "20px"
-  };
-
-  const sectionStyle = {
-    border: '10px solid #005D8c'
-  };
-
-=======
->>>>>>> 022f21698c96b2bb986f5e76f655799d36ecaaa1
   return (
     <Layout
       title="Students Teaching Students"
@@ -52,7 +40,7 @@ const GetInvolved = () => {
     <Layout
       title="Get Involved"
       text="We are always looking for new tutors to join our team. If you are passionate about helping others and believe you can share your knowledge with other students fill out the survey below to get involved. In addition to tutors we are looking for high performing students to fill the role of lead tutor. This position give you real world experience developing skills like project management, recruiting, scheduling and others. The same survey below will allow you to mark your interest in becoming a lead tutor."
-		link= <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSetv8vY2dH-ur938u0qKqJchiEnqry9ivWc0tDHmnED5epPYA/viewform?embedded=true" width="700" height="520" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+		link={<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSetv8vY2dH-ur938u0qKqJchiEnqry9ivWc0tDHmnED5epPYA/viewform?embedded=true" width="700" height="520" frameborder="0" marginheight="0" marginwidth="0" title="getInvolvedIframe">Loading…</iframe>}
 	/>
   );
 }
@@ -62,7 +50,7 @@ const RequestATutor = () => {
     <Layout
       title="Request a Tutor"
       text="Students Teaching Students is a nonprofit tutoring organization that matches students with other students in there area for free tutoring service. If you are looking for test prep, homework help, or just to better understand a subject, visit the link below to request a tutor that fits all of your subject and schedule needs."
-    link=<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSf4uPCMvxLew5migtPBZwiavpJRrS24SdE9XbYlScTLzEpdeQ/viewform?embedded=true" width="700" height="520" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+    link={<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSf4uPCMvxLew5migtPBZwiavpJRrS24SdE9XbYlScTLzEpdeQ/viewform?embedded=true" width="700" height="520" frameborder="0" marginheight="0" marginwidth="0" title="requestATutorIframe">Loading…</iframe>}
 	/>
   );
 }
@@ -72,7 +60,7 @@ const Contacts = () => {
     <Layout
       title="Contacts"
       text="Feel free to reach out to us with any questions, concerns, or suggestions for our organization. We are always working to improve, and would love to hear from you!" 
-	  link= <a href="mailto:bjkearbey@studentsts.org"> Email: bjkearbey@studentsts.org</a>
+	  link={<a href="mailto:bjkearbey@studentsts.org"> Email: bjkearbey@studentsts.org</a>}
     />
   );
 }
