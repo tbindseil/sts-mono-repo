@@ -5,11 +5,14 @@ import {Navbar} from 'react-bootstrap';
 export const Header = ({screenTitle}) => {
 
   const navbarStyle = {
-    border: '10px solid #005D8c',
+    //border: '10px solid #005D8c',
+	borderWidth: '10px',
+	borderColor: '#005D8c',
+	borderstyle: 'solid',
+	borderRadius: '0px',
     marginBottom: '0px',
     width: '100%',
 	fontSize: '20px',
-	alignItems: 'center'
   };
   
 

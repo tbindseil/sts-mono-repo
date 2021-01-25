@@ -32,7 +32,7 @@ const Home = () => {
   return (
     <Layout
       title="Students Teaching Students"
-      text="Empowering students to help other students"
+      text="Enhancing education with student to student tutoring"
     />
   );
 }
@@ -41,7 +41,7 @@ const AboutUs = () => {
   return (
     <Layout
       title="About Us"
-      text="Our goal is to find high-performing students that have the ability and desire to build their leadership and technical skills by tutoring. Students Teaching Students is a nonprofit organization that connects those students with other students that can benefit from their tutoring. We have a passion for education and want to empower other like-minded individuals to tutor if they have the desire to do so. Unlike other tutoring organizations, we contact the vast resource of students that excel in an area to share their knowledge with others. Students are motivated, more acclimated to specific lesson plans, and are always looking for unique leadership opportunities."
+      text="Our vision is to find high-performing students that have the ability and desire to build their leadership and technical skills by tutoring. Students Teaching Students is a nonprofit organization that connects those students with other students that can benefit from their tutoring. We have a passion for education and want to empower other like-minded individuals to tutor if they have the desire to do so. Unlike other tutoring organizations, we contact the vast resource of students that excel in an area to share their knowledge with others. Students are motivated, more acclimated to specific lesson plans, and are always looking for unique leadership opportunities."
     />
   );
 }
@@ -50,7 +50,7 @@ const GetInvolved = () => {
   return (
     <Layout
       title="Get Involved"
-      text="We are always looking for new tutors to join our team. If you are passionate about helping others and believe you can share your knowledge with other students fill out the survey below to get involved. In addition to tutors we are looking for high performing students to fill the role of lead tutor. This position give you real world experience developing skills like project management, recruiting, scheduling and others. The same survey below will allow you to mark your interest in becoming a lead tutor."
+      text="We are always looking for new tutors to join our team. If you are passionate about helping others and believe you can share your knowledge with other students fill out the survey below to get involved. In addition to tutors we are looking for high performing students to fill the role of lead tutor. This position gives you real world experience developing skills like project management, recruiting, scheduling and others. The same survey below will allow you to mark your interest in becoming a lead tutor."
 		link= <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSetv8vY2dH-ur938u0qKqJchiEnqry9ivWc0tDHmnED5epPYA/viewform?embedded=true" width="700" height="520" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
 	/>
   );

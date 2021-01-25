@@ -1,24 +1,27 @@
 import React from 'react';
 import {Header} from './Header';
-import stock_photo from '../images/annie-spratt-loRO40167Xg-unsplash.jpg';
+import stock_photo from '../images/stock_photo.jpg';
 
 const horizontalBreakStyle = {
   backgroundColor: "#b4c7e7",
-  margin: '0px',
-  height: "10px"
+  margin:'-5px',
+  height: "20px"
 };
 
 const imgStyle = {
   border: '10px solid #005D8c',
   maxWidth: '100%',
-  height: 'auto'
+  height: 'auto',
+  marginBottom: '0px'
 };
 
 
 
 const borderedStyle = {
   border: '10px solid #005D8c',
-  height: 'auto'
+  height: 'auto',
+  margin: '0px auto',
+  paddingBottom:'200px'
 };
 
 export const Layout = ({text, title, link}) => (
