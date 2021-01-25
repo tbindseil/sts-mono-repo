@@ -12,15 +12,15 @@ export const Header = ({screenTitle}) => {
 
   return (
 
-    <Navbar style={navbarStyle} classname="navbar navbar-default navbar-static-top">
+    <Navbar style={navbarStyle}>
       <Navbar.Collapse>
-        <a href="/" class="navbar-left">
+        <a href="/" className="navbar-left">
           <img src={logo} alt="logo"/>
         </a>
-        <a href="/about-us" class="navbar-right">About Us</a>
-        <a href="/get-involved" class="navbar-right">Get Involved | </a>
-        <a href="/request-a-tutor" class="navbar-right">Request A Tutor | </a>
-        <a href="/contacts" class="navbar-right">Contacts | </a>
+        <a href="/about-us" className="navbar-right">About Us</a>
+        <a href="/get-involved" className="navbar-right">Get Involved | </a>
+        <a href="/request-a-tutor" className="navbar-right">Request A Tutor | </a>
+        <a href="/contacts" className="navbar-right">Contacts | </a>
       </Navbar.Collapse>
     </Navbar>
 

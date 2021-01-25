@@ -1,5 +1,4 @@
 import './App.css';
-import {Header} from './components/Header';
 import {Layout} from './components/Layout';
 import {Switch, Route} from 'react-router-dom';
 
@@ -19,6 +18,7 @@ const App = () => {
 }
 
 const Home = () => {
+<<<<<<< HEAD
   const horizontalBreakStyle = {
     backgroundColor: "grey",
     height: "20px"
@@ -28,6 +28,8 @@ const Home = () => {
     border: '10px solid #005D8c'
   };
 
+=======
+>>>>>>> 022f21698c96b2bb986f5e76f655799d36ecaaa1
   return (
     <Layout
       title="Students Teaching Students"

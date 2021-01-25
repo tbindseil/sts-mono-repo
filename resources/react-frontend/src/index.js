@@ -4,8 +4,6 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from 'react-router-dom';
-// TODO the below gets latest I believe
-// import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 ReactDOM.render(
