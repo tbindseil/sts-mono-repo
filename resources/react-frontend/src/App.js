@@ -8,6 +8,7 @@ const App = () => {
     <div className="App">
       <Switch>
         <Route exact path="/" component={Home}/>
+		 <Route path="/home" component={Home}/>
         <Route path="/about-us" component={AboutUs}/>
         <Route path="/get-involved" component={GetInvolved}/>
         <Route path="/request-a-tutor" component={RequestATutor}/>
@@ -18,7 +19,6 @@ const App = () => {
 }
 
 const Home = () => {
-<<<<<<< HEAD
   const horizontalBreakStyle = {
     backgroundColor: "grey",
     height: "20px"
@@ -28,8 +28,7 @@ const Home = () => {
     border: '10px solid #005D8c'
   };
 
-=======
->>>>>>> 022f21698c96b2bb986f5e76f655799d36ecaaa1
+
   return (
     <Layout
       title="Students Teaching Students"

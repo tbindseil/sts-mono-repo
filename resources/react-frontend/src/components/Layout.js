@@ -18,6 +18,7 @@ const imgStyle = {
 
 const borderedStyle = {
   border: '10px solid #005D8c',
+  height: 'auto'
 };
 
 export const Layout = ({text, title, link}) => (
@@ -33,9 +34,9 @@ export const Layout = ({text, title, link}) => (
       <hr style={horizontalBreakStyle}/>
 
       <header style={borderedStyle}>
-        <h4>
+        <h2 style={{color: "#005D8c", fontWeight: 'bold'}}>
           {title}
-        </h4>
+        </h2>
         <p>
           {text}
         </p>
