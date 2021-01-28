@@ -5,10 +5,16 @@ import {Navbar} from 'react-bootstrap';
 export const Header = ({screenTitle}) => {
 
   const navbarStyle = {
-    border: '10px solid blue',
+    //border: '10px solid #005D8c',
+	borderWidth: '10px',
+	borderColor: '#005D8c',
+	borderstyle: 'solid',
+	borderRadius: '0px',
     marginBottom: '0px',
-    width: '100%'
+    width: '100%',
+	fontSize: '20px',
   };
+  
 
   return (
 
@@ -17,11 +23,12 @@ export const Header = ({screenTitle}) => {
         <a href="/" className="navbar-left">
           <img src={logo} alt="logo"/>
         </a>
-        <a href="/about-us" className="navbar-right">About Us</a>
-        <a href="/get-involved" className="navbar-right">Get Involved | </a>
-        <a href="/request-a-tutor" className="navbar-right">Request A Tutor | </a>
-        <a href="/contacts" className="navbar-right">Contacts | </a>
         <a href="/auth" className="navbar-right">Auth | </a>
+		<a href="/contacts" className="navbar-right">Contacts</a>
+		<a href="/request-a-tutor" className="navbar-right">Request A Tutor | </a>
+		<a href="/get-involved" className="navbar-right">Get Involved | </a>
+        <a href="/about-us" className="navbar-right">About Us | </a>
+		<a href="/home" className="navbar-right">Home | </a>
       </Navbar.Collapse>
     </Navbar>
 
