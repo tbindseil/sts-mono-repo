@@ -37,13 +37,13 @@ export const Layout = ({text, title, link}) => (
       <hr style={horizontalBreakStyle}/>
 
       <header style={borderedStyle}>
-        <h2 style={{color: "#005D8c", fontWeight: 'bold'}}>
+        <h2 class= "pageHeader">
           {title}
         </h2>
-        <p>
+        <p class= "mainText">
           {text}
         </p>
-		<p>
+		<p class= "formStyle">
 			{link}
 			</p>
 		

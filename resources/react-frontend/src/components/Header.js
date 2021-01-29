@@ -6,7 +6,10 @@ export const Header = ({screenTitle}) => {
 
   const navbarStyle = {
     //border: '10px solid #005D8c',
-	borderWidth: '10px',
+	borderTopWidth: '0px',
+	borderRightWidth: '0px',
+	borderLeftWidth: '0px',
+	borderBottomWidth: '10px',
 	borderColor: '#005D8c',
 	borderstyle: 'solid',
 	borderRadius: '0px',
@@ -20,14 +23,14 @@ export const Header = ({screenTitle}) => {
 
     <Navbar style={navbarStyle}>
       <Navbar.Collapse>
-        <a href="/" className="navbar-left">
+        <a href="/" >
           <img src={logo} alt="logo"/>
         </a>
-		<a href="/contacts" className="navbar-right">Contacts</a>
-		<a href="/request-a-tutor" className="navbar-right">Request A Tutor | </a>
-		<a href="/get-involved" className="navbar-right">Get Involved | </a>
-        <a href="/about-us" className="navbar-right">About Us | </a>
-		<a href="/home" className="navbar-right">Home | </a>
+		<a class= "navBar" href="/contacts">Contacts</a>
+		<a class= "navBar" href="/request-a-tutor" >Request A Tutor  </a>
+		<a class= "navBar" href="/get-involved">Get Involved  </a>
+        <a class= "navBar" href="/about-us" >About Us  </a>
+		<a class= "navBar" href="/home" >Home  </a>
 		
       </Navbar.Collapse>
     </Navbar>
