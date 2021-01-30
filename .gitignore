@@ -11,6 +11,9 @@ cdk.out
 
 # python
 *.pyc
+*.gz
+*.whl
+**/build/*
 
 # venv
 **/venv/*
