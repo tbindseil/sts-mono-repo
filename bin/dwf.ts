@@ -18,7 +18,9 @@ const rdsStack = new RDSStack(app, 'RDSStack', {
     vpc: vpcStack.vpc
 });
 
-const userRegisteredLambdaServiceStack = new UserRegisteredLambdaServiceStack(app, 'UserRegisteredLambdaServiceStack');
+const userRegisteredLambdaServiceStack = new UserRegisteredLambdaServiceStack(app, 'UserRegisteredLambdaServiceStack', {
+    dbSecret: rdsStack.dbSecret
+});
 const cognitoStack = new CognitoStack(app, 'CognitoStack', {
     userRegisteredLambda: userRegisteredLambdaServiceStack.userRegisteredService.handler
 });

@@ -12,7 +12,7 @@ export interface RDSStackProps extends cdk.StackProps {
 // use lambda.Code.fromAssetImage its not deprecated for grabbing zip file for lambda
 export class RDSStack extends cdk.Stack {
 
-    readonly dbSecret: rds.DatabaseSecret;
+    public readonly dbSecret: rds.DatabaseSecret;
     readonly postgresRDSInstance: rds.DatabaseInstance;
 
     constructor(scope: cdk.App, id: string, props: RDSStackProps) {
