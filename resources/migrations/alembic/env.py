@@ -25,7 +25,8 @@ fileConfig(config.config_file_name)
 import sys
 import os
 sys.path.insert(0, os.getcwd())
-from models import Base, models
+from models import Base
+from models.user import User
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
@@ -70,9 +71,6 @@ def get_database_url():
         port = str(secret_data_dict['port'])
         dbname = secret_data_dict['dbname']
 
-        url = engine + "://" + username + ":" + password + "@" + host + ":" + port + "/" + dbname
-        print("url is")
-        print(url)
         return engine + "://" + username + ":" + password + "@" + host + ":" + port + "/" + dbname
 
 

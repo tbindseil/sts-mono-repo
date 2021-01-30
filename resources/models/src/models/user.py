@@ -1,7 +1,7 @@
 import datetime
 
 from . import Base
-from sqlalchemy import Column, DateTime, Integer, String
+from sqlalchemy import Column, DateTime, Boolean, Integer, String
 
 class User(Base):
     """ User Model for storing user related details """
@@ -16,6 +16,7 @@ class User(Base):
     school = Column(String(127))
     grade = Column(String(15))
     bio = Column(String(511)) # TODO variable length string(s)
+    admin = Column(Boolean, nullable=False, default=False)
 
     def __init__(self, email, first_name="", last_name="", school="", grade="", bio=""):
 
