@@ -9,6 +9,9 @@ cdk.out
 # Parcel default cache directory
 .parcel-cache
 
+# python
+*.pyc
+
 # venv
 **/venv/*
 *.zip
