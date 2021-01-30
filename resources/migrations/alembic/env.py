@@ -35,7 +35,7 @@ target_metadata = Base.metadata
 
 
 def get_database_url():
-    secret_name = "DbSecret685A0FA5-xAk5oeEwLG0j"
+    secret_name = "DbSecret685A0FA5-V68DtCDN2E6B"
     region_name = "us-west-2"
 
     session = boto3.session.Session()
@@ -50,16 +50,16 @@ def get_database_url():
         )
     except ClientError as e:
         if e.response['Error']['Code'] == 'ResourceNotFoundException':
-            print("The requested secret " + secret_name + " was not found")
+            raise Exception("The requested secret " + secret_name + " was not found")
         elif e.response['Error']['Code'] == 'InvalidRequestException':
-            print("The request was invalid due to:", e)
+            raise Exception("The request was invalid due to:", e)
         elif e.response['Error']['Code'] == 'InvalidParameterException':
-            print("The request had invalid params:", e)
+            raise Exception("The request had invalid params:", e)
     else:
         # Secrets Manager decrypts the secret value using the associated KMS CMK
         # Depending on whether the secret was a string or binary, only one of these fields will be populated
         if 'SecretString' not in get_secret_value_response:
-            print("invalid secret")
+            raise Exception("invalid secret")
 
         # extact url components
         secret_data_dict = json.loads(get_secret_value_response['SecretString'])
@@ -70,6 +70,9 @@ def get_database_url():
         port = str(secret_data_dict['port'])
         dbname = secret_data_dict['dbname']
 
+        url = engine + "://" + username + ":" + password + "@" + host + ":" + port + "/" + dbname
+        print("url is")
+        print(url)
         return engine + "://" + username + ":" + password + "@" + host + ":" + port + "/" + dbname
 
 
@@ -85,6 +88,7 @@ def run_migrations_offline():
     script output.
 
     """
+    raise Exception("ahhhh")
     url = get_database_url()
     context.configure(
         url=url,

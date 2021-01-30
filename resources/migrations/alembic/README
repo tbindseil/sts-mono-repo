@@ -1,5 +1,5 @@
 Generic single-database configuration.
 
-Working towards a configuration that will handle multiple schemas for the DrawWithFriends
+Working towards a configuration that will handle multiple schemas for the StudentsTeachingStudents
 application. The schemas should be independent in order to allow the database to be split
 into mulitple databases when the scale of the application reaches a certain threshold.
