@@ -2,7 +2,7 @@ import React from 'react';
 import logo from '../images/logo_no_outline.svg';
 import {Navbar} from 'react-bootstrap';
 
-export const Header = ({screenTitle}) => {
+export const Header = () => {
 
   const navbarStyle = {
     //border: '10px solid #005D8c',
@@ -23,7 +23,8 @@ export const Header = ({screenTitle}) => {
         <a href="/" className="navbar-left">
           <img src={logo} alt="logo"/>
         </a>
-        <a href="/auth" className="navbar-right">Auth</a>
+        <a href="/profile" className="navbar-right">Profile</a>
+        <a href="/auth" className="navbar-right">Auth | </a>
 		<a href="/contacts" className="navbar-right">Contacts | </a>
 		<a href="/request-a-tutor" className="navbar-right">Request A Tutor | </a>
 		<a href="/get-involved" className="navbar-right">Get Involved | </a>
