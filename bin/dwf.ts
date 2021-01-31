@@ -27,7 +27,8 @@ const cognitoStack = new CognitoStack(app, 'CognitoStack', {
 
 const myWidgetServiceStack = new MyWidgetServiceStack(app, 'MyWidgetServiceStack');
 const myUserServiceStack = new UserLambdaServiceStack(app, 'UserLambdaServiceStack', {
-    userPoolArn: cognitoStack.userPool.userPoolArn
+    userPoolArn: cognitoStack.userPool.userPoolArn,
+    dbSecret: rdsStack.dbSecret
 });
 
 vpcStack.grantDeployPrivileges(userStack.buildScriptsUser);

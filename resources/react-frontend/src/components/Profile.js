@@ -6,7 +6,7 @@ import {Header} from './Header';
 
 export const Profile = () => {
 
-  const style = {
+  /*const style = {
   };
   const styles = {
       loginForm: {
@@ -18,15 +18,15 @@ export const Profile = () => {
       loginFormButton: {
           "width": "100%"
       }
-  };
+  };*/
 
-  const onFinish = values => {
+  /*const onFinish = values => {
       console.log('onFinish Success:', values);
   };
 
   const onFinishFailed = errorInfo => {
       console.log('onFinishFailed Failed:', errorInfo);
-  };
+  };*/
 
   // get profile info from user lambda
   // note, should be authenticated
