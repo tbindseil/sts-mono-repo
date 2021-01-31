@@ -2,9 +2,21 @@ import React from 'react';
 import {Button, Form, Input, Row} from 'antd';
 import {Link} from 'react-router-dom';
 
+import {Auth} from "aws-amplify";
+
 import {Header} from './Header';
 
 export class Profile extends React.Component {
+
+  // so bad..
+  errorProfile = {
+    email: "error",
+    firstName: "error",
+    lastName: "error",
+    school: "error",
+    grade: "error",
+    bio: "error"
+  };
 
   /*const style = {
   };
@@ -28,26 +40,63 @@ export class Profile extends React.Component {
       console.log('onFinishFailed Failed:', errorInfo);
   };*/
 
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      profile: {
+        email: "",
+        firstName: "",
+        lastName: "",
+        school: "",
+        grade: "",
+        bio: ""
+      }
+    }
+  }
+
+  getProfile = (email) => {
+    const url = 'https://wv9um2deug.execute-api.us-west-2.amazonaws.com/prod/' + email;
+    fetch(url)
+      .then(res => res.json())
+      .then(
+        (result) => {
+          const profile = {
+            email: result.email,
+            firstName: result.firstName,
+            lastName: result.lastName,
+            school: result.school,
+            grade: result.grade,
+            bio: result.bio,
+          };
+          this.setState({
+              profile: profile
+          });
+        },
+        // Note: it's important to handle errors here
+        // instead of a catch() block so that we don't swallow
+        // exceptions from actual bugs in components.
+        (error) => {
+          const profile = this.errorProfile
+          this.setState({
+              profile: profile
+          });
+        }
+      );
+  }
+
+  componentDidMount() {
+    Auth.currentAuthenticatedUser({
+      bypassCache: false  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
+    })
+      .then(user => this.getProfile(user.attributes.email))
+      .catch(err => {
+        console.log(err);
+        this.setState(this.errorProfile);
+      });
+  }
+
   render() {
-
-    // get profile info from user lambda
-    // note, should be authenticated
-    const profile = {
-      email: "profile.email",
-      firstName: "profile.firstName",
-      lastName: "profile.lastName",
-      school: "profile.school",
-      grade: "profile.grade",
-      bio: "profile.bio"
-    };
-
-    /*const url = 'https://fep5kkldzj.execute-api.us-west-2.amazonaws.com/prod/';
-    const profile
-      fetch(url)
-        .then(response => response.json())
-        .then(data => console.log(data));*/
-
-
 
     return (
 
@@ -62,42 +111,42 @@ export class Profile extends React.Component {
           Email:
         </h4>
         <p>
-          {profile.email}
+          {this.state.profile.email}
         </p>
 
         <h4>
           First Name:
         </h4>
         <p>
-          {profile.firstName}
+          {this.state.profile.firstName}
         </p>
 
         <h4>
           Last Name:
         </h4>
         <p>
-          {profile.lastName}
+          {this.state.profile.lastName}
         </p>
 
         <h4>
           School:
         </h4>
         <p>
-          {profile.school}
+          {this.state.profile.school}
         </p>
 
         <h4>
           Grade:
         </h4>
         <p>
-          {profile.grade}
+          {this.state.profile.grade}
         </p>
 
         <h4>
           Bio:
         </h4>
         <p>
-          {profile.bio}
+          {this.state.profile.bio}
         </p>
 
       {/*
