@@ -4,7 +4,7 @@ import {Link} from 'react-router-dom';
 
 import {Header} from './Header';
 
-export const Profile = () => {
+export class Profile extends React.Component {
 
   /*const style = {
   };
@@ -28,67 +28,77 @@ export const Profile = () => {
       console.log('onFinishFailed Failed:', errorInfo);
   };*/
 
-  // get profile info from user lambda
-  // note, should be authenticated
-  const profile = {
-    email: "profile.email",
-    firstName: "profile.firstName",
-    lastName: "profile.lastName",
-    school: "profile.school",
-    grade: "profile.grade",
-    bio: "profile.bio"
-  };
+  render() {
 
-  return (
+    // get profile info from user lambda
+    // note, should be authenticated
+    const profile = {
+      email: "profile.email",
+      firstName: "profile.firstName",
+      lastName: "profile.lastName",
+      school: "profile.school",
+      grade: "profile.grade",
+      bio: "profile.bio"
+    };
 
-    <>
-      <Header/>
+    /*const url = 'https://fep5kkldzj.execute-api.us-west-2.amazonaws.com/prod/';
+    const profile
+      fetch(url)
+        .then(response => response.json())
+        .then(data => console.log(data));*/
 
-      <h2>
-        View Profile Info
-      </h2>
 
-      <h4>
-        Email:
-      </h4>
-      <p>
-        {profile.email}
-      </p>
 
-      <h4>
-        First Name:
-      </h4>
-      <p>
-        {profile.firstName}
-      </p>
+    return (
 
-      <h4>
-        Last Name:
-      </h4>
-      <p>
-        {profile.lastName}
-      </p>
+      <>
+        <Header/>
 
-      <h4>
-        School:
-      </h4>
-      <p>
-        {profile.school}
-      </p>
+        <h2>
+          View Profile Info
+        </h2>
 
-      <h4>
-        Grade:
-      </h4>
-      <p>
-        {profile.grade}
-      </p>
+        <h4>
+          Email:
+        </h4>
+        <p>
+          {profile.email}
+        </p>
 
-      <h4>
-        Bio:
-      </h4>
-      <p>
-        {profile.bio}
-      </p>
+        <h4>
+          First Name:
+        </h4>
+        <p>
+          {profile.firstName}
+        </p>
+
+        <h4>
+          Last Name:
+        </h4>
+        <p>
+          {profile.lastName}
+        </p>
+
+        <h4>
+          School:
+        </h4>
+        <p>
+          {profile.school}
+        </p>
+
+        <h4>
+          Grade:
+        </h4>
+        <p>
+          {profile.grade}
+        </p>
+
+        <h4>
+          Bio:
+        </h4>
+        <p>
+          {profile.bio}
+        </p>
 
       {/*
       <Row style={{display: 'flex', justifyContent: 'center', margin: "15px"}}>
@@ -142,7 +152,8 @@ export const Profile = () => {
               </Form.Item>
           </Form>
       </Row>*/}
-    </>
+      </>
 
-  );
+    );
+  }
 };
