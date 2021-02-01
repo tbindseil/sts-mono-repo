@@ -1,10 +1,9 @@
 import React from 'react';
 import {Button, Form, Input, Row} from 'antd';
-import {Link} from 'react-router-dom';
 
 import {Auth} from "aws-amplify";
 
-import {Header} from './Header';
+import {Header} from '../Header';
 
 export class Profile extends React.Component {
 
@@ -18,9 +17,9 @@ export class Profile extends React.Component {
     bio: "error"
   };
 
-  /*const style = {
+  style = {
   };
-  const styles = {
+  styles = {
       loginForm: {
           "maxWidth": "300px"
       },
@@ -30,20 +29,21 @@ export class Profile extends React.Component {
       loginFormButton: {
           "width": "100%"
       }
-  };*/
+  };
 
-  /*const onFinish = values => {
+  onFinish = values => {
       console.log('onFinish Success:', values);
   };
 
-  const onFinishFailed = errorInfo => {
+  onFinishFailed = errorInfo => {
       console.log('onFinishFailed Failed:', errorInfo);
-  };*/
+  };
 
 
   constructor(props) {
     super(props)
     this.state = {
+      editting: false,
       profile: {
         email: "",
         firstName: "",
@@ -96,12 +96,22 @@ export class Profile extends React.Component {
       });
   }
 
+  modifyOnClickHandler = () => {
+    this.setState({
+      editting: false,
+    });
+  }
+
   render() {
 
     return (
 
       <>
         <Header/>
+
+        <button onClick={this.modifyOnClickHandler}>
+          Modify
+        </button>
 
         <h2>
           View Profile Info
@@ -149,58 +159,52 @@ export class Profile extends React.Component {
           {this.state.profile.bio}
         </p>
 
-      {/*
-      <Row style={{display: 'flex', justifyContent: 'center', margin: "15px"}}>
-          Login
-      </Row>
-      <Row>
-          <Form
-              name="basic"
-              onFinish={onFinish}
-              onFinishFailed={onFinishFailed}
-              style={styles.loginForm}>
-              <Form.Item
-                  name="username"
-                  rules={[
-                      {
-                          required: true,
-                          message: 'Please input your email!',
-                      }
-                  ]}>
-                  <Input
-                      placeholder="Email"
-                  />
-              </Form.Item>
-              <Form.Item
-                  name="password"
-                  rules={[
-                      {
-                          required: true,
-                          message: 'Please input your Password!'
-                      }
-                  ]}>
+        <Row style={{display: 'flex', justifyContent: 'center', margin: "15px"}}>
+            Login
+        </Row>
+        <Row>
+            <Form
+                name="basic"
+                onFinish={this.onFinish}
+                onFinishFailed={this.onFinishFailed}
+                style={this.styles.loginForm}>
+                <Form.Item
+                    name="username"
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please input your email!',
+                        }
+                    ]}>
+                    <Input
+                        placeholder="Email"
+                    />
+                </Form.Item>
+                <Form.Item
+                    name="password"
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please input your Password!'
+                        }
+                    ]}>
 
-                  <Input
-                      type="password"
-                      placeholder="Password"
-                  />
+                    <Input
+                        type="password"
+                        placeholder="Password"
+                    />
 
-              </Form.Item>
-              <Form.Item>
-                  {{getFieldDecorator('remember', {} THIS AND NEXT THREE WERE COMMENTED OUT
-                  {    valuePropName: 'checked',}
-                  {    initialValue: true,}
-                  {})(<Checkbox>Remember me</Checkbox>)}}
-                  <Link style={styles.loginFormForgot} to="forgotpassword1">
-                      Forgot password
-                  </Link>
-                  <Button type="primary" htmlType="submit" style={styles.loginFormButton}>
-                      Log in
-                  </Button>
-                  Don't have an account? <Link to="register">Register here</Link>
-              </Form.Item>
-          </Form>
-      </Row>*/}
+                </Form.Item>
+                <Form.Item>
+                    <Button type="primary" htmlType="submit" style={this.styles.loginFormButton}>
+                        Update
+                    </Button>
+                    <Button type="primary" htmlType="submit" style={this.styles.loginFormButton}>
+                        Cancel
+                    </Button>
+                </Form.Item>
+            </Form>
+        </Row>
       </>
 
     );

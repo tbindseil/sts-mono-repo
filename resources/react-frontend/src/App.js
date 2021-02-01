@@ -10,7 +10,7 @@ import {RegisterConfirmForm} from "./components/auth/register-confirm-form";
 import {LoginForm} from "./components/auth/login-form";
 import {LogoutForm} from "./components/auth/logout-form";
 
-import {Profile} from "./components/Profile";
+import {Profile} from "./components/profile/Profile";
 
 import Amplify from '@aws-amplify/core'
 import awsConfig from "./configs/aws-configs";
