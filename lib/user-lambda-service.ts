@@ -34,6 +34,7 @@ export class UserLambdaService extends Construct {
             providerArns: [props.userPoolArn],
         });
 
+        // TODO use cognito username, as it is uid rather than personal data
         const user = api.root.addResource("{email}");
 
         const authorizationOptions = {
@@ -46,7 +47,7 @@ export class UserLambdaService extends Construct {
             requestTemplates: { "application/json": '{ "statusCode": "200" }' }
         });
 
-        // Add new user to bucket with: POST /{email}
+        // Add new user to bucket with: PUT /{email}
         const putUserIntegration = new LambdaIntegration(handler);
 
         // Get a specific user from bucket with: GET /{email}

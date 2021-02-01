@@ -57,54 +57,21 @@ def user_to_dict(user):
         'bio': user.bio
     };
 
+def update_user_from_request(request_body, user):
+    """
+    for each key that exists in intersection of request_body and user attributes,
+    update the user attribute with the value from the request body
+    """
+    user_attributes = list(user.__dict__)
+    for key, value in request_body.items():
+        if key in user_attributes:
+            setattr(user, key, value)
 
-def lambda_handler(event, context):
-    print(event)
+    return user
 
-    # method = event['httpMethod']
-    # email = event['path'].split('/')[-1]
-
-
-    # db access
-    url = get_database_url()
-    engine = create_engine(url, echo=True)
-    Session = sessionmaker(bind=engine)
-    session = Session()
-
-
-
-    # based off endpoint
-
-    # / - GET
-    # return all users
-
-    # /{email} - GET
-    # extract email
-    # return user from db
-    user = session.query(User).filter(User.email=="tjbindseil.sts@gmail.com").one()
-    print("user_to_dict(user) is:")
-    print(user_to_dict(user))
-    body = json.dumps(user_to_dict(user))
-    print("body is:")
-    print(body)
-
-
-
-
-    # /{email} - PUT
-    # extract email, and other user details
-    # put into database, return success
-    # return error otherwise
-
-
-
-
-    # /{email} - DELETE
-    # probably should have a more elaborate thing around this,
-    # so return error for now
-
+def make_response(status, body):
     return {
-        'statusCode': 200,
+        'statusCode': status,
         'headers': {
             "Content-Type" : "application/json",
             "Access-Control-Allow-Headers" : "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
@@ -116,3 +83,34 @@ def lambda_handler(event, context):
         'body': body
     }
 
+
+def lambda_handler(event, context):
+    """
+    for get, just query for user and return
+    for put, query for user, update with stuff from request body, return updated user
+    for others, return invalid method
+    """
+
+    print("event is:")
+    print(event)
+
+    email = event['path'].split('/')[-1]
+    method = event['httpMethod']
+
+    if not (method == 'GET' or method == 'PUT'):
+        return make_response(405, json.dumps("only GET and PUT are valid"))
+
+    # db access
+    url = get_database_url()
+    engine = create_engine(url, echo=True)
+    Session = sessionmaker(bind=engine)
+    session = Session()
+
+    user = session.query(User).filter(User.email==email).one()
+
+    if method == 'PUT':
+        user = update_user_from_request(json.loads(event["body"]), user)
+        session.add(user)
+        session.commit()
+
+    return make_response(200, json.dumps(user_to_dict(user)))
