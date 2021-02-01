@@ -4,6 +4,8 @@ import {Button, Form, Input, Row} from 'antd';
 import {Auth} from "aws-amplify";
 
 import {Header} from '../Header';
+import {ViewProfile} from "./ViewProfile";
+import {EditProfile} from "./EditProfile";
 
 export class Profile extends React.Component {
 
@@ -19,29 +21,11 @@ export class Profile extends React.Component {
 
   style = {
   };
-  styles = {
-      loginForm: {
-          "maxWidth": "300px"
-      },
-      loginFormForgot: {
-          "float": "right"
-      },
-      loginFormButton: {
-          "width": "100%"
-      }
-  };
-
-  onFinish = values => {
-      console.log('onFinish Success:', values);
-  };
-
-  onFinishFailed = errorInfo => {
-      console.log('onFinishFailed Failed:', errorInfo);
-  };
-
 
   constructor(props) {
     super(props)
+    this.onSave = this.onSave.bind(this);
+    this.onCancel = this.onCancel.bind(this);
     this.state = {
       editting: false,
       profile: {
@@ -61,10 +45,13 @@ export class Profile extends React.Component {
       .then(res => res.json())
       .then(
         (result) => {
+          console.log("result is:")
+          console.log(result)
           const profile = {
             email: result.email,
-            firstName: result.firstName,
-            lastName: result.lastName,
+            // TODO deal with snake_case vs camelCase
+            firstName: result.first_name,
+            lastName: result.last_name,
             school: result.school,
             grade: result.grade,
             bio: result.bio,
@@ -98,20 +85,27 @@ export class Profile extends React.Component {
 
   modifyOnClickHandler = () => {
     this.setState({
+      editting: true,
+    });
+  }
+
+  onSave = () => {
+    this.setState({
+      editting: false,
+    });
+  }
+
+  onCancel = () => {
+    this.setState({
       editting: false,
     });
   }
 
   render() {
-
     return (
 
       <>
         <Header/>
-
-        <button onClick={this.modifyOnClickHandler}>
-          Modify
-        </button>
 
         <h2>
           View Profile Info
@@ -124,87 +118,17 @@ export class Profile extends React.Component {
           {this.state.profile.email}
         </p>
 
-        <h4>
-          First Name:
-        </h4>
-        <p>
-          {this.state.profile.firstName}
-        </p>
+        {this.state.editting ? 
+            <EditProfile 
+                profile = {this.state.profile}
+                onSave = {this.onSave}
+                onCancel = {this.onCancel}
+            /> :
+            <ViewProfile
+                profile={this.state.profile}
+                modifyOnClickHandler={this.modifyOnClickHandler}
+            />}
 
-        <h4>
-          Last Name:
-        </h4>
-        <p>
-          {this.state.profile.lastName}
-        </p>
-
-        <h4>
-          School:
-        </h4>
-        <p>
-          {this.state.profile.school}
-        </p>
-
-        <h4>
-          Grade:
-        </h4>
-        <p>
-          {this.state.profile.grade}
-        </p>
-
-        <h4>
-          Bio:
-        </h4>
-        <p>
-          {this.state.profile.bio}
-        </p>
-
-        <Row style={{display: 'flex', justifyContent: 'center', margin: "15px"}}>
-            Login
-        </Row>
-        <Row>
-            <Form
-                name="basic"
-                onFinish={this.onFinish}
-                onFinishFailed={this.onFinishFailed}
-                style={this.styles.loginForm}>
-                <Form.Item
-                    name="username"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please input your email!',
-                        }
-                    ]}>
-                    <Input
-                        placeholder="Email"
-                    />
-                </Form.Item>
-                <Form.Item
-                    name="password"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please input your Password!'
-                        }
-                    ]}>
-
-                    <Input
-                        type="password"
-                        placeholder="Password"
-                    />
-
-                </Form.Item>
-                <Form.Item>
-                    <Button type="primary" htmlType="submit" style={this.styles.loginFormButton}>
-                        Update
-                    </Button>
-                    <Button type="primary" htmlType="submit" style={this.styles.loginFormButton}>
-                        Cancel
-                    </Button>
-                </Form.Item>
-            </Form>
-        </Row>
       </>
 
     );
