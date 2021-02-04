@@ -47,8 +47,8 @@ export class UserLambdaService extends Construct {
             requestTemplates: { "application/json": '{ "statusCode": "200" }' }
         });
 
-        // Add new user to bucket with: PUT /{email}
-        const putUserIntegration = new LambdaIntegration(handler);
+        // Add new user to bucket with: POST /{email}
+        const postUserIntegration = new LambdaIntegration(handler);
 
         // Get a specific user from bucket with: GET /{email}
         const getUserIntegration = new LambdaIntegration(handler);
@@ -65,7 +65,7 @@ export class UserLambdaService extends Construct {
 
 
         // this one is authorized for now
-        user.addMethod("PUT", putUserIntegration, authorizationOptions); // PUT /{email}
+        user.addMethod("POST", postUserIntegration); // , authorizationOptions); // POST /{email}
 
 
 

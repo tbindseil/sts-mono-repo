@@ -8,6 +8,9 @@ import {ViewProfile} from "./ViewProfile";
 import {EditProfile} from "./EditProfile";
 
 export class Profile extends React.Component {
+  email;
+  token;
+  base_url = 'https://7uprzm3fo6.execute-api.us-west-2.amazonaws.com/prod/';
 
   // so bad..
   errorProfile = {
@@ -40,7 +43,7 @@ export class Profile extends React.Component {
   }
 
   getProfile = (email) => {
-    const url = 'https://wv9um2deug.execute-api.us-west-2.amazonaws.com/prod/' + email;
+    const url = this.base_url + email;
     fetch(url)
       .then(res => res.json())
       .then(
@@ -76,7 +79,13 @@ export class Profile extends React.Component {
     Auth.currentAuthenticatedUser({
       bypassCache: false  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
     })
-      .then(user => this.getProfile(user.attributes.email))
+      .then(user => {
+        this.email = user.attributes.email;
+        this.token = user.signInUserSession.idToken.jwtToken;
+        console.log(" @@@ token is: @@@");
+        console.log(this.token);
+        this.getProfile(this.email);
+      })
       .catch(err => {
         console.log(err);
         this.setState(this.errorProfile);
@@ -89,7 +98,44 @@ export class Profile extends React.Component {
     });
   }
 
-  onSave = () => {
+  onSave = (profile) => {
+    // set state based off profile input
+
+    // put request to change profile
+    async function getData(url = '', token = '') {
+        // Default options are marked with *
+        const tokenString = 'Bearer ' + token;
+        console.log("tokenString is:");
+        console.log(tokenString);
+        const response = await fetch(url, {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, *cors, same-origin
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Headers': 'Access-Control-Allow-Origin, Access-Control-Allow-Headers',
+              'Access-Control-Allow-Credentials': true,
+              'Authorization': tokenString
+            }
+        });
+        return response; // parses JSON response into native JavaScript objects
+    }
+
+    const url = this.base_url + this.email;
+    getData(url, this.token)
+      .then(data => {
+        console.log("@@@ @@@ success @@@ @@@")
+        console.log(data); // JSON data parsed by `data.json()` call
+      })
+      .catch(error => {
+        console.log("@@@ @@@ error @@@ @@@")
+        console.log(error);
+      });
+
+
+
+    // ensure expected result is returned
+
+    // set editting to false
     this.setState({
       editting: false,
     });
