@@ -108,7 +108,7 @@ export class Profile extends React.Component {
         console.log("tokenString is:");
         console.log(tokenString);
         const response = await fetch(url, {
-            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            method: 'PUT', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, *cors, same-origin
             headers: {
               'Access-Control-Allow-Origin': '*',
