@@ -20,6 +20,13 @@ export class UserLambdaService extends Construct {
         });
         props.dbSecret.grantRead(handler.role!);
 
+        // TODO configure PUT allowed method and allow-method-header on options method in cdk
+        // integration response configured as follows:
+        // Access-Control-Allow-Headers	'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,access-control-allow-credentials,access-control-allow-origin,access-control-allow-headers'
+        // Access-Control-Allow-Origin	'*'
+        // Access-Control-Allow-Credentials
+        // Access-Control-Allow-Methods	'DELETE,GET,OPTIONS,PUT'
+
         const api = new RestApi(this, "users-api", {
             restApiName: "User Service",
             description: "This service serves users."
@@ -37,6 +44,8 @@ export class UserLambdaService extends Construct {
         // TODO use cognito username, as it is uid rather than personal data
         const user = api.root.addResource("{email}");
 
+        // TODO probably don't need authoriztion on the api level anymore, since authentication
+        // access to a particular resource will still have to be determined
         const authorizationOptions = {
             apiKeyRequired: false,
             authorizer: {authorizerId: auth.ref},
