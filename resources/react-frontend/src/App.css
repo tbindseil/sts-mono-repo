@@ -4,7 +4,12 @@
  padding-right: 200px;
  padding-left:200px;
 }
-
+.mainText2 {
+  text-align: justify;
+  font-family: Arial;
+ padding-right: 10px;
+ padding-left:10px;
+}
 .pageHeader{
   text-align: Center;
   font-family: Arial;
@@ -38,20 +43,46 @@ padding-right:10px;
 float: left;
 }
 
-.navBar{
-color: #005D8c; 
+.dropDown{
+	color: #005D8c; 
 font-family: Arial;
 margin-left:0px;
 margin-right:0px;
-padding-top: 35px;
-padding-bottom:40px;
+margin-top:0px;
+margin-bottom:0px;
+padding-top: 5px;
+padding-bottom:5px;
+padding-left:5px;
+padding-right:5px;
+text-align:center;
+font-Weight: bold;
+font-variant: small-caps;
+border-radius: 10px;
+
+}
+
+.dropDown:hover{
+color: white; 
+background-color: #b4c7e7;
+text-decoration: none;
+}
+	
+.navBar{
+color: #005D8c; 
+font-family: Arial;
+margin-top:20px;
+margin-bottom:20px;
+margin-left:0px;
+margin-right:0px;
+padding-top: 20px;
+padding-bottom:20px;
 padding-left:10px;
 padding-right:10px;
 text-align:center;
 font-Weight: bold;
 font-variant: small-caps;
 float: right;
-
+border-radius:20px;
 }
 
 .navBar:hover{
