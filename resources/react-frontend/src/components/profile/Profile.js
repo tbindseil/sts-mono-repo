@@ -26,7 +26,8 @@ export class Profile extends React.Component {
   };
 
   constructor(props) {
-    super(props)
+    super(props);
+    this.getProfile = this.getProfile.bind(this);
     this.onSave = this.onSave.bind(this);
     this.onCancel = this.onCancel.bind(this);
     this.state = {
@@ -102,7 +103,8 @@ export class Profile extends React.Component {
     // set state based off profile input
 
     // put request to change profile
-    async function getData(url = '', token = '') {
+    // TODO change name
+    async function getData(url = '', token = '', profile = {}) {
         // Default options are marked with *
         const tokenString = 'Bearer ' + token;
         console.log("tokenString is:");
@@ -114,14 +116,17 @@ export class Profile extends React.Component {
               'Access-Control-Allow-Origin': '*',
               'Access-Control-Allow-Headers': 'Access-Control-Allow-Origin, Access-Control-Allow-Headers',
               'Access-Control-Allow-Credentials': true,
+              'Content-Type': 'application/json',
               'Authorization': tokenString
-            }
+            },
+            body: JSON.stringify(profile)
         });
         return response; // parses JSON response into native JavaScript objects
     }
 
     const url = this.base_url + this.email;
-    getData(url, this.token)
+
+    getData(url, this.token, profile)
       .then(data => {
         console.log("@@@ @@@ success @@@ @@@")
         console.log(data); // JSON data parsed by `data.json()` call
@@ -166,7 +171,7 @@ export class Profile extends React.Component {
 
         {this.state.editting ? 
             <EditProfile 
-                profile = {this.state.profile}
+                currProfile = {this.state.profile}
                 onSave = {this.onSave}
                 onCancel = {this.onCancel}
             /> :

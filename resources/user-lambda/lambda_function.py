@@ -166,8 +166,6 @@ def lambda_handler(event, context):
     print("event is:")
     print(event)
 
-    # claims = get_and_verify_claims(event["token"])
-
     email = event['path'].split('/')[-1]
     method = event['httpMethod']
 
@@ -182,10 +180,26 @@ def lambda_handler(event, context):
 
     user = session.query(User).filter(User.email==email).one()
 
-    # if method == 'PUT' or method == 'POST':
-        # user = update_user_from_request(json.loads(event["body"]), user)
-        # session.add(user)
-        # session.commit()
+    if method == 'PUT' or method == 'POST':
+        token = event['headers']['Authorization'].split()[-1]
+
+        print("token is:")
+        print(token)
+
+        try:
+            claims = get_and_verify_claims(token)
+        except:
+            return make_response(401, json.dumps("unauthorized"))
+
+        print("claims are:")
+        print(claims)
+
+        if claims["email"] != email:
+            return make_response(401, json.dumps("unauthorized"))
+
+        user = update_user_from_request(json.loads(event["body"]), user)
+        session.add(user)
+        session.commit()
 
     return make_response(200, json.dumps(user_to_dict(user)))
 

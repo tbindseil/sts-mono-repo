@@ -22,6 +22,7 @@ export class RDSStack extends cdk.Stack {
             username: 'tj'
         });
 
+        // TODO set backup retention to 0 days while developing to stay in free tier
         this.postgresRDSInstance = new rds.DatabaseInstance(this, 'Postgres-rds-instance', {
             engine: rds.DatabaseInstanceEngine.postgres({
                 version: rds.PostgresEngineVersion.VER_12_4
