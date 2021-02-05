@@ -20,19 +20,18 @@ const underLine = {
  marginLeft:'50px',
  marginRight:'50px',
 };
+
 const underLine2 = { 
  border: '1px solid grey', //header underLine
  marginLeft:'10px',
  marginRight:'10px',
 };
 
-
 const imgStyle = {
   maxWidth: '100%',
   height: 'auto',
   margin:'0px'
 };
-
 
 const pageBorder = {
   borderLeft: '150px solid #b4c7e7',
@@ -42,7 +41,6 @@ const pageBorder = {
    paddingTop: '50px',
   paddingBottom:'150px',
   marginTop: '0px',
-
 };
 
 const pageBorder2 = {
@@ -53,8 +51,8 @@ const pageBorder2 = {
    paddingTop: '50px',
   paddingBottom:'200px',
   marginTop: '0px',
-
 };
+
 const modo = {
   textAlign: 'center',
   fontFamily: 'Arial',
@@ -65,37 +63,48 @@ const modo = {
 
 export const Home = () => (
 
-    <div>
+  <div>
 
-      <Header/>
+    <Header/>
 
       <img style={imgStyle} src={stock_photo} alt="stock"/>
 
+	    <MediaQuery maxWidth={765}>
 
-	  <MediaQuery maxWidth={765}>
-    <header style ={pageBorder2}>
-        <h1 class= "titleMain">
-          Students Teaching Students
-        </h1>
-		<hr style ={underLine2}/>
-        <p style= {modo}>	
-		Enhancing education through student to student tutoring 
-        </p>
-   </header>
-   
-   </MediaQuery>
-   <MediaQuery minWidth={765}>
-    <header style ={pageBorder}>
-        <h1 class= "titleMain">
-          Students Teaching Students
-        </h1>
-		<hr style ={underLine}/>
-        <p style= {modo}>	
-		Enhancing education through student to student tutoring 
-        </p>
+        <header style ={pageBorder2}>
+
+          <h1 class= "titleMain">
+            Students Teaching Students
+          </h1>
+
+		      <hr style ={underLine2}/>
+
+          <p style= {modo}>	
+		        Enhancing education through student to student tutoring 
+          </p>
+
+        </header>
+    
+      </MediaQuery>
+
+     <MediaQuery minWidth={765}>
+
+       <header style ={pageBorder}>
+
+          <h1 class= "titleMain">
+            Students Teaching Students
+          </h1>
+
+		      <hr style ={underLine}/>
+
+          <p style= {modo}>	
+		        Enhancing education through student to student tutoring 
+          </p>
 		
-   </header>
-   </MediaQuery>
-    </div>
+        </header>
+
+     </MediaQuery>
+
+  </div>
 );
 
