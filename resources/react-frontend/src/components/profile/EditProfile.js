@@ -15,7 +15,7 @@ export class EditProfile extends React.Component {
 
         this.state = {
             newProfile: props.currProfile
-        }
+        };
     }
 
     styles = {
@@ -27,8 +27,8 @@ export class EditProfile extends React.Component {
         }
     };
 
-    onFinish = (onSave) => {
-        onSave(this.state.newProfile);
+    onFinish = () => {
+        this.onSave(this.state.newProfile);
     }
 
     handleChange = event => {
@@ -36,13 +36,16 @@ export class EditProfile extends React.Component {
         const value = target.value;
         const name = target.name;
 
+        console.log("event is:")
+        console.log(event)
         console.log("value is: " + value);
         console.log("name is: " + name);
 
+        var updatedProfile = this.state.newProfile;
+        updatedProfile[name] = value;
+
         this.setState({
-            newProfile: {
-                [name]: value
-            }
+            newProfile: updatedProfile
         });
     }
 
@@ -60,8 +63,8 @@ export class EditProfile extends React.Component {
                 <Form
                     name="basic"
                     onChange={this.handleChange}
-                    onFinish={this.onFinish(this.onSave)}
-                    onFinishFailed={this.onCancel()}
+                    onFinish={this.onFinish}
+                    onFinishFailed={this.onCancel}
                     style={this.styles.loginForm}>
                     <Form.Item
                         name="firstName"
@@ -74,6 +77,7 @@ export class EditProfile extends React.Component {
                         ]}>
                         <Input
                             placeholder={this.state.newProfile.firstName}
+                            name="firstName"
                         />
                     </Form.Item>
                     <Form.Item
@@ -87,6 +91,7 @@ export class EditProfile extends React.Component {
                         ]}>
                         <Input
                             placeholder={this.state.newProfile.lastName}
+                            name="LastName"
                         />
                     </Form.Item>
                     <Form.Item
@@ -100,6 +105,7 @@ export class EditProfile extends React.Component {
                         ]}>
                         <Input
                             placeholder={this.state.newProfile.school}
+                            name="school"
                         />
                     </Form.Item>
                     <Form.Item
@@ -113,6 +119,7 @@ export class EditProfile extends React.Component {
                         ]}>
                         <Input
                             placeholder={this.state.newProfile.grade}
+                            name="grade"
                         />
                     </Form.Item>
                     <Form.Item
@@ -126,6 +133,7 @@ export class EditProfile extends React.Component {
                         ]}>
                         <Input
                             placeholder={this.state.newProfile.bio}
+                            name="bio"
                         />
                     </Form.Item>
                     <Form.Item>
