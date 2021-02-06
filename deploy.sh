@@ -15,6 +15,8 @@ esac
 git pull
 git checkout $STAGE
 
+# TODO db migrations, pypi packaging before pip install requirements.txt
+
 # zip lambda and dependencies
 FILE_SEPARATOR="/"
 ROOT_FULL_PATH="$(pwd)"
