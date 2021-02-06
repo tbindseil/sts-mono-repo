@@ -12,6 +12,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 
+
+# TODO put auth stuff in its own lambda maybe
+
 # Copyright 2017-2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file
@@ -86,7 +89,6 @@ def get_and_verify_claims(token):
             key_index = i
             break
     if key_index == -1:
-        print('Public key not found in jwks.json')
         raise Exception("Public key not found in jwks.json")
     # construct the public key
     public_key = jwk.construct(keys[key_index])
@@ -97,23 +99,17 @@ def get_and_verify_claims(token):
     decoded_signature = base64url_decode(encoded_signature.encode('utf-8'))
     # verify the signature
     if not public_key.verify(message.encode("utf8"), decoded_signature):
-        print('Signature verification failed')
         raise Exception('Signature verification failed')
-    print('Signature successfully verified')
     # since we passed the verification, we can now safely
     # use the unverified claims
     claims = jwt.get_unverified_claims(token)
     # additionally we can verify the token expiration
     if time.time() > claims['exp']:
-        print('Token is expired')
         raise Exception('Token is expired')
     # and the Audience  (use claims['client_id'] if verifying an access token)
     if claims['aud'] != app_client_id:
-        print('Token was not issued for this audience')
         raise Exception('Token was not issued for this audience')
     # now we can use the claims
-    print("claims are:")
-    print(claims)
     return claims
 
 
@@ -147,6 +143,7 @@ def make_response(status, body):
         'headers': {
             "Content-Type" : "application/json",
             "Access-Control-Allow-Headers" : "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+            # TODO idk if these are even used..
             "Access-Control-Allow-Methods" : "OPTIONS,POST",
             "Access-Control-Allow-Credentials" : True,
             "Access-Control-Allow-Origin" : "*",
@@ -159,17 +156,14 @@ def make_response(status, body):
 def lambda_handler(event, context):
     """
     for get, just query for user and return
-    for put or post, query for user, update with stuff from request body, return updated user
+    for put, query for user, update with stuff from request body, return updated user
     for others, return invalid method
     """
-
-    print("event is:")
-    print(event)
 
     email = event['path'].split('/')[-1]
     method = event['httpMethod']
 
-    if not (method == 'GET' or method == 'PUT' or method == 'POST'):
+    if not (method == 'GET' or method == 'PUT'):
         return make_response(405, json.dumps("only GET and PUT are valid"))
 
     # db access
@@ -180,19 +174,13 @@ def lambda_handler(event, context):
 
     user = session.query(User).filter(User.email==email).one()
 
-    if method == 'PUT' or method == 'POST':
+    if method == 'PUT':
         token = event['headers']['Authorization'].split()[-1]
-
-        print("token is:")
-        print(token)
 
         try:
             claims = get_and_verify_claims(token)
         except:
             return make_response(401, json.dumps("unauthorized"))
-
-        print("claims are:")
-        print(claims)
 
         if claims["email"] != email:
             return make_response(401, json.dumps("unauthorized"))
@@ -209,5 +197,5 @@ def lambda_handler(event, context):
 # AWS Lambda and any other local environments
 if __name__ == '__main__':
     # for testing locally you can enter the JWT ID Token here
-    event = {'token': "eyJraWQiOiJLSjd5cDJkQ1pEemZZSzVPc1RZNVwvR2NJeVZ4RU9oVjAzQWZFT0FncXF3VT0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJjMzcwYWRhNS0xYWY0LTRhYTYtYTcwMS1hYmY5MjE0MDc2ODIiLCJhdWQiOiI1NWVnZjlzNHFxb2llNWQ0cW9kcnF0b2xrayIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJldmVudF9pZCI6IjczYTFjZjJhLTlmOTMtNDMzOS05MTMwLWMyYzgxZjQwODBlMyIsInRva2VuX3VzZSI6ImlkIiwiYXV0aF90aW1lIjoxNjEyMTIzNzczLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAudXMtd2VzdC0yLmFtYXpvbmF3cy5jb21cL3VzLXdlc3QtMl91emphcXowbjIiLCJjb2duaXRvOnVzZXJuYW1lIjoiYzM3MGFkYTUtMWFmNC00YWE2LWE3MDEtYWJmOTIxNDA3NjgyIiwiZXhwIjoxNjEyMzI0MDUzLCJpYXQiOjE2MTIzMjA0NTMsImVtYWlsIjoidGpiaW5kc2VpbC5zdHNAZ21haWwuY29tIn0.cUtidLxZVCG6C8033RT3sr7PrmCG57RYTqZRgNCUkMa7EIrdNjEiBiZPOIAkLd3PWZ2w1kzVOZP8SwsJ0CUB6FOIO5l8Wp5xs3YV1SE3J34qHRUCkLEZhuhdJK-5SmuqyqJrvuOC4p5gPs7e4PJDL8uLUPIVrr0ZiPksJaziFfZDgWPhu5FhiFdFmA_oUq1wCfbbqzJVHTGRP75hong7t7tpEiOURmQTreTQk_Rt4dEIj2T8TjZF7x1WQZWm5m01hVrzKFhnjDAaY9V01fD9eiEe6ta98vfjAoPDqjRTDrZCjHia9Ky6wmPgWhAhCH5O1eee3e_XsXGhQp76IxrbvQ"}
+    event = {'token': ""}
     lambda_handler(event, None)

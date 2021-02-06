@@ -44,14 +44,6 @@ export class UserLambdaService extends Construct {
         // TODO use cognito username, as it is uid rather than personal data
         const user = api.root.addResource("{email}");
 
-        // TODO probably don't need authoriztion on the api level anymore, since authentication
-        // access to a particular resource will still have to be determined
-        const authorizationOptions = {
-            apiKeyRequired: false,
-            authorizer: {authorizerId: auth.ref},
-            authorizationType: AuthorizationType.COGNITO
-        };
-
         const getUsersIntegration = new LambdaIntegration(handler, {
             requestTemplates: { "application/json": '{ "statusCode": "200" }' }
         });
@@ -74,8 +66,7 @@ export class UserLambdaService extends Construct {
 
 
         // this one is authorized for now
-        user.addMethod("PUT", putUserIntegration); // , authorizationOptions); // PUT /{email}
-
+        user.addMethod("PUT", putUserIntegration); // PUT /{email}
 
 
         user.addMethod("GET", getUserIntegration); // GET /{email}

@@ -36,11 +36,6 @@ export class EditProfile extends React.Component {
         const value = target.value;
         const name = target.name;
 
-        console.log("event is:")
-        console.log(event)
-        console.log("value is: " + value);
-        console.log("name is: " + name);
-
         var updatedProfile = this.state.newProfile;
         updatedProfile[name] = value;
 
@@ -49,10 +44,7 @@ export class EditProfile extends React.Component {
         });
     }
 
-    // pass onSave as a function, then onSave is in profile and does the heavy listing, this just passes values to the function
     render() {
-      console.log("this.state.newProfile is:");
-      console.log(this.state.newProfile);
 
       return (
         <>

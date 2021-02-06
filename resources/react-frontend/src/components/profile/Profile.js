@@ -49,8 +49,6 @@ export class Profile extends React.Component {
       .then(res => res.json())
       .then(
         (result) => {
-          console.log("result is:")
-          console.log(result)
           const profile = {
             email: result.email,
             // TODO deal with snake_case vs camelCase
@@ -83,12 +81,9 @@ export class Profile extends React.Component {
       .then(user => {
         this.email = user.attributes.email;
         this.token = user.signInUserSession.idToken.jwtToken;
-        console.log(" @@@ token is: @@@");
-        console.log(this.token);
         this.getProfile(this.email);
       })
       .catch(err => {
-        console.log(err);
         this.setState(this.errorProfile);
       });
   }
@@ -104,11 +99,9 @@ export class Profile extends React.Component {
 
     // put request to change profile
     // TODO change name
-    async function getData(url = '', token = '', profile = {}) {
+    async function postProfile(url = '', token = '', profile = {}) {
         // Default options are marked with *
         const tokenString = 'Bearer ' + token;
-        console.log("tokenString is:");
-        console.log(tokenString);
         const response = await fetch(url, {
             method: 'PUT', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, *cors, same-origin
@@ -126,8 +119,10 @@ export class Profile extends React.Component {
 
     const url = this.base_url + this.email;
 
-    getData(url, this.token, profile)
+    postProfile(url, this.token, profile)
       .then(data => {
+        // TODO I don't think anything needs to run here..
+        // it seems to pick up changes automatically
         console.log("@@@ @@@ success @@@ @@@")
         console.log(data); // JSON data parsed by `data.json()` call
       })
@@ -136,11 +131,6 @@ export class Profile extends React.Component {
         console.log(error);
       });
 
-
-
-    // ensure expected result is returned
-
-    // set editting to false
     this.setState({
       editting: false,
     });
@@ -169,8 +159,8 @@ export class Profile extends React.Component {
           {this.state.profile.email}
         </p>
 
-        {this.state.editting ? 
-            <EditProfile 
+        {this.state.editting ?
+            <EditProfile
                 currProfile = {this.state.profile}
                 onSave = {this.onSave}
                 onCancel = {this.onCancel}

@@ -44,3 +44,5 @@ export function ViewProfile(props) {
     </>
   );
 }
+
+// TODO make a quick generic ProfileRow display component
