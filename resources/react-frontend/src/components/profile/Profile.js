@@ -1,5 +1,4 @@
 import React from 'react';
-import {Button, Form, Input, Row} from 'antd';
 
 import {Auth} from "aws-amplify";
 
@@ -8,9 +7,9 @@ import {ViewProfile} from "./ViewProfile";
 import {EditProfile} from "./EditProfile";
 
 export class Profile extends React.Component {
-  email;
+  cognitoId;
   token;
-  base_url = 'https://7uprzm3fo6.execute-api.us-west-2.amazonaws.com/prod/';
+  base_url = 'https://120zxzogbf.execute-api.us-west-2.amazonaws.com/prod/';
 
   // so bad..
   errorProfile = {
@@ -43,8 +42,9 @@ export class Profile extends React.Component {
     }
   }
 
-  getProfile = (email) => {
-    const url = this.base_url + email;
+  getProfile = (cognitoId) => {
+    // TODO pass in cognito id or use class var?
+    const url = this.base_url + cognitoId;
     fetch(url)
       .then(res => res.json())
       .then(
@@ -66,9 +66,8 @@ export class Profile extends React.Component {
         // instead of a catch() block so that we don't swallow
         // exceptions from actual bugs in components.
         (error) => {
-          const profile = this.errorProfile
           this.setState({
-              profile: profile
+              profile: this.errorProfile
           });
         }
       );
@@ -79,9 +78,11 @@ export class Profile extends React.Component {
       bypassCache: false  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
     })
       .then(user => {
-        this.email = user.attributes.email;
+        this.cognitoId = user.username;
+        console.log("setting cognitoId to: ");
+        console.log(this.cognitoId);
         this.token = user.signInUserSession.idToken.jwtToken;
-        this.getProfile(this.email);
+        this.getProfile(this.cognitoId);
       })
       .catch(err => {
         this.setState(this.errorProfile);
@@ -117,12 +118,16 @@ export class Profile extends React.Component {
         return response; // parses JSON response into native JavaScript objects
     }
 
-    const url = this.base_url + this.email;
+
+    console.log("this.cognitoId is:");
+    console.log(this.cognitoId);
+    const url = this.base_url + this.cognitoId;
 
     postProfile(url, this.token, profile)
       .then(data => {
-        // TODO I don't think anything needs to run here..
+        // I don't think anything needs to run here..
         // it seems to pick up changes automatically
+        // but still updates when it fails... TODO
         console.log("@@@ @@@ success @@@ @@@")
         console.log(data); // JSON data parsed by `data.json()` call
       })

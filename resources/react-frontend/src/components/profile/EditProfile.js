@@ -1,6 +1,7 @@
 import React from 'react';
 import {Button, Form, Input, Row} from 'antd';
 
+// TODO there's a bug here with modifying profiles for sure..
 export class EditProfile extends React.Component {
     onSave;
     onCancel;

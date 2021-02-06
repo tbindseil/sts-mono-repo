@@ -20,11 +20,11 @@ export class UserLambdaService extends Construct {
         });
         props.dbSecret.grantRead(handler.role!);
 
-        // TODO configure PUT allowed method and allow-method-header on options method in cdk
+        // TODO configure PUT allowed method and allow-method-header on options method in cdk + 1
         // integration response configured as follows:
         // Access-Control-Allow-Headers	'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,access-control-allow-credentials,access-control-allow-origin,access-control-allow-headers'
         // Access-Control-Allow-Origin	'*'
-        // Access-Control-Allow-Credentials
+        // Access-Control-Allow-Credentials true // note this one is in a special place
         // Access-Control-Allow-Methods	'DELETE,GET,OPTIONS,PUT'
 
         const api = new RestApi(this, "users-api", {
@@ -41,20 +41,19 @@ export class UserLambdaService extends Construct {
             providerArns: [props.userPoolArn],
         });
 
-        // TODO use cognito username, as it is uid rather than personal data
-        const user = api.root.addResource("{email}");
+        const user = api.root.addResource("{user-id}");
 
         const getUsersIntegration = new LambdaIntegration(handler, {
             requestTemplates: { "application/json": '{ "statusCode": "200" }' }
         });
 
-        // Add new user to bucket with: PUT /{email}
+        // Add new user to bucket with: PUT /{user-id}
         const putUserIntegration = new LambdaIntegration(handler);
 
-        // Get a specific user from bucket with: GET /{email}
+        // Get a specific user from bucket with: GET /{user-id}
         const getUserIntegration = new LambdaIntegration(handler);
 
-        // Remove a specific user from the bucket with: DELETE /{email}
+        // Remove a specific user from the bucket with: DELETE /{user-id}
         const deleteUserIntegration = new LambdaIntegration(handler);
 
         api.root.addMethod("GET", getUsersIntegration); // GET /
@@ -66,10 +65,10 @@ export class UserLambdaService extends Construct {
 
 
         // this one is authorized for now
-        user.addMethod("PUT", putUserIntegration); // PUT /{email}
+        user.addMethod("PUT", putUserIntegration); // PUT /{user-id}
 
 
-        user.addMethod("GET", getUserIntegration); // GET /{email}
-        user.addMethod("DELETE", deleteUserIntegration); // DELETE /{email}
+        user.addMethod("GET", getUserIntegration); // GET /{user-id}
+        user.addMethod("DELETE", deleteUserIntegration); // DELETE /{user-id}
     }
 }

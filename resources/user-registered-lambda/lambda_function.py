@@ -52,8 +52,11 @@ def lambda_handler(event, context):
     Session = sessionmaker(bind=engine)
     session = Session()
 
+    print("event is")
+    print(event)
     email = event['request']['userAttributes']['email']
-    confirmed_user = User(email=email)
+    cognito_id = event['userName']
+    confirmed_user = User(email=email, cognito_id=cognito_id)
     session.add(confirmed_user)
     session.commit()
 

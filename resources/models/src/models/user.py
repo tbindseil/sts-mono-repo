@@ -9,6 +9,7 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     email = Column(String(255), unique=True)
+    cognito_id = Column(String(255), unique=True)
     registered_on = Column(DateTime, nullable=False)
     first_name = Column(String(65))
     last_name = Column(String(65))
@@ -18,9 +19,10 @@ class User(Base):
     bio = Column(String(511)) # TODO variable length string(s)
     admin = Column(Boolean, nullable=False, default=False)
 
-    def __init__(self, email, first_name="", last_name="", school="", grade="", bio=""):
+    def __init__(self, email, cognito_id, first_name="", last_name="", school="", grade="", bio=""):
 
         self.email = email
+        self.cognito_id = cognito_id
         self.first_name = first_name
         self.last_name = last_name
         self.school = school,

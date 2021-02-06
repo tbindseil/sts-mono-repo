@@ -64,6 +64,7 @@ export function RegisterConfirmForm() {
     };
 
     const onFinish = values => {
+        // TODO I might be logging pws...
         console.log('Success:', values);
         AuthService.confirmSignUp(values.username, values.code);
     };

@@ -116,6 +116,7 @@ def get_and_verify_claims(token):
 def user_to_dict(user):
     return {
         'email': user.email,
+        'cognito_id': user.cognito_id,
         'first_name': user.first_name,
         'last_name': user.last_name,
         'school': user.school,
@@ -153,6 +154,7 @@ def make_response(status, body):
     }
 
 
+# TODO when problem happens, still return the headers above so I can debug without remembering stuff
 def lambda_handler(event, context):
     """
     for get, just query for user and return
@@ -160,7 +162,8 @@ def lambda_handler(event, context):
     for others, return invalid method
     """
 
-    email = event['path'].split('/')[-1]
+    print("before anything")
+    cognito_id = event['path'].split('/')[-1]
     method = event['httpMethod']
 
     if not (method == 'GET' or method == 'PUT'):
@@ -172,17 +175,22 @@ def lambda_handler(event, context):
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    user = session.query(User).filter(User.email==email).one()
+    user = session.query(User).filter(User.cognito_id==cognito_id).one()
+
+    print("after get user")
 
     if method == 'PUT':
         token = event['headers']['Authorization'].split()[-1]
 
         try:
             claims = get_and_verify_claims(token)
-        except:
+        except Exception as e:
+            print(e)
             return make_response(401, json.dumps("unauthorized"))
 
-        if claims["email"] != email:
+        print("claims is")
+        print(claims)
+        if claims["cognito:username"] != cognito_id:
             return make_response(401, json.dumps("unauthorized"))
 
         user = update_user_from_request(json.loads(event["body"]), user)
