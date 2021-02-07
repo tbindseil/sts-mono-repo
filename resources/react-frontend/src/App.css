@@ -1,8 +1,15 @@
 .mainText {
   text-align: justify;
   font-family: Arial;
- padding-right: 200px;
- padding-left:200px;
+  padding-right: 200px;
+  padding-left:200px;
+}
+
+.mainText2 {
+  text-align: justify;
+  font-family: Arial;
+  padding-right: 10px;
+  padding-left:10px;
 }
 
 .pageHeader{
@@ -21,37 +28,67 @@
   font-variant: small-caps;
 }
 
-
-
-
 .formStyle{
   text-align: center;
 }
 
-.navBar{
-color: #005D8c; 
-font-family: Arial;
-margin-left:0px;
-margin-right:0px;
-padding-top: 35px;
-padding-bottom:40px;
-padding-left:10px;
-padding-right:10px;
-text-align:center;
-font-Weight: bold;
-font-variant: small-caps;
-float: right;
+.navLogo{
+  margin-left:0px;
+  margin-right:0px;
+  padding-top: 0px;
+  padding-bottom:0px;
+  padding-left:10px;
+  padding-right:10px;
+  float: left;
+}
 
+.dropDown{
+	color: #005D8c; 
+  font-family: Arial;
+  padding-top: 5px;
+  padding-bottom:5px;
+  padding-left:5px;
+  padding-right:5px;
+  text-align:center;
+  font-Weight: bold;
+  font-size: 20px;
+  font-variant: small-caps;
+  border-radius: 10px;
+}
+
+.dropDown:hover{
+  color: white; 
+  background-color: #b4c7e7;
+  text-decoration: none;
+}
+	
+.navBar{
+  color: #005D8c; 
+  font-family: Arial;
+  margin-top:20px;
+  margin-bottom:20px;
+  margin-left:0px;
+  margin-right:0px;
+  padding-top: 20px;
+  padding-bottom:20px;
+  padding-left:10px;
+  padding-right:10px;
+  text-align:center;
+  font-Weight: bold;
+  font-variant: small-caps;
+  float: right;
+  border-radius:20px;
 }
 
 .navBar:hover{
-color: white; 
-background-color: #b4c7e7;
-text-decoration: none;
+  color: white; 
+  background-color: #b4c7e7;
+  text-decoration: none;
 }
 
 .breakStyle = {
- border: 20px solid #b4c7e7;
- border-radius: 20px;
+  border: 20px solid #b4c7e7;
+  border-radius: 20px;
 };
+
 

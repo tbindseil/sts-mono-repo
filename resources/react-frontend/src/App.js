@@ -4,8 +4,6 @@ import {Switch, Route} from 'react-router-dom';
 import Amplify from '@aws-amplify/core'
 import awsConfig from "./configs/aws-configs";
 
-import {Auth} from "aws-amplify";
-
 import {AboutUs} from './components/AboutUs';
 import {GetInvolved} from './components/GetInvolved';
 import {RequestTutor} from './components/RequestTutor';
@@ -32,6 +30,7 @@ const App = () => {
       <Switch>
         <Route exact path="/" component={Home}/>
         <Route path="/home" component={Home}/>
+		<Route path="/home" component={Home}/>
         <Route path="/about-us" component={AboutUs}/>
         <Route path="/get-involved" component={GetInvolved}/>
         <Route path="/request-a-tutor" component={RequestTutor}/>
