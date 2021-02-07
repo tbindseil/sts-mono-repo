@@ -84,7 +84,7 @@ export class EditProfile extends React.Component {
                         ]}>
                         <Input
                             placeholder={this.state.newProfile.lastName}
-                            name="LastName"
+                            name="lastName"
                         />
                     </Form.Item>
                     <Form.Item

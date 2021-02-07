@@ -115,10 +115,11 @@ def get_and_verify_claims(token):
 
 def user_to_dict(user):
     return {
+        # TODO do this better..
         'email': user.email,
-        'cognito_id': user.cognito_id,
-        'first_name': user.first_name,
-        'last_name': user.last_name,
+        'cognitoId': user.cognitoId,
+        'firstName': user.firstName,
+        'lastName': user.lastName,
         'school': user.school,
         'grade': user.grade,
         'bio': user.bio
@@ -175,7 +176,7 @@ def lambda_handler(event, context):
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    user = session.query(User).filter(User.cognito_id==cognito_id).one()
+    user = session.query(User).filter(User.cognitoId==cognito_id).one()
 
     print("after get user")
 

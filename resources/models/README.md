@@ -1,5 +1,8 @@
 sts models
 
+model objects have their attributes defined in camelCase to align with what is normal in javascript (and JSON).
+
+
 use python3 setup.py sdist bdist_wheel to make new version
 then remove old whl and tar files
 then use ```python3 -m twine upload --repository testpypi dist/*``` to reupload

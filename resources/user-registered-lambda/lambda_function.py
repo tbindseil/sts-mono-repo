@@ -7,6 +7,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 
+# TODO on error don't add user to db
+
+
 def get_database_url():
     secret_name = "DbSecret685A0FA5-V68DtCDN2E6B"
     region_name = "us-west-2"
@@ -56,7 +59,7 @@ def lambda_handler(event, context):
     print(event)
     email = event['request']['userAttributes']['email']
     cognito_id = event['userName']
-    confirmed_user = User(email=email, cognito_id=cognito_id)
+    confirmed_user = User(email=email, cognitoId=cognito_id)
     session.add(confirmed_user)
     session.commit()
 

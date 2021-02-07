@@ -1,12 +1,15 @@
 Metadata-Version: 2.1
 Name: sts-models-tj
-Version: 0.0.6
+Version: 0.0.8
 Summary: models for sts
 Home-page: https://github.com/tbindseil/sts-mono-repo
 Author: tj
 Author-email: tjbindseil@gmail.com
 License: UNKNOWN
 Description: sts models
+        
+        model objects have their attributes defined in camelCase to align with what is normal in javascript (and JSON).
+        
         
         use python3 setup.py sdist bdist_wheel to make new version
         then remove old whl and tar files

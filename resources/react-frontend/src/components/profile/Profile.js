@@ -9,7 +9,7 @@ import {EditProfile} from "./EditProfile";
 export class Profile extends React.Component {
   cognitoId;
   token;
-  base_url = 'https://oercmchy3l.execute-api.us-west-2.amazonaws.com/prod/';
+  baseUrl = 'https://oercmchy3l.execute-api.us-west-2.amazonaws.com/prod/';
 
   // so bad..
   errorProfile = {
@@ -44,16 +44,15 @@ export class Profile extends React.Component {
 
   getProfile = (cognitoId) => {
     // TODO pass in cognito id or use class var?
-    const url = this.base_url + cognitoId;
+    const url = this.baseUrl + cognitoId;
     fetch(url)
       .then(res => res.json())
       .then(
         (result) => {
           const profile = {
             email: result.email,
-            // TODO deal with snake_case vs camelCase
-            firstName: result.first_name,
-            lastName: result.last_name,
+            firstName: result.firstName,
+            lastName: result.lastName,
             school: result.school,
             grade: result.grade,
             bio: result.bio,
@@ -119,9 +118,7 @@ export class Profile extends React.Component {
     }
 
 
-    console.log("this.cognitoId is:");
-    console.log(this.cognitoId);
-    const url = this.base_url + this.cognitoId;
+    const url = this.baseUrl + this.cognitoId;
 
     postProfile(url, this.token, profile)
       .then(data => {
