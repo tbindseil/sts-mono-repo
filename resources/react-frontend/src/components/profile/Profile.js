@@ -78,13 +78,11 @@ export class Profile extends React.Component {
         })
             .then(user => {
                 this.cognitoId = user.username;
-                console.log("setting cognitoId to: ");
-                console.log(this.cognitoId);
                 this.token = user.signInUserSession.idToken.jwtToken;
                 this.getProfile(this.cognitoId);
             })
             .catch(err => {
-                this.setState(this.errorProfile);
+                this.props.history.push("/anonymous-user");
             });
     }
 
@@ -105,6 +103,7 @@ export class Profile extends React.Component {
                 method: 'PUT', // *GET, POST, PUT, DELETE, etc.
                 mode: 'cors', // no-cors, *cors, same-origin
                 headers: {
+                    // TODO are these still necessary?
                     'Access-Control-Allow-Origin': '*',
                     'Access-Control-Allow-Headers': 'Access-Control-Allow-Origin, Access-Control-Allow-Headers',
                     'Access-Control-Allow-Credentials': true,

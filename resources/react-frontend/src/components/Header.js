@@ -56,9 +56,6 @@ return (
 				<NavDropdown.Divider />
 
                 <a class= "navBar" href="/profile" className="navbar-right">Profile   </a>
-				<NavDropdown.Divider />
-
-                <a class= "navBar" href="/auth" className="navbar-right">Auth</a>
 
   			</NavDropdown>
 
@@ -66,9 +63,7 @@ return (
 
       	<Navbar.Collapse>
 
-			<a class ="navBar" href="/auth">Auth</a>
-
-			<a class ="navBar" href="/profile">Profile  </a>
+			<a class ="navBar" href="/profile">Profile</a>
 
 			<a class ="navBar" href="/contacts">Contact Us  </a>
 		
