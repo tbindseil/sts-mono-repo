@@ -9,7 +9,7 @@ import {EditProfile} from "./EditProfile";
 export class Profile extends React.Component {
   cognitoId;
   token;
-  base_url = 'https://120zxzogbf.execute-api.us-west-2.amazonaws.com/prod/';
+  base_url = 'https://oercmchy3l.execute-api.us-west-2.amazonaws.com/prod/';
 
   // so bad..
   errorProfile = {

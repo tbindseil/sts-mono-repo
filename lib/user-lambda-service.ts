@@ -1,5 +1,5 @@
 import { Construct, StackProps, Stack } from '@aws-cdk/core';
-import { AuthorizationType, CfnAuthorizer, LambdaIntegration, RestApi } from "@aws-cdk/aws-apigateway";
+import { AuthorizationType, CfnAuthorizer, Cors, LambdaIntegration, RestApi } from "@aws-cdk/aws-apigateway";
 import { Code, Function, Runtime } from "@aws-cdk/aws-lambda";
 import { DatabaseSecret } from '@aws-cdk/aws-rds';
 
@@ -20,16 +20,24 @@ export class UserLambdaService extends Construct {
         });
         props.dbSecret.grantRead(handler.role!);
 
-        // TODO configure PUT allowed method and allow-method-header on options method in cdk + 1
-        // integration response configured as follows:
-        // Access-Control-Allow-Headers	'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,access-control-allow-credentials,access-control-allow-origin,access-control-allow-headers'
-        // Access-Control-Allow-Origin	'*'
-        // Access-Control-Allow-Credentials true // note this one is in a special place
-        // Access-Control-Allow-Methods	'DELETE,GET,OPTIONS,PUT'
-
         const api = new RestApi(this, "users-api", {
             restApiName: "User Service",
-            description: "This service serves users."
+            description: "This service serves users.",
+            defaultCorsPreflightOptions: {
+                allowOrigins: Cors.ALL_ORIGINS,
+                allowCredentials: true,
+                allowHeaders:
+                [
+                    "Content-Type",
+                    "X-Amz-Date",
+                    "Authorization",
+                    "X-Api-Key",
+                    "X-Amz-Security-Token",
+                    "access-control-allow-credentials",
+                    "access-control-allow-origin",
+                    "access-control-allow-headers",
+                ]
+            }
         });
 
         const auth = new CfnAuthorizer(this, 'CognitoAuthorizer', {
