@@ -1,15 +1,57 @@
-.App {
+.mainText {
+  text-align: justify;
+  font-family: Arial;
+ padding-right: 200px;
+ padding-left:200px;
+}
+
+.pageHeader{
+  text-align: Center;
+  font-family: Arial;
+  color: #005D8c;
+  font-Weight: bold;
+  font-variant: small-caps;
+}
+
+.titleMain{
+  text-align: Center;
+  font-family: Arial;
+  color: #005D8c;
+  font-Weight: bold;
+  font-variant: small-caps;
+}
+
+
+
+
+.formStyle{
   text-align: center;
 }
 
-.Navbar-Style = {
-  border: 10px solid blue;
-  margin-bottom: 0px;
-  width: 100%;
+.navBar{
+color: #005D8c; 
+font-family: Arial;
+margin-left:0px;
+margin-right:0px;
+padding-top: 35px;
+padding-bottom:40px;
+padding-left:10px;
+padding-right:10px;
+text-align:center;
+font-Weight: bold;
+font-variant: small-caps;
+float: right;
+
+}
+
+.navBar:hover{
+color: white; 
+background-color: #b4c7e7;
+text-decoration: none;
+}
+
+.breakStyle = {
+ border: 20px solid #b4c7e7;
+ border-radius: 20px;
 };
 
-.Horizontal-Break-Style = {
-  background-color: grey;
-  margin: 0px;
-  height: 20px;
-};
