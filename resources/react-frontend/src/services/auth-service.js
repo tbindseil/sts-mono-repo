@@ -9,7 +9,7 @@ export class AuthService {
         REGISTER: 'register',
         REGISTER_CONFIRM: 'register_confirm',
         LOGIN: 'login',
-        LOGOUT: 'logotu',
+        LOGOUT: 'logout',
         PASSWORD_RESET: 'forgot_password_1',
         PASSWORD_RESET_2: 'forgot_password_2',
         PASSWORD_CHANGE: 'password_change',

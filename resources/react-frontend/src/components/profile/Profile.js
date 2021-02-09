@@ -1,5 +1,6 @@
 import React from 'react';
 
+import {Row} from 'antd';
 import {Auth} from "aws-amplify";
 
 import {Header} from '../Header';
@@ -73,6 +74,7 @@ export class Profile extends React.Component {
     }
 
     componentDidMount() {
+        // TODO dry it out..
         Auth.currentAuthenticatedUser({
             bypassCache: false  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
         })
@@ -148,27 +150,35 @@ export class Profile extends React.Component {
             <>
                 <Header/>
 
-                <h2>
-                    View Profile Info
-                </h2>
+                <Row>
+                    <h2>
+                        View Profile Info
+                    </h2>
 
-                <h4>
-                    Email:
-                </h4>
-                <p>
-                    {this.state.profile.email}
-                </p>
+                    <h4>
+                        Email:
+                    </h4>
+                    <p>
+                        {this.state.profile.email}
+                    </p>
 
-                {this.state.editting ?
-                    <EditProfile
-                        currProfile = {this.state.profile}
-                        onSave = {this.onSave}
-                        onCancel = {this.onCancel}
-                    /> :
-                    <ViewProfile
-                        profile={this.state.profile}
-                        modifyOnClickHandler={this.modifyOnClickHandler}
-                    />}
+                    {this.state.editting ?
+                        <EditProfile
+                            currProfile = {this.state.profile}
+                            onSave = {this.onSave}
+                            onCancel = {this.onCancel}
+                        /> :
+                        <ViewProfile
+                            profile={this.state.profile}
+                            modifyOnClickHandler={this.modifyOnClickHandler}
+                        />}
+
+                </Row>
+                <Row>
+                    <button>
+                        <a href="/logout">Logout</a>
+                    </button>
+                </Row>
             </>
 
         );
