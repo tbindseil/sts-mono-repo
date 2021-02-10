@@ -42,7 +42,7 @@ export class Register extends React.Component {
                 this.props.history.push("/confirm");
             }).catch(err => {
                 this.setState({
-                    failed: false,
+                    failed: true,
                 });
             });
 
@@ -50,7 +50,7 @@ export class Register extends React.Component {
 
     onFinishFailed = errorInfo => {
         this.setState({
-            failed: false,
+            failed: true,
         });
     };
 
@@ -65,7 +65,7 @@ export class Register extends React.Component {
                 </Row>
 
                 { this.state.failed &&
-                    <p style={this.styles.registerErrorMsg} >Error Registering In</p>
+                    <p style={this.styles.registerErrorMsg} >Error Registering</p>
                 }
 
                 <Row>
