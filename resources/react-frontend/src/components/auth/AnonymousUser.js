@@ -15,6 +15,8 @@ export function AnonymousUser() {
             <p>Please <a href="/login">Login</a> if you are a returning user</p>
             <p>Please <a href="/register">Register</a> if you are a new user</p>
             <p>Please <a href="/confirm">Confirm</a> if you are a recently registered user</p>
+            <p>Please <a href="/initiate-password-reset">Initiate Password Reset</a> if you have forgotten your passord</p>
+            <p>Please <a href="/confirm-password-reset">Confirm Password Reset</a> if you have recently initated a passord reset</p>
         </>
     );
 }

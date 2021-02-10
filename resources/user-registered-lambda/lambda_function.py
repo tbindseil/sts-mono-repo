@@ -50,6 +50,10 @@ def get_database_url():
 
 
 def lambda_handler(event, context):
+    trigger = event['triggerSource']
+    if trigger == 'PostConfirmation_ConfirmForgotPassword':
+        return event
+
     url = get_database_url()
     engine = create_engine(url, echo=True)
     Session = sessionmaker(bind=engine)

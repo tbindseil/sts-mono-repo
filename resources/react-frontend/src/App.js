@@ -16,6 +16,8 @@ import {Register} from "./components/auth/Register";
 import {Confirm} from "./components/auth/Confirm";
 import {Logout} from "./components/auth/Logout";
 import {ChangePassword} from "./components/auth/ChangePassword";
+import {InitiatePasswordReset} from "./components/auth/InitiatePasswordReset";
+import {ConfirmPasswordReset} from "./components/auth/ConfirmPasswordReset";
 
 import {Profile} from "./components/profile/Profile";
 
@@ -41,6 +43,8 @@ const App = () => {
         <Route path={"/confirm"} component={Confirm}/>
         <Route path={"/logout"} component={Logout}/>
         <Route path={"/change-password"} component={ChangePassword}/>
+        <Route path={"/initiate-password-reset"} component={InitiatePasswordReset}/>
+        <Route path={"/confirm-password-reset"} component={ConfirmPasswordReset}/>
 
         <Route path={"/profile"} component={Profile}/>
 
