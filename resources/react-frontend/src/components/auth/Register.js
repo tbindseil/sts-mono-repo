@@ -25,7 +25,7 @@ export class Register extends React.Component {
 
     styles = {
         loginForm: {
-            "max-width": "300px"
+            "maxWidth": "300px"
         },
         loginFormButton: {
             "width": "100%"
@@ -34,6 +34,19 @@ export class Register extends React.Component {
             "color": "red"
         }
     };
+
+    componentDidMount() {
+        Auth.currentAuthenticatedUser({
+            bypassCache: false  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
+        })
+            .then(user => {
+                // navigate to home
+                this.props.history.push("/");
+            })
+            .catch(err => {
+                // do nothing, Register is only accessible when no currentlyAuthenticatedUser
+            });
+    }
 
     onFinish = values => {
         Auth.signUp(values.email, values.password)
@@ -113,6 +126,10 @@ export class Register extends React.Component {
                             </Button>
                             Already registered? <Link to="login">login</Link>
                         </Form.Item>
+
+                        { // TODO link to confirmation code page
+                        }
+
                     </Form>
                 </Row>
             </div>

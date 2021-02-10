@@ -1,8 +1,3 @@
-// navigate here from Profile (or from Login, Register, or Confirm when those pages are navigated too with a logged in user)
-// this page allows for logging out with the click of a button
-//
-// in addition, if this page is navigated too without a logged in user, we inform the user that they aren't logged in, then allow for them to login via a link to the AnonymousUser page
-
 import {Button, Form, Row} from 'antd';
 import React from 'react';
 import {Link} from 'react-router-dom';
@@ -35,7 +30,6 @@ export class Logout extends React.Component {
     };
 
     componentDidMount() {
-        // TODO dry it out..
         Auth.currentAuthenticatedUser({
             bypassCache: false  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
         })

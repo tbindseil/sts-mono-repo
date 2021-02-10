@@ -55,6 +55,8 @@ return (
 				<a class ="dropDown" href="/contacts">Contact Us   </a>
 				<NavDropdown.Divider />
 
+                { // TODO profile when lgoged in, maybe "get-started" when not logged in
+                }
                 <a class= "navBar" href="/profile" className="navbar-right">Profile   </a>
 
   			</NavDropdown>

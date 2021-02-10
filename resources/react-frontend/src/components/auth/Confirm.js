@@ -1,10 +1,3 @@
-// navigate here from AnonymousUser (or from Register)
-// this page allows for registration confirmation via email/confirmation code
-// upon successful confirmation, notify them that they must login and provide a link to logging
-//
-// in addition, if this page is navigated too with a logged in user, we inform the user that they are already logged in, then allow for them to logout via a link to the logout page
-
-
 import React from 'react';
 
 import {Button, Form, Input, Row} from 'antd';
@@ -36,6 +29,19 @@ export class Confirm extends React.Component {
             "color": "red"
         }
     };
+
+    componentDidMount() {
+        Auth.currentAuthenticatedUser({
+            bypassCache: false  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
+        })
+            .then(user => {
+                // navigate to home
+                this.props.history.push("/");
+            })
+            .catch(err => {
+                // do nothing, Confirm is only accessible when no currentlyAuthenticatedUser
+            });
+    }
 
     onFinish = values => {
         Auth.confirmSignUp(values.email, values.code, {
@@ -104,6 +110,10 @@ export class Confirm extends React.Component {
                                 placeholder="Code"
                             />
                         </Form.Item>
+
+                        { // TODO link to register
+                        }
+
                         <Form.Item>
 
                             <Button type="primary" htmlType="submit" style={this.styles.loginFormButton}>

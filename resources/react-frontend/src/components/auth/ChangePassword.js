@@ -1,15 +1,13 @@
 import React from 'react';
 
-import {Link} from 'react-router-dom';
-
-import {Button, Form, Input} from 'antd';
-import {LockOutlined, UserOutlined} from "@ant-design/icons";
+import {Button, Form, Input, Row} from 'antd';
+import {LockOutlined} from "@ant-design/icons";
 
 import {Auth} from "aws-amplify";
 
 import {Header} from '../Header';
 
-export class Login extends React.Component {
+export class ChangePassword extends React.Component {
 
     constructor(props) {
         super(props);
@@ -20,37 +18,40 @@ export class Login extends React.Component {
         }
     }
 
+    // TODO dry it out... style sheet?
     styles = {
-        loginForm: {
+        logoutForm: {
             "maxWidth": "300px"
         },
-        loginFormForgot: { // trim these
-            "float": "right"
-        },
-        loginFormButton: {
+        logoutFormButton: {
             "width": "100%"
         },
-        loginErrorMsg: {
+        logoutErrorMsg: {
             "color": "red"
         }
     };
 
     componentDidMount() {
+        // TODO dry it out.. composition?
         Auth.currentAuthenticatedUser({
             bypassCache: false  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
         })
             .then(user => {
-                this.props.history.push("/profile");
+                // do nothing
             })
             .catch(err => {
-                // do nothing, Login is only accessible when no currentlyAuthenticatedUser
+                this.props.history.push("/anonymous-user");
             });
     }
 
     onFinish = values => {
-        Auth.signIn(values.email, values.password)
+        Auth.currentAuthenticatedUser()
             .then(user => {
+                return Auth.changePassword(user, values.oldPassword, values.newPassword);
+            })
+            .then(data => {
                 this.props.history.push("/profile");
+                // TODO result
             })
             .catch(err => {
                 this.setState({
@@ -67,13 +68,16 @@ export class Login extends React.Component {
 
     render() {
         return (
-            <>
+            <div>
+
                 <Header/>
 
-                <h1>Login</h1>
+                <Row style={{display: 'flex', justifyContent: 'center', margin: "15px"}}>
+                    Change Password
+                </Row>
 
                 { this.state.failed &&
-                    <p style={this.styles.loginErrorMsg} >Error Logging In</p>
+                    <p style={this.styles.logoutErrorMsg} >Error Changing Password</p>
                 }
 
                 <Form
@@ -81,49 +85,51 @@ export class Login extends React.Component {
                     onFinish={this.onFinish}
                     onFinishFailed={this.onFinishFailed}
                     style={this.styles.loginForm}>
+
                     <Form.Item
-                        name="email"
+                        name="oldPassword"
                         rules={[
                             {
                                 required: true,
-                                message: 'Please input your email!',
+                                message: 'Please input your old password!'
                             }
                         ]}>
+
                         <Input
-                            prefix={<UserOutlined/>}
-                            placeholder="Email"
+                            prefix={<LockOutlined/>}
+                            type="password"
+                            placeholder="old password"
                         />
                     </Form.Item>
+
                     <Form.Item
-                        name="password"
+                        name="newPassword"
                         rules={[
                             {
                                 required: true,
-                                message: 'Please input your Password!'
+                                message: 'Please input your new password!'
                             }
-                    ]}>
+                        ]}>
 
-                    <Input
-                        prefix={<LockOutlined/>}
-                        type="password"
-                        placeholder="Password"
-                    />
-
+                        <Input
+                            prefix={<LockOutlined/>}
+                            type="password"
+                            placeholder="new password"
+                        />
                     </Form.Item>
+
+                    { // TODO confirm new password
+                    }
+
                     <Form.Item>
-                        {/* TODO forgot password
-                        <Link style={this.styles.loginFormForgot} to="forgotpassword1">
-                            Forgot password
-                        </Link>
-                        */}
                         <Button type="primary" htmlType="submit" style={this.styles.loginFormButton}>
-                            Log in
+                            Change Password
                         </Button>
-                        Don't have an account? <Link to="register">Register here</Link>
                     </Form.Item>
                 </Form>
-            </>
 
-        );
+            </div>
+        )
     }
+
 }
