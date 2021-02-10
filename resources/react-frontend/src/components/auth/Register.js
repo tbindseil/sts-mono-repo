@@ -103,6 +103,10 @@ export class Register extends React.Component {
                             />
 
                         </Form.Item>
+
+                        { // TODO confirm pw
+                        }
+
                         <Form.Item>
                             <Button type="primary" htmlType="submit" style={this.styles.loginFormButton}>
                                 Register

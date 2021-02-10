@@ -50,7 +50,7 @@ export function ForgotPasswordEmailCodeForm() {
                 });
 
                 // history.push("/login");
-                AuthService.login(payload.username, payload.password);
+                // AuthService.login(payload.username, payload.password);
 
             } else {
                 setErrorMessage(null);

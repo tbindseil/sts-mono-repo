@@ -34,16 +34,6 @@ const App = () => {
         <Route path="/request-a-tutor" component={RequestTutor}/>
         <Route path="/contacts" component={Contacts}/>
 
-        {
-        // <Route path={"/login"} component={LoginForm}/>
-        // <Route path={"/register"} component={RegisterForm}/>
-        // <Route path={"/registerconfirm"} component={RegisterConfirmForm}/>
-        // <Route path={"/forgotpassword1"} component={ForgotPasswordEmailForm}/>
-        // <Route path={"/forgotpassword2"} component={ForgotPasswordEmailCodeForm}/>
-        // <Route path={"/forgotpassword2/:email"} component={ForgotPasswordEmailCodeForm}/>
-        // <Route path={"/logout"} component={LogoutForm}/>
-        }
-
         <Route path={"/anonymous-user"} component={AnonymousUser}/>
         <Route path={"/login"} component={Login}/>
         <Route path={"/register"} component={Register}/>
