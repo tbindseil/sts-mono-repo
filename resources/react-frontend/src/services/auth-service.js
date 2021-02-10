@@ -16,40 +16,6 @@ export class AuthService {
         SIGN_OUT: 'sign_out'
     };
 
-    static resendConfirmationCode = (username) => {
-        Auth.resendSignUp(username).then(() => {
-            logger.info('code resent successfully');
-        }).catch(e => {
-            logger.info(e);
-        });
-    };
-
-    static changePassword = (oldPassword, newPassword) => {
-        Auth.currentAuthenticatedUser()
-            .then(user => {
-                return Auth.changePassword(user, oldPassword, newPassword);
-            })
-            .then(data => {
-                logger.info(data);
-                Hub.dispatch(AuthService.CHANNEL, {
-                    event: AuthService.AUTH_EVENTS.PASSWORD_CHANGE,
-                    success: true,
-                    message: "",
-                    data: data
-                }, AuthService.CHANNEL);
-
-            })
-            .catch(err => {
-                logger.info(err);
-                Hub.dispatch(AuthService.CHANNEL, {
-                    event: AuthService.AUTH_EVENTS.PASSWORD_CHANGE,
-                    success: false,
-                    message: err.message
-                }, AuthService.CHANNEL);
-                return err;
-            });
-    }
-
     /**
      * this method resets the current password based on the username (email)
      * and sends a confirmation code to the email on file.

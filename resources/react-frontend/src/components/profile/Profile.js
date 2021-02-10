@@ -183,6 +183,10 @@ export class Profile extends React.Component {
                         <a href="/change-password">Change Password</a>
                     </button>
                 </Row>
+
+                { // TODO delete account
+                  // https://github.com/aws-amplify/amplify-cli/issues/2569
+                }
             </>
 
         );
