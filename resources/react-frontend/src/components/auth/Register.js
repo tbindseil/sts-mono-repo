@@ -1,122 +1,103 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import {Link, useHistory} from 'react-router-dom';
+
 import {Button, Form, Input, Row} from 'antd';
-import {Link} from 'react-router-dom';
 import {LockOutlined, UserOutlined} from "@ant-design/icons";
 import {Auth} from 'aws-amplify';
 
 import {Header} from '../Header';
 import {authStyles} from './styles';
+import {checkAuthenticated} from "./CheckAuthenticated";
 
-export class Register extends React.Component {
+export function Register() {
+    const history = useHistory();
 
-    constructor(props) {
-        super(props);
-        this.onFinish = this.onFinish.bind(this);
-        this.onFinishFailed = this.onFinishFailed.bind(this);
-        this.state = {
-            failed: false,
-        }
-    }
+    useEffect(() => {
+        checkAuthenticated(false, () => history.push("/profile"));
+    });
 
-    componentDidMount() {
-        Auth.currentAuthenticatedUser({
-            bypassCache: false  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
-        })
-            .then(user => {
-                // navigate to home
-                this.props.history.push("/profile");
-            })
-            .catch(err => {
-                // do nothing, Register is only accessible when no currentlyAuthenticatedUser
-            });
-    }
+    const [failed, setFailed] = useState(false);
 
-    onFinish = values => {
+    const onFinish = values => {
         Auth.signUp(values.email, values.password)
             .then(data => {
                 // navigate to confirm
-                this.props.history.push("/confirm");
+                history.push("/confirm");
             }).catch(err => {
-                this.setState({
-                    failed: true,
-                });
+                setFailed(true);
             });
 
     };
 
-    onFinishFailed = errorInfo => {
-        this.setState({
-            failed: true,
-        });
+    const onFinishFailed = errorInfo => {
+        setFailed(true);
     };
 
-    render() {
-        return (
-            <div>
+    return (
+        <div>
 
-                <Header/>
+            <Header/>
 
-                <Row style={{display: 'flex', justifyContent: 'center', margin: "15px"}}>
-                    Register
-                </Row>
+            <Row style={{display: 'flex', justifyContent: 'center', margin: "15px"}}>
+                Register
+            </Row>
 
-                { this.state.failed &&
-                    <p style={authStyles.errorMsg} >Error Registering</p>
-                }
+            { failed &&
+                <p style={authStyles.errorMsg} >Error Registering</p>
+            }
 
-                <Row>
-                    <Form
-                        name="basic"
-                        onFinish={this.onFinish}
-                        onFinishFailed={this.onFinishFailed}
-                        style={authStyles.form}>
-                        <Form.Item
-                            name="email"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Please input your email!',
-                                }
-                            ]}>
-                            <Input
-                                prefix={<UserOutlined/>}
-                                placeholder="Email"
-                            />
-                        </Form.Item>
-                        <Form.Item
-                            name="password"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Please input your Password!'
-                                }
-                            ]}>
+            <Row>
+                <Form
+                    name="basic"
+                    onFinish={onFinish}
+                    onFinishFailed={onFinishFailed}
+                    style={authStyles.form}>
+                    <Form.Item
+                        name="email"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input your email!',
+                            }
+                        ]}>
+                        <Input
+                            prefix={<UserOutlined/>}
+                            placeholder="Email"
+                        />
+                    </Form.Item>
+                    <Form.Item
+                        name="password"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input your Password!'
+                            }
+                        ]}>
 
-                            <Input
-                                prefix={<LockOutlined/>}
-                                type="password"
-                                placeholder="Password"
-                            />
+                        <Input
+                            prefix={<LockOutlined/>}
+                            type="password"
+                            placeholder="Password"
+                        />
 
-                        </Form.Item>
+                    </Form.Item>
 
-                        { // TODO confirm pw
-                        }
+                    { // TODO confirm pw
+                    }
 
-                        <Form.Item>
-                            <Button type="primary" htmlType="submit" style={authStyles.formButton}>
-                                Register
-                            </Button>
-                            Already registered? <Link to="login">login</Link>
-                        </Form.Item>
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit" style={authStyles.formButton}>
+                            Register
+                        </Button>
+                        Already registered? <Link to="login">login</Link>
+                    </Form.Item>
 
-                        { // TODO link to confirmation code page
-                        }
+                    { // TODO link to confirmation code page
+                    }
 
-                    </Form>
-                </Row>
-            </div>
-        );
-    }
+                </Form>
+            </Row>
+        </div>
+    );
 
 }

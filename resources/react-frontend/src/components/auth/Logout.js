@@ -1,7 +1,7 @@
-import {Button, Form, Row} from 'antd';
 import React, {useEffect, useState} from 'react';
 import {useHistory} from 'react-router-dom';
 
+import {Button, Form, Row} from 'antd';
 import {Auth} from "aws-amplify";
 
 import {Header} from '../Header';
@@ -12,11 +12,10 @@ export function Logout() {
     const history = useHistory();
 
     useEffect(() => {
-        console.log("@@ useEffect @@");
         checkAuthenticated(true, () => history.push("/anonymous-user"));
     });
 
-    const [failed, setFailed] = useState("");
+    const [failed, setFailed] = useState(false);
 
     const onFinish = values => {
         // TODO move to AuthBridge

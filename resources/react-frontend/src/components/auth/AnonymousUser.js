@@ -1,11 +1,16 @@
-import React from 'react';
+import React, {useEffect} from 'react';
+import {useHistory} from 'react-router-dom';
 
 import {Header} from '../Header';
-
-// TODO component did mount
-// if logged in, go to profile
+import {checkAuthenticated} from "./CheckAuthenticated";
 
 export function AnonymousUser() {
+    const history = useHistory();
+
+    useEffect(() => {
+        checkAuthenticated(false, () => history.push("/profile"));
+    });
+
     return (
         <>
             <Header/>
