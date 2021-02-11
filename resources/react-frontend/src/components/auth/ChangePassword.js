@@ -6,6 +6,7 @@ import {LockOutlined} from "@ant-design/icons";
 import {Auth} from "aws-amplify";
 
 import {Header} from '../Header';
+import {authStyles} from './styles';
 
 export class ChangePassword extends React.Component {
 
@@ -17,19 +18,6 @@ export class ChangePassword extends React.Component {
             failed: false,
         }
     }
-
-    // TODO dry it out... style sheet?
-    styles = {
-        logoutForm: {
-            "maxWidth": "300px"
-        },
-        logoutFormButton: {
-            "width": "100%"
-        },
-        logoutErrorMsg: {
-            "color": "red"
-        }
-    };
 
     componentDidMount() {
         // TODO dry it out.. composition?
@@ -77,14 +65,14 @@ export class ChangePassword extends React.Component {
                 </Row>
 
                 { this.state.failed &&
-                    <p style={this.styles.logoutErrorMsg} >Error Changing Password</p>
+                    <p style={authStyles.errorMsg} >Error Changing Password</p>
                 }
 
                 <Form
                     name="basic"
                     onFinish={this.onFinish}
                     onFinishFailed={this.onFinishFailed}
-                    style={this.styles.loginForm}>
+                    style={authStyles.form}>
 
                     <Form.Item
                         name="oldPassword"
@@ -122,7 +110,7 @@ export class ChangePassword extends React.Component {
                     }
 
                     <Form.Item>
-                        <Button type="primary" htmlType="submit" style={this.styles.loginFormButton}>
+                        <Button type="primary" htmlType="submit" style={authStyles.formButton}>
                             Change Password
                         </Button>
                     </Form.Item>

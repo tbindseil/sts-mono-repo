@@ -1,10 +1,10 @@
 import {Button, Form, Row} from 'antd';
 import React from 'react';
-import {Link} from 'react-router-dom';
 
 import {Auth} from "aws-amplify";
 
 import {Header} from '../Header';
+import {authStyles} from './styles';
 
 export class Logout extends React.Component {
 
@@ -16,18 +16,6 @@ export class Logout extends React.Component {
             failed: false,
         }
     }
-
-    styles = {
-        logoutForm: {
-            "maxWidth": "300px"
-        },
-        logoutFormButton: {
-            "width": "100%"
-        },
-        logoutErrorMsg: {
-            "color": "red"
-        }
-    };
 
     componentDidMount() {
         Auth.currentAuthenticatedUser({
@@ -70,7 +58,7 @@ export class Logout extends React.Component {
                 </Row>
 
                 { this.state.failed &&
-                    <p style={this.styles.logoutErrorMsg} >Error Logging out</p>
+                    <p style={authStyles.errorMsg} >Error Logging out</p>
                 }
 
                 <Row>
@@ -78,9 +66,9 @@ export class Logout extends React.Component {
                         name="basic"
                         onFinish={this.onFinish}
                         onFinishFailed={this.onFinishFailed}
-                        style={this.styles.logoutForm}>
+                        style={authStyles.form}>
                         <Form.Item>
-                            <Button type="primary" htmlType="submit" style={this.styles.logoutFormButton}>
+                            <Button type="primary" htmlType="submit" style={authStyles.formButton}>
                                 Log out
                             </Button>
                         </Form.Item>

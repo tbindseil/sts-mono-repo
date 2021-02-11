@@ -1,9 +1,3 @@
-// navigate here from AnonymousUser (or from Login)
-// this page allows for registration via email/password/confirm password
-// Also, this page links to confirmation page where recently registered users can enter their registration code
-//
-// in addition, if this page is navigated too with a logged in user, we inform the user that they are already logged in, then allow for them to logout via a link to the logout page
-
 import React from 'react';
 import {Button, Form, Input, Row} from 'antd';
 import {Link} from 'react-router-dom';
@@ -11,6 +5,7 @@ import {LockOutlined, UserOutlined} from "@ant-design/icons";
 import {Auth} from 'aws-amplify';
 
 import {Header} from '../Header';
+import {authStyles} from './styles';
 
 export class Register extends React.Component {
 
@@ -22,18 +17,6 @@ export class Register extends React.Component {
             failed: false,
         }
     }
-
-    styles = {
-        loginForm: {
-            "maxWidth": "300px"
-        },
-        loginFormButton: {
-            "width": "100%"
-        },
-        registerErrorMsg: {
-            "color": "red"
-        }
-    };
 
     componentDidMount() {
         Auth.currentAuthenticatedUser({
@@ -78,7 +61,7 @@ export class Register extends React.Component {
                 </Row>
 
                 { this.state.failed &&
-                    <p style={this.styles.registerErrorMsg} >Error Registering</p>
+                    <p style={authStyles.errorMsg} >Error Registering</p>
                 }
 
                 <Row>
@@ -86,7 +69,7 @@ export class Register extends React.Component {
                         name="basic"
                         onFinish={this.onFinish}
                         onFinishFailed={this.onFinishFailed}
-                        style={this.styles.loginForm}>
+                        style={authStyles.form}>
                         <Form.Item
                             name="email"
                             rules={[
@@ -121,7 +104,7 @@ export class Register extends React.Component {
                         }
 
                         <Form.Item>
-                            <Button type="primary" htmlType="submit" style={this.styles.loginFormButton}>
+                            <Button type="primary" htmlType="submit" style={authStyles.formButton}>
                                 Register
                             </Button>
                             Already registered? <Link to="login">login</Link>

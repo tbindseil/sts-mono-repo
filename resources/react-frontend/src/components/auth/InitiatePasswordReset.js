@@ -6,6 +6,7 @@ import {UserOutlined} from "@ant-design/icons";
 import {Auth} from "aws-amplify";
 
 import {Header} from '../Header';
+import {authStyles} from './styles';
 
 export class InitiatePasswordReset extends React.Component {
 
@@ -17,18 +18,6 @@ export class InitiatePasswordReset extends React.Component {
             failed: false,
         }
     }
-
-    styles = {
-        logoutForm: {
-            "maxWidth": "300px"
-        },
-        logoutFormButton: {
-            "width": "100%"
-        },
-        logoutErrorMsg: {
-            "color": "red"
-        }
-    };
 
     componentDidMount() {
         Auth.currentAuthenticatedUser({
@@ -71,7 +60,7 @@ export class InitiatePasswordReset extends React.Component {
                 </Row>
 
                 { this.state.failed &&
-                    <p style={this.styles.logoutErrorMsg} >Error Logging out</p>
+                    <p style={authStyles.errorMsg} >Error Logging out</p>
                 }
 
                 <Row>
@@ -79,7 +68,7 @@ export class InitiatePasswordReset extends React.Component {
                         name="basic"
                         onFinish={this.onFinish}
                         onFinishFailed={this.onFinishFailed}
-                        style={this.styles.logoutForm}>
+                        style={authStyles.form}>
 
                         <Form.Item
                             name="email"
@@ -97,7 +86,7 @@ export class InitiatePasswordReset extends React.Component {
                         </Form.Item>
 
                         <Form.Item>
-                            <Button type="primary" htmlType="submit" style={this.styles.logoutFormButton}>
+                            <Button type="primary" htmlType="submit" style={authStyles.formButton}>
                                 Initiate Password Reset
                             </Button>
                         </Form.Item>

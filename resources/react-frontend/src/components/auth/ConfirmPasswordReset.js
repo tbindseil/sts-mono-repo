@@ -5,6 +5,7 @@ import {LockOutlined, UserOutlined} from "@ant-design/icons";
 import {Auth} from 'aws-amplify';
 
 import {Header} from '../Header';
+import {authStyles} from './styles';
 
 export class ConfirmPasswordReset extends React.Component {
 
@@ -16,18 +17,6 @@ export class ConfirmPasswordReset extends React.Component {
             failed: false,
         }
     }
-
-    styles = {
-        loginForm: {
-            "maxWidth": "300px"
-        },
-        loginFormButton: {
-            "width": "100%"
-        },
-        confirmErrorMsg: {
-            "color": "red"
-        }
-    };
 
     componentDidMount() {
         Auth.currentAuthenticatedUser({
@@ -73,7 +62,7 @@ export class ConfirmPasswordReset extends React.Component {
                 </Row>
 
                 { this.state.failed &&
-                    <p style={this.styles.confirmErrorMsg} >Error Confirming</p>
+                    <p style={authStyles.errorMsg} >Error Confirming</p>
                 }
 
                 <Row>
@@ -81,7 +70,7 @@ export class ConfirmPasswordReset extends React.Component {
                         name="basic"
                         onFinish={this.onFinish}
                         onFinishFailed={this.onFinishFailed}
-                        style={this.styles.loginForm}>
+                        style={authStyles.form}>
                         <Form.Item
                             name="email"
                             rules={[
@@ -129,7 +118,7 @@ export class ConfirmPasswordReset extends React.Component {
 
                         <Form.Item>
 
-                            <Button type="primary" htmlType="submit" style={this.styles.loginFormButton}>
+                            <Button type="primary" htmlType="submit" style={authStyles.formButton}>
                                 Reset Passord
                             </Button>
                         </Form.Item>

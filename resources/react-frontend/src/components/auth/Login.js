@@ -8,6 +8,7 @@ import {LockOutlined, UserOutlined} from "@ant-design/icons";
 import {Auth} from "aws-amplify";
 
 import {Header} from '../Header';
+import {authStyles} from './styles';
 
 export class Login extends React.Component {
 
@@ -19,21 +20,6 @@ export class Login extends React.Component {
             failed: false,
         }
     }
-
-    styles = {
-        loginForm: {
-            "maxWidth": "300px"
-        },
-        loginFormForgot: { // trim these
-            "float": "right"
-        },
-        loginFormButton: {
-            "width": "100%"
-        },
-        loginErrorMsg: {
-            "color": "red"
-        }
-    };
 
     componentDidMount() {
         Auth.currentAuthenticatedUser({
@@ -73,14 +59,14 @@ export class Login extends React.Component {
                 <h1>Login</h1>
 
                 { this.state.failed &&
-                    <p style={this.styles.loginErrorMsg} >Error Logging In</p>
+                    <p style={authStyles.errorMsg} >Error Logging In</p>
                 }
 
                 <Form
                     name="basic"
                     onFinish={this.onFinish}
                     onFinishFailed={this.onFinishFailed}
-                    style={this.styles.loginForm}>
+                    style={authStyles.form}>
                     <Form.Item
                         name="email"
                         rules={[
@@ -112,11 +98,11 @@ export class Login extends React.Component {
                     </Form.Item>
                     <Form.Item>
                         {/* TODO forgot password
-                        <Link style={this.styles.loginFormForgot} to="forgotpassword1">
+                        <Link style={authStyles.formForgot} to="forgotpassword1">
                             Forgot password
                         </Link>
                         */}
-                        <Button type="primary" htmlType="submit" style={this.styles.loginFormButton}>
+                        <Button type="primary" htmlType="submit" style={authStyles.formButton}>
                             Log in
                         </Button>
                         Don't have an account? <Link to="register">Register here</Link>
