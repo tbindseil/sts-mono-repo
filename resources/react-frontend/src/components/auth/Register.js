@@ -24,7 +24,7 @@ export class Register extends React.Component {
         })
             .then(user => {
                 // navigate to home
-                this.props.history.push("/");
+                this.props.history.push("/profile");
             })
             .catch(err => {
                 // do nothing, Register is only accessible when no currentlyAuthenticatedUser

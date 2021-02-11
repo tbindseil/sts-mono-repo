@@ -2,6 +2,9 @@ import React from 'react';
 
 import {Header} from '../Header';
 
+// TODO component did mount
+// if logged in, go to profile
+
 export function AnonymousUser() {
     return (
         <>

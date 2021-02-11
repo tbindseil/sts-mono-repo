@@ -24,7 +24,7 @@ export class ConfirmPasswordReset extends React.Component {
         })
             .then(user => {
                 // navigate to home
-                this.props.history.push("/");
+                this.props.history.push("/profile");
             })
             .catch(err => {
                 // do nothing, Confirm is only accessible when no currentlyAuthenticatedUser
