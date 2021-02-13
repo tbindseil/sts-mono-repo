@@ -36,15 +36,17 @@ export function Confirm() {
         setErrorMessage("Error Confirming");
     };
 
-    // TODO issue here
     const resendCode = () => {
-        console.log("email is: " + email);
         Auth.resendSignUp(email).then(() => {
             // do nothing
         }).catch(e => {
             setFailed(true);
             setErrorMessage("Error Resending Code");
         });
+    };
+
+    const handleEmailChange = (event) => {
+        setEmail(event.target.value);
     };
 
     return (
@@ -68,7 +70,7 @@ export function Confirm() {
                     style={authStyles.form}>
                     <Form.Item
                         name="email"
-                        onChange={setEmail}
+                        onChange={handleEmailChange}
                         rules={[
                             {
                                 required: true,
