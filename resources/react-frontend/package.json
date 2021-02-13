@@ -5,6 +5,7 @@
   "dependencies": {
     "@ant-design/icons": "^4.4.0",
     "@aws-amplify/core": "^3.8.9",
+    "@aws-sdk/client-cognito-identity-provider": "^3.5.0",
     "@testing-library/jest-dom": "^5.11.8",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.6.0",

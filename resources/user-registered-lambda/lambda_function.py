@@ -49,6 +49,7 @@ def get_database_url():
         return engine + "://" + username + ":" + password + "@" + host + ":" + port + "/" + dbname
 
 
+# TODO, I think this whole thing could make a graphql request to user-lambda, instead of doing the heavy lifting itself
 def lambda_handler(event, context):
     trigger = event['triggerSource']
     if trigger == 'PostConfirmation_ConfirmForgotPassword':

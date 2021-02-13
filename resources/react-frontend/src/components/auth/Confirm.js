@@ -36,6 +36,7 @@ export function Confirm() {
         setErrorMessage("Error Confirming");
     };
 
+    // TODO issue here
     const resendCode = () => {
         console.log("email is: " + email);
         Auth.resendSignUp(email).then(() => {

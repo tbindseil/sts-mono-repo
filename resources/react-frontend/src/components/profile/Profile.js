@@ -10,6 +10,7 @@ import {EditProfile} from "./EditProfile";
 export class Profile extends React.Component {
     cognitoId;
     token;
+    // TODO dry access this from cfn exports somehow, and keep it dry, its in delete now
     baseUrl = 'https://oercmchy3l.execute-api.us-west-2.amazonaws.com/prod/';
 
     // so bad..
@@ -170,10 +171,11 @@ export class Profile extends React.Component {
                         <a href="/change-password">Change Password</a>
                     </button>
                 </Row>
-
-                { // TODO delete account
-                  // https://github.com/aws-amplify/amplify-cli/issues/2569
-                }
+                <Row>
+                    <button>
+                        <a href="/delete-account">Delete Account</a>
+                    </button>
+                </Row>
             </>
 
         );

@@ -145,7 +145,6 @@ def make_response(status, body):
         'headers': {
             "Content-Type" : "application/json",
             "Access-Control-Allow-Headers" : "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
-            # TODO idk if these are even used..
             "Access-Control-Allow-Methods" : "OPTIONS,POST",
             "Access-Control-Allow-Credentials" : True,
             "Access-Control-Allow-Origin" : "*",
@@ -160,15 +159,19 @@ def lambda_handler(event, context):
     """
     for get, just query for user and return
     for put, query for user, update with stuff from request body, return updated user
+    for delete, query for user, update with stuff from request body, return updated user
     for others, return invalid method
     """
+
+    print("event is:")
+    print(event)
 
     print("before anything")
     cognito_id = event['path'].split('/')[-1]
     method = event['httpMethod']
 
-    if not (method == 'GET' or method == 'PUT'):
-        return make_response(405, json.dumps("only GET and PUT are valid"))
+    if not (method == 'GET' or method == 'PUT' or method == 'DELETE'):
+        return make_response(405, json.dumps("only GET, PUT, and DELETE are valid"))
 
     # db access
     url = get_database_url()
@@ -197,6 +200,14 @@ def lambda_handler(event, context):
         user = update_user_from_request(json.loads(event["body"]), user)
         session.add(user)
         session.commit()
+
+    if method == 'DELETE':
+        print("deleting")
+        # TODO this call isn't made until user is deleted from cognito, maybe I can check that?
+        session.delete(user)
+        session.commit()
+        print("ddelete committed")
+        return make_response(200, "")
 
     return make_response(200, json.dumps(user_to_dict(user)))
 
