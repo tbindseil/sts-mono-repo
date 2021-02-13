@@ -1,6 +1,6 @@
 import {Auth} from "aws-amplify";
 
-// TODO change name and use this file as AuthBridge
+// TODO change name and use this file as AuthBridge in order to encapsulate all dependencies on aws-amplify Auth
 
 /**
  * checks for authentication status,

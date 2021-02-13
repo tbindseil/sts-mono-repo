@@ -17,19 +17,28 @@ export function ConfirmPasswordReset() {
     });
 
     const [failed, setFailed] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const onFinish = values => {
+        if (values.newPassword !== values.confirmNewPassword) {
+            setErrorMessage("password entries do not match");
+            setFailed(true);
+            return;
+        }
+
         Auth.forgotPasswordSubmit(values.email, values.code, values.newPassword)
             .then(data => {
                 history.push("/login");
             })
             .catch(err => {
                 setFailed(true);
+                setErrorMessage("Error Confirming Password Reset");
             });
     };
 
     const onFinishFailed = errorInfo => {
         setFailed(true);
+        setErrorMessage("Error Confirming Password Reset");
     };
 
     return (
@@ -42,7 +51,7 @@ export function ConfirmPasswordReset() {
             </Row>
 
             { failed &&
-                <p style={authStyles.errorMsg} >Error Confirming</p>
+                <p style={authStyles.errorMsg} >{errorMessage}</p>
             }
 
             <Row>
@@ -93,6 +102,22 @@ export function ConfirmPasswordReset() {
                             prefix={<LockOutlined/>}
                             type="password"
                             placeholder="new password"
+                        />
+                    </Form.Item>
+
+                    <Form.Item
+                        name="confirmNewPassword"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please confirm your new password!'
+                            }
+                        ]}>
+
+                        <Input
+                            prefix={<LockOutlined/>}
+                            type="password"
+                            placeholder="confirm new password"
                         />
                     </Form.Item>
 

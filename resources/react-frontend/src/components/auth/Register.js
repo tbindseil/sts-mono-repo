@@ -17,20 +17,28 @@ export function Register() {
     });
 
     const [failed, setFailed] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const onFinish = values => {
+        if (values.password !== values.confirmPassword) {
+            setFailed(true);
+            setErrorMessage("password entries do not match");
+            return;
+        }
+
         Auth.signUp(values.email, values.password)
             .then(data => {
-                // navigate to confirm
                 history.push("/confirm");
             }).catch(err => {
                 setFailed(true);
+                setErrorMessage("Error Registering");
             });
 
     };
 
     const onFinishFailed = errorInfo => {
         setFailed(true);
+        setErrorMessage("Error Registering");
     };
 
     return (
@@ -43,7 +51,7 @@ export function Register() {
             </Row>
 
             { failed &&
-                <p style={authStyles.errorMsg} >Error Registering</p>
+                <p style={authStyles.errorMsg} >{errorMessage}</p>
             }
 
             <Row>
@@ -82,14 +90,21 @@ export function Register() {
 
                     </Form.Item>
 
-                    { // TODO confirm pw
-                    }
+                    <Form.Item
+                        name="confirmPassword"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please confirm your Password!'
+                            }
+                        ]}>
 
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit" style={authStyles.formButton}>
-                            Register
-                        </Button>
-                        Already registered? <Link to="login">login</Link>
+                        <Input
+                            prefix={<LockOutlined/>}
+                            type="password"
+                            placeholder="confirm password"
+                        />
+
                     </Form.Item>
 
                     { // TODO link to confirmation code page

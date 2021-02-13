@@ -17,8 +17,15 @@ export function ChangePassword() {
     });
 
     const [failed, setFailed] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const onFinish = values => {
+        if (values.newPassword !== values.confirmNewPassword) {
+            setErrorMessage("password entries do not match");
+            setFailed(true);
+            return;
+        }
+
         Auth.currentAuthenticatedUser()
             .then(user => {
                 return Auth.changePassword(user, values.oldPassword, values.newPassword);
@@ -28,11 +35,13 @@ export function ChangePassword() {
                 // TODO result
             })
             .catch(err => {
+                setErrorMessage("Error Changing Password");
                 setFailed(true);
             });
     };
 
     const onFinishFailed = errorInfo => {
+        setErrorMessage("Error Changing Password");
         setFailed(true);
     };
 
@@ -46,7 +55,7 @@ export function ChangePassword() {
             </Row>
 
             { failed &&
-                <p style={authStyles.errorMsg} >Error Changing Password</p>
+                <p style={authStyles.errorMsg} >{errorMessage}</p>
             }
 
             <Form
@@ -87,8 +96,21 @@ export function ChangePassword() {
                     />
                 </Form.Item>
 
-                { // TODO confirm new password
-                }
+                <Form.Item
+                    name="confirmNewPassword"
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please confirm your new password!'
+                        }
+                    ]}>
+
+                    <Input
+                        prefix={<LockOutlined/>}
+                        type="password"
+                        placeholder="confirm new password"
+                    />
+                </Form.Item>
 
                 <Form.Item>
                     <Button type="primary" htmlType="submit" style={authStyles.formButton}>

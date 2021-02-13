@@ -17,6 +17,7 @@ export function Confirm() {
     });
 
     const [failed, setFailed] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const onFinish = values => {
         Auth.confirmSignUp(values.email, values.code, {
@@ -25,12 +26,14 @@ export function Confirm() {
             history.push("/login");
         }).catch(err => {
             setFailed(true);
+            setErrorMessage("Error Confirming");
         });
         // TODO I might be logging pws...
     };
 
     const onFinishFailed = errorInfo => {
         setFailed(true);
+        setErrorMessage("Error Confirming");
     };
 
     return (
@@ -43,7 +46,7 @@ export function Confirm() {
             </Row>
 
             { failed &&
-                <p style={authStyles.errorMsg} >Error Confirming</p>
+                <p style={authStyles.errorMsg} >errorMessage</p>
             }
 
             <Row>

@@ -18,7 +18,6 @@ export function Logout() {
     const [failed, setFailed] = useState(false);
 
     const onFinish = values => {
-        // TODO move to AuthBridge
         Auth.signOut({ global: true })
             .then(() => {
                 history.push("/");
