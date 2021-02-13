@@ -3,40 +3,30 @@ import React from 'react';
 export function ViewProfile(props) {
   return (
     <>
-        <h4>
-          First Name:
-        </h4>
-        <p>
-          {props.profile.firstName}
-        </p>
+        <ProfilePiece
+            header={"First Name:"}
+            content={props.profile.firstName}
+        />
 
-        <h4>
-          Last Name:
-        </h4>
-        <p>
-          {props.profile.lastName}
-        </p>
+        <ProfilePiece
+            header={"Last Name:"}
+            content={props.profile.lastName}
+        />
 
-        <h4>
-          School:
-        </h4>
-        <p>
-          {props.profile.school}
-        </p>
+        <ProfilePiece
+            header={"School:"}
+            content={props.profile.school}
+        />
 
-        <h4>
-          Grade:
-        </h4>
-        <p>
-          {props.profile.grade}
-        </p>
+        <ProfilePiece
+            header={"Grade:"}
+            content={props.profile.grade}
+        />
 
-        <h4>
-          Bio:
-        </h4>
-        <p>
-          {props.profile.bio}
-        </p>
+        <ProfilePiece
+            header={"Bio:"}
+            content={props.profile.bio}
+        />
 
         <button onClick={props.modifyOnClickHandler}>
             Modify
@@ -45,4 +35,15 @@ export function ViewProfile(props) {
   );
 }
 
-// TODO make a quick generic ProfileRow display component
+export function ProfilePiece(props) {
+    return (
+        <>
+            <h4>
+                {props.header}
+            </h4>
+            <p>
+                {props.content}
+            </p>
+        </>
+    );
+}

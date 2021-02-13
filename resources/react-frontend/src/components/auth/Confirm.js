@@ -18,6 +18,7 @@ export function Confirm() {
 
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [email, setEmail] = useState("");
 
     const onFinish = values => {
         Auth.confirmSignUp(values.email, values.code, {
@@ -28,12 +29,21 @@ export function Confirm() {
             setFailed(true);
             setErrorMessage("Error Confirming");
         });
-        // TODO I might be logging pws...
     };
 
     const onFinishFailed = errorInfo => {
         setFailed(true);
         setErrorMessage("Error Confirming");
+    };
+
+    const resendCode = () => {
+        console.log("email is: " + email);
+        Auth.resendSignUp(email).then(() => {
+            // do nothing
+        }).catch(e => {
+            setFailed(true);
+            setErrorMessage("Error Resending Code");
+        });
     };
 
     return (
@@ -57,6 +67,7 @@ export function Confirm() {
                     style={authStyles.form}>
                     <Form.Item
                         name="email"
+                        onChange={setEmail}
                         rules={[
                             {
                                 required: true,
@@ -84,23 +95,16 @@ export function Confirm() {
                         />
                     </Form.Item>
 
-                    { // TODO link to register
-                    }
-
-                    { // TODO resend confirmation code
-                        // static resendConfirmationCode = (username) => {
-                        // Auth.resendSignUp(username).then(() => {
-                        // }).catch(e => {
-                        // });
-                        //};
-                    }
-
                     <Form.Item>
-
                         <Button type="primary" htmlType="submit" style={authStyles.formButton}>
                             Confirm Email
                         </Button>
+                        <Button type="primary" onClick={resendCode} style={authStyles.formButton}>
+                            Resend Code
+                        </Button>
                         Already confirmed? <Link to="login">Login</Link>
+                        <br/>
+                        Not registered yet? <Link to="register">register</Link>
                     </Form.Item>
                 </Form>
             </Row>

@@ -107,8 +107,14 @@ export function Register() {
 
                     </Form.Item>
 
-                    { // TODO link to confirmation code page
-                    }
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit" style={authStyles.formButton}>
+                            Register
+                        </Button>
+                        Already registered? <Link to="login">login</Link>
+                        <br/>
+                        Looking to confirm registration? <Link to="confirm">confirm</Link>
+                    </Form.Item>
 
                 </Form>
             </Row>

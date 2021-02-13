@@ -4,7 +4,7 @@ import {Row} from 'antd';
 import {Auth} from "aws-amplify";
 
 import {Header} from '../Header';
-import {ViewProfile} from "./ViewProfile";
+import {ViewProfile, ProfilePiece} from "./ViewProfile";
 import {EditProfile} from "./EditProfile";
 
 export class Profile extends React.Component {
@@ -43,9 +43,8 @@ export class Profile extends React.Component {
         }
     }
 
-    getProfile = (cognitoId) => {
-        // TODO pass in cognito id or use class var?
-        const url = this.baseUrl + cognitoId;
+    getProfile = () => {
+        const url = this.baseUrl + this.cognitoId;
         fetch(url)
             .then(res => res.json())
             .then(
@@ -80,7 +79,7 @@ export class Profile extends React.Component {
             .then(user => {
                 this.cognitoId = user.username;
                 this.token = user.signInUserSession.idToken.jwtToken;
-                this.getProfile(this.cognitoId);
+                this.getProfile();
             })
             .catch(err => {
                 this.props.history.push("/anonymous-user");
@@ -94,26 +93,18 @@ export class Profile extends React.Component {
     }
 
     onSave = (profile) => {
-        // set state based off profile input
-
-        // put request to change profile
         async function postProfile(url = '', token = '', profile = {}) {
-            // Default options are marked with *
             const tokenString = 'Bearer ' + token;
             const response = await fetch(url, {
-                method: 'PUT', // *GET, POST, PUT, DELETE, etc.
-                mode: 'cors', // no-cors, *cors, same-origin
+                method: 'PUT',
+                mode: 'cors',
                 headers: {
-                    // TODO are these still necessary?
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Headers': 'Access-Control-Allow-Origin, Access-Control-Allow-Headers',
-                    'Access-Control-Allow-Credentials': true,
                     'Content-Type': 'application/json',
                     'Authorization': tokenString
                 },
                 body: JSON.stringify(profile)
             });
-            return response; // parses JSON response into native JavaScript objects
+            return response;
         }
 
 
@@ -121,11 +112,9 @@ export class Profile extends React.Component {
 
         postProfile(url, this.token, profile)
             .then(data => {
-                // I don't think anything needs to run here..
-                // it seems to pick up changes automatically
-                // but still updates when it fails... TODO
-                console.log("@@@ @@@ success @@@ @@@")
-                console.log(data); // JSON data parsed by `data.json()` call
+                this.setState({
+                    profile: profile
+                });
             })
             .catch(error => {
                 console.log("@@@ @@@ error @@@ @@@")
@@ -154,18 +143,16 @@ export class Profile extends React.Component {
                         View Profile Info
                     </h2>
 
-                    <h4>
-                        Email:
-                    </h4>
-                    <p>
-                        {this.state.profile.email}
-                    </p>
+                    <ProfilePiece
+                        header="Email:"
+                        content={this.state.profile.email}
+                    />
 
                     {this.state.editting ?
                         <EditProfile
-                            currProfile = {this.state.profile}
-                            onSave = {this.onSave}
-                            onCancel = {this.onCancel}
+                            currProfile={this.state.profile}
+                            onSave={this.onSave}
+                            onCancel={this.onCancel}
                         /> :
                         <ViewProfile
                             profile={this.state.profile}

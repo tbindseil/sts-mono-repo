@@ -77,11 +77,9 @@ export function Login() {
 
                </Form.Item>
                <Form.Item>
-                   {/* TODO forgot password
-                   <Link style={authStyles.formForgot} to="forgotpassword1">
+                   <Link style={authStyles.formForgot} to="initiate-password-reset">
                        Forgot password
                    </Link>
-                   */}
                    <Button type="primary" htmlType="submit" style={authStyles.formButton}>
                        Log in
                    </Button>

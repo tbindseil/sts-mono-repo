@@ -32,7 +32,7 @@ export function ChangePassword() {
             })
             .then(data => {
                 history.push("/profile");
-                // TODO result
+                // TODO error handling
             })
             .catch(err => {
                 setErrorMessage("Error Changing Password");
