@@ -2,6 +2,8 @@ import datetime
 
 from . import Base
 from sqlalchemy import Column, DateTime, Boolean, Integer, String
+from sqlalchemy.orm import relationship
+
 
 class User(Base):
     """ User Model for storing user related details """
@@ -18,6 +20,8 @@ class User(Base):
     grade = Column(String(15))
     bio = Column(String(511)) # TODO variable length string(s)
     admin = Column(Boolean, nullable=False, default=False)
+
+    availabilities = relationship("Availability", cascade="all, delete, delete-orphan")
 
     def __init__(self, email, cognitoId, firstName="", lastName="", school="", grade="", bio=""):
 
