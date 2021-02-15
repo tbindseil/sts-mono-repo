@@ -11,7 +11,7 @@ class Availability(Base):
     subjects = Column(String(511), nullable=False)
     startTime = Column(DateTime, nullable=False)
     endTime = Column(DateTime, nullable=False)
-    tutor = Column(Integer, ForeignKey('users.id'))
+    tutor = Column(Integer, ForeignKey('users.cognitoId'))
 
     def __init__(self, subjects, startTime, endTime, tutor):
         self.subjects = subjects

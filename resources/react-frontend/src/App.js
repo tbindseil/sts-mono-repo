@@ -21,6 +21,7 @@ import {ConfirmPasswordReset} from "./components/auth/ConfirmPasswordReset";
 import {Delete} from "./components/auth/Delete";
 
 import {Profile} from "./components/profile/Profile";
+import {CalendarScreen} from "./components/calendar/Calendar";
 
 
 Amplify.configure(awsConfig);
@@ -49,6 +50,7 @@ const App = () => {
         <Route path={"/delete-account"} component={Delete}/>
 
         <Route path={"/profile"} component={Profile}/>
+        <Route path={"/calendar"} component={CalendarScreen}/>
 
       </Switch>
     </div>

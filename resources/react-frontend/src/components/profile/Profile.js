@@ -94,7 +94,7 @@ export class Profile extends React.Component {
     }
 
     onSave = (profile) => {
-        async function postProfile(url = '', token = '', profile = {}) {
+        async function putProfile(url = '', token = '', profile = {}) {
             const tokenString = 'Bearer ' + token;
             const response = await fetch(url, {
                 method: 'PUT',
@@ -111,7 +111,7 @@ export class Profile extends React.Component {
 
         const url = this.baseUrl + this.cognitoId;
 
-        postProfile(url, this.token, profile)
+        putProfile(url, this.token, profile)
             .then(data => {
                 this.setState({
                     profile: profile
@@ -160,6 +160,11 @@ export class Profile extends React.Component {
                             modifyOnClickHandler={this.modifyOnClickHandler}
                         />}
 
+                </Row>
+                <Row>
+                    <button>
+                        <a href="calendar">Calendar</a>
+                    </button>
                 </Row>
                 <Row>
                     <button>

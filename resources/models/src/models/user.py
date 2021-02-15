@@ -10,8 +10,8 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    email = Column(String(255), unique=True)
-    cognitoId = Column(String(255), unique=True)
+    email = Column(String(255), nullable=False, unique=True)
+    cognitoId = Column(String(255), nullable=False, unique=True)
     registeredOn = Column(DateTime, nullable=False)
     firstName = Column(String(65))
     lastName = Column(String(65))
