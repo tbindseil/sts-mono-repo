@@ -68,9 +68,11 @@ return (
 			<a class ="navBar" href="/request-a-tutor" >Request A Tutor  </a>
 				
 			<a class ="navBar" href="/get-involved">Get Involved  </a>		
-	
+			<a class ="navBar" >
+			<NavDropdown title= "About Us"id="collasible-nav-dropdown">
       	    <a class ="navBar" href="/about-us" >About Us  </a>
-			
+      	    </NavDropdown>
+			</a>
 		    <a class ="navBar" href="/" >Home  </a>
 				
      	</Navbar.Collapse>
