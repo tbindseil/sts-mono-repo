@@ -6,12 +6,6 @@ import {Auth} from "aws-amplify";
 
 import moment from 'moment';
 
-// calendar
-// rows and columns,
-// modulo for left and right padding of previous month
-// 2 styles, one for current month, one for prev/next month
-//
-
 export function CalendarScreen() {
     useEffect(() => {
         Auth.currentAuthenticatedUser({
@@ -78,6 +72,8 @@ export function CalendarScreen() {
 //      I guess that means this is the availabilityscreen compononent
 function CreateAvailability(props) {
 
+    const base_url = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
+
     const styles = {
         loginForm: {
             "maxWidth": "600px",
@@ -104,10 +100,10 @@ function CreateAvailability(props) {
         // TODO this stuff needs to be taken care of
         // url, token, and availability could be blank??
         // also, if I have user, why not just use that for token?
-        async function postAvailabilty(url = '', token = '') {
+        async function postAvailability(url = '', token = '') {
             const tokenString = 'Bearer ' + token;
             const response = await fetch(url, {
-                method: 'PUT',
+                method: 'POST',
                 mode: 'cors',
                 headers: {
                     'Content-Type': 'application/json',
@@ -117,6 +113,10 @@ function CreateAvailability(props) {
             });
             return response;
         }
+
+        console.log("props.user is:");
+        console.log(props.user);
+        postAvailability(base_url, props.user.signInUserSession.idToken.jwtToken);
     }
 
     const handleChange = event => {

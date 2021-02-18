@@ -114,6 +114,13 @@ def get_and_verify_claims(token):
     return claims
 
 
+def json_to_availability(body):
+    avail_dict = json.loads(body)
+    print("avail_dict is:")
+    print(avail_dict)
+    return Availability(subjects=avail_dict["subjects"], startTime=avail_dict["startTime"], endTime=avail_dict["endTime"], tutor=avail_dict["tutor"])
+
+
 def make_response(status, body):
     return {
         'statusCode': status,
@@ -132,16 +139,54 @@ def make_response(status, body):
 # TODO when problem happens, still return the headers above so I can debug without remembering stuff
 def lambda_handler(event, context):
     """
-    for get, just query for user and return
-    for put, query for user, update with stuff from request body, return updated user
-    for delete, query for user, update with stuff from request body, return updated user
+    for get, use identity in auth token, and query for all availabilities for the claimed user
+    for post, verify identity in auth token matches tutor in posted avail object, then save the object
     for others, return invalid method
     """
 
     print("event is:")
     print(event)
 
-    return make_response(200, json.dumps("hello from availability lambda"))
+    method = event['httpMethod']
+
+    if not (method == 'GET' or method == 'POST'):
+        return make_response(405, json.dumps("only GET and POST are valid"))
+
+    # db access
+    url = get_database_url()
+    engine = create_engine(url, echo=True)
+    Session = sessionmaker(bind=engine)
+    session = Session()
+
+    # who are you? who who, who who?
+    token = event['headers']['Authorization'].split()[-1]
+
+    try:
+        claims = get_and_verify_claims(token)
+    except Exception as e:
+        print(e)
+        return make_response(401, json.dumps("unauthorized"))
+
+    print("claims is")
+    print(claims)
+    cognito_id = claims["cognito:username"]
+
+    user = session.query(User).filter(User.cognitoId==cognito_id).one()
+
+    if method == 'GET':
+        # get list of all availabilities
+        availabilites = []
+        for a in user.availabilities:
+            availabilities.append(a.__dict__)
+        return make_response(200, json.dumps(availabilities))
+
+    if method == 'POST':
+        # add new availability to user
+        posted_availability = json_to_availability(event["body"])
+        user.availabilities.append(posted_availability)
+        session.add(user)
+        session.commit()
+        return make_response(200, json.dumps("success"))
 
 
 # the following is useful to make this script executable in both

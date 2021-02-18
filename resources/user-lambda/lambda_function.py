@@ -166,7 +166,6 @@ def lambda_handler(event, context):
     print("event is:")
     print(event)
 
-    print("before anything")
     cognito_id = event['path'].split('/')[-1]
     method = event['httpMethod']
 
