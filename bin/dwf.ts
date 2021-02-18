@@ -5,8 +5,9 @@ import { UsersStack } from '../lib/users-stack';
 import { VpcStack } from '../lib/vpc-stack';
 import { RDSStack } from "../lib/rds-stack";
 import { CognitoStack } from "../lib/cognito-stack";
-import { UserLambdaServiceStack } from "../lib/user-lambda-stack";
-import { UserRegisteredLambdaServiceStack } from "../lib/user-registered-stack";
+import { UserLambdaServiceStack } from "../lib/lambdas/user-lambda-stack";
+import { AvailabilityLambdaServiceStack } from "../lib/lambdas/availability-lambda-stack";
+import { UserRegisteredLambdaServiceStack } from "../lib/lambdas/user-registered-stack";
 
 const app = new App();
 
@@ -24,8 +25,11 @@ const cognitoStack = new CognitoStack(app, 'CognitoStack', {
     userRegisteredLambda: userRegisteredLambdaServiceStack.userRegisteredService.handler
 });
 
-const myUserServiceStack = new UserLambdaServiceStack(app, 'UserLambdaServiceStack', {
-    userPoolArn: cognitoStack.userPool.userPoolArn,
+const userServiceStack = new UserLambdaServiceStack(app, 'UserLambdaServiceStack', {
+    dbSecret: rdsStack.dbSecret
+});
+
+const availabilityServiceStack = new AvailabilityLambdaServiceStack(app, 'AvailabilityLambdaServiceStack', {
     dbSecret: rdsStack.dbSecret
 });
 

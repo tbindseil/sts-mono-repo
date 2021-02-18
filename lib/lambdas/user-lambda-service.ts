@@ -1,17 +1,15 @@
-import { Construct, StackProps, Stack } from '@aws-cdk/core';
-import { AuthorizationType, CfnAuthorizer, Cors, LambdaIntegration, RestApi } from "@aws-cdk/aws-apigateway";
+import { Construct } from '@aws-cdk/core';
+import { Cors, LambdaIntegration, RestApi } from "@aws-cdk/aws-apigateway";
 import { Code, Function, Runtime } from "@aws-cdk/aws-lambda";
 import { DatabaseSecret } from '@aws-cdk/aws-rds';
 
 export interface UserLambdaServiceProps {
-    userPoolArn: string;
     dbSecret: DatabaseSecret;
 }
 
 export class UserLambdaService extends Construct {
     constructor(scope: Construct, id: string, props: UserLambdaServiceProps) {
         super(scope, id);
-
 
         const handler = new Function(this, "UserHandler", {
             runtime: Runtime.PYTHON_3_8,
@@ -40,15 +38,6 @@ export class UserLambdaService extends Construct {
             }
         });
 
-        const auth = new CfnAuthorizer(this, 'CognitoAuthorizer', {
-            name: "CognitoAuthorizer",
-            type: AuthorizationType.COGNITO,
-            authorizerResultTtlInSeconds: 300,
-            identitySource: "method.request.header.Authorization",
-            restApiId: api.restApiId,
-            providerArns: [props.userPoolArn],
-        });
-
         const user = api.root.addResource("{user-id}");
 
         const getUsersIntegration = new LambdaIntegration(handler, {
@@ -66,16 +55,7 @@ export class UserLambdaService extends Construct {
 
         api.root.addMethod("GET", getUsersIntegration); // GET /
 
-
-        // since I don't have a clear authentication plan, I will proceed without any at all
-        // the only thought I can document is that I don't know whether an individual users account
-        // should be private information. I guess this is where the friends functionality comes in...
-
-
-        // this one is authorized for now
         user.addMethod("PUT", putUserIntegration); // PUT /{user-id}
-
-
         user.addMethod("GET", getUserIntegration); // GET /{user-id}
         user.addMethod("DELETE", deleteUserIntegration); // DELETE /{user-id}
     }

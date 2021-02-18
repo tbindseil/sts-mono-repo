@@ -1,9 +1,8 @@
 import { Construct, StackProps, Stack } from '@aws-cdk/core';
-import { UserLambdaService } from '../lib/user-lambda-service';
+import { UserLambdaService } from './user-lambda-service';
 import { DatabaseSecret } from '@aws-cdk/aws-rds';
 
 export interface UserLambdaServiceStackProps extends StackProps {
-    userPoolArn: string;
     dbSecret: DatabaseSecret;
 }
 
@@ -14,7 +13,6 @@ export class UserLambdaServiceStack extends Stack {
 
         // The code that defines your stack goes here
         new UserLambdaService(this, "UserLambdaService", {
-            userPoolArn: props.userPoolArn,
             dbSecret: props.dbSecret
         });
     }

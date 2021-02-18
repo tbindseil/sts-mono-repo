@@ -1,5 +1,5 @@
 import { Construct, StackProps, Stack } from '@aws-cdk/core';
-import { UserRegisteredService } from '../lib/user-registered-service';
+import { UserRegisteredService } from './user-registered-service';
 import { DatabaseSecret } from '@aws-cdk/aws-rds';
 
 export interface UserRegisteredLambdaStackProps extends StackProps {
