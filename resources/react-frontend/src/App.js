@@ -9,6 +9,7 @@ import {GetInvolved} from './components/GetInvolved';
 import {RequestTutor} from './components/RequestTutor';
 import {Contacts} from './components/Contacts';
 import {Home} from './components/Home';
+import {Process} from './components/Process';
 
 import {AnonymousUser} from "./components/auth/AnonymousUser";
 import {Login} from "./components/auth/Login";
@@ -36,6 +37,7 @@ const App = () => {
         <Route path="/home" component={Home}/>
 		<Route path="/home" component={Home}/>
         <Route path="/about-us" component={AboutUs}/>
+        <Route path="/process" component= {Process}/>
         <Route path="/get-involved" component={GetInvolved}/>
         <Route path="/request-a-tutor" component={RequestTutor}/>
         <Route path="/contacts" component={Contacts}/>

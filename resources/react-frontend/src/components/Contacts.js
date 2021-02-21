@@ -3,6 +3,7 @@ import {Header} from './Header';
 import stock_photo from '../images/skyline.jpg';
 import MediaQuery from 'react-responsive';
 import  Media from 'react-media'
+import {Bottom} from './Bottom';
 
 const breakStyle = {              //light blue line 
   backgroundColor: "#b4c7e7",
@@ -49,7 +50,7 @@ const pageBorder2 = {
   borderTop:'0px solid #005D8c',
   borderBottom:'0px solid #005D8c',
   paddingTop: '5px',
-  paddingBottom:'200px',
+  paddingBottom:'100px',
   marginTop: '0px',
 };
 
@@ -110,6 +111,7 @@ export const Contacts= () => (
           </header>
 
 	      </MediaQuery>
+        <Bottom/>
   </div>
   
 );

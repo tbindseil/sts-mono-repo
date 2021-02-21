@@ -3,6 +3,7 @@ import {Header} from './Header';
 import stock_photo from '../images/stock_photo.jpg';
 import MediaQuery from 'react-responsive';
 import  Media from 'react-media'
+import {Bottom} from './Bottom';
 
 const breakStyle = {              //light blue line 
   backgroundColor: "#b4c7e7",
@@ -113,6 +114,7 @@ export const RequestTutor = () => (
       </header>
 		
 		</MediaQuery>
+    <Bottom/>
 
   </div>
 

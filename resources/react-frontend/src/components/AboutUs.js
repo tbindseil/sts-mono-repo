@@ -1,8 +1,10 @@
 import React, {useState, useEffect }  from 'react';
 import {Header} from './Header';
-import stock_photo from '../images/about.jpg';
+import stock_photo from '../images/books.jpg';
+import course from '../images/course.PNG';
 import MediaQuery from 'react-responsive';
 import  Media from 'react-media'
+import {Bottom} from './Bottom';
 
 const breakStyle = {              //light blue line 
   backgroundColor: "#b4c7e7",
@@ -30,13 +32,24 @@ const underLine2 = {
 const imgStyle = {
   maxWidth: '35%',
   height: '35%',
-  marginTop:'25px',
+  marginTop:'75px',
   marginRight: '100px',
 };
 const imgStyle2 = {
-  maxWidth: '50%',
-  height: '50%',
-  margin: '25%',
+  maxWidth: '75%',
+  height: '75%',
+  position: 'center',
+  margin: 'auto',
+  marginTop: '25px',
+  display: 'block',
+};
+const imgStyle3 = {
+  maxWidth: '95%',
+  height: '95%',
+  position: 'center',
+  margin: 'auto',
+  marginTop: '25px',
+  display: 'block',
 };
 
 const sideText= {
@@ -52,6 +65,14 @@ const sideText2= {
   fontFamily: 'Arial',
   paddingRight: '20px',
   paddingLeft:'20px',
+  paddingTop: '10px',
+}
+
+const sideText3= {
+  textAlign: 'justify',
+  fontFamily: 'Arial',
+  paddingRight: '150px',
+  paddingLeft:'150px',
   paddingTop: '10px',
 }
 
@@ -71,7 +92,7 @@ const pageBorder2 = {
   borderTop:'0px solid #005D8c',
   borderBottom:'0px solid #005D8c',
   paddingTop: '5px',
-  paddingBottom:'200px',
+  paddingBottom:'100px',
   marginTop: '0px',
 };
 
@@ -91,7 +112,7 @@ export const AboutUs = () => (
     			<header style ={pageBorder}>
         
         			<h2 class= "pageHeader">
-          				About Us
+          				About Students Teaching Students 
        				</h2>
 
 					<hr style ={underLine}/>
@@ -106,33 +127,49 @@ export const AboutUs = () => (
 									Vision
 								</h4>
 
-           						    Our vision is to connect high-performing students that have the ability and desire to build their leadership and technical skills by tutoring. 
-		 							Students Teaching Students is a nonprofit that fencourages collaboration and learning between peers through tutoring. 
+           						    Students Teaching Students is a non-profit tutoring organization
+           						    that provides free tutoring for any student seeking additional help with their schoolwork.
 		 							<br/>
 		  							<br/>
-
-		  						<h4 class = "pageHeader">
-									Why
-								</h4>
-
-									We saw an opportunity for improvement in the way students are tutored, and founded Students Teaching Students. Unlike other tutoring organization, we contact the vast resources of students
-									to share their knowledge with others. 
+									Free academic tutoring is at the forefront of our organization, but the backbone is what really sets us apart. 
+									We seek out high-performing high school students from various locations and subject matters to become tutors.
 									<br/>
 									<br/>
-									Students are motivated, more acclimated to specific district’s lesson plans, and are always looking for unique leadership opportunities.
+									Students are motivated and familiar with the lesson plans of a specific district. 
+									With training and structure from Students Teaching Students, they can become great tutors.
 									<br/>
 									<br/>
-								<h4 class = "pageHeader">
-									How
-								</h4>
-									We empower students with the tools and skills to effectively tutor other students. 
+									With a large pool of student tutors, we are able to effectively connect them with students 
+									looking for additional help in various grades, subjects, or school locations. 
+									This is how we plan to achieve our goal of providing tutoring to all those who seek it. At the same time, 
+									we will provide opportunities for high achieving students to give back to their school and community.
 							</p>
 						</div>
 
 						<img style={imgStyle} src={stock_photo} alt="stock"/>
-		
 					</section>
 
+					<h2 class = "pageHeader">
+						Tutoring Offered
+					</h2>
+
+					<hr style ={underLine}/>
+
+					<section>
+				
+						<div>
+
+							<p style = {sideText3}>
+
+
+								**We are actively working through our network of Chicago and Chicago Suburb based schools to form partnerships
+								with the various districts. As those partnerships are established, 
+								this section will be updated with the grade levels, subjects, and locations tutoring is offered.
+
+							</p>
+						</div>
+						<img style={imgStyle2} src={course} alt="stock"/>
+					</section>
   			 	</header>
     	    </MediaQuery>
 	 
@@ -141,7 +178,7 @@ export const AboutUs = () => (
     			<header style ={pageBorder2}>
 
      			   	<h2 class= "pageHeader">
-         			 About Us
+         			 About Students Teaching Students 
        			  	</h2>
 
 					<hr style ={underLine2}/>
@@ -153,31 +190,50 @@ export const AboutUs = () => (
 							<h4 class = "pageHeader">
 								Vision
 							</h4>
-       						    Our vision is to connect high-performing students that have the ability and desire to build their leadership and technical skills by tutoring. 
-							    Students Teaching Students is a nonprofit that fencourages collaboration and learning between peers through tutoring. 
-		 					<br/>
-		  					<br/>
-		 					<h4 class = "pageHeader">
-								Why
-							</h4>
-								We saw an opportunity for improvement in the way students are tutored, and founded Students Teaching Students. Unlike other tutoring organization, we contact the vast resources of students
-								to share their knowledge with others. 
-							<br/>
-							<br/>
-								Students are motivated, more acclimated to specific district’s lesson plans, and are always looking for unique leadership opportunities.
-							<br/>
-							<br/>
-							<h4 class = "pageHeader">
-								How
-							</h4>
-								We empower students with the tools and skills to effectively tutor other students. 
-						</p>
+       						    Students Teaching Students is a non-profit tutoring organization
+           						that provides free tutoring for any student seeking additional help with their schoolwork.
+		 						<br/>
+		  						<br/>
+								Free academic tutoring is at the forefront of our organization, but the backbone is what really sets us apart. 
+								We seek out high-performing high school students from various locations and subject matters to become tutors.
+								<br/>
+								<br/>
+								Students are motivated and familiar with the lesson plans of a specific district. 
+								With training and structure from Students Teaching Students, they can become great tutors.								<br/>
+								<br/>
+								With a large pool of student tutors, we are able to effectively connect them with students 
+								looking for additional help in various grades, subjects, or school locations. 
+								This is how we plan to achieve our goal of providing tutoring to all those who seek it. At the same time, 
+								we will provide opportunities for high achieving students to give back to their school and community.
+						</p>	
+					</div>
 
-					</div>	
-	
-   				</header>
+					<h2 class = "pageHeader">
+						Tutoring Offered
+					</h2>
+
+					<hr style ={underLine2}/>
+
+					<section>
+				
+						<div>
+
+							<p style = {sideText2} >
+
+
+								**We are actively working through our network of Chicago and Chicago Suburb based schools to form partnerships
+								with the various districts. As those partnerships are established, 
+								this section will be updated with the grade levels, subjects, and locations tutoring is offered.
+
+							</p>
+						</div>
+						<img style={imgStyle3} src={course} alt="stock"/>
+					</section>
+
+  			 	</header>
 
     	    </MediaQuery>
+    	    <Bottom/>
 
    	</div>
 );

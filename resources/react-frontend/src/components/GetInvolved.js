@@ -3,6 +3,7 @@ import {Header} from './Header';
 import stock_photo from '../images/stock_photo.jpg';
 import MediaQuery from 'react-responsive';
 import  Media from 'react-media'
+import {Bottom} from './Bottom';
 
 
 const breakStyle = {              //light blue line 
@@ -66,16 +67,16 @@ export const GetInvolved = () => (
         <header style ={pageBorder}>
 
           <h2 class= "pageHeader">
-            Get Involved
+            Become A Tutor
           </h2>
 
 		      <hr style ={underLine}/>
 	
           <p class= "mainText">
-            We are always looking for new tutors to join our team. If you are passionate about helping others and believe you can share your knowledge with other students fill out the survey below to get involved. 
+            We are always looking for additional high-performing high school students from various locations and subject matters to become tutors.
 		      </p>
 		    	<p class = "mainText">
-		        In addition to tutors, we are looking for high performing students to fill the role of lead tutor. This position gives you real world experience developing skills like project management, recruiting, scheduling and others. The same survey below will allow you to mark your interest in becoming a lead tutor.
+		      If you are interested in giving back to your community through tutoring, please fill out the survey below so we can better match you with students looking for additional help. 
           </p>
 		
 		      <hr style ={underLine}/>
@@ -99,10 +100,10 @@ export const GetInvolved = () => (
 		      <hr style ={underLine2}/>
 	
           <p class= "mainText2">
-            We are always looking for new tutors to join our team. If you are passionate about helping others and believe you can share your knowledge with other students fill out the survey below to get involved. 
+           We are always looking for additional high-performing high school students from various locations and subject matters to become tutors.
 		      </p>
 		      <p class = "mainText2">
-		        In addition to tutors, we are looking for high performing students to fill the role of lead tutor. This position gives you real world experience developing skills like project management, recruiting, scheduling and others. The same survey below will allow you to mark your interest in becoming a lead tutor.
+		        If you are interested in giving back to your community through tutoring, please fill out the survey below so we can better match you with students looking for additional help. 
           </p>
 		
 		      <hr style ={underLine2}/>
@@ -114,6 +115,7 @@ export const GetInvolved = () => (
         </header>
 
 	    </MediaQuery>
+      <Bottom/>
 
    </div>
 );

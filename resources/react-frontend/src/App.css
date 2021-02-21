@@ -19,6 +19,12 @@
   font-Weight: bold;
   font-variant: small-caps;
 }
+.bottomTitle{
+  text-align: Center;
+  font-family: Arial;
+  color: white;
+  font-variant: small-caps;
+}
 
 .titleMain{
   text-align: Center;
@@ -83,6 +89,30 @@
 }
 
 .navBar:hover{
+  color: white; 
+  background-color: #b4c7e7;
+  text-decoration: none;
+}
+
+.navBar2{
+  color: #005D8c; 
+  font-family: Arial;
+  margin-top:5px;
+  margin-bottom: 5px;
+  margin-left:0px;
+  margin-right:0px;
+  padding-top: 5px;
+  padding-bottom:5px;
+  padding-left:5px;
+  padding-right:5px;
+  text-align:center;
+  font-Weight: bold;
+  font-variant: small-caps;
+  float: left;
+  border-radius:20px;
+}
+
+.navBar2:hover{
   color: white; 
   background-color: #b4c7e7;
   text-decoration: none;
