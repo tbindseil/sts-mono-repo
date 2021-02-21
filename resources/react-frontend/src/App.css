@@ -19,6 +19,18 @@
   font-Weight: bold;
   font-variant: small-caps;
 }
+
+.arrow {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+}
+
+.down {
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
 .bottomTitle{
   text-align: Center;
   font-family: Arial;
@@ -89,6 +101,20 @@
 }
 
 .navBar:hover{
+  color: white; 
+  background-color: #b4c7e7;
+  text-decoration: none;
+}
+.navBarA{
+  color: #005D8c; 
+  font-family: Arial;
+  text-align:center;
+  font-Weight: bold;
+  font-variant: small-caps;
+  float: right;
+}
+
+.navBarA:hover{
   color: white; 
   background-color: #b4c7e7;
   text-decoration: none;

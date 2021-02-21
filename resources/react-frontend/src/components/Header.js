@@ -76,13 +76,18 @@ return (
 		
 			<a class ="navBar" href="/request-a-tutor" >Request A Tutor  </a>
 				
-			<a class ="navBar" href="/get-involved">Become A Tutor </a>		
-			<a class ="navBar" >
-			<NavDropdown title= "About Us"id="collasible-nav-dropdown">
+			<a class ="navBar" href="/get-involved">Become A Tutor </a>	
+
+			<a class ="navBar">
+
+			<NavDropdown id="collasible-nav-dropdown" drop = "down" key = "down" title =  <a class = "navBarA" href="/about-us">About Us <i class="arrow down"></i></a>	>
+			
       	    <a class ="navBar2" href="/about-us" >About STS </a>
       	    <a class ="navBar2" href="/process" >Our Process  </a>
       	    </NavDropdown>
+
 			</a>
+
 		    <a class ="navBar" href="/" >Home  </a>
 				
      	</Navbar.Collapse>
