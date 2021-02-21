@@ -5,6 +5,7 @@ import {GetInvolved} from './components/GetInvolved';
 import {RequestTutor} from './components/RequestTutor';
 import {Contacts} from './components/Contacts';
 import {Home} from './components/Home';
+import {Process} from './components/Process';
 
 const App = () => {
   // TODO compose Switch somehow?
@@ -14,6 +15,7 @@ const App = () => {
         <Route exact path="/" component={Home}/>
 		    <Route path="/home" component={Home}/>
         <Route path="/about-us" component={AboutUs}/>
+        <Route path="/process" component= {Process}/>
         <Route path="/get-involved" component={GetInvolved}/>
         <Route path="/request-a-tutor" component={RequestTutor}/>
         <Route path="/contacts" component={Contacts}/>

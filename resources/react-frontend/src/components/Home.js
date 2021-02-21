@@ -2,6 +2,7 @@ import React from 'react';
 import {Header} from './Header';
 import stock_photo from '../images/stock_photo.jpg';
 import MediaQuery from 'react-responsive'
+import {Bottom} from './Bottom';
 
 
 const breakStyle = {              //light blue line 
@@ -39,7 +40,7 @@ const pageBorder = {
    borderTop:'0px solid #005D8c',
    borderBottom:'0px solid #005D8c',
    paddingTop: '50px',
-  paddingBottom:'150px',
+  paddingBottom:'200px',
   marginTop: '0px',
 };
 

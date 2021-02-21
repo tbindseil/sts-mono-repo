@@ -47,10 +47,13 @@ return (
 				<a class ="dropDown" href="/" >Home  </a>
 	 			<NavDropdown.Divider />
 
-				<a class ="dropDown" href="/about-us" >About Us  </a>
+				<a class ="dropDown" href="/about-us" >About STS </a>
 				<NavDropdown.Divider />
 
-				<a class ="dropDown" href="/get-involved">Get Involved  </a>		
+				<a class ="dropDown" href="/process" >Our Process </a>
+				<NavDropdown.Divider />
+
+				<a class ="dropDown" href="/get-involved">Become A Tutor </a>		
 	 			<NavDropdown.Divider />
 
 	 			<a class ="dropDown" href="/request-a-tutor" >Request A Tutor  </a>
@@ -67,10 +70,11 @@ return (
 		
 			<a class ="navBar" href="/request-a-tutor" >Request A Tutor  </a>
 				
-			<a class ="navBar" href="/get-involved">Get Involved  </a>		
+			<a class ="navBar" href="/get-involved">Become A Tutor </a>		
 			<a class ="navBar" >
 			<NavDropdown title= "About Us"id="collasible-nav-dropdown">
-      	    <a class ="navBar" href="/about-us" >About Us  </a>
+      	    <a class ="navBar2" href="/about-us" >About STS </a>
+      	    <a class ="navBar2" href="/process" >Our Process  </a>
       	    </NavDropdown>
 			</a>
 		    <a class ="navBar" href="/" >Home  </a>
