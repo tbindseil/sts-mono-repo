@@ -121,6 +121,16 @@ def json_to_availability(body):
     return Availability(subjects=avail_dict["subjects"], startTime=avail_dict["startTime"], endTime=avail_dict["endTime"], tutor=avail_dict["tutor"])
 
 
+def availability_to_dict(availability):
+    return {
+        # TODO do this better..
+        'startTime': str(availability.startTime),
+        'endTime': str(availability.endTime),
+        'subjects': availability.subjects,
+        'tutor': availability.tutor
+    };
+
+
 def make_response(status, body):
     return {
         'statusCode': status,
@@ -175,9 +185,12 @@ def lambda_handler(event, context):
 
     if method == 'GET':
         # get list of all availabilities
-        availabilites = []
+        availabilities = []
         for a in user.availabilities:
-            availabilities.append(a.__dict__)
+            a_dict = availability_to_dict(a)
+            availabilities.append(a_dict)
+        print("availabilities are:")
+        print(availabilities)
         return make_response(200, json.dumps(availabilities))
 
     if method == 'POST':

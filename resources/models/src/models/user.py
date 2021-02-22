@@ -4,6 +4,10 @@ from . import Base
 from sqlalchemy import Column, DateTime, Boolean, Integer, String
 from sqlalchemy.orm import relationship
 
+# Availability class is used, so we must define it here or else it has to be definied by clients of the User class,
+# and they don't necessarily know that they need to do this
+from .availability import Availability
+
 
 class User(Base):
     """ User Model for storing user related details """
