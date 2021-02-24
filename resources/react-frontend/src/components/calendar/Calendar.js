@@ -5,6 +5,7 @@ import Calendar from 'react-calendar';
 import {Auth} from "aws-amplify";
 
 import {CreateAvailability} from './CreateAvailability';
+import {CalendarDayContent} from './CalendarDayContent';
 
 export function CalendarScreen() {
     const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
@@ -95,7 +96,9 @@ export function CalendarScreen() {
                         // TODO activeStartDate?
                         ({ date, view }) => {
                             // Take view and render a component using availabilities object
-                            return view === 'month' && date.getDay() === 0 ? <p>It's Sunday!</p> : null
+                            return <CalendarDayContent
+                                date={date}
+                                view={view}/>
                         }
                     }
                     value={value}/>
