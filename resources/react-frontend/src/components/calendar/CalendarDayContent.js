@@ -3,7 +3,29 @@ import React from 'react';
 import { Row } from 'antd';
 
 export function CalendarDayContent(props) {
-    const pixelsForQuarterHour = 1;
+    console.log("props is:");
+    console.log(props);
+    /*
+     *
+     *
+{date: Sun Feb 28 2021 00:00:00 GMT-0700 (Mountain Standard Time), view: "month", availabilities: Array(1)}
+availabilities: Array(1)
+0:
+endTime: "2021-02-28 01:30:00"
+startTime: "2021-02-28 01:00:00"
+subjects: "math"
+tutor: "a1a4c0cf-d7ca-4b4a-86e4-844cf20e910c"
+     *
+     *
+     * */
+
+    /* const stripes = [];
+    props.availabilities.forEach(availability -> {
+        stripes.append(
+    }); */
+
+
+    const pixelsForQuarterHour = 2;
 
     const total = 24 * 4; // 15 minute slices
     const before = 2;
@@ -14,10 +36,10 @@ export function CalendarDayContent(props) {
     //
     // but first lets see how this looks
 
-    const stripes = [{sessionLength: before, onOrOff: 'off'}, {sessionLength: length, onOrOff: 'on'}, {sessionLength: total - length - before, onOrOff: 'off'}];
+    const stripess = [{sessionLength: before, onOrOff: 'off'}, {sessionLength: length, onOrOff: 'on'}, {sessionLength: total - length - before, onOrOff: 'off'}];
 
     var startTimeTemp = 0;
-    const rowProps = stripes.map(stripe => {
+    const rowProps = stripess.map(stripe => {
         const ret = {
             key: startTimeTemp, // availability start time
             height: stripe.sessionLength * pixelsForQuarterHour,
@@ -33,11 +55,7 @@ export function CalendarDayContent(props) {
     // maybe do some logic to determine number of pixels as a multiple of 48 or something?
     // for now just choose 96 * 4
 
-    var itr = 0;
     const longlist = rowProps.map(rowProp => {
-        console.log('itr is:');
-        console.log(itr);
-        itr += 1;
         const style = {
             "height": rowProp.height,
             "backgroundColor": rowProp.backgroundColor,

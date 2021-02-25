@@ -98,7 +98,8 @@ export function CalendarScreen() {
                             // Take view and render a component using availabilities object
                             return <CalendarDayContent
                                 date={date}
-                                view={view}/>
+                                view={view}
+                                availabilities={availabilites}/>
                         }
                     }
                     value={value}/>
