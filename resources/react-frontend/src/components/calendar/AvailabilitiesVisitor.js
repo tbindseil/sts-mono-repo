@@ -89,7 +89,7 @@ export function visitAvailabilties(availabilities, initialDate, finalDate) {
      *  stop iterating when colors == 0
      *  all avails in that section have that width
      */
-    const total = 24 * 4;
+    /*const total = 24 * 4;
     const pixelsPerSegment = 2;
 
     const 15_minutes = 15 * 60 * 1000;
@@ -102,5 +102,5 @@ export function visitAvailabilties(availabilities, initialDate, finalDate) {
             if (avail.startDate 
         });
         currSegStart += 15_minutes;
-    }
+    }*/
 }

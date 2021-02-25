@@ -68,7 +68,17 @@ export function CalendarScreen() {
                     // hash availabilies by their dates
                     console.log("result is:");
                     console.log(result);
-                    setAvailabilities(result);
+
+                    const availabilitiesWithDates = result.map(a => {
+                        return {
+                            endTime: new Date(a.endTime),
+                            startTime: new Date(a.startTime),
+                            subjects: a.subjects,
+                            tutor: a.tutor
+                        }
+                    });
+
+                    setAvailabilities(availabilitiesWithDates);
                 },
                 // Note: it's important to handle errors here
                 // instead of a catch() block so that we don't swallow
