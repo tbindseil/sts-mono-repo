@@ -8,6 +8,7 @@ import {Auth} from "aws-amplify";
 import {Header} from '../Header';
 import {authStyles} from './styles';
 import {checkAuthenticated} from "./CheckAuthenticated";
+import {PasswordRequirements} from './PasswordRequirements';
 
 export function ChangePassword() {
     const history = useHistory();
@@ -35,8 +36,12 @@ export function ChangePassword() {
                 // TODO error handling
             })
             .catch(err => {
-                setErrorMessage("Error Changing Password");
                 setFailed(true);
+                var message = "Error Changing Password";
+                if (err.message) {
+                    message += ": " + err.message;
+                }
+                setErrorMessage(message);
             });
     };
 
@@ -52,6 +57,10 @@ export function ChangePassword() {
 
             <Row style={{display: 'flex', justifyContent: 'center', margin: "15px"}}>
                 Change Password
+            </Row>
+
+            <Row>
+                <PasswordRequirements/>
             </Row>
 
             { failed &&

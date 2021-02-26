@@ -8,6 +8,7 @@ import {Auth} from 'aws-amplify';
 import {Header} from '../Header';
 import {authStyles} from './styles';
 import {checkAuthenticated} from "./CheckAuthenticated";
+import {PasswordRequirements} from './PasswordRequirements';
 
 export function Register() {
     const history = useHistory();
@@ -31,7 +32,11 @@ export function Register() {
                 history.push("/confirm");
             }).catch(err => {
                 setFailed(true);
-                setErrorMessage("Error Registering");
+                var message = "Error Registering";
+                if (err.message) {
+                    message += ": " + err.message;
+                }
+                setErrorMessage(message);
             });
 
     };
@@ -48,6 +53,10 @@ export function Register() {
 
             <Row style={{display: 'flex', justifyContent: 'center', margin: "15px"}}>
                 Register
+            </Row>
+
+            <Row>
+                <PasswordRequirements/>
             </Row>
 
             { failed &&

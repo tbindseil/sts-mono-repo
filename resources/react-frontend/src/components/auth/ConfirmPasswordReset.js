@@ -8,6 +8,7 @@ import {Auth} from 'aws-amplify';
 import {Header} from '../Header';
 import {authStyles} from './styles';
 import {checkAuthenticated} from "./CheckAuthenticated";
+import {PasswordRequirements} from './PasswordRequirements';
 
 export function ConfirmPasswordReset() {
     const history = useHistory();
@@ -32,7 +33,11 @@ export function ConfirmPasswordReset() {
             })
             .catch(err => {
                 setFailed(true);
-                setErrorMessage("Error Confirming Password Reset");
+                var message = "Error Confirming Password Reset";
+                if (err.message) {
+                    message += ": " + err.message;
+                }
+                setErrorMessage(message);
             });
     };
 
@@ -48,6 +53,10 @@ export function ConfirmPasswordReset() {
 
             <Row style={{display: 'flex', justifyContent: 'center', margin: "15px"}}>
                 Use the emailed code change your password
+            </Row>
+
+            <Row>
+                <PasswordRequirements/>
             </Row>
 
             { failed &&

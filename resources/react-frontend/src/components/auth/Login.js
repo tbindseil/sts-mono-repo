@@ -17,6 +17,7 @@ export function Login() {
     });
 
     const [failed, setFailed] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const onFinish = values => {
         Auth.signIn(values.email, values.password)
@@ -25,6 +26,11 @@ export function Login() {
             })
             .catch(err => {
                 setFailed(true);
+                var message = "Error Logging In";
+                if (err.message) {
+                    message += ": " + err.message;
+                }
+                setErrorMessage(message);
             });
     };
 
@@ -39,7 +45,7 @@ export function Login() {
            <h1>Login</h1>
 
            { failed &&
-               <p style={authStyles.errorMsg} >Error Logging In</p>
+               <p style={authStyles.errorMsg} >{errorMessage}</p>
            }
 
            <Form

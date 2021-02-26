@@ -17,6 +17,7 @@ export function InitiatePasswordReset() {
     });
 
     const [failed, setFailed] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const onFinish = values => {
         Auth.forgotPassword(values.email)
@@ -25,6 +26,11 @@ export function InitiatePasswordReset() {
             })
             .catch(err => {
                 setFailed(true);
+                var message = "Error Initiating Password Reset";
+                if (err.message) {
+                    message += ": " + err.message;
+                }
+                setErrorMessage(message);
             });
     };
 
@@ -42,7 +48,7 @@ export function InitiatePasswordReset() {
             </Row>
 
             { failed &&
-                <p style={authStyles.errorMsg} >Error Logging out</p>
+                <p style={authStyles.errorMsg} >{errorMessage}</p>
             }
 
             <Row>

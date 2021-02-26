@@ -16,6 +16,7 @@ export function Logout() {
     });
 
     const [failed, setFailed] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const onFinish = values => {
         Auth.signOut({ global: true })
@@ -24,6 +25,11 @@ export function Logout() {
             })
             .catch(err => {
                 setFailed(true);
+                var message = "Error Logging Out";
+                if (err.message) {
+                    message += ": " + err.message;
+                }
+                setErrorMessage(message);
             });
     };
 
@@ -41,7 +47,7 @@ export function Logout() {
            </Row>
 
            { failed &&
-               <p style={authStyles.errorMsg} >Error Logging out</p>
+               <p style={authStyles.errorMsg} >{errorMessage}</p>
            }
 
            <Row>

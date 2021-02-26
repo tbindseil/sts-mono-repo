@@ -27,7 +27,12 @@ export function Confirm() {
             history.push("/login");
         }).catch(err => {
             setFailed(true);
-            setErrorMessage("Error Confirming");
+            var message = "Error Confirming";
+            if (err.message) {
+                message += ": " + err.message;
+            }
+            setErrorMessage(message);
+            // TODO some weird wait
         });
     };
 
@@ -39,9 +44,13 @@ export function Confirm() {
     const resendCode = () => {
         Auth.resendSignUp(email).then(() => {
             // do nothing
-        }).catch(e => {
+        }).catch(err => {
             setFailed(true);
-            setErrorMessage("Error Resending Code");
+            var message = "Error Resending Code";
+            if (err.message) {
+                message += ": " + err.message;
+            }
+            setErrorMessage(message);
         });
     };
 
