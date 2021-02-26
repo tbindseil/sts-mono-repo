@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {useHistory} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 
 import Calendar from 'react-calendar';
 import {Auth} from "aws-amplify";
 
+import {Header} from '../Header';
 import {CreateAvailability} from './CreateAvailability';
 import {CalendarDayContent} from './CalendarDayContent';
 
@@ -39,12 +40,27 @@ export function CalendarScreen() {
     const [availabilites, setAvailabilities] = useState([]);
 
     const onChange = (value) => {
-        setValue(value);
-        setCurrView("FORM")
-    }
+        // history.push("/profile");
 
-    const returnToCalendar = () => {
-        setCurrView("CALENDAR");
+        history.push({
+            pathname: "/create-availability",
+            state: {
+                // user: user,
+                selectedDate: value,
+                aDate: aDate
+            }
+        });
+
+        // <Link to="/create-availability">Users</Link>
+
+                /*<CreateAvailability
+                    user={user}
+                    selectedDate={value}
+                    aDate={aDate}/>*/
+
+
+        // setValue(value);
+        // setCurrView("FORM")
     }
 
     // TODO get availabilities
@@ -96,6 +112,8 @@ export function CalendarScreen() {
 
     return (
         <>
+            <Header/>
+
             <h2>
                 Calendar
             </h2>
@@ -106,10 +124,12 @@ export function CalendarScreen() {
                         // TODO activeStartDate?
                         ({ date, view }) => {
                             // Take view and render a component using availabilities object
-                            return <CalendarDayContent
-                                date={date}
-                                view={view}
-                                availabilities={availabilites}/>
+                            return (
+                                <CalendarDayContent
+                                    date={date}
+                                    view={view}
+                                    availabilities={availabilites}/>
+                            )
                         }
                     }
                     value={value}/>
@@ -118,7 +138,6 @@ export function CalendarScreen() {
             {(currView === "FORM") &&
                 <CreateAvailability
                     user={user}
-                    returnToCalendar={returnToCalendar}
                     selectedDate={value}
                     aDate={aDate}/>
             }

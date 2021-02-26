@@ -1,7 +1,11 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
+import {useHistory} from 'react-router-dom';
 import {Button, Form, Input, Row} from 'antd';
 import moment from 'moment';
+import {Auth} from "aws-amplify";
+
+import {Header} from '../Header';
 
 // Many thoughts, I have like 6 things called createavailability
 // this should probably be its own screen (and file) with how I'm doing things
@@ -9,6 +13,10 @@ import moment from 'moment';
 // here we should be able to choose between modifying (put), creating (post) and deleteing (delete)
 //      I guess that means this is the availabilityscreen compononent
 export function CreateAvailability(props) {
+
+    const history = useHistory();
+
+    const stateProps = props.location.state;
 
     const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
 
@@ -21,8 +29,26 @@ export function CreateAvailability(props) {
         }
     };
 
+    useEffect(() => {
+        // TODO trigger this after close of CreateAvailability
+        Auth.currentAuthenticatedUser({
+            bypassCache: false  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
+        })
+            .then(user => {
+                console.log("1");
+                setUser(user);
+                console.log("2");
+            })
+            .catch(err => {
+                history.push("/anonymous-user");
+            });
+    }, [
+
+    ]);
+
+    const [user, setUser] = useState(undefined)
     const [subjects, setSubjects] = useState("");
-    const [startTime, setStartTime] = useState(props.selectedDate);
+    const [startTime, setStartTime] = useState(stateProps.selectedDate);
     const [duration, setDuration] = useState(15);
 
     // TODO input validation, amongst many other things like using better input methods
@@ -32,7 +58,7 @@ export function CreateAvailability(props) {
             subjects: subjects,
             startTime: startTime,
             endTime: moment(startTime).add(duration, 'm').toDate(),
-            tutor: props.user.username
+            tutor: user.username
         };
 
         // TODO this stuff needs to be taken care of
@@ -52,9 +78,7 @@ export function CreateAvailability(props) {
             return response;
         }
 
-        console.log("props.user is:");
-        console.log(props.user);
-        postAvailability(baseUrl, props.user.signInUserSession.idToken.jwtToken);
+        postAvailability(baseUrl, user.signInUserSession.idToken.jwtToken);
     }
 
     const handleChange = event => {
@@ -65,7 +89,7 @@ export function CreateAvailability(props) {
         if (name === "subjects") {
             setSubjects(value);
         } else if (name === "startTime") {
-            const startTimeAsDate = moment(props.selectedDate).add(value, 'h').toDate();
+            const startTimeAsDate = moment(stateProps.selectedDate).add(value, 'h').toDate();
             setStartTime(startTimeAsDate);
         } else if (name === "duration") {
             setDuration(value);
@@ -74,15 +98,17 @@ export function CreateAvailability(props) {
 
     const onFinish = () => {
         createAvailability();
-        props.returnToCalendar();
+        history.push("/calendar");
     };
 
     const onCancel = () => {
-        props.returnToCalendar();
+        history.push("/calendar");
     };
 
     return (
         <>
+            <Header/>
+
             <h2>
                 CreateAvailability
             </h2>
@@ -101,7 +127,7 @@ export function CreateAvailability(props) {
                     <Form.Item
                         label="Selected Date">
                         <Input
-                            value={props.selectedDate.toString()}
+                            value={stateProps.selectedDate.toString()}
                             name="selectedDate"
                             disabled={true}
                         />
