@@ -2,13 +2,13 @@ import React, {useEffect} from 'react';
 import {useHistory} from 'react-router-dom';
 
 import {Header} from '../Header';
-import {checkAuthenticated} from "./CheckAuthenticated";
+import {checkUnauthenticated} from "./CheckAuthenticated";
 
 export function AnonymousUser() {
     const history = useHistory();
 
     useEffect(() => {
-        checkAuthenticated(false, () => history.push("/profile"));
+        checkUnauthenticated(() => history.push("/profile"));
     });
 
     return (

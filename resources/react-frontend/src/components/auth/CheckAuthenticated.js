@@ -9,14 +9,26 @@ import {Auth} from "aws-amplify";
  * desired: true if looking for an authenticated user, false if looking for unathenticated
  * action: what to do if user authentication status doesn't match desired state
  */
-export function checkAuthenticated(desired, action) {
+export function checkAuthenticated(action, setUser) {
    Auth.currentAuthenticatedUser({
        bypassCache: false  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
    })
        .then(user => {
-           !desired && action();
+           setUser(user);
        })
        .catch(err => {
-           desired && action();
+           action();
+       });
+}
+
+export function checkUnauthenticated(action) {
+   Auth.currentAuthenticatedUser({
+       bypassCache: false  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
+   })
+       .then(user => {
+           action();
+       })
+       .catch(err => {
+           // expected
        });
 }

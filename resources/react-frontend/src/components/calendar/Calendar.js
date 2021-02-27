@@ -29,7 +29,7 @@ export function CalendarScreen() {
                 history.push("/anonymous-user");
             });
     }, [
-
+        history
     ]);
 
     const aDate = new Date();

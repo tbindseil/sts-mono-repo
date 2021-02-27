@@ -11,8 +11,9 @@ import {checkAuthenticated} from "./CheckAuthenticated";
 export function Logout() {
     const history = useHistory();
 
+    const [user, setUser] = useState(undefined)
     useEffect(() => {
-        checkAuthenticated(true, () => history.push("/anonymous-user"));
+        checkAuthenticated(() => history.push("/anonymous-user"), setUser);
     });
 
     const [failed, setFailed] = useState(false);

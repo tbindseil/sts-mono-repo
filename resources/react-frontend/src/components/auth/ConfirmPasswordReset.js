@@ -7,14 +7,14 @@ import {Auth} from 'aws-amplify';
 
 import {Header} from '../Header';
 import {authStyles} from './styles';
-import {checkAuthenticated} from "./CheckAuthenticated";
+import {checkUnauthenticated} from "./CheckAuthenticated";
 import {PasswordRequirements} from './PasswordRequirements';
 
 export function ConfirmPasswordReset() {
     const history = useHistory();
 
     useEffect(() => {
-        checkAuthenticated(false, () => history.push("/profile"));
+        checkUnauthenticated(() => history.push("/profile"));
     });
 
     const [failed, setFailed] = useState(false);

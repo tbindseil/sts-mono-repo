@@ -13,35 +13,38 @@ import {PasswordRequirements} from './PasswordRequirements';
 export function ChangePassword() {
     const history = useHistory();
 
+    const [user, setUser] = useState(undefined)
     useEffect(() => {
-        checkAuthenticated(true, () => history.push("/anonymous-user"));
-    });
+        checkAuthenticated(() => history.push("/anonymous-user"), setUser);
+    }, [
+        history, setUser // TODO does this cause repeats??
+    ]);
 
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
-    const onFinish = values => {
+    // TJTAG
+    // This is what I'm doing rn
+    // always get user via auth bridge
+    const onFinish = async (values) => {
         if (values.newPassword !== values.confirmNewPassword) {
             setErrorMessage("password entries do not match");
             setFailed(true);
             return;
         }
 
-        Auth.currentAuthenticatedUser()
-            .then(user => {
-                return Auth.changePassword(user, values.oldPassword, values.newPassword);
-            })
-            .then(data => {
-                history.push("/profile");
-            })
-            .catch(err => {
-                setFailed(true);
-                var message = "Error Changing Password";
-                if (err.message) {
-                    message += ": " + err.message;
-                }
-                setErrorMessage(message);
-            });
+        try {
+            await Auth.changePassword(user, values.oldPassword, values.newPassword);
+        } catch (err) {
+            setFailed(true);
+            var message = "Error Changing Password";
+            if (err.message) {
+                message += ": " + err.message;
+            }
+            setErrorMessage(message);
+        }
+
+        history.push("/profile");
     };
 
     const onFinishFailed = errorInfo => {
