@@ -33,7 +33,6 @@ export function ChangePassword() {
             })
             .then(data => {
                 history.push("/profile");
-                // TODO error handling
             })
             .catch(err => {
                 setFailed(true);

@@ -68,7 +68,7 @@ export function Confirm() {
             </Row>
 
             { failed &&
-                <p style={authStyles.errorMsg} >errorMessage</p>
+                <p style={authStyles.errorMsg} >{errorMessage}</p>
             }
 
             <Row>

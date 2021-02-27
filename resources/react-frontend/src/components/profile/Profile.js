@@ -23,9 +23,6 @@ export class Profile extends React.Component {
         bio: "error"
     };
 
-    style = {
-    };
-
     constructor(props) {
         super(props);
         this.getProfile = this.getProfile.bind(this);

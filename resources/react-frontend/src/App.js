@@ -29,7 +29,6 @@ import {CreateAvailability} from "./components/calendar/CreateAvailability";
 Amplify.configure(awsConfig);
 
 const App = () => {
-  // TODO compose Switch somehow?
   return (
     <div className="App">
       <Switch>
