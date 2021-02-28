@@ -32,9 +32,7 @@ export function Delete() {
             };
             cognitoIdentityProvider.deleteUser(params, function(err, data)  {
                 if (err) {
-                    console.log("err1");
                     setFailed(true);
-                    console.log(err);
                 }
 
                 const url = baseUrl + user.username;
@@ -44,8 +42,6 @@ export function Delete() {
                 })
                     .then(history.push("/"))
                     .catch((err) => {
-                        console.log(err);
-                        console.log("err2");
                         setFailed(true);
                     });
 
@@ -53,14 +49,11 @@ export function Delete() {
                 setUser(null);
             });
         } catch (err) {
-            console.log("err3");
             setFailed(true);
-            console.log(err)
         }
     };
 
     const onFinishFailed = errorInfo => {
-        console.log("err4");
         setFailed(true);
     };
 

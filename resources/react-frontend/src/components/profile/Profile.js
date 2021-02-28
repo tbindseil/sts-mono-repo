@@ -19,7 +19,6 @@ export function Profile() {
 
     const [user, setUser] = useState(undefined);
     useEffect(() => {
-        console.log("checkAuth useEffect");
         checkAuthenticated(() => history.push("/anonymous-user"), setUser);
     }, [
         history, setUser
@@ -27,13 +26,10 @@ export function Profile() {
 
     const [profile, setProfile] = useState("");
     useEffect(() => {
-        console.log("getProfile useEffect");
         if (!user) {
-            console.log("getProfile useEffect bailing");
             return;
         }
 
-        console.log("getProfile useEffect getting profile");
         const url = baseUrl + user.username;
         fetch(url)
             .then(res => res.json())
@@ -53,7 +49,6 @@ export function Profile() {
                 // instead of a catch() block so that we don't swallow
                 // exceptions from actual bugs in components.
                 (error) => {
-                    console.log("error is: " + JSON.stringify(error));
                     setProfile({
                         // TODO so bad..
                         email: "error",
@@ -96,6 +91,7 @@ export function Profile() {
                 setProfile(profile);
             })
             .catch(error => {
+                // TODO
                 console.log("@@@ @@@ error @@@ @@@")
                 console.log(error);
             });
