@@ -1,48 +1,40 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {Row} from 'antd';
-import {Auth} from "aws-amplify";
+import {useHistory} from 'react-router-dom';
 
 import {Header} from '../Header';
+import {checkAuthenticated} from "../auth/CheckAuthenticated";
 import {ViewProfile, ProfilePiece} from "./ViewProfile";
 import {EditProfile} from "./EditProfile";
 
-export class Profile extends React.Component {
-    cognitoId;
-    token;
+export function Profile() {
+
+    const history = useHistory();
+
     // TODO dry access this from cfn exports somehow, and keep it dry, its in delete now
-    baseUrl = 'https://oercmchy3l.execute-api.us-west-2.amazonaws.com/prod/';
+    const baseUrl = 'https://oercmchy3l.execute-api.us-west-2.amazonaws.com/prod/';
 
-    // so bad..
-    errorProfile = {
-        email: "error",
-        firstName: "error",
-        lastName: "error",
-        school: "error",
-        grade: "error",
-        bio: "error"
-    };
+    const [editting, setEditting] = useState(false);
 
-    constructor(props) {
-        super(props);
-        this.getProfile = this.getProfile.bind(this);
-        this.onSave = this.onSave.bind(this);
-        this.onCancel = this.onCancel.bind(this);
-        this.state = {
-            editting: false,
-            profile: {
-                email: "",
-                firstName: "",
-                lastName: "",
-                school: "",
-                grade: "",
-                bio: ""
-            }
+    const [user, setUser] = useState(undefined);
+    useEffect(() => {
+        console.log("checkAuth useEffect");
+        checkAuthenticated(() => history.push("/anonymous-user"), setUser);
+    }, [
+        history, setUser
+    ]);
+
+    const [profile, setProfile] = useState("");
+    useEffect(() => {
+        console.log("getProfile useEffect");
+        if (!user) {
+            console.log("getProfile useEffect bailing");
+            return;
         }
-    }
 
-    getProfile = () => {
-        const url = this.baseUrl + this.cognitoId;
+        console.log("getProfile useEffect getting profile");
+        const url = baseUrl + user.username;
         fetch(url)
             .then(res => res.json())
             .then(
@@ -55,42 +47,33 @@ export class Profile extends React.Component {
                         grade: result.grade,
                         bio: result.bio,
                     };
-                    this.setState({
-                        profile: profile
-                    });
+                    setProfile(profile);
                 },
                 // Note: it's important to handle errors here
                 // instead of a catch() block so that we don't swallow
                 // exceptions from actual bugs in components.
                 (error) => {
-                    this.setState({
-                        profile: this.errorProfile
+                    console.log("error is: " + JSON.stringify(error));
+                    setProfile({
+                        // TODO so bad..
+                        email: "error",
+                        firstName: "error",
+                        lastName: "error",
+                        school: "error",
+                        grade: "error",
+                        bio: "error"
                     });
                 }
             );
+    }, [
+        user
+    ]);
+
+    const modifyOnClickHandler = () => {
+        setEditting(true);
     }
 
-    componentDidMount() {
-        Auth.currentAuthenticatedUser({
-            bypassCache: false  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
-        })
-            .then(user => {
-                this.cognitoId = user.username;
-                this.token = user.signInUserSession.idToken.jwtToken;
-                this.getProfile();
-            })
-            .catch(err => {
-                this.props.history.push("/anonymous-user");
-            });
-    }
-
-    modifyOnClickHandler = () => {
-        this.setState({
-            editting: true,
-        });
-    }
-
-    onSave = (profile) => {
+    const onSave = (profile) => {
         async function putProfile(url = '', token = '', profile = {}) {
             const tokenString = 'Bearer ' + token;
             const response = await fetch(url, {
@@ -106,80 +89,72 @@ export class Profile extends React.Component {
         }
 
 
-        const url = this.baseUrl + this.cognitoId;
+        const url = baseUrl + user.username;
 
-        putProfile(url, this.token, profile)
+        putProfile(url, user.signInUserSession.idToken.jwtToken, profile)
             .then(data => {
-                this.setState({
-                    profile: profile
-                });
+                setProfile(profile);
             })
             .catch(error => {
                 console.log("@@@ @@@ error @@@ @@@")
                 console.log(error);
             });
 
-        this.setState({
-            editting: false,
-        });
+        setEditting(false);
     }
 
-    onCancel = () => {
-        this.setState({
-            editting: false,
-        });
+    const onCancel = () => {
+        setEditting(false);
     }
 
-    render() {
-        return (
+    return (
 
-            <>
-                <Header/>
+        <>
+            <Header/>
 
-                <Row>
-                    <h2>
-                        View Profile Info
-                    </h2>
+            <Row>
+                <h2>
+                    View Profile Info
+                </h2>
 
-                    <ProfilePiece
-                        header="Email:"
-                        content={this.state.profile.email}
-                    />
+                <ProfilePiece
+                    header="Email:"
+                    content={profile.email}
+                />
 
-                    {this.state.editting ?
-                        <EditProfile
-                            currProfile={this.state.profile}
-                            onSave={this.onSave}
-                            onCancel={this.onCancel}
-                        /> :
-                        <ViewProfile
-                            profile={this.state.profile}
-                            modifyOnClickHandler={this.modifyOnClickHandler}
-                        />}
+                {editting ?
+                    <EditProfile
+                        currProfile={profile}
+                        onSave={onSave}
+                        onCancel={onCancel}
+                    /> :
+                    <ViewProfile
+                        profile={profile}
+                        modifyOnClickHandler={modifyOnClickHandler}
+                    />}
 
-                </Row>
-                <Row>
-                    <button>
-                        <a href="calendar">Calendar</a>
-                    </button>
-                </Row>
-                <Row>
-                    <button>
-                        <a href="/logout">Logout</a>
-                    </button>
-                </Row>
-                <Row>
-                    <button>
-                        <a href="/change-password">Change Password</a>
-                    </button>
-                </Row>
-                <Row>
-                    <button>
-                        <a href="/delete-account">Delete Account</a>
-                    </button>
-                </Row>
-            </>
+            </Row>
+            <Row>
+                <button>
+                    <a href="/calendar">Calendar</a>
+                </button>
+            </Row>
+            <Row>
+                <button>
+                    <a href="/logout">Logout</a>
+                </button>
+            </Row>
+            <Row>
+                <button>
+                    <a href="/change-password">Change Password</a>
+                </button>
+            </Row>
+            <Row>
+                <button>
+                    <a href="/delete-account">Delete Account</a>
+                </button>
+            </Row>
+        </>
 
-        );
-    }
+    );
 };
