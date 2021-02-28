@@ -3,14 +3,12 @@ import React, {useEffect, useState} from 'react';
 import {useHistory} from 'react-router-dom';
 import {Button, Form, Input, Row} from 'antd';
 import moment from 'moment';
-import {Auth} from "aws-amplify";
 
 import {Header} from '../Header';
+import {checkAuthenticated} from "../auth/CheckAuthenticated";
 
-// Many thoughts, I have like 6 things called createavailability
-// this should probably be its own screen (and file) with how I'm doing things
-// all other screens should have screen in component name like CalendarScreen
-// here we should be able to choose between modifying (put), creating (post) and deleteing (delete)
+// TODO all other screens should have screen in component name like CalendarScreen
+// TODO here we should be able to choose between modifying (put), creating (post) and deleteing (delete)
 //      I guess that means this is the availabilityscreen compononent
 export function CreateAvailability(props) {
 
@@ -20,6 +18,7 @@ export function CreateAvailability(props) {
 
     const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
 
+    // TODO forms, uhhh
     const styles = {
         loginForm: {
             "maxWidth": "600px",
@@ -29,30 +28,19 @@ export function CreateAvailability(props) {
         }
     };
 
+    const [user, setUser] = useState(undefined)
     useEffect(() => {
-        // TODO trigger this after close of CreateAvailability
-        Auth.currentAuthenticatedUser({
-            bypassCache: false
-        })
-            .then(user => {
-                console.log("1");
-                setUser(user);
-                console.log("2");
-            })
-            .catch(err => {
-                history.push("/anonymous-user");
-            });
+        checkAuthenticated(() => history.push("/anonymous-user"), setUser);
     }, [
-
+        history, setUser
     ]);
 
-    const [user, setUser] = useState(undefined)
     const [subjects, setSubjects] = useState("");
     const [startTime, setStartTime] = useState(stateProps.selectedDate);
     const [duration, setDuration] = useState(15);
 
     // TODO input validation, amongst many other things like using better input methods
-    const createAvailability = () => {
+    const postAvailability = async () => {
 
         const availability = {
             subjects: subjects,
@@ -61,24 +49,17 @@ export function CreateAvailability(props) {
             tutor: user.username
         };
 
-        // TODO this stuff needs to be taken care of
-        // url, token, and availability could be blank??
-        // also, if I have user, why not just use that for token?
-        async function postAvailability(url = '', token = '') {
-            const tokenString = 'Bearer ' + token;
-            const response = await fetch(url, {
-                method: 'POST',
-                mode: 'cors',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': tokenString
-                },
-                body: JSON.stringify(availability)
-            });
-            return response;
-        }
-
-        postAvailability(baseUrl, user.signInUserSession.idToken.jwtToken);
+        const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
+        const response = await fetch(baseUrl, {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': tokenString
+            },
+            body: JSON.stringify(availability)
+        });
+        return response;
     }
 
     const handleChange = event => {
@@ -96,8 +77,8 @@ export function CreateAvailability(props) {
         }
     }
 
-    const onFinish = () => {
-        createAvailability();
+    const onFinish = async () => {
+        await postAvailability();
         history.push("/calendar");
     };
 
@@ -113,10 +94,6 @@ export function CreateAvailability(props) {
                 CreateAvailability
             </h2>
 
-
-            <Row style={{display: 'flex', justifyContent: 'center', margin: "15px"}}>
-                Login
-            </Row>
             <Row>
                 <Form
                     name="basic"
