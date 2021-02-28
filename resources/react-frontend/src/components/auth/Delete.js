@@ -17,14 +17,14 @@ export function Delete() {
     const [user, setUser] = useState(undefined)
     useEffect(() => {
         checkAuthenticated(() => history.push("/anonymous-user"), setUser);
-    });
+    }, [
+        history, setUser
+    ]);
 
     const [failed, setFailed] = useState(false);
 
-    const onFinish = values => {
-        Auth.currentAuthenticatedUser({
-            bypassCache: true
-        }).then((user) => {
+    const onFinish = async (values) => {
+        try {
             const cognitoIdentityProvider = new CognitoIdentityProvider({region: 'us-west-2'});
 
             var params = {
@@ -50,14 +50,13 @@ export function Delete() {
                     });
 
                 Auth.signOut({ global: true });
-
-                // maybe repeat Auth.currentAuthenticatedUser({ bypassCache: true }) to flush creds?
+                setUser(null);
             });
-        }).catch(err => {
+        } catch (err) {
             console.log("err3");
             setFailed(true);
             console.log(err)
-        });
+        }
     };
 
     const onFinishFailed = errorInfo => {

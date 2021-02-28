@@ -14,7 +14,9 @@ export function Logout() {
     const [user, setUser] = useState(undefined)
     useEffect(() => {
         checkAuthenticated(() => history.push("/anonymous-user"), setUser);
-    });
+    }, [
+        history, setUser
+    ]);
 
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -65,6 +67,6 @@ export function Logout() {
                </Form>
            </Row>
        </div>
-   )
+   );
 
 }

@@ -15,7 +15,9 @@ export function Register() {
 
     useEffect(() => {
         checkUnauthenticated(() => history.push("/profile"));
-    });
+    }, [
+        history
+    ]);
 
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");

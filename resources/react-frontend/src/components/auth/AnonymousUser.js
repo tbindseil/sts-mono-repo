@@ -9,7 +9,9 @@ export function AnonymousUser() {
 
     useEffect(() => {
         checkUnauthenticated(() => history.push("/profile"));
-    });
+    }, [
+        history
+    ]);
 
     return (
         <>
