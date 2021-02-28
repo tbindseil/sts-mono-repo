@@ -1,11 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {Link, useHistory} from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 
 import Calendar from 'react-calendar';
-import {Auth} from "aws-amplify";
 
 import {Header} from '../Header';
-import {CreateAvailability} from './CreateAvailability';
+import {checkAuthenticated} from "../auth/CheckAuthenticated";
 import {CalendarDayContent} from './CalendarDayContent';
 
 export function CalendarScreen() {
@@ -13,62 +12,42 @@ export function CalendarScreen() {
 
     const history = useHistory();
 
+    const [user, setUser] = useState(undefined)
     useEffect(() => {
-        // TODO trigger this after close of CreateAvailability
-        Auth.currentAuthenticatedUser({
-            bypassCache: false  // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
-        })
-            .then(user => {
-                console.log("1");
-                setUser(user);
-                console.log("2");
-                getAvailabilities(user);
-                console.log("3");
-            })
-            .catch(err => {
-                history.push("/anonymous-user");
-            });
+        checkAuthenticated(() => history.push("/anonymous-user"), setUser);
     }, [
-        history
+        history, setUser
     ]);
 
-    const aDate = new Date();
+    useEffect(() => {
+        getAvailabilities(user);
+    }, [
+        user
+    ]);
 
-    const [user, setUser] = useState(undefined)
-    const [value, setValue] = useState(new Date());
-    const [currView, setCurrView] = useState("CALENDAR");
+    useEffect(() => {
+        checkAuthenticated(() => history.push("/anonymous-user"), setUser);
+    }, [
+        history, setUser
+    ]);
+
     const [availabilites, setAvailabilities] = useState([]);
 
     const onChange = (value) => {
-        // history.push("/profile");
-
         history.push({
             pathname: "/create-availability",
             state: {
-                // user: user,
-                selectedDate: value,
-                aDate: aDate
+                selectedDate: value
             }
         });
-
-        // <Link to="/create-availability">Users</Link>
-
-                /*<CreateAvailability
-                    user={user}
-                    selectedDate={value}
-                    aDate={aDate}/>*/
-
-
-        // setValue(value);
-        // setCurrView("FORM")
     }
 
-    // TODO get availabilities
     const getAvailabilities = (user) => {
-        console.log("1.1");
+        if (!user) {
+            return;
+        }
+
         const url = baseUrl;
-        console.log("user is:");
-        console.log(user);
         const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
         fetch(url, {
                 method: 'GET',
@@ -81,10 +60,6 @@ export function CalendarScreen() {
             .then(res => res.json())
             .then(
                 (result) => {
-                    // hash availabilies by their dates
-                    console.log("result is:");
-                    console.log(result);
-
                     const availabilitiesWithDates = result.map(a => {
                         return {
                             endTime: new Date(a.endTime),
@@ -100,11 +75,10 @@ export function CalendarScreen() {
                 // instead of a catch() block so that we don't swallow
                 // exceptions from actual bugs in components.
                 (error) => {
-                    console.log("error fetching availibilities:");
-                    console.log(error);
                 }
             )
             .catch(err => {
+                // TODO
                 console.log("error fetching availabilities, err is:");
                 console.log(err);
             });
@@ -117,31 +91,19 @@ export function CalendarScreen() {
             <h2>
                 Calendar
             </h2>
-            {(currView === "CALENDAR") &&
-                <Calendar
-                    onChange={onChange}
-                    tileContent= {
-                        // TODO activeStartDate?
-                        ({ date, view }) => {
-                            // Take view and render a component using availabilities object
-                            return (
-                                <CalendarDayContent
-                                    date={date}
-                                    view={view}
-                                    availabilities={availabilites}/>
-                            )
-                        }
+
+            <Calendar
+                onChange={onChange}
+                tileContent= {
+                    ({ date, view }) => {
+                        return (
+                            <CalendarDayContent
+                                date={date}
+                                view={view}
+                                availabilities={availabilites}/>
+                        )
                     }
-                    value={value}/>
-            }
-
-            {(currView === "FORM") &&
-                <CreateAvailability
-                    user={user}
-                    selectedDate={value}
-                    aDate={aDate}/>
-            }
-
+                }/>
         </>
     )
 }
