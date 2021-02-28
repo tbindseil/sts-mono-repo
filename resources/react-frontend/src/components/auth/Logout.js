@@ -11,11 +11,10 @@ import {checkAuthenticated} from "./CheckAuthenticated";
 export function Logout() {
     const history = useHistory();
 
-    const [user, setUser] = useState(undefined)
     useEffect(() => {
-        checkAuthenticated(() => history.push("/anonymous-user"), setUser);
+        checkAuthenticated(() => history.push("/anonymous-user"), () => {});
     }, [
-        history, setUser
+        history
     ]);
 
     const [failed, setFailed] = useState(false);

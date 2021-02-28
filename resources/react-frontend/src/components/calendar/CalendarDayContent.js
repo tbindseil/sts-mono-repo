@@ -8,6 +8,7 @@ const minutesPerPixel = 9;
 export function CalendarDayContent(props) {
 
     const startOfDay = props.date;
+
     const endOfDay = new Date(new Date(startOfDay).getTime() + 24 * 60 * 60 * 1000);
 
     const relevantAvailabilities = props.availabilities.filter(a => {
@@ -60,6 +61,5 @@ export function CalendarDayContent(props) {
 
 function getPixels(startDate, endDate, minutesPerPixel) {
     // this thing takes the difference between two dates and determines how many pixels it is
-    // assumes 15 minutes is 2 pixels
     return (endDate - startDate) / 1000 / 60 / minutesPerPixel;
 }

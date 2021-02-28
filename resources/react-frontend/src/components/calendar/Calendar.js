@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useHistory} from 'react-router-dom';
 
 import Calendar from 'react-calendar';
+import moment from 'moment';
 
 import {Header} from '../Header';
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
@@ -60,10 +61,11 @@ export function CalendarScreen() {
             .then(res => res.json())
             .then(
                 (result) => {
+                    console.log(moment());
                     const availabilitiesWithDates = result.map(a => {
                         return {
-                            endTime: new Date(a.endTime),
-                            startTime: new Date(a.startTime),
+                            endTime: moment.utc(a.endTime).local(),
+                            startTime: moment.utc(a.startTime).local(),
                             subjects: a.subjects,
                             tutor: a.tutor
                         }
