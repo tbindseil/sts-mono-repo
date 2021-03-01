@@ -103,6 +103,15 @@ export function Profile() {
         setEditting(false);
     }
 
+    const onClickMyCalendar = () => {
+        history.push({
+            pathname: "/my-calendar",
+            state: {
+                selectedDate: new Date()
+            }
+        });
+    }
+
     return (
 
         <>
@@ -129,6 +138,11 @@ export function Profile() {
                         modifyOnClickHandler={modifyOnClickHandler}
                     />}
 
+            </Row>
+            <Row>
+                <button onClick={onClickMyCalendar}>
+                    <a href="/my-calendar">My Calendar</a>
+                </button>
             </Row>
             <Row>
                 <button>

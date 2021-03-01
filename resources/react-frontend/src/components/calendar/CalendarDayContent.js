@@ -3,10 +3,13 @@ import React from 'react';
 import { Row } from 'antd';
 
 // TODO dynamic based off stuff
-const minutesPerPixel = 9;
+const minutesPerPixel = 3;
+const pixelsInADay = 24 * (60 / minutesPerPixel);
+const totalHeightStyle = {
+    "height": pixelsInADay
+}
 
 export function CalendarDayContent(props) {
-
     const startOfDay = props.date;
 
     const endOfDay = new Date(new Date(startOfDay).getTime() + 24 * 60 * 60 * 1000);
@@ -45,7 +48,7 @@ export function CalendarDayContent(props) {
     }
 
     return (
-        <>
+        <Row style={totalHeightStyle}>
             { timeSlices.map(timeSlice => {
                     const style = {
                         "height": timeSlice.height,
@@ -55,11 +58,10 @@ export function CalendarDayContent(props) {
                     return <Row key={timeSlice.key} style={style}/>
                 })
             }
-        </>
+        </Row>
     );
 }
 
 function getPixels(startDate, endDate, minutesPerPixel) {
-    // this thing takes the difference between two dates and determines how many pixels it is
     return (endDate - startDate) / 1000 / 60 / minutesPerPixel;
 }

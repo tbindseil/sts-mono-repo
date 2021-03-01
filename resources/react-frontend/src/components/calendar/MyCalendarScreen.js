@@ -1,14 +1,25 @@
 import React, {useEffect, useState} from 'react';
 import {useHistory} from 'react-router-dom';
 
-import Calendar from 'react-calendar';
 import moment from 'moment';
 
-import {Header} from '../Header';
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
 import {CalendarDayContent} from './CalendarDayContent';
 
-export function CalendarScreen() {
+const tableStyle = {
+    width: 1500
+};
+
+const headerStyle = {
+    textAlign: "Center"
+};
+
+const calendarDayStyle = {
+    border: "solid black 2px"
+};
+
+export function MyCalendarScreen(props) {
+
     const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
 
     const history = useHistory();
@@ -26,18 +37,7 @@ export function CalendarScreen() {
         user
     ]);
 
-    // TODO typo..
-    const [availabilites, setAvailabilities] = useState([]);
-
-    const onChange = (value) => {
-        history.push({
-            pathname: "/create-availability",
-            state: {
-                selectedDate: value
-            }
-        });
-    }
-
+    const [availabilities, setAvailabilities] = useState([]);
     const getAvailabilities = (user) => {
         if (!user) {
             return;
@@ -56,6 +56,7 @@ export function CalendarScreen() {
             .then(res => res.json())
             .then(
                 (result) => {
+                    console.log(moment());
                     const availabilitiesWithDates = result.map(a => {
                         return {
                             endTime: moment.utc(a.endTime).local(),
@@ -80,26 +81,56 @@ export function CalendarScreen() {
             });
     };
 
+    // based off stateProps.selectedDate
+    const stateProps = props.location.state;
+
+    // get day's week day number,
+    const weekDayNumber = moment(stateProps.selectedDate).day();
+
+    // find previous sunday if day is not sunday
+    const selectedDateCopy = moment(stateProps.selectedDate);
+    var currDay = selectedDateCopy.subtract(weekDayNumber, "days");
+
+    // make a CalendarDayContent for each day of week
+    const calendarDays = [];
+    const calendarHeaders = [];
+    for (var i = 0; i < 7; i++) {
+        console.log("currDay is:");
+        console.log(currDay);
+
+        calendarHeaders.push(
+            <th style={headerStyle}>
+                {moment(currDay).format("dddd")}
+            </th>
+        );
+
+        calendarDays.push(
+            <td style={calendarDayStyle}>
+                <CalendarDayContent
+                    key={currDay.toString()}
+                    date={currDay}
+                    availabilities={availabilities}/>
+            </td>
+        );
+
+        // tomorrow..
+        currDay = moment(currDay).add(1, "days"); 
+    }
+
     return (
         <>
-            <Header/>
+            <p>
+                My Calendar Screen
+            </p>
 
-            <h2>
-                Calendar
-            </h2>
-
-            <Calendar
-                onChange={onChange}
-                tileContent= {
-                    ({ date, view }) => {
-                        return (
-                            <CalendarDayContent
-                                date={date}
-                                view={view}
-                                availabilities={availabilites}/>
-                        )
-                    }
-                }/>
+            <table style={tableStyle}>
+                <tr>
+                    {calendarHeaders}
+                </tr>
+                <tr>
+                    {calendarDays}
+                </tr>
+            </table>
         </>
-    )
+    );
 }

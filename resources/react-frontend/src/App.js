@@ -1,3 +1,4 @@
+import React from 'react';
 import './App.css';
 import {Switch, Route} from 'react-router-dom';
 
@@ -23,6 +24,7 @@ import {Delete} from "./components/auth/Delete";
 
 import {Profile} from "./components/profile/Profile";
 import {CalendarScreen} from "./components/calendar/Calendar";
+import {MyCalendarScreen} from "./components/calendar/MyCalendarScreen";
 import {CreateAvailability} from "./components/calendar/CreateAvailability";
 
 
@@ -53,6 +55,7 @@ const App = () => {
 
         <Route path={"/profile"} component={Profile}/>
         <Route path={"/calendar"} component={CalendarScreen}/>
+        <Route path={"/my-calendar"} component={MyCalendarScreen}/>
         <Route path={"/create-availability"} component={CreateAvailability}/>
 
       </Switch>
