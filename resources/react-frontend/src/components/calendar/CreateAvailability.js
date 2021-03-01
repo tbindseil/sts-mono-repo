@@ -73,7 +73,7 @@ export function CreateAvailability(props) {
         if (name === "subjects") {
             setSubjects(value);
         } else if (name === "startTime") {
-            const startTimeAsDate = moment(stateProps.selectedDate).add(value, 'h').toDate();
+            const startTimeAsDate = moment(stateProps.selectedDate).startOf("day").add(value, 'h').toDate();
             setStartTime(startTimeAsDate);
         } else if (name === "duration") {
             setDuration(value);
