@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Button, Row } from 'antd';
+import moment from 'moment';
 
 import './Calendar.css';
 
@@ -13,13 +14,30 @@ const totalHeightStyle = {
 }
 
 export function CalendarDayContent(props) {
-    const startOfDay = props.date;
-
-    const endOfDay = new Date(new Date(startOfDay).getTime() + 24 * 60 * 60 * 1000);
+    const startOfDay = moment(props.date).startOf("day").toDate();
+    console.log("startOfDay is:");
+    console.log(startOfDay);
+    const endOfDay = moment(props.date).endOf("day").toDate();
+    console.log("endOfDay is:");
+    console.log(endOfDay);
 
     const relevantAvailabilities = props.availabilities.filter(a => {
+        if (a.startTime >= startOfDay && a.startTime < endOfDay) {
+        console.log("availabiligy is :");
+        console.log(a);
+            console.log("1");
+        }
+        if (a.endTime > startOfDay && a.endTime <= endOfDay) {
+        console.log("availabiligy is :");
+        console.log(a);
+            console.log("2");
+        }
+
         return (a.startTime >= startOfDay && a.startTime < endOfDay) || (a.endTime > startOfDay && a.endTime <= endOfDay)
-    });
+    }).sort((avail1, avail2) => { return avail1.startTime - avail2.startTime});
+
+    console.log("relevantAvailabilities is");
+    console.log(relevantAvailabilities);
 
     var timeSlices = [];
 
@@ -75,5 +93,9 @@ export function CalendarDayContent(props) {
 }
 
 function getPixels(startDate, endDate, minutesPerPixel) {
+    console.log("calling get pixels with start, end, return");
+    console.log(startDate);
+    console.log(endDate);
+    console.log(((endDate - startDate) / 1000 / 60 / minutesPerPixel));
     return (endDate - startDate) / 1000 / 60 / minutesPerPixel;
 }

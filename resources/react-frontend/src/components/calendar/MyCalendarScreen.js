@@ -63,8 +63,8 @@ export function MyCalendarScreen(props) {
                     console.log(moment());
                     const availabilitiesWithDates = result.map(a => {
                         return {
-                            endTime: moment.utc(a.endTime).local(),
-                            startTime: moment.utc(a.startTime).local(),
+                            endTime: moment.utc(a.endTime).local().toDate(),
+                            startTime: moment.utc(a.startTime).local().toDate(),
                             subjects: a.subjects,
                             tutor: a.tutor
                         }
@@ -86,14 +86,27 @@ export function MyCalendarScreen(props) {
     };
 
     // based off stateProps.selectedDate
+    // const today = 
     const stateProps = props.location.state;
+    const selectedDate = stateProps ? (stateProps.selectedDate ? stateProps.selectedDate : new Date()) : new Date();
 
     // get day's week day number,
-    const weekDayNumber = moment(stateProps.selectedDate).day();
+    const weekDayNumber = moment(selectedDate).day();
 
     // find previous sunday if day is not sunday
-    const selectedDateCopy = moment(stateProps.selectedDate);
+    const selectedDateCopy = moment(selectedDate);
     var currDay = selectedDateCopy.subtract(weekDayNumber, "days");
+
+    const onClickDay = (event) => {
+        console.log("event is:");
+        console.log(event);
+        history.push({
+            pathname: "/create-availability",
+            state: {
+                selectedDate: event.target.value
+            }
+        });
+    }
 
     // make a CalendarDayContent for each day of week
     const calendarDays = [];
@@ -108,21 +121,31 @@ export function MyCalendarScreen(props) {
             </th>
         );
 
+        /*const currDayConst = currDay;
         calendarDays.push(
-            <td style={calendarDayStyle}>
+            <td style={calendarDayStyle} onClick={() => {
+                    onClickDay(currDayConst);
+                }}>
+                <CalendarDayContent
+                    key={currDay.toString()}
+                    date={currDay}
+                    availabilities={availabilities}/>
+            </td>
+        );*/
+        calendarDays.push(
+            <td style={calendarDayStyle} onClick={onClickDay} value={currDay}>
                 <CalendarDayContent
                     key={currDay.toString()}
                     date={currDay}
                     availabilities={availabilities}/>
             </td>
         );
-
         // tomorrow..
         currDay = moment(currDay).add(1, "days"); 
     }
 
     const onClickPreviousWeek = () => {
-        const selectedDateCopy = moment(stateProps.selectedDate);
+        const selectedDateCopy = moment(selectedDate);
         history.push({
             pathname: "/my-calendar",
             state: {
@@ -132,7 +155,7 @@ export function MyCalendarScreen(props) {
     };
 
     const onClickNextWeek = () => {
-        const selectedDateCopy = moment(stateProps.selectedDate);
+        const selectedDateCopy = moment(selectedDate);
         history.push({
             pathname: "/my-calendar",
             state: {
