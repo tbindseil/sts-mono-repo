@@ -1,9 +1,12 @@
 import React from 'react';
 
-import { Row } from 'antd';
+import { Button, Row } from 'antd';
+
+import './Calendar.css';
+
 
 // TODO dynamic based off stuff
-const minutesPerPixel = 3;
+const minutesPerPixel = 2;
 const pixelsInADay = 24 * (60 / minutesPerPixel);
 const totalHeightStyle = {
     "height": pixelsInADay
@@ -51,11 +54,20 @@ export function CalendarDayContent(props) {
         <Row style={totalHeightStyle}>
             { timeSlices.map(timeSlice => {
                     const style = {
-                        "height": timeSlice.height,
-                        "backgroundColor": timeSlice.availability === null ? "inherit" : "red"
+                        height: timeSlice.height,
+                        width: "100%"
                     };
 
-                    return <Row key={timeSlice.key} style={style}/>
+                    if (timeSlice.availability) {
+                        // style.width = "100%";
+                        return (
+                            <Button key={timeSlice.key} className="Availability-button" style={style}>
+                                {timeSlice.availability.subjects}
+                            </Button>
+                        );
+                    } else {
+                        return <Row key={timeSlice.key} style={style}/>
+                    }
                 })
             }
         </Row>

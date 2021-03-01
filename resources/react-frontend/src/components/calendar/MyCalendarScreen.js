@@ -1,17 +1,21 @@
 import React, {useEffect, useState} from 'react';
 import {useHistory} from 'react-router-dom';
 
+import { Button } from 'antd';
 import moment from 'moment';
 
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
 import {CalendarDayContent} from './CalendarDayContent';
 
 const tableStyle = {
-    width: 1500
+    width: 1750
 };
 
 const headerStyle = {
-    textAlign: "Center"
+    textAlign: "Center",
+    width: (tableStyle.width / 7),
+    border: "solid black",
+    borderWidth: "2px 2px 2px 0"
 };
 
 const calendarDayStyle = {
@@ -100,7 +104,7 @@ export function MyCalendarScreen(props) {
 
         calendarHeaders.push(
             <th style={headerStyle}>
-                {moment(currDay).format("dddd")}
+                {moment(currDay).format("dddd, MMM D")}
             </th>
         );
 
@@ -117,11 +121,44 @@ export function MyCalendarScreen(props) {
         currDay = moment(currDay).add(1, "days"); 
     }
 
+    const onClickPreviousWeek = () => {
+        const selectedDateCopy = moment(stateProps.selectedDate);
+        history.push({
+            pathname: "/my-calendar",
+            state: {
+                selectedDate: selectedDateCopy.subtract(7, "days").toDate()
+            }
+        });
+    };
+
+    const onClickNextWeek = () => {
+        const selectedDateCopy = moment(stateProps.selectedDate);
+        history.push({
+            pathname: "/my-calendar",
+            state: {
+                selectedDate: selectedDateCopy.add(7, "days").toDate()
+            }
+        });
+    };
+
     return (
         <>
             <p>
                 My Calendar Screen
             </p>
+
+            <table>
+                <tr>
+                    <td>
+                        <Button onClick={onClickPreviousWeek}>
+                            Previous Week
+                        </Button>
+                        <Button onClick={onClickNextWeek}>
+                            Next Week
+                        </Button>
+                    </td>
+                </tr>
+            </table>
 
             <table style={tableStyle}>
                 <tr>
