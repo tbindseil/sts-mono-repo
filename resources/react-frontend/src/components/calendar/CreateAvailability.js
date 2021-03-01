@@ -14,6 +14,7 @@ export function CreateAvailability(props) {
 
     const history = useHistory();
 
+    // TODO make today selected date if no selected date
     const stateProps = props.location.state;
 
     const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
@@ -78,12 +79,13 @@ export function CreateAvailability(props) {
     }
 
     const onFinish = async () => {
+        // TODO send daate
         await postAvailability();
-        history.push("/calendar");
+        history.push("/my-calendar");
     };
 
     const onCancel = () => {
-        history.push("/calendar");
+        history.push("/my-calendar");
     };
 
     return (

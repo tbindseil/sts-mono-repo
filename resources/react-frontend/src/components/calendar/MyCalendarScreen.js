@@ -141,7 +141,7 @@ export function MyCalendarScreen(props) {
             </td>
         );
         // tomorrow..
-        currDay = moment(currDay).add(1, "days"); 
+        currDay = moment(currDay).add(1, "days").toDate(); 
     }
 
     const onClickPreviousWeek = () => {
