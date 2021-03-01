@@ -94,8 +94,7 @@ export function MyCalendarScreen(props) {
     const weekDayNumber = moment(selectedDate).day();
 
     // find previous sunday if day is not sunday
-    const selectedDateCopy = moment(selectedDate);
-    var currDay = selectedDateCopy.subtract(weekDayNumber, "days");
+    var currDay = moment(selectedDate).subtract(weekDayNumber, "days").toDate();
 
     const onClickDay = (event) => {
         console.log("event is:");
@@ -145,21 +144,19 @@ export function MyCalendarScreen(props) {
     }
 
     const onClickPreviousWeek = () => {
-        const selectedDateCopy = moment(selectedDate);
         history.push({
             pathname: "/my-calendar",
             state: {
-                selectedDate: selectedDateCopy.subtract(7, "days").toDate()
+                selectedDate: moment(selectedDate).subtract(7, "days").toDate()
             }
         });
     };
 
     const onClickNextWeek = () => {
-        const selectedDateCopy = moment(selectedDate);
         history.push({
             pathname: "/my-calendar",
             state: {
-                selectedDate: selectedDateCopy.add(7, "days").toDate()
+                selectedDate: moment(selectedDate).add(7, "days").toDate()
             }
         });
     };

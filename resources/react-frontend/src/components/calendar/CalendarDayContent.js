@@ -1,4 +1,5 @@
 import React from 'react';
+import {useHistory} from 'react-router-dom';
 
 import { Button, Row } from 'antd';
 import moment from 'moment';
@@ -14,6 +15,8 @@ const totalHeightStyle = {
 }
 
 export function CalendarDayContent(props) {
+    const history = useHistory();
+
     const startOfDay = moment(props.date).startOf("day").toDate();
     const endOfDay = moment(props.date).endOf("day").toDate();
 
@@ -54,6 +57,17 @@ export function CalendarDayContent(props) {
         });
     }
 
+    const onClickDay = (event) => {
+        console.log("event is:");
+        console.log(event);
+        history.push({
+            pathname: "/create-availability",
+            state: {
+                selectedDate: event.target.value
+            }
+        });
+    }
+
     return (
         <Row style={totalHeightStyle}>
             { timeSlices.map(timeSlice => {
@@ -64,13 +78,23 @@ export function CalendarDayContent(props) {
 
                     if (timeSlice.availability) {
                         return (
-                            <Button key={timeSlice.key} className="Availability-button" style={style}>
+                            <Button
+                                key={timeSlice.key}
+                                className="Availability-button"
+                                style={style}
+                                onClick={onClickDay}
+                                value={props.date}>
                                 {timeSlice.availability.subjects}
                             </Button>
                         );
                     } else {
                         return (
-                            <Button key={timeSlice.key} className="Open-time-button" style={style}>
+                            <Button
+                                key={timeSlice.key}
+                                className="Open-time-button"
+                                style={style}
+                                onClick={onClickDay}
+                                value={props.date}>
                                 open
                             </Button>
                         );

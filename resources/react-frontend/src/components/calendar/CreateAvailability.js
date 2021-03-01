@@ -16,6 +16,8 @@ export function CreateAvailability(props) {
 
     // TODO make today selected date if no selected date
     const stateProps = props.location.state;
+    console.log("props is");
+    console.log(props);
 
     const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
 
@@ -88,6 +90,9 @@ export function CreateAvailability(props) {
         history.push("/my-calendar");
     };
 
+    console.log("stateProps.selectedDate is");
+    console.log(stateProps.selectedDate);
+
     return (
         <>
             <Header/>
@@ -106,7 +111,7 @@ export function CreateAvailability(props) {
                     <Form.Item
                         label="Selected Date">
                         <Input
-                            value={stateProps.selectedDate.toString()}
+                            value={moment(stateProps.selectedDate).format("dddd, MMM D")}
                             name="selectedDate"
                             disabled={true}
                         />
