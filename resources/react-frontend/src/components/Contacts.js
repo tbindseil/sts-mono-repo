@@ -42,6 +42,7 @@ const pageBorder = {
   paddingTop: '5px',
   paddingBottom:'50px',
   marginTop: '0px',
+  height: '75vh'
 };
 
 const pageBorder2 = {
@@ -52,6 +53,7 @@ const pageBorder2 = {
   paddingTop: '5px',
   paddingBottom:'100px',
   marginTop: '0px',
+  height: '75vh'
 };
 
 export const Contacts= () => (

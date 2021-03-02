@@ -40,8 +40,9 @@ const pageBorder = {
    borderTop:'0px solid #005D8c',
    borderBottom:'0px solid #005D8c',
    paddingTop: '50px',
-  paddingBottom:'200px',
+  paddingBottom:'0px',
   marginTop: '0px',
+  height: '75vh'
 };
 
 const pageBorder2 = {
@@ -50,8 +51,9 @@ const pageBorder2 = {
    borderTop:'0px solid #005D8c',
    borderBottom:'0px solid #005D8c',
    paddingTop: '50px',
-  paddingBottom:'200px',
+  paddingBottom:'100px',
   marginTop: '0px',
+  height: '75vh'
 };
 
 const modo = {

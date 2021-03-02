@@ -42,7 +42,7 @@ const pageBorder = {
   borderTop:'0px solid #005D8c',
   borderBottom:'0px solid #005D8c',
   paddingTop: '5px',
-  paddingBottom:'50px',
+  paddingBottom:'200px',
   marginTop: '0px',
 };
 
@@ -52,7 +52,7 @@ const pageBorder2 = {
   borderTop:'0px solid #005D8c',
   borderBottom:'0px solid #005D8c',
   paddingTop: '5px',
-  paddingBottom:'100px',
+  paddingBottom:'200px',
   marginTop: '0px',
 };
 

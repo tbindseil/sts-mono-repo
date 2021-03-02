@@ -134,6 +134,8 @@ export const Process = () => (
 									We work within any school's guidelines to ensure that all regulating codes are met.
 									This could mean that all tutoring is required to be done outside of  the school with parent supervision or permission. 
 									Whatever it takes, we are flexible to adjust our model to specific district requirements.
+									<br/>
+		  							<br/>
 								<h4 class = "pageHeader">
 									Recruit Tutors
 								</h4>
@@ -146,21 +148,29 @@ export const Process = () => (
 									We will solicit recommendations from teachers and parents, as well as allow motivated students to apply on their own. 
 									We will work with teachers in order to determine the necessary qualifications for a student to be a tutor upon applying. 
 									It is likely that an interview will need to take place.
+									<br/>
+		  							<br/>
 								<h4 class = "pageHeader">
 									Evaluate Tutors
 								</h4>
 								Interested tutoring students will complete a <a href="/get-involved">Tutoring Proficiency Survey</a> so a Group Tutoring Profile can be established. 
-								A Group Tutoring Profile will consist of the subjects, grades, and hours our organization is capable of tutoring in the specific district.	\
+								A Group Tutoring Profile will consist of the subjects, grades, and hours our organization is capable of tutoring in the specific district.
+								<br/>
+		  							<br/>
 								<h4 class = "pageHeader">
 									Broadcast Tutors
 								</h4>	
 								Now, the fun part… We are able to communicate the amazing resource of high-performing student tutors to all of the grade levels in your district. 
 								Again, this will be done with any and all School and PTO/PTA acceptable means of communication.
+								<br/>
+		  							<br/>
 								<h4 class = "pageHeader">
 									Connect Students with Tutors
 								</h4>	
 								Students looking for help with homework, test prep, or general subject matter will complete the <a href="/request-a-tutor">Tutoring Request Form </a> 
 								to identify their subjects of interest and their schedule availability.
+								<br/>
+		  							<br/>
 								<h4 class = "pageHeader">
 									Tutoring Sessions and Continuous improvement
 								</h4>	
@@ -207,6 +217,8 @@ export const Process = () => (
 									We work within any school's guidelines to ensure that all regulating codes are met.
 									This could mean that all tutoring is required to be done outside of  the school with parent supervision or permission. 
 									Whatever it takes, we are flexible to adjust our model to specific district requirements.
+									<br/>
+		  							<br/>
 								<h4 class = "pageHeader">
 									Recruit Tutors
 								</h4>
@@ -219,21 +231,29 @@ export const Process = () => (
 									We will solicit recommendations from teachers and parents, as well as allow motivated students to apply on their own. 
 									We will work with teachers in order to determine the necessary qualifications for a student to be a tutor upon applying. 
 									It is likely that an interview will need to take place.
+									<br/>
+		  							<br/>
 								<h4 class = "pageHeader">
 									Evaluate Tutors
 								</h4>
 								Interested tutoring students will complete a <a href="/get-involved">Tutoring Proficiency Survey</a> so a Group Tutoring Profile can be established. 
-								A Group Tutoring Profile will consist of the subjects, grades, and hours our organization is capable of tutoring in the specific district.	\
+								A Group Tutoring Profile will consist of the subjects, grades, and hours our organization is capable of tutoring in the specific district.
+								<br/>
+		  							<br/>
 								<h4 class = "pageHeader">
 									Broadcast Tutors
 								</h4>	
 								Now, the fun part… We are able to communicate the amazing resource of high-performing student tutors to all of the grade levels in your district. 
 								Again, this will be done with any and all School and PTO/PTA acceptable means of communication.
+								<br/>
+		  							<br/>
 								<h4 class = "pageHeader">
 									Connect Students with Tutors
 								</h4>	
 								Students looking for help with homework, test prep, or general subject matter will complete the <a href="/request-a-tutor">Tutoring Request Form </a> 
 								to identify their subjects of interest and their schedule availability.
+								<br/>
+		  							<br/>
 								<h4 class = "pageHeader">
 									Tutoring Sessions and Continuous improvement
 								</h4>	

@@ -36,7 +36,7 @@ const imgStyle = {
   marginRight: '100px',
 };
 const imgStyle2 = {
-  maxWidth: '75%',
+  width: '75%',
   height: '75%',
   position: 'center',
   margin: 'auto',
@@ -44,7 +44,7 @@ const imgStyle2 = {
   display: 'block',
 };
 const imgStyle3 = {
-  maxWidth: '95%',
+  width: '95%',
   height: '95%',
   position: 'center',
   margin: 'auto',
