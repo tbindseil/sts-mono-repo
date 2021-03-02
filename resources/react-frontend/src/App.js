@@ -23,7 +23,6 @@ import {ConfirmPasswordReset} from "./components/auth/ConfirmPasswordReset";
 import {Delete} from "./components/auth/Delete";
 
 import {Profile} from "./components/profile/Profile";
-import {CalendarScreen} from "./components/calendar/Calendar";
 import {MyCalendarScreen} from "./components/calendar/MyCalendarScreen";
 import {CreateAvailability} from "./components/calendar/CreateAvailability";
 import {DeleteAvailabilityScreen} from "./components/calendar/DeleteAvailabilityScreen";
@@ -55,7 +54,6 @@ const App = () => {
         <Route path={"/delete-account"} component={Delete}/>
 
         <Route path={"/profile"} component={Profile}/>
-        <Route path={"/calendar"} component={CalendarScreen}/>
         <Route path={"/my-calendar"} component={MyCalendarScreen}/>
         <Route path={"/create-availability"} component={CreateAvailability}/>
         <Route path={"/delete-availability"} component={DeleteAvailabilityScreen}/>

@@ -61,13 +61,14 @@ export function MyCalendarScreen(props) {
             .then(res => res.json())
             .then(
                 (result) => {
-                    console.log(moment());
                     const availabilitiesWithDates = result.map(a => {
                         return {
                             endTime: moment.utc(a.endTime).local().toDate(),
                             startTime: moment.utc(a.startTime).local().toDate(),
                             subjects: a.subjects,
-                            tutor: a.tutor
+                            tutor: a.tutor,
+                            id: a.id
+                            // TODO spread operator
                         }
                     });
 
@@ -97,41 +98,16 @@ export function MyCalendarScreen(props) {
     // find previous sunday if day is not sunday
     var currDay = moment(selectedDate).subtract(weekDayNumber, "days").toDate();
 
-    const onClickDay = (event) => {
-        console.log("event is:");
-        console.log(event);
-        history.push({
-            pathname: "/create-availability",
-            state: {
-                selectedDate: event.target.value
-            }
-        });
-    }
-
     // make a CalendarDayContent for each day of week
     const calendarDays = [];
     const calendarHeaders = [];
     for (var i = 0; i < 7; i++) {
-        console.log("currDay is:");
-        console.log(currDay);
-
         calendarHeaders.push(
             <th style={headerStyle}>
                 {moment(currDay).format("dddd, MMM D")}
             </th>
         );
 
-        /*const currDayConst = currDay;
-        calendarDays.push(
-            <td style={calendarDayStyle} onClick={() => {
-                    onClickDay(currDayConst);
-                }}>
-                <CalendarDayContent
-                    key={currDay.toString()}
-                    date={currDay}
-                    availabilities={availabilities}/>
-            </td>
-        );*/
         calendarDays.push(
             <td style={calendarDayStyle}>
                 <CalendarDayContent
@@ -140,7 +116,7 @@ export function MyCalendarScreen(props) {
                     availabilities={availabilities}/>
             </td>
         );
-        // tomorrow..
+
         currDay = moment(currDay).add(1, "days").toDate(); 
     }
 

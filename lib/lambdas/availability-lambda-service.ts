@@ -46,7 +46,13 @@ export class AvailabilityLambdaService extends Construct {
             requestTemplates: { "application/json": '{ "statusCode": "200" }' }
         });
 
+        const availability = api.root.addResource("{availability-id}");
+
+        // Remove a specific availability from the db with: DELETE /{availability-id}
+        const deleteAvailabilityIntegration = new LambdaIntegration(handler);
+
         api.root.addMethod("GET", getAvailabilitiesIntegration); // GET /
         api.root.addMethod("POST", postAvailabilityIntegration); // POST /
+        availability.addMethod("DELETE", deleteAvailabilityIntegration); // DELETE /{availability-id}
     }
 }

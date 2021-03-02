@@ -50,6 +50,7 @@ export class UserLambdaService extends Construct {
         // Get a specific user from bucket with: GET /{user-id}
         const getUserIntegration = new LambdaIntegration(handler);
 
+        // TODO not a bucket..
         // Remove a specific user from the bucket with: DELETE /{user-id}
         const deleteUserIntegration = new LambdaIntegration(handler);
 

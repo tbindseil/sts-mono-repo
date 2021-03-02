@@ -146,11 +146,6 @@ export function Profile() {
             </Row>
             <Row>
                 <button>
-                    <a href="/calendar">Calendar</a>
-                </button>
-            </Row>
-            <Row>
-                <button>
                     <a href="/logout">Logout</a>
                 </button>
             </Row>

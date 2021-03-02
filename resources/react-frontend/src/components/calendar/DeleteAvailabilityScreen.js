@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 
 import {useHistory} from 'react-router-dom';
 import {Row} from 'antd';
+import moment from 'moment';
 
 import {Header} from '../Header';
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
@@ -10,7 +11,7 @@ import {checkAuthenticated} from "../auth/CheckAuthenticated";
 //      I guess that means this is the availabilityscreen compononent
 export function DeleteAvailabilityScreen(props) {
 
-    const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
+    const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod/'
 
     const history = useHistory();
 
@@ -59,6 +60,8 @@ export function DeleteAvailabilityScreen(props) {
     if (!stateProps || !stateProps.availability) {
         return <h2>Whoops, no availability provided</h2>
     }
+    console.log("stateProps.availability is:");
+    console.log(stateProps.availability);
     const availability = stateProps.availability;
 
     return (
@@ -72,17 +75,17 @@ export function DeleteAvailabilityScreen(props) {
             <Row>
                 <AvailabilityPiece
                     header={"Subjects:"}
-                    content={props.profile.firstName}
+                    content={availability.subjects}
                 />
 
                 <AvailabilityPiece
                     header={"Start Time:"}
-                    content={props.profile.lastName}
+                    content={moment(availability.startTime).format('MMMM Do YYYY, h:mm:ss a')}
                 />
 
                 <AvailabilityPiece
                     header={"End Time:"}
-                    content={props.profile.school}
+                    content={moment(availability.endTime).format('MMMM Do YYYY, h:mm:ss a')}
                 />
 
                 <button onClick={onClickDelete}>

@@ -127,8 +127,9 @@ def availability_to_dict(availability):
         'startTime': str(availability.startTime),
         'endTime': str(availability.endTime),
         'subjects': availability.subjects,
-        'tutor': availability.tutor
-    };
+        'tutor': availability.tutor,
+        'id': availability.id
+    }
 
 
 def make_response(status, body):
@@ -159,7 +160,7 @@ def lambda_handler(event, context):
 
     method = event['httpMethod']
 
-    if not (method == 'GET' or method == 'POST'):
+    if not (method == 'GET' or method == 'POST' or method == 'DELETE'):
         return make_response(405, json.dumps("only GET and POST are valid"))
 
     # db access
@@ -200,6 +201,27 @@ def lambda_handler(event, context):
         session.add(user)
         session.commit()
         return make_response(200, json.dumps("success"))
+
+    if method == 'DELETE':
+        availability_id_to_delete = event['path'].split('/')[-1]
+        print("availability_id_to_delete is")
+        print(availability_id_to_delete)
+        avail_to_delete = session.query(Availability).filter(Availability.id==availability_id_to_delete).one()
+
+        # make sure the user is deleting his/her own avail
+        print("cognito_id is:")
+        print(cognito_id)
+        print("avail_to_delete.tutor is:")
+        print(avail_to_delete.tutor)
+        if cognito_id != avail_to_delete.tutor:
+            return make_response(401, json.dumps("unauthorized"))
+
+        session.delete(avail_to_delete)
+        session.commit()
+        print("ddelete committed")
+        return make_response(200, "")
+
+    return make_response(500, "")
 
 
 # the following is useful to make this script executable in both

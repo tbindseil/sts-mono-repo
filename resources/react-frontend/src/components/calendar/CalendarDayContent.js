@@ -58,7 +58,6 @@ export function CalendarDayContent(props) {
     }
 
     const onClickDay = (event) => {
-        console.log("onClickDay");
         history.push({
             pathname: "/create-availability",
             state: {
@@ -67,12 +66,11 @@ export function CalendarDayContent(props) {
         });
     }
 
-    const onClickAvailability = (event) => {
-        console.log("onClickAvailability");
+    const onClickDeleteAvailability = (availability) => {
         history.push({
             pathname: "/delete-availability",
             state: {
-                availability: event.target.value
+                availability: availability
             }
         });
     }
@@ -85,17 +83,17 @@ export function CalendarDayContent(props) {
                         width: "100%"
                     };
 
-                    console.log("height is:");
-                    console.log(timeSlice.height);
-
                     if (timeSlice.availability) {
+                        console.log("timeSlice.availability is:");
+                        console.log(timeSlice.availability);
                         return (
                             <Button
                                 key={timeSlice.key}
                                 className="Availability-button"
                                 style={style}
-                                onClick={onClickAvailability}
-                                value={timeSlice.availability}>
+                                onClick={() => {
+                                    onClickDeleteAvailability(timeSlice.availability);
+                                }}>
                                 { timeSlice.height > 22 ? timeSlice.availability.subjects : ""}
                             </Button>
                         );
