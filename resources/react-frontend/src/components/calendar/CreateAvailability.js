@@ -16,8 +16,7 @@ export function CreateAvailability(props) {
 
     // TODO make today selected date if no selected date
     const stateProps = props.location.state;
-    console.log("props is");
-    console.log(props);
+    const selectedDate = stateProps ? (stateProps.selectedDate ? stateProps.selectedDate : new Date()) : new Date();
 
     const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
 
@@ -39,7 +38,7 @@ export function CreateAvailability(props) {
     ]);
 
     const [subjects, setSubjects] = useState("");
-    const [startTime, setStartTime] = useState(stateProps.selectedDate);
+    const [startTime, setStartTime] = useState(selectedDate);
     const [duration, setDuration] = useState(15);
 
     // TODO input validation, amongst many other things like using better input methods
@@ -73,7 +72,7 @@ export function CreateAvailability(props) {
         if (name === "subjects") {
             setSubjects(value);
         } else if (name === "startTime") {
-            const startTimeAsDate = moment(stateProps.selectedDate).startOf("day").add(value, 'h').toDate();
+            const startTimeAsDate = moment(selectedDate).startOf("day").add(value, 'h').toDate();
             setStartTime(startTimeAsDate);
         } else if (name === "duration") {
             setDuration(value);
@@ -81,17 +80,23 @@ export function CreateAvailability(props) {
     }
 
     const onFinish = async () => {
-        // TODO send daate
         await postAvailability();
-        history.push("/my-calendar");
+        history.push({
+            pathname: "/my-calendar",
+            state: {
+                selectedDate: selectedDate
+            }
+        });
     };
 
     const onCancel = () => {
-        history.push("/my-calendar");
+        history.push({
+            pathname: "/my-calendar",
+            state: {
+                selectedDate: selectedDate
+            }
+        });
     };
-
-    console.log("stateProps.selectedDate is");
-    console.log(stateProps.selectedDate);
 
     return (
         <>
@@ -111,7 +116,7 @@ export function CreateAvailability(props) {
                     <Form.Item
                         label="Selected Date">
                         <Input
-                            value={moment(stateProps.selectedDate).format("dddd, MMM D")}
+                            value={moment(selectedDate).format("dddd, MMM D")}
                             name="selectedDate"
                             disabled={true}
                         />

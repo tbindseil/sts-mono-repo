@@ -26,6 +26,7 @@ import {Profile} from "./components/profile/Profile";
 import {CalendarScreen} from "./components/calendar/Calendar";
 import {MyCalendarScreen} from "./components/calendar/MyCalendarScreen";
 import {CreateAvailability} from "./components/calendar/CreateAvailability";
+import {DeleteAvailabilityScreen} from "./components/calendar/DeleteAvailabilityScreen";
 
 
 Amplify.configure(awsConfig);
@@ -57,6 +58,7 @@ const App = () => {
         <Route path={"/calendar"} component={CalendarScreen}/>
         <Route path={"/my-calendar"} component={MyCalendarScreen}/>
         <Route path={"/create-availability"} component={CreateAvailability}/>
+        <Route path={"/delete-availability"} component={DeleteAvailabilityScreen}/>
 
       </Switch>
     </div>

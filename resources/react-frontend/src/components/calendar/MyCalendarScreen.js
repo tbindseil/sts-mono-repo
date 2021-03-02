@@ -4,6 +4,7 @@ import {useHistory} from 'react-router-dom';
 import { Button } from 'antd';
 import moment from 'moment';
 
+import {Header} from '../Header';
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
 import {CalendarDayContent} from './CalendarDayContent';
 
@@ -132,7 +133,7 @@ export function MyCalendarScreen(props) {
             </td>
         );*/
         calendarDays.push(
-            <td style={calendarDayStyle} onClick={onClickDay} value={currDay}>
+            <td style={calendarDayStyle}>
                 <CalendarDayContent
                     key={currDay.toString()}
                     date={currDay}
@@ -163,6 +164,8 @@ export function MyCalendarScreen(props) {
 
     return (
         <>
+            <Header/>
+
             <p>
                 My Calendar Screen
             </p>

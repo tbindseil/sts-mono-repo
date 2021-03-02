@@ -58,12 +58,21 @@ export function CalendarDayContent(props) {
     }
 
     const onClickDay = (event) => {
-        console.log("event is:");
-        console.log(event);
+        console.log("onClickDay");
         history.push({
             pathname: "/create-availability",
             state: {
                 selectedDate: event.target.value
+            }
+        });
+    }
+
+    const onClickAvailability = (event) => {
+        console.log("onClickAvailability");
+        history.push({
+            pathname: "/delete-availability",
+            state: {
+                availability: event.target.value
             }
         });
     }
@@ -76,15 +85,18 @@ export function CalendarDayContent(props) {
                         width: "100%"
                     };
 
+                    console.log("height is:");
+                    console.log(timeSlice.height);
+
                     if (timeSlice.availability) {
                         return (
                             <Button
                                 key={timeSlice.key}
                                 className="Availability-button"
                                 style={style}
-                                onClick={onClickDay}
-                                value={props.date}>
-                                {timeSlice.availability.subjects}
+                                onClick={onClickAvailability}
+                                value={timeSlice.availability}>
+                                { timeSlice.height > 22 ? timeSlice.availability.subjects : ""}
                             </Button>
                         );
                     } else {
@@ -95,7 +107,7 @@ export function CalendarDayContent(props) {
                                 style={style}
                                 onClick={onClickDay}
                                 value={props.date}>
-                                open
+                                { timeSlice.height > 22 ? "open" : "" }
                             </Button>
                         );
                     }
