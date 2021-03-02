@@ -35,8 +35,8 @@ const imgStyle = {
 };
 
 const pageBorder = {
-  borderLeft: '150px solid #b4c7e7',
-  borderRight: '150px solid #b4c7e7',
+  borderLeft: '10vw solid #b4c7e7',
+  borderRight: '10vw solid #b4c7e7',
   borderTop:'0px solid #005D8c',
   borderBottom:'0px solid #005D8c',
   paddingTop: '5px',
@@ -46,8 +46,8 @@ const pageBorder = {
 };
 
 const pageBorder2 = {
-  borderLeft: '10px solid #b4c7e7',
-  borderRight: '10px solid #b4c7e7',
+  borderLeft: '5vw solid #b4c7e7',
+  borderRight: '5vw solid #b4c7e7',
   borderTop:'0px solid #005D8c',
   borderBottom:'0px solid #005D8c',
   paddingTop: '5px',
