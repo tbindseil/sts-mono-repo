@@ -8,6 +8,10 @@ import {Header} from '../Header';
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
 import {CalendarDayContent} from './CalendarDayContent';
 
+const errorStyle = {
+    color: "red"
+};
+
 const tableStyle = {
     width: 1750
 };
@@ -68,7 +72,6 @@ export function MyCalendarScreen(props) {
                             subjects: a.subjects,
                             tutor: a.tutor,
                             id: a.id
-                            // TODO spread operator
                         }
                     });
 
@@ -81,11 +84,17 @@ export function MyCalendarScreen(props) {
                 }
             )
             .catch(err => {
-                // TODO
-                console.log("error fetching availabilities, err is:");
-                console.log(err);
+                setFailed(true);
+                var message = "Error getting availabilties";
+                if (err.message) {
+                    message += ": " + err.message;
+                }
+                setErrorMessage(message);
             });
     };
+
+    const [failed, setFailed] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     // based off stateProps.selectedDate
     // const today = 
@@ -145,6 +154,10 @@ export function MyCalendarScreen(props) {
             <p>
                 My Calendar Screen
             </p>
+
+            { failed &&
+                <p style={errorStyle} >{errorMessage}</p>
+            }
 
             <table>
                 <tr>

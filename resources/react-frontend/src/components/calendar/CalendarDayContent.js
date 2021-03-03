@@ -84,8 +84,6 @@ export function CalendarDayContent(props) {
                     };
 
                     if (timeSlice.availability) {
-                        console.log("timeSlice.availability is:");
-                        console.log(timeSlice.availability);
                         return (
                             <Button
                                 key={timeSlice.key}

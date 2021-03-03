@@ -4,7 +4,7 @@ import {useHistory} from 'react-router-dom';
 import {Header} from '../Header';
 import {checkUnauthenticated} from "./CheckAuthenticated";
 
-export function AnonymousUser() {
+export function AnonymousUserScreen() {
     const history = useHistory();
 
     useEffect(() => {

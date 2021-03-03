@@ -60,8 +60,6 @@ export function DeleteAvailabilityScreen(props) {
     if (!stateProps || !stateProps.availability) {
         return <h2>Whoops, no availability provided</h2>
     }
-    console.log("stateProps.availability is:");
-    console.log(stateProps.availability);
     const availability = stateProps.availability;
 
     return (

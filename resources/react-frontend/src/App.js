@@ -12,7 +12,7 @@ import {Contacts} from './components/Contacts';
 import {Home} from './components/Home';
 import {Process} from './components/Process';
 
-import {AnonymousUser} from "./components/auth/AnonymousUser";
+import {AnonymousUserScreen} from "./components/auth/AnonymousUserScreen";
 import {Login} from "./components/auth/Login";
 import {Register} from "./components/auth/Register";
 import {Confirm} from "./components/auth/Confirm";
@@ -22,9 +22,9 @@ import {InitiatePasswordReset} from "./components/auth/InitiatePasswordReset";
 import {ConfirmPasswordReset} from "./components/auth/ConfirmPasswordReset";
 import {Delete} from "./components/auth/Delete";
 
-import {Profile} from "./components/profile/Profile";
+import {ProfileScreen} from "./components/profile/ProfileScreen";
 import {MyCalendarScreen} from "./components/calendar/MyCalendarScreen";
-import {CreateAvailability} from "./components/calendar/CreateAvailability";
+import {CreateAvailabilityScreen} from "./components/calendar/CreateAvailabilityScreen";
 import {DeleteAvailabilityScreen} from "./components/calendar/DeleteAvailabilityScreen";
 
 
@@ -43,7 +43,7 @@ const App = () => {
         <Route path="/request-a-tutor" component={RequestTutor}/>
         <Route path="/contacts" component={Contacts}/>
 
-        <Route path={"/anonymous-user"} component={AnonymousUser}/>
+        <Route path={"/anonymous-user"} component={AnonymousUserScreen}/>
         <Route path={"/login"} component={Login}/>
         <Route path={"/register"} component={Register}/>
         <Route path={"/confirm"} component={Confirm}/>
@@ -53,9 +53,9 @@ const App = () => {
         <Route path={"/confirm-password-reset"} component={ConfirmPasswordReset}/>
         <Route path={"/delete-account"} component={Delete}/>
 
-        <Route path={"/profile"} component={Profile}/>
+        <Route path={"/profile"} component={ProfileScreen}/>
         <Route path={"/my-calendar"} component={MyCalendarScreen}/>
-        <Route path={"/create-availability"} component={CreateAvailability}/>
+        <Route path={"/create-availability"} component={CreateAvailabilityScreen}/>
         <Route path={"/delete-availability"} component={DeleteAvailabilityScreen}/>
 
       </Switch>

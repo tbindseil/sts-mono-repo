@@ -8,7 +8,7 @@ import {checkAuthenticated} from "../auth/CheckAuthenticated";
 import {ViewProfile, ProfilePiece} from "./ViewProfile";
 import {EditProfile} from "./EditProfile";
 
-export function Profile() {
+export function ProfileScreen() {
 
     const history = useHistory();
 

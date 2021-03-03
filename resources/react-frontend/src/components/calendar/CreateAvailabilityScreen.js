@@ -7,14 +7,12 @@ import moment from 'moment';
 import {Header} from '../Header';
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
 
+// TJTAG
 // TODO all other screens should have screen in component name like CalendarScreen
-// TODO here we should be able to choose between modifying (put), creating (post) and deleteing (delete)
-//      I guess that means this is the availabilityscreen compononent
-export function CreateAvailability(props) {
+export function CreateAvailabilityScreen(props) {
 
     const history = useHistory();
 
-    // TODO make today selected date if no selected date
     const stateProps = props.location.state;
     const selectedDate = stateProps ? (stateProps.selectedDate ? stateProps.selectedDate : new Date()) : new Date();
 
