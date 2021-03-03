@@ -10,7 +10,7 @@ import {authStyles} from './styles';
 import {checkAuthenticated} from "./CheckAuthenticated";
 import {PasswordRequirements} from './PasswordRequirements';
 
-export function ChangePassword() {
+export function ChangePasswordScreen() {
     const history = useHistory();
 
     const [user, setUser] = useState(undefined)

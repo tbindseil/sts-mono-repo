@@ -9,7 +9,7 @@ import {Header} from '../Header';
 import {authStyles} from './styles';
 import {checkUnauthenticated} from "./CheckAuthenticated";
 
-export function InitiatePasswordReset() {
+export function InitiatePasswordResetScreen() {
     const history = useHistory();
 
     useEffect(() => {

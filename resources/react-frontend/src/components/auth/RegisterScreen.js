@@ -8,8 +8,9 @@ import {Auth} from 'aws-amplify';
 import {Header} from '../Header';
 import {authStyles} from './styles';
 import {checkUnauthenticated} from "./CheckAuthenticated";
+import {PasswordRequirements} from './PasswordRequirements';
 
-export function Confirm() {
+export function RegisterScreen() {
     const history = useHistory();
 
     useEffect(() => {
@@ -20,44 +21,31 @@ export function Confirm() {
 
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
-    const [email, setEmail] = useState("");
 
     const onFinish = values => {
-        Auth.confirmSignUp(values.email, values.code, {
-            forceAliasCreation: true
-        }).then(data => {
-            history.push("/login");
-        }).catch(err => {
+        if (values.password !== values.confirmPassword) {
             setFailed(true);
-            var message = "Error Confirming";
-            if (err.message) {
-                message += ": " + err.message;
-            }
-            setErrorMessage(message);
-            // TODO some weird wait
-        });
+            setErrorMessage("password entries do not match");
+            return;
+        }
+
+        Auth.signUp(values.email, values.password)
+            .then(data => {
+                history.push("/confirm");
+            }).catch(err => {
+                setFailed(true);
+                var message = "Error Registering";
+                if (err.message) {
+                    message += ": " + err.message;
+                }
+                setErrorMessage(message);
+            });
+
     };
 
     const onFinishFailed = errorInfo => {
         setFailed(true);
-        setErrorMessage("Error Confirming");
-    };
-
-    const resendCode = () => {
-        Auth.resendSignUp(email).then(() => {
-            // do nothing
-        }).catch(err => {
-            setFailed(true);
-            var message = "Error Resending Code";
-            if (err.message) {
-                message += ": " + err.message;
-            }
-            setErrorMessage(message);
-        });
-    };
-
-    const handleEmailChange = (event) => {
-        setEmail(event.target.value);
+        setErrorMessage("Error Registering");
     };
 
     return (
@@ -66,7 +54,11 @@ export function Confirm() {
             <Header/>
 
             <Row style={{display: 'flex', justifyContent: 'center', margin: "15px"}}>
-                Use the emailed code to confirm your email
+                Register
+            </Row>
+
+            <Row>
+                <PasswordRequirements/>
             </Row>
 
             { failed &&
@@ -81,11 +73,10 @@ export function Confirm() {
                     style={authStyles.form}>
                     <Form.Item
                         name="email"
-                        onChange={handleEmailChange}
                         rules={[
                             {
                                 required: true,
-                                message: 'Please input your email',
+                                message: 'Please input your email!',
                             }
                         ]}>
                         <Input
@@ -94,32 +85,48 @@ export function Confirm() {
                         />
                     </Form.Item>
                     <Form.Item
-                        name="code"
+                        name="password"
                         rules={[
                             {
                                 required: true,
-                                message: 'Please input your confirmation code!'
+                                message: 'Please input your Password!'
                             }
                         ]}>
 
                         <Input
                             prefix={<LockOutlined/>}
-                            type="string"
-                            placeholder="Code"
+                            type="password"
+                            placeholder="Password"
                         />
+
+                    </Form.Item>
+
+                    <Form.Item
+                        name="confirmPassword"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please confirm your Password!'
+                            }
+                        ]}>
+
+                        <Input
+                            prefix={<LockOutlined/>}
+                            type="password"
+                            placeholder="confirm password"
+                        />
+
                     </Form.Item>
 
                     <Form.Item>
                         <Button type="primary" htmlType="submit" style={authStyles.formButton}>
-                            Confirm Email
+                            Register
                         </Button>
-                        <Button type="primary" onClick={resendCode} style={authStyles.formButton}>
-                            Resend Code
-                        </Button>
-                        Already confirmed? <Link to="login">Login</Link>
+                        Already registered? <Link to="login">login</Link>
                         <br/>
-                        Not registered yet? <Link to="register">register</Link>
+                        Looking to confirm registration? <Link to="confirm">confirm</Link>
                     </Form.Item>
+
                 </Form>
             </Row>
         </div>

@@ -10,7 +10,7 @@ import {authStyles} from './styles';
 import {checkUnauthenticated} from "./CheckAuthenticated";
 import {PasswordRequirements} from './PasswordRequirements';
 
-export function ConfirmPasswordReset() {
+export function ConfirmPasswordResetScreen() {
     const history = useHistory();
 
     useEffect(() => {

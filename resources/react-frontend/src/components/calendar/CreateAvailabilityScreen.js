@@ -7,8 +7,6 @@ import moment from 'moment';
 import {Header} from '../Header';
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
 
-// TJTAG
-// TODO all other screens should have screen in component name like CalendarScreen
 export function CreateAvailabilityScreen(props) {
 
     const history = useHistory();

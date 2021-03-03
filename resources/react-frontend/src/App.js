@@ -13,14 +13,14 @@ import {Home} from './components/Home';
 import {Process} from './components/Process';
 
 import {AnonymousUserScreen} from "./components/auth/AnonymousUserScreen";
-import {Login} from "./components/auth/Login";
-import {Register} from "./components/auth/Register";
-import {Confirm} from "./components/auth/Confirm";
-import {Logout} from "./components/auth/Logout";
-import {ChangePassword} from "./components/auth/ChangePassword";
-import {InitiatePasswordReset} from "./components/auth/InitiatePasswordReset";
-import {ConfirmPasswordReset} from "./components/auth/ConfirmPasswordReset";
-import {Delete} from "./components/auth/Delete";
+import {LoginScreen} from "./components/auth/LoginScreen";
+import {RegisterScreen} from "./components/auth/RegisterScreen";
+import {ConfirmScreen} from "./components/auth/ConfirmScreen";
+import {LogoutScreen} from "./components/auth/LogoutScreen";
+import {ChangePasswordScreen} from "./components/auth/ChangePasswordScreen";
+import {InitiatePasswordResetScreen} from "./components/auth/InitiatePasswordResetScreen";
+import {ConfirmPasswordResetScreen} from "./components/auth/ConfirmPasswordResetScreen";
+import {DeleteScreen} from "./components/auth/DeleteScreen";
 
 import {ProfileScreen} from "./components/profile/ProfileScreen";
 import {MyCalendarScreen} from "./components/calendar/MyCalendarScreen";
@@ -44,14 +44,14 @@ const App = () => {
         <Route path="/contacts" component={Contacts}/>
 
         <Route path={"/anonymous-user"} component={AnonymousUserScreen}/>
-        <Route path={"/login"} component={Login}/>
-        <Route path={"/register"} component={Register}/>
-        <Route path={"/confirm"} component={Confirm}/>
-        <Route path={"/logout"} component={Logout}/>
-        <Route path={"/change-password"} component={ChangePassword}/>
-        <Route path={"/initiate-password-reset"} component={InitiatePasswordReset}/>
-        <Route path={"/confirm-password-reset"} component={ConfirmPasswordReset}/>
-        <Route path={"/delete-account"} component={Delete}/>
+        <Route path={"/login"} component={LoginScreen}/>
+        <Route path={"/register"} component={RegisterScreen}/>
+        <Route path={"/confirm"} component={ConfirmScreen}/>
+        <Route path={"/logout"} component={LogoutScreen}/>
+        <Route path={"/change-password"} component={ChangePasswordScreen}/>
+        <Route path={"/initiate-password-reset"} component={InitiatePasswordResetScreen}/>
+        <Route path={"/confirm-password-reset"} component={ConfirmPasswordResetScreen}/>
+        <Route path={"/delete-account"} component={DeleteScreen}/>
 
         <Route path={"/profile"} component={ProfileScreen}/>
         <Route path={"/my-calendar"} component={MyCalendarScreen}/>

@@ -9,7 +9,7 @@ import {Header} from '../Header';
 import {authStyles} from './styles';
 import {checkUnauthenticated} from "./CheckAuthenticated";
 
-export function Login() {
+export function LoginScreen() {
     const history = useHistory();
 
     useEffect(() => {

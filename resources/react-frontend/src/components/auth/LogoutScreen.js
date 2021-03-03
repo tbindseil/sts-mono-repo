@@ -8,7 +8,7 @@ import {Header} from '../Header';
 import {authStyles} from './styles';
 import {checkAuthenticated} from "./CheckAuthenticated";
 
-export function Logout() {
+export function LogoutScreen() {
     const history = useHistory();
 
     useEffect(() => {

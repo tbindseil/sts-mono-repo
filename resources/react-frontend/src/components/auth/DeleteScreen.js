@@ -9,7 +9,7 @@ import {Header} from '../Header';
 import {authStyles} from './styles';
 import {checkAuthenticated} from "./CheckAuthenticated";
 
-export function Delete() {
+export function DeleteScreen() {
     const baseUrl = 'https://oercmchy3l.execute-api.us-west-2.amazonaws.com/prod/';
 
     const history = useHistory();
