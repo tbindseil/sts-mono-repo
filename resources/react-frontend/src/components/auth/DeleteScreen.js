@@ -22,8 +22,17 @@ export function DeleteScreen() {
     ]);
 
     const [failed, setFailed] = useState(false);
+    const [confirming, setConfirming] = useState(false);
 
     const onFinish = async (values) => {
+        setConfirming(true);
+    };
+
+    const onFinishFailed = errorInfo => {
+        setFailed(true);
+    };
+
+    const onClickYes = () => {
         try {
             const cognitoIdentityProvider = new CognitoIdentityProvider({region: 'us-west-2'});
 
@@ -53,39 +62,46 @@ export function DeleteScreen() {
         }
     };
 
-    const onFinishFailed = errorInfo => {
-        setFailed(true);
+    const onClickNo = () => {
+        setConfirming(false);
     };
 
-   return (
-       <div>
+    return (
+        <div>
 
-           <Header/>
+            <Header/>
 
-           <Row style={{display: 'flex', justifyContent: 'center', margin: "15px"}}>
-               Delete Account
-           </Row>
+            <Row style={{display: 'flex', justifyContent: 'center', margin: "15px"}}>
+                Delete Account
+            </Row>
 
-           { failed &&
-               <p style={authStyles.errorMsg} >Error deleting account</p>
-           }
+            { failed &&
+                <p style={authStyles.errorMsg} >Error deleting account</p>
+            }
 
-           <Row>
-               <Form
-                   name="basic"
-                   onFinish={onFinish}
-                   onFinishFailed={onFinishFailed}
-                   style={authStyles.form}>
-                   <Form.Item>
-                       <Button type="primary" htmlType="submit" style={authStyles.formButton}>
-                           Delete Account
-                       </Button>
-                   </Form.Item>
-                   { // TODO are you sure you want to delete account?
-                   }
-               </Form>
-           </Row>
-       </div>
-   )
+            <Row>
+                <Form
+                    name="basic"
+                    onFinish={onFinish}
+                    onFinishFailed={onFinishFailed}
+                    style={authStyles.form}>
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit" style={authStyles.formButton}>
+                            Delete Account
+                        </Button>
+                    </Form.Item>
+
+                    { confirming &&
+                        <>
+                            <p>Are you sure you'd like to delete your account and all the associated data?</p>
+                            <button onClick={onClickYes}>Yes</button>
+                            <button onClick={onClickNo}>No</button>
+                        </>
+                    }
+
+                </Form>
+            </Row>
+        </div>
+    )
 
 }
