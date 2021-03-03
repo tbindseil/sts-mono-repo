@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 
 import {Row} from 'antd';
 import {useHistory} from 'react-router-dom';
 
 import {Header} from '../Header';
+import {FormButton} from '../forms/FormButton'
+import {TextInput} from '../forms/TextInput'
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
-import {ViewProfile, ProfilePiece} from "./ViewProfile";
-import {EditProfile} from "./EditProfile";
 
 export function ProfileScreen() {
 
@@ -24,8 +24,8 @@ export function ProfileScreen() {
         history, setUser
     ]);
 
-    const [profile, setProfile] = useState("");
-    useEffect(() => {
+    // TODO use callback
+    const getProfile = useCallback(() => {
         if (!user) {
             return;
         }
@@ -64,7 +64,14 @@ export function ProfileScreen() {
         user
     ]);
 
-    const modifyOnClickHandler = () => {
+    const [profile, setProfile] = useState("");
+    useEffect(() => {
+        getProfile();
+    }, [
+        user, getProfile
+    ]);
+
+    const editProfileOnClickHandler = () => {
         setEditting(true);
     }
 
@@ -101,6 +108,7 @@ export function ProfileScreen() {
 
     const onCancel = () => {
         setEditting(false);
+        getProfile();
     }
 
     const onClickMyCalendar = () => {
@@ -112,33 +120,103 @@ export function ProfileScreen() {
         });
     }
 
+    const onFinish = () => {
+        onSave(profile);
+    }
+
+    const handleChange = (event) => {
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+
+        var updatedProfile = profile;
+        updatedProfile[name] = value;
+
+        setProfile(updatedProfile);
+    }
+
     return (
 
         <>
             <Header/>
 
-            <Row>
-                <h2>
-                    View Profile Info
-                </h2>
+            <h2>
+                Profile
+            </h2>
 
-                <ProfilePiece
-                    header="Email:"
-                    content={profile.email}
-                />
+            <form
+                onChange={handleChange}>
 
-                {editting ?
-                    <EditProfile
-                        currProfile={profile}
-                        onSave={onSave}
-                        onCancel={onCancel}
-                    /> :
-                    <ViewProfile
-                        profile={profile}
-                        modifyOnClickHandler={modifyOnClickHandler}
-                    />}
+                <TextInput
+                    name={"email"}
+                    label={"Email:"}
+                    value={profile.email}
+                    readOnly={true}/>
+                <br/>
+                <br/>
 
-            </Row>
+                <TextInput
+                    name={"firstName"}
+                    label={"First Name:"}
+                    value={profile.firstName}
+                    readOnly={!editting}/>
+                <br/>
+                <br/>
+
+                <TextInput
+                    name={"lastName"}
+                    label={"Last Name:"}
+                    value={profile.lastName}
+                    readOnly={!editting}/>
+                <br/>
+                <br/>
+
+                <TextInput
+                    name={"school"}
+                    label={"School:"}
+                    value={profile.school}
+                    readOnly={!editting}/>
+                <br/>
+                <br/>
+
+                <TextInput
+                    name={"grade"}
+                    label={"Grade:"}
+                    value={profile.grade}
+                    readOnly={!editting}/>
+                <br/>
+                <br/>
+
+                <TextInput
+                    name={"bio"}
+                    label={"Bio:"}
+                    value={profile.bio}
+                    readOnly={!editting}/>
+                <br/>
+                <br/>
+
+                { editting ?
+                    <>
+
+                        <FormButton
+                            onClick={onFinish}
+                            value={"Update Profile"}/>
+                        <FormButton
+                            onClick={onCancel}
+                            value={"Cancel"}/>
+                    </> :
+                    <>
+                        <FormButton
+                            onClick={editProfileOnClickHandler}
+                            value={"Edit Profile"}/>
+                    </> }
+            </form>
+
+            <br/>
+            <br/>
+
+            { // TODO could probably be part of profile drop down
+            }
             <Row>
                 <button onClick={onClickMyCalendar}>
                     <a href="/my-calendar">My Calendar</a>

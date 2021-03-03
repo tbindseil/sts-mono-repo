@@ -16,6 +16,7 @@ export function CreateAvailabilityScreen(props) {
 
     const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
 
+    // TJTAG
     // TODO forms, uhhh
     const styles = {
         loginForm: {
