@@ -2,6 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 
 import {Row} from 'antd';
 import {useHistory} from 'react-router-dom';
+import {cloneDeep} from 'lodash';
 
 import {Header} from '../Header';
 import {FormButton} from '../forms/FormButton'
@@ -64,7 +65,14 @@ export function ProfileScreen() {
         user
     ]);
 
-    const [profile, setProfile] = useState("");
+    const [profile, setProfile] = useState({
+        email: "",
+        firstName: "",
+        lastName: "",
+        school: "",
+        grade: "",
+        bio: ""
+    });
     useEffect(() => {
         getProfile();
     }, [
@@ -129,7 +137,7 @@ export function ProfileScreen() {
         const value = target.value;
         const name = target.name;
 
-        var updatedProfile = profile;
+        var updatedProfile = cloneDeep(profile);
         updatedProfile[name] = value;
 
         setProfile(updatedProfile);
