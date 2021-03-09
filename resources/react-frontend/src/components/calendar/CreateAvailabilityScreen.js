@@ -1,10 +1,12 @@
 import React, {useEffect, useState} from 'react';
 
 import {useHistory} from 'react-router-dom';
-import {Button, Form, Input, Row} from 'antd';
+import {Row} from 'antd';
 import moment from 'moment';
 
 import {Header} from '../Header';
+import {TextInput} from '../forms/TextInput';
+import {FormButton} from '../forms/FormButton';
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
 
 export function CreateAvailabilityScreen(props) {
@@ -18,14 +20,6 @@ export function CreateAvailabilityScreen(props) {
 
     // TJTAG
     // TODO forms, uhhh
-    const styles = {
-        loginForm: {
-            "maxWidth": "600px",
-        },
-        loginFormButton: {
-            "width": "100%"
-        }
-    };
 
     const [user, setUser] = useState(undefined)
     useEffect(() => {
@@ -35,16 +29,18 @@ export function CreateAvailabilityScreen(props) {
     ]);
 
     const [subjects, setSubjects] = useState("");
-    const [startTime, setStartTime] = useState(selectedDate);
+    const [startTime, setStartTime] = useState(16);
     const [duration, setDuration] = useState(15);
 
     // TODO input validation, amongst many other things like using better input methods
     const postAvailability = async () => {
 
+        const startTimeAsDate = moment(selectedDate).startOf("day").add(startTime, 'h').toDate();
+
         const availability = {
             subjects: subjects,
-            startTime: startTime,
-            endTime: moment(startTime).add(duration, 'm').toDate(),
+            startTime: startTimeAsDate,
+            endTime: moment(startTimeAsDate).add(duration, 'm').toDate(),
             tutor: user.username
         };
 
@@ -69,15 +65,16 @@ export function CreateAvailabilityScreen(props) {
         if (name === "subjects") {
             setSubjects(value);
         } else if (name === "startTime") {
-            const startTimeAsDate = moment(selectedDate).startOf("day").add(value, 'h').toDate();
-            setStartTime(startTimeAsDate);
+            setStartTime(value);
         } else if (name === "duration") {
             setDuration(value);
         }
     }
 
     const onFinish = async () => {
+        console.log("calling onFinish");
         await postAvailability();
+        console.log("done calling onFinish");
         history.push({
             pathname: "/my-calendar",
             state: {
@@ -104,75 +101,47 @@ export function CreateAvailabilityScreen(props) {
             </h2>
 
             <Row>
-                <Form
-                    name="basic"
-                    onChange={handleChange}
-                    onFinish={onFinish}
-                    style={styles.loginForm}>
 
-                    <Form.Item
-                        label="Selected Date">
-                        <Input
-                            value={moment(selectedDate).format("dddd, MMM D")}
-                            name="selectedDate"
-                            disabled={true}
-                        />
-                    </Form.Item>
+                <form
+                    onChange={handleChange}>
 
-                    <Form.Item
-                        name="subjects"
-                        label='Subjects'
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Subjects',
-                            }
-                        ]}>
-                        <Input
-                            placeholder="Subjects"
-                            name="subjects"
-                        />
-                    </Form.Item>
+                    <TextInput
+                        name={"selectedDate"}
+                        label={"Selected Date"}
+                        value={moment(selectedDate).format("dddd, MMM D")}
+                        readOnly={true}/>
+                    <br/>
+                    <br/>
 
-                    <Form.Item
-                        name="startTime"
-                        label='Start Time (in hours, think military time..)'
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Choose a start time for availability',
-                            }
-                        ]}>
-                        <Input
-                            placeholder="Start Time"
-                            name="startTime"
-                        />
-                    </Form.Item>
+                    <TextInput
+                        name={"subjects"}
+                        label={"Subjects"}
+                        value={subjects}/>
+                    <br/>
+                    <br/>
 
-                    <Form.Item
-                        name="duration"
-                        label='Duration'
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Provide a duration for the availability (in minutes)',
-                            }
-                        ]}>
-                        <Input
-                            placeholder="Duration"
-                            name="duration"
-                        />
-                    </Form.Item>
+                    <TextInput
+                        name={"startTime"}
+                        label={'Start Time (in hours, think military time..)'}
+                        value={startTime}/>
+                    <br/>
+                    <br/>
 
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit" style={styles.loginFormButton}>
-                            Create Availability
-                        </Button>
-                        <Button type="primary" style={styles.loginFormButton} onClick={onCancel}>
-                            Cancel
-                        </Button>
-                    </Form.Item>
-                </Form>
+                    <TextInput
+                        name={"duration"}
+                        label={'Duration (in minutes)'}
+                        value={duration}/>
+                    <br/>
+                    <br/>
+
+                    <FormButton
+                        onClick={onCancel}
+                        value={"Cancel"}/>
+                    <FormButton
+                        onClick={onFinish}
+                        value={"Create Availability"}/>
+                </form>
+
             </Row>
         </>
     );

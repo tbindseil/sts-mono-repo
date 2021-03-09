@@ -1,5 +1,6 @@
 import React from 'react';
 
+// TODO required
 export function TextInput(props) {
     return (
         <>
@@ -9,7 +10,6 @@ export function TextInput(props) {
             </label>
             <input
                 type={"text"}
-                id={props.name}
                 name={props.name}
                 value={props.value}
                 readOnly={props.readOnly}/>

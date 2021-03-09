@@ -28,6 +28,8 @@ import {CreateAvailabilityScreen} from "./components/calendar/CreateAvailability
 import {DeleteAvailabilityScreen} from "./components/calendar/DeleteAvailabilityScreen";
 
 
+// TODO currenct week button
+// TODO add blue
 Amplify.configure(awsConfig);
 
 const App = () => {
