@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useHistory} from 'react-router-dom';
 
-import { Button } from 'antd';
 import moment from 'moment';
 
 import {Header} from '../Header';
@@ -138,6 +137,15 @@ export function MyCalendarScreen(props) {
         });
     };
 
+    const onClickCurrentWeek = () => {
+        history.push({
+            pathname: "/my-calendar",
+            state: {
+                selectedDate: moment().toDate()
+            }
+        });
+    };
+
     const onClickNextWeek = () => {
         history.push({
             pathname: "/my-calendar",
@@ -162,12 +170,15 @@ export function MyCalendarScreen(props) {
             <table>
                 <tr>
                     <td>
-                        <Button onClick={onClickPreviousWeek}>
+                        <button onClick={onClickPreviousWeek}>
                             Previous Week
-                        </Button>
-                        <Button onClick={onClickNextWeek}>
+                        </button>
+                        <button onClick={onClickCurrentWeek}>
+                            Current Week
+                        </button>
+                        <button onClick={onClickNextWeek}>
                             Next Week
-                        </Button>
+                        </button>
                     </td>
                 </tr>
             </table>

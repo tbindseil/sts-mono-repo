@@ -1,7 +1,6 @@
 import React from 'react';
 import {useHistory} from 'react-router-dom';
 
-import { Button } from 'antd';
 import moment from 'moment';
 
 import './Calendar.css';
@@ -85,7 +84,7 @@ export function CalendarDayContent(props) {
 
                     if (timeSlice.availability) {
                         return (
-                            <Button
+                            <button
                                 key={timeSlice.key}
                                 className="Availability-button"
                                 style={style}
@@ -93,18 +92,18 @@ export function CalendarDayContent(props) {
                                     onClickDeleteAvailability(timeSlice.availability);
                                 }}>
                                 { timeSlice.height > 22 ? timeSlice.availability.subjects : ""}
-                            </Button>
+                            </button>
                         );
                     } else {
                         return (
-                            <Button
+                            <button
                                 key={timeSlice.key}
                                 className="Open-time-button"
                                 style={style}
                                 onClick={onClickDay}
                                 value={props.date}>
                                 { timeSlice.height > 22 ? "open" : "" }
-                            </Button>
+                            </button>
                         );
                     }
                 })
