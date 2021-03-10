@@ -10,7 +10,10 @@ import './Calendar.css';
 const minutesPerPixel = 2;
 const pixelsInADay = 24 * (60 / minutesPerPixel);
 const totalHeightStyle = {
-    "height": pixelsInADay
+    "height": pixelsInADay,
+    "width": "100%",
+    "paddingLeft": 0,
+    "paddingRight": 0
 }
 
 export function CalendarDayContent(props) {
@@ -56,11 +59,11 @@ export function CalendarDayContent(props) {
         });
     }
 
-    const onClickDay = (event) => {
+    const onClickDay = (value) => {
         history.push({
             pathname: "/create-availability",
             state: {
-                selectedDate: event.target.value
+                selectedDate: value
             }
         });
     }
@@ -75,7 +78,7 @@ export function CalendarDayContent(props) {
     }
 
     return (
-        <div style={totalHeightStyle}>
+        <button style={totalHeightStyle}>
             { timeSlices.map(timeSlice => {
                     const style = {
                         height: timeSlice.height,
@@ -84,31 +87,32 @@ export function CalendarDayContent(props) {
 
                     if (timeSlice.availability) {
                         return (
-                            <button
+                            <div
                                 key={timeSlice.key}
                                 className="Availability-button"
                                 style={style}
                                 onClick={() => {
                                     onClickDeleteAvailability(timeSlice.availability);
                                 }}>
-                                { timeSlice.height > 22 ? timeSlice.availability.subjects : ""}
-                            </button>
+                                { timeSlice.height > 22 ? timeSlice.availability.subjects : "" }
+                            </div>
                         );
                     } else {
                         return (
-                            <button
+                            <div
                                 key={timeSlice.key}
                                 className="Open-time-button"
                                 style={style}
-                                onClick={onClickDay}
-                                value={props.date}>
+                                onClick={() => {
+                                    onClickDay(props.date)
+                                }}>
                                 { timeSlice.height > 22 ? "open" : "" }
-                            </button>
+                            </div>
                         );
                     }
                 })
             }
-        </div>
+        </button>
     );
 }
 
