@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 
 import {useHistory} from 'react-router-dom';
-import {Row} from 'antd';
 import moment from 'moment';
 
 import {Header} from '../Header';
@@ -100,49 +99,46 @@ export function CreateAvailabilityScreen(props) {
                 CreateAvailability
             </h2>
 
-            <Row>
+            <form
+                onChange={handleChange}>
 
-                <form
-                    onChange={handleChange}>
+                <TextInput
+                    name={"selectedDate"}
+                    label={"Selected Date"}
+                    value={moment(selectedDate).format("dddd, MMM D")}
+                    readOnly={true}/>
+                <br/>
+                <br/>
 
-                    <TextInput
-                        name={"selectedDate"}
-                        label={"Selected Date"}
-                        value={moment(selectedDate).format("dddd, MMM D")}
-                        readOnly={true}/>
-                    <br/>
-                    <br/>
+                <TextInput
+                    name={"subjects"}
+                    label={"Subjects"}
+                    value={subjects}/>
+                <br/>
+                <br/>
 
-                    <TextInput
-                        name={"subjects"}
-                        label={"Subjects"}
-                        value={subjects}/>
-                    <br/>
-                    <br/>
+                <TextInput
+                    name={"startTime"}
+                    label={'Start Time (in hours, think military time..)'}
+                    value={startTime}/>
+                <br/>
+                <br/>
 
-                    <TextInput
-                        name={"startTime"}
-                        label={'Start Time (in hours, think military time..)'}
-                        value={startTime}/>
-                    <br/>
-                    <br/>
+                <TextInput
+                    name={"duration"}
+                    label={'Duration (in minutes)'}
+                    value={duration}/>
+                <br/>
+                <br/>
 
-                    <TextInput
-                        name={"duration"}
-                        label={'Duration (in minutes)'}
-                        value={duration}/>
-                    <br/>
-                    <br/>
+                <FormButton
+                    onClick={onCancel}
+                    value={"Cancel"}/>
+                <FormButton
+                    onClick={onFinish}
+                    value={"Create Availability"}/>
+            </form>
 
-                    <FormButton
-                        onClick={onCancel}
-                        value={"Cancel"}/>
-                    <FormButton
-                        onClick={onFinish}
-                        value={"Create Availability"}/>
-                </form>
-
-            </Row>
         </>
     );
 }

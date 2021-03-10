@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 
 import {useHistory} from 'react-router-dom';
-import {Row} from 'antd';
 import moment from 'moment';
 
 import {Header} from '../Header';
@@ -70,30 +69,28 @@ export function DeleteAvailabilityScreen(props) {
                 Delete Availability
             </h2>
 
-            <Row>
-                <AvailabilityPiece
-                    header={"Subjects:"}
-                    content={availability.subjects}
-                />
+            <AvailabilityPiece
+                header={"Subjects:"}
+                content={availability.subjects}
+            />
 
-                <AvailabilityPiece
-                    header={"Start Time:"}
-                    content={moment(availability.startTime).format('MMMM Do YYYY, h:mm:ss a')}
-                />
+            <AvailabilityPiece
+                header={"Start Time:"}
+                content={moment(availability.startTime).format('MMMM Do YYYY, h:mm:ss a')}
+            />
 
-                <AvailabilityPiece
-                    header={"End Time:"}
-                    content={moment(availability.endTime).format('MMMM Do YYYY, h:mm:ss a')}
-                />
+            <AvailabilityPiece
+                header={"End Time:"}
+                content={moment(availability.endTime).format('MMMM Do YYYY, h:mm:ss a')}
+            />
 
-                <button onClick={onClickDelete}>
-                   Delete 
-                </button>
+            <button onClick={onClickDelete}>
+               Delete 
+            </button>
 
-                <button onClick={onCancel}>
-                   Cancel 
-                </button>
-            </Row>
+            <button onClick={onCancel}>
+               Cancel 
+            </button>
         </>
     );
 }

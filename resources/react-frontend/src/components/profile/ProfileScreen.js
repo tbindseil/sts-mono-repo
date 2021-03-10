@@ -1,6 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
 
-import {Row} from 'antd';
 import {useHistory} from 'react-router-dom';
 import {cloneDeep} from 'lodash';
 
@@ -225,26 +224,19 @@ export function ProfileScreen() {
 
             { // TODO could probably be part of profile drop down
             }
-            <Row>
-                <button onClick={onClickMyCalendar}>
-                    <a href="/my-calendar">My Calendar</a>
-                </button>
-            </Row>
-            <Row>
-                <button>
-                    <a href="/logout">Logout</a>
-                </button>
-            </Row>
-            <Row>
-                <button>
-                    <a href="/change-password">Change Password</a>
-                </button>
-            </Row>
-            <Row>
-                <button>
-                    <a href="/delete-account">Delete Account</a>
-                </button>
-            </Row>
+
+            <button onClick={onClickMyCalendar}>
+                <a href="/my-calendar">My Calendar</a>
+            </button>
+            <button>
+                <a href="/logout">Logout</a>
+            </button>
+            <button>
+                <a href="/change-password">Change Password</a>
+            </button>
+            <button>
+                <a href="/delete-account">Delete Account</a>
+            </button>
         </>
 
     );

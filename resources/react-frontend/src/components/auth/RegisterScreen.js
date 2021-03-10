@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useHistory} from 'react-router-dom';
 
-import {Row} from 'antd';
 import {Auth} from 'aws-amplify';
 
 import {Header} from '../Header';
@@ -66,55 +65,51 @@ export function RegisterScreen() {
 
             <Header/>
 
-            <Row style={{display: 'flex', justifyContent: 'center', margin: "15px"}}>
+            <p>
                 Register
-            </Row>
+            </p>
 
-            <Row>
-                <PasswordRequirements/>
-            </Row>
+            <PasswordRequirements/>
 
             { failed &&
                 <p style={authStyles.errorMsg} >{errorMessage}</p>
             }
 
-            <Row>
-                <form
-                    onChange={handleChange}>
+            <form
+                onChange={handleChange}>
 
-                    <TextInput
-                        name={"email"}
-                        label={"Email"}
-                        value={email}/>
-                    <br/>
-                    <br/>
-
-                    <TextInput
-                        name={"password"}
-                        label={"Password"}
-                        value={password}
-                        type={"password"}/>
-                    <br/>
-                    <br/>
-
-                    <TextInput
-                        name={"confirmPassword"}
-                        label={'Confirm Password'}
-                        value={confirmPassword}
-                        type={"password"}/>
-                    <br/>
-                    <br/>
-
-                    <FormButton
-                        onClick={onFinish}
-                        value={"Register"}/>
-                </form>
-
-                <a href="/login">Already registered?</a>
+                <TextInput
+                    name={"email"}
+                    label={"Email"}
+                    value={email}/>
                 <br/>
-                <a href="/confirm">Looking to confirm registration?</a>
+                <br/>
 
-            </Row>
+                <TextInput
+                    name={"password"}
+                    label={"Password"}
+                    value={password}
+                    type={"password"}/>
+                <br/>
+                <br/>
+
+                <TextInput
+                    name={"confirmPassword"}
+                    label={'Confirm Password'}
+                    value={confirmPassword}
+                    type={"password"}/>
+                <br/>
+                <br/>
+
+                <FormButton
+                    onClick={onFinish}
+                    value={"Register"}/>
+            </form>
+
+            <a href="/login">Already registered?</a>
+            <br/>
+            <a href="/confirm">Looking to confirm registration?</a>
+
         </div>
     );
 

@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useHistory} from 'react-router-dom';
 
-import {Row} from 'antd';
 import {Auth} from "aws-amplify";
 
 import {Header} from '../Header';
@@ -54,32 +53,29 @@ export function InitiatePasswordResetScreen() {
 
             <Header/>
 
-            <Row style={{display: 'flex', justifyContent: 'center', margin: "15px"}}>
+            <p>
                 Initiate Password Reset
-            </Row>
+            </p>
 
             { failed &&
                 <p style={authStyles.errorMsg} >{errorMessage}</p>
             }
 
-            <Row>
+            <form
+                onChange={handleChange}>
 
-                <form
-                    onChange={handleChange}>
+                <TextInput
+                    name={"email"}
+                    label={"Email"}
+                    value={email}/>
+                <br/>
+                <br/>
 
-                    <TextInput
-                        name={"email"}
-                        label={"Email"}
-                        value={email}/>
-                    <br/>
-                    <br/>
+                <FormButton
+                    onClick={onFinish}
+                    value={"Initiate Password Reset"}/>
+            </form>
 
-                    <FormButton
-                        onClick={onFinish}
-                        value={"Initiate Password Reset"}/>
-                </form>
-
-            </Row>
         </div>
     );
 

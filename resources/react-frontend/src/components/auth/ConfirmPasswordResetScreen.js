@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useHistory} from 'react-router-dom';
 
-import {Row} from 'antd';
 import {Auth} from 'aws-amplify';
 
 import {Header} from '../Header';
@@ -70,59 +69,54 @@ export function ConfirmPasswordResetScreen() {
 
             <Header/>
 
-            <Row style={{display: 'flex', justifyContent: 'center', margin: "15px"}}>
+            <p>
                 Use the emailed code change your password
-            </Row>
+            </p>
 
-            <Row>
-                <PasswordRequirements/>
-            </Row>
+            <PasswordRequirements/>
 
             { failed &&
                 <p style={authStyles.errorMsg} >{errorMessage}</p>
             }
 
-            <Row>
+            <form
+                onChange={handleChange}>
 
-                <form
-                    onChange={handleChange}>
+                <TextInput
+                    name={"email"}
+                    label={"Email"}
+                    value={email}/>
+                <br/>
+                <br/>
 
-                    <TextInput
-                        name={"email"}
-                        label={"Email"}
-                        value={email}/>
-                    <br/>
-                    <br/>
+                <TextInput
+                    name={"code"}
+                    label={"Code"}
+                    value={code}/>
+                <br/>
+                <br/>
 
-                    <TextInput
-                        name={"code"}
-                        label={"Code"}
-                        value={code}/>
-                    <br/>
-                    <br/>
+                <TextInput
+                    name={"newPassword"}
+                    label={"New Password"}
+                    value={newPassword}
+                    type={"password"}/>
+                <br/>
+                <br/>
 
-                    <TextInput
-                        name={"newPassword"}
-                        label={"New Password"}
-                        value={newPassword}
-                        type={"password"}/>
-                    <br/>
-                    <br/>
+                <TextInput
+                    name={"confirmPassword"}
+                    label={"Confirm New Password"}
+                    value={confirmPassword}
+                    type={"password"}/>
+                <br/>
+                <br/>
 
-                    <TextInput
-                        name={"confirmPassword"}
-                        label={"Confirm New Password"}
-                        value={confirmPassword}
-                        type={"password"}/>
-                    <br/>
-                    <br/>
+                <FormButton
+                    onClick={onFinish}
+                    value={"Reset Passord"}/>
+            </form>
 
-                    <FormButton
-                        onClick={onFinish}
-                        value={"Reset Passord"}/>
-                </form>
-
-            </Row>
         </div>
     );
 

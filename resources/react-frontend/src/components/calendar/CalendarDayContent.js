@@ -1,7 +1,7 @@
 import React from 'react';
 import {useHistory} from 'react-router-dom';
 
-import { Button, Row } from 'antd';
+import { Button } from 'antd';
 import moment from 'moment';
 
 import './Calendar.css';
@@ -76,7 +76,7 @@ export function CalendarDayContent(props) {
     }
 
     return (
-        <Row style={totalHeightStyle}>
+        <div style={totalHeightStyle}>
             { timeSlices.map(timeSlice => {
                     const style = {
                         height: timeSlice.height,
@@ -109,7 +109,7 @@ export function CalendarDayContent(props) {
                     }
                 })
             }
-        </Row>
+        </div>
     );
 }
 

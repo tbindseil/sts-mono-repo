@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useHistory} from 'react-router-dom';
 
-import {Row} from 'antd';
 import {Auth} from "aws-amplify";
 
 import {Header} from '../Header';
@@ -65,53 +64,47 @@ export function ChangePasswordScreen() {
 
             <Header/>
 
-            <Row style={{display: 'flex', justifyContent: 'center', margin: "15px"}}>
+            <p>
                 Change Password
-            </Row>
+            </p>
 
-            <Row>
-                <PasswordRequirements/>
-            </Row>
+            <PasswordRequirements/>
 
             { failed &&
                 <p style={authStyles.errorMsg} >{errorMessage}</p>
             }
 
-            <Row>
+            <form
+                onChange={handleChange}>
 
-                <form
-                    onChange={handleChange}>
+                <TextInput
+                    name={"oldPassword"}
+                    label={"Old Password"}
+                    value={oldPassword}
+                    type={"password"}/>
+                <br/>
+                <br/>
 
-                    <TextInput
-                        name={"oldPassword"}
-                        label={"Old Password"}
-                        value={oldPassword}
-                        type={"password"}/>
-                    <br/>
-                    <br/>
+                <TextInput
+                    name={"newPassword"}
+                    label={"New Password"}
+                    value={newPassword}
+                    type={"password"}/>
+                <br/>
+                <br/>
 
-                    <TextInput
-                        name={"newPassword"}
-                        label={"New Password"}
-                        value={newPassword}
-                        type={"password"}/>
-                    <br/>
-                    <br/>
+                <TextInput
+                    name={"confirmPassword"}
+                    label={"Confirm New Password"}
+                    value={confirmPassword}
+                    type={"password"}/>
+                <br/>
+                <br/>
 
-                    <TextInput
-                        name={"confirmPassword"}
-                        label={"Confirm New Password"}
-                        value={confirmPassword}
-                        type={"password"}/>
-                    <br/>
-                    <br/>
-
-                    <FormButton
-                        onClick={onFinish}
-                        value={"Change Password"}/>
-                </form>
-
-            </Row>
+                <FormButton
+                    onClick={onFinish}
+                    value={"Change Password"}/>
+            </form>
 
         </div>
     );
