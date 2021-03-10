@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {useHistory} from 'react-router-dom';
 
-import {Button, Form, Input, Row} from 'antd';
-import {LockOutlined} from "@ant-design/icons";
+import {Row} from 'antd';
 import {Auth} from "aws-amplify";
 
 import {Header} from '../Header';
+import {TextInput} from '../forms/TextInput';
+import {FormButton} from '../forms/FormButton';
 import {authStyles} from './styles';
 import {checkAuthenticated} from "./CheckAuthenticated";
 import {PasswordRequirements} from './PasswordRequirements';
@@ -22,15 +23,32 @@ export function ChangePasswordScreen() {
 
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [oldPassword, setOldPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
 
-    const onFinish = async (values) => {
-        if (values.newPassword !== values.confirmNewPassword) {
+    const handleChange = event => {
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+
+        if (name === "oldPassword") {
+            setOldPassword(value);
+        } else if (name === "newPassword") {
+            setNewPassword(value);
+        } else if (name === "confirmPassword") {
+            setConfirmPassword(value);
+        }
+    }
+
+    const onFinish = async () => {
+        if (newPassword !== confirmPassword) {
             setErrorMessage("password entries do not match");
             setFailed(true);
             return;
         }
 
-        Auth.changePassword(user, values.oldPassword, values.newPassword)
+        Auth.changePassword(user, oldPassword, newPassword)
             .then(data => history.push("/profile"))
             .catch(err => {
                 setFailed(true);
@@ -40,11 +58,6 @@ export function ChangePasswordScreen() {
                 }
                 setErrorMessage(message);
             });
-    };
-
-    const onFinishFailed = errorInfo => {
-        setErrorMessage("Error Changing Password");
-        setFailed(true);
     };
 
     return (
@@ -64,66 +77,41 @@ export function ChangePasswordScreen() {
                 <p style={authStyles.errorMsg} >{errorMessage}</p>
             }
 
-            <Form
-                name="basic"
-                onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
-                style={authStyles.form}>
+            <Row>
 
-                <Form.Item
-                    name="oldPassword"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please input your old password!'
-                        }
-                    ]}>
+                <form
+                    onChange={handleChange}>
 
-                    <Input
-                        prefix={<LockOutlined/>}
-                        type="password"
-                        placeholder="old password"
-                    />
-                </Form.Item>
+                    <TextInput
+                        name={"oldPassword"}
+                        label={"Old Password"}
+                        value={oldPassword}
+                        type={"password"}/>
+                    <br/>
+                    <br/>
 
-                <Form.Item
-                    name="newPassword"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please input your new password!'
-                        }
-                    ]}>
+                    <TextInput
+                        name={"newPassword"}
+                        label={"New Password"}
+                        value={newPassword}
+                        type={"password"}/>
+                    <br/>
+                    <br/>
 
-                    <Input
-                        prefix={<LockOutlined/>}
-                        type="password"
-                        placeholder="new password"
-                    />
-                </Form.Item>
+                    <TextInput
+                        name={"confirmPassword"}
+                        label={"Confirm New Password"}
+                        value={confirmPassword}
+                        type={"password"}/>
+                    <br/>
+                    <br/>
 
-                <Form.Item
-                    name="confirmNewPassword"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please confirm your new password!'
-                        }
-                    ]}>
+                    <FormButton
+                        onClick={onFinish}
+                        value={"Change Password"}/>
+                </form>
 
-                    <Input
-                        prefix={<LockOutlined/>}
-                        type="password"
-                        placeholder="confirm new password"
-                    />
-                </Form.Item>
-
-                <Form.Item>
-                    <Button type="primary" htmlType="submit" style={authStyles.formButton}>
-                        Change Password
-                    </Button>
-                </Form.Item>
-            </Form>
+            </Row>
 
         </div>
     );

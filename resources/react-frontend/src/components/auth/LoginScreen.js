@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {Link, useHistory} from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 
-import {Button, Form, Input} from 'antd';
-import {LockOutlined, UserOutlined} from "@ant-design/icons";
 import {Auth} from "aws-amplify";
 
 import {Header} from '../Header';
+import {TextInput} from '../forms/TextInput';
+import {FormButton} from '../forms/FormButton';
 import {authStyles} from './styles';
 import {checkUnauthenticated} from "./CheckAuthenticated";
 
@@ -20,9 +20,24 @@ export function LoginScreen() {
 
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
-    const onFinish = values => {
-        Auth.signIn(values.email, values.password)
+    const handleChange = event => {
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+
+        if (name === "email") {
+            setEmail(value);
+        } else if (name === "password") {
+            setPassword(value);
+        }
+    }
+
+
+    const onFinish = () => {
+        Auth.signIn(email, password)
             .then(user => {
                 history.push("/profile");
             })
@@ -36,65 +51,44 @@ export function LoginScreen() {
             });
     };
 
-    const onFinishFailed = errorInfo => {
-        setFailed(true);
-    };
+    return (
+        <>
+            <Header/>
 
-   return (
-       <>
-           <Header/>
+            <h1>Login</h1>
 
-           <h1>Login</h1>
+            { failed &&
+                <p style={authStyles.errorMsg} >{errorMessage}</p>
+            }
 
-           { failed &&
-               <p style={authStyles.errorMsg} >{errorMessage}</p>
-           }
+            <form
+                onChange={handleChange}>
 
-           <Form
-               name="basic"
-               onFinish={onFinish}
-               onFinishFailed={onFinishFailed}
-               style={authStyles.form}>
-               <Form.Item
-                   name="email"
-                   rules={[
-                       {
-                           required: true,
-                           message: 'Please input your email!',
-                       }
-                   ]}>
-                   <Input
-                       prefix={<UserOutlined/>}
-                       placeholder="Email"
-                   />
-               </Form.Item>
-               <Form.Item
-                   name="password"
-                   rules={[
-                       {
-                           required: true,
-                           message: 'Please input your Password!'
-                       }
-               ]}>
+                <TextInput
+                    name={"email"}
+                    label={"Email"}
+                    value={email}/>
+                <br/>
+                <br/>
 
-               <Input
-                   prefix={<LockOutlined/>}
-                   type="password"
-                   placeholder="Password"
-               />
+                <TextInput
+                    name={"password"}
+                    label={"Password"}
+                    value={password}
+                    type={"password"}/>
+                <br/>
+                <br/>
 
-               </Form.Item>
-               <Form.Item>
-                   <Link style={authStyles.formForgot} to="initiate-password-reset">
-                       Forgot password
-                   </Link>
-                   <Button type="primary" htmlType="submit" style={authStyles.formButton}>
-                       Log in
-                   </Button>
-                   Don't have an account? <Link to="register">Register here</Link>
-               </Form.Item>
-           </Form>
-       </>
+                <FormButton
+                    onClick={onFinish}
+                    value={"Log in"}/>
+            </form>
 
-   );
+            <a href="/initiate-password-reset">Forgot Password?</a>
+            <br/>
+            <a href="/register">Don't have an account?</a>
+
+        </>
+
+    );
 }

@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useHistory} from 'react-router-dom';
 
-import {Button, Form, Row} from 'antd';
 import {Auth} from "aws-amplify";
 
 import {Header} from '../Header';
@@ -35,37 +34,23 @@ export function LogoutScreen() {
             });
     };
 
-    const onFinishFailed = errorInfo => {
-        setFailed(true);
-    };
+    return (
+        <div>
 
-   return (
-       <div>
+            <Header/>
 
-           <Header/>
+            <p>
+                Logout
+            </p>
 
-           <Row style={{display: 'flex', justifyContent: 'center', margin: "15px"}}>
-               Logout
-           </Row>
+            { failed &&
+                <p style={authStyles.errorMsg} >{errorMessage}</p>
+            }
 
-           { failed &&
-               <p style={authStyles.errorMsg} >{errorMessage}</p>
-           }
+            <button onClick={onFinish}>
+                Log out?
+            </button>
 
-           <Row>
-               <Form
-                   name="basic"
-                   onFinish={onFinish}
-                   onFinishFailed={onFinishFailed}
-                   style={authStyles.form}>
-                   <Form.Item>
-                       <Button type="primary" htmlType="submit" style={authStyles.formButton}>
-                           Log out
-                       </Button>
-                   </Form.Item>
-               </Form>
-           </Row>
-       </div>
-   );
-
+        </div>
+    );
 }

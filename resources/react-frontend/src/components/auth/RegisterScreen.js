@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {Link, useHistory} from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 
-import {Button, Form, Input, Row} from 'antd';
-import {LockOutlined, UserOutlined} from "@ant-design/icons";
+import {Row} from 'antd';
 import {Auth} from 'aws-amplify';
 
 import {Header} from '../Header';
+import {TextInput} from '../forms/TextInput';
+import {FormButton} from '../forms/FormButton';
 import {authStyles} from './styles';
 import {checkUnauthenticated} from "./CheckAuthenticated";
 import {PasswordRequirements} from './PasswordRequirements';
@@ -21,15 +22,32 @@ export function RegisterScreen() {
 
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
 
-    const onFinish = values => {
-        if (values.password !== values.confirmPassword) {
+    const handleChange = event => {
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+
+        if (name === "email") {
+            setEmail(value);
+        } else if (name === "password") {
+            setPassword(value);
+        } else if (name === "confirmPassword") {
+            setConfirmPassword(value);
+        }
+    }
+
+    const onFinish = () => {
+        if (password !== confirmPassword) {
             setFailed(true);
             setErrorMessage("password entries do not match");
             return;
         }
 
-        Auth.signUp(values.email, values.password)
+        Auth.signUp(email, password)
             .then(data => {
                 history.push("/confirm");
             }).catch(err => {
@@ -41,11 +59,6 @@ export function RegisterScreen() {
                 setErrorMessage(message);
             });
 
-    };
-
-    const onFinishFailed = errorInfo => {
-        setFailed(true);
-        setErrorMessage("Error Registering");
     };
 
     return (
@@ -66,68 +79,41 @@ export function RegisterScreen() {
             }
 
             <Row>
-                <Form
-                    name="basic"
-                    onFinish={onFinish}
-                    onFinishFailed={onFinishFailed}
-                    style={authStyles.form}>
-                    <Form.Item
-                        name="email"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your email!',
-                            }
-                        ]}>
-                        <Input
-                            prefix={<UserOutlined/>}
-                            placeholder="Email"
-                        />
-                    </Form.Item>
-                    <Form.Item
-                        name="password"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your Password!'
-                            }
-                        ]}>
+                <form
+                    onChange={handleChange}>
 
-                        <Input
-                            prefix={<LockOutlined/>}
-                            type="password"
-                            placeholder="Password"
-                        />
+                    <TextInput
+                        name={"email"}
+                        label={"Email"}
+                        value={email}/>
+                    <br/>
+                    <br/>
 
-                    </Form.Item>
+                    <TextInput
+                        name={"password"}
+                        label={"Password"}
+                        value={password}
+                        type={"password"}/>
+                    <br/>
+                    <br/>
 
-                    <Form.Item
-                        name="confirmPassword"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please confirm your Password!'
-                            }
-                        ]}>
+                    <TextInput
+                        name={"confirmPassword"}
+                        label={'Confirm Password'}
+                        value={confirmPassword}
+                        type={"password"}/>
+                    <br/>
+                    <br/>
 
-                        <Input
-                            prefix={<LockOutlined/>}
-                            type="password"
-                            placeholder="confirm password"
-                        />
+                    <FormButton
+                        onClick={onFinish}
+                        value={"Register"}/>
+                </form>
 
-                    </Form.Item>
+                <a href="/login">Already registered?</a>
+                <br/>
+                <a href="/confirm">Looking to confirm registration?</a>
 
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit" style={authStyles.formButton}>
-                            Register
-                        </Button>
-                        Already registered? <Link to="login">login</Link>
-                        <br/>
-                        Looking to confirm registration? <Link to="confirm">confirm</Link>
-                    </Form.Item>
-
-                </Form>
             </Row>
         </div>
     );

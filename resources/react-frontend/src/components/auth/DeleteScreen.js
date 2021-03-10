@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useHistory} from 'react-router-dom';
 
-import {Button, Form, Row} from 'antd';
 import {Auth} from "aws-amplify";
 import {CognitoIdentityProvider} from '@aws-sdk/client-cognito-identity-provider';
 
@@ -26,10 +25,6 @@ export function DeleteScreen() {
 
     const onFinish = async (values) => {
         setConfirming(true);
-    };
-
-    const onFinishFailed = errorInfo => {
-        setFailed(true);
     };
 
     const onClickYes = () => {
@@ -71,36 +66,26 @@ export function DeleteScreen() {
 
             <Header/>
 
-            <Row style={{display: 'flex', justifyContent: 'center', margin: "15px"}}>
+            <p>
                 Delete Account
-            </Row>
+            </p>
 
             { failed &&
                 <p style={authStyles.errorMsg} >Error deleting account</p>
             }
 
-            <Row>
-                <Form
-                    name="basic"
-                    onFinish={onFinish}
-                    onFinishFailed={onFinishFailed}
-                    style={authStyles.form}>
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit" style={authStyles.formButton}>
-                            Delete Account
-                        </Button>
-                    </Form.Item>
+            <button onClick={onFinish}>
+                Delete Account?
+            </button>
 
-                    { confirming &&
-                        <>
-                            <p>Are you sure you'd like to delete your account and all the associated data?</p>
-                            <button onClick={onClickYes}>Yes</button>
-                            <button onClick={onClickNo}>No</button>
-                        </>
-                    }
+            { confirming &&
+                <>
+                    <p>Are you sure you'd like to delete your account and all the associated data?</p>
+                    <button onClick={onClickYes}>Yes</button>
+                    <button onClick={onClickNo}>No</button>
+                </>
+            }
 
-                </Form>
-            </Row>
         </div>
     )
 

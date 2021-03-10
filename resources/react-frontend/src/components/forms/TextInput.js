@@ -9,7 +9,7 @@ export function TextInput(props) {
                 {props.label}
             </label>
             <input
-                type={"text"}
+                type={props.type ? props.type : "text"}
                 name={props.name}
                 value={props.value}
                 readOnly={props.readOnly}/>

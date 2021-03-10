@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {useHistory} from 'react-router-dom';
 
-import {Button, Form, Input, Row} from 'antd';
-import {LockOutlined, UserOutlined} from "@ant-design/icons";
+import {Row} from 'antd';
 import {Auth} from 'aws-amplify';
 
 import {Header} from '../Header';
+import {TextInput} from '../forms/TextInput';
+import {FormButton} from '../forms/FormButton';
 import {authStyles} from './styles';
 import {checkUnauthenticated} from "./CheckAuthenticated";
 import {PasswordRequirements} from './PasswordRequirements';
@@ -21,15 +22,36 @@ export function ConfirmPasswordResetScreen() {
 
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [email, setEmail] = useState("");
+    const [code, setCode] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
 
-    const onFinish = values => {
-        if (values.newPassword !== values.confirmNewPassword) {
+    const handleChange = event => {
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+
+        if (name === "email") {
+            setEmail(value);
+        } else if (name === "code") {
+            setCode(value);
+        } else if (name === "newPassword") {
+            setNewPassword(value);
+        } else if (name === "confirmPassword") {
+            setConfirmPassword(value);
+        }
+    }
+
+
+    const onFinish = () => {
+        if (newPassword !== confirmPassword) {
             setErrorMessage("password entries do not match");
             setFailed(true);
             return;
         }
 
-        Auth.forgotPasswordSubmit(values.email, values.code, values.newPassword)
+        Auth.forgotPasswordSubmit(email, code, newPassword)
             .then(data => {
                 history.push("/login");
             })
@@ -41,11 +63,6 @@ export function ConfirmPasswordResetScreen() {
                 }
                 setErrorMessage(message);
             });
-    };
-
-    const onFinishFailed = errorInfo => {
-        setFailed(true);
-        setErrorMessage("Error Confirming Password Reset");
     };
 
     return (
@@ -66,79 +83,45 @@ export function ConfirmPasswordResetScreen() {
             }
 
             <Row>
-                <Form
-                    name="basic"
-                    onFinish={onFinish}
-                    onFinishFailed={onFinishFailed}
-                    style={authStyles.form}>
-                    <Form.Item
-                        name="email"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your email',
-                            }
-                        ]}>
-                        <Input
-                            prefix={<UserOutlined/>}
-                            placeholder="Email"
-                        />
-                    </Form.Item>
-                    <Form.Item
-                        name="code"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your code!'
-                            }
-                        ]}>
 
-                        <Input
-                            prefix={<LockOutlined/>}
-                            type="string"
-                            placeholder="Code"
-                        />
-                    </Form.Item>
+                <form
+                    onChange={handleChange}>
 
-                    <Form.Item
-                        name="newPassword"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your new password!'
-                            }
-                        ]}>
+                    <TextInput
+                        name={"email"}
+                        label={"Email"}
+                        value={email}/>
+                    <br/>
+                    <br/>
 
-                        <Input
-                            prefix={<LockOutlined/>}
-                            type="password"
-                            placeholder="new password"
-                        />
-                    </Form.Item>
+                    <TextInput
+                        name={"code"}
+                        label={"Code"}
+                        value={code}/>
+                    <br/>
+                    <br/>
 
-                    <Form.Item
-                        name="confirmNewPassword"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please confirm your new password!'
-                            }
-                        ]}>
+                    <TextInput
+                        name={"newPassword"}
+                        label={"New Password"}
+                        value={newPassword}
+                        type={"password"}/>
+                    <br/>
+                    <br/>
 
-                        <Input
-                            prefix={<LockOutlined/>}
-                            type="password"
-                            placeholder="confirm new password"
-                        />
-                    </Form.Item>
+                    <TextInput
+                        name={"confirmPassword"}
+                        label={"Confirm New Password"}
+                        value={confirmPassword}
+                        type={"password"}/>
+                    <br/>
+                    <br/>
 
-                    <Form.Item>
+                    <FormButton
+                        onClick={onFinish}
+                        value={"Reset Passord"}/>
+                </form>
 
-                        <Button type="primary" htmlType="submit" style={authStyles.formButton}>
-                            Reset Passord
-                        </Button>
-                    </Form.Item>
-                </Form>
             </Row>
         </div>
     );

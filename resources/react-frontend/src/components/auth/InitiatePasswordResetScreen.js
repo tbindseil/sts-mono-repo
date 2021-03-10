@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {useHistory} from 'react-router-dom';
 
-import {Button, Form, Input, Row} from 'antd';
-import {UserOutlined} from "@ant-design/icons";
+import {Row} from 'antd';
 import {Auth} from "aws-amplify";
 
 import {Header} from '../Header';
+import {TextInput} from '../forms/TextInput';
+import {FormButton} from '../forms/FormButton';
 import {authStyles} from './styles';
 import {checkUnauthenticated} from "./CheckAuthenticated";
 
@@ -20,9 +21,21 @@ export function InitiatePasswordResetScreen() {
 
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [email, setEmail] = useState("");
 
-    const onFinish = values => {
-        Auth.forgotPassword(values.email)
+    const handleChange = event => {
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+
+        if (name === "email") {
+            setEmail(value);
+        }
+    }
+
+
+    const onFinish = () => {
+        Auth.forgotPassword(email)
             .then(data => {
                 history.push("/confirm-password-reset");
             })
@@ -34,10 +47,6 @@ export function InitiatePasswordResetScreen() {
                 }
                 setErrorMessage(message);
             });
-    };
-
-    const onFinishFailed = errorInfo => {
-        setFailed(true);
     };
 
     return (
@@ -54,33 +63,22 @@ export function InitiatePasswordResetScreen() {
             }
 
             <Row>
-                <Form
-                    name="basic"
-                    onFinish={onFinish}
-                    onFinishFailed={onFinishFailed}
-                    style={authStyles.form}>
 
-                    <Form.Item
-                        name="email"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your email!'
-                            }
-                        ]}>
+                <form
+                    onChange={handleChange}>
 
-                        <Input
-                            prefix={<UserOutlined/>}
-                            placeholder="email"
-                        />
-                    </Form.Item>
+                    <TextInput
+                        name={"email"}
+                        label={"Email"}
+                        value={email}/>
+                    <br/>
+                    <br/>
 
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit" style={authStyles.formButton}>
-                            Initiate Password Reset
-                        </Button>
-                    </Form.Item>
-                </Form>
+                    <FormButton
+                        onClick={onFinish}
+                        value={"Initiate Password Reset"}/>
+                </form>
+
             </Row>
         </div>
     );

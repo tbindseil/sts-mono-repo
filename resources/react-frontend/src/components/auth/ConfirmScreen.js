@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {Link, useHistory} from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 
-import {Button, Form, Input, Row} from 'antd';
-import {LockOutlined, UserOutlined} from "@ant-design/icons";
 import {Auth} from 'aws-amplify';
 
 import {Header} from '../Header';
+import {TextInput} from '../forms/TextInput';
+import {FormButton} from '../forms/FormButton';
 import {authStyles} from './styles';
 import {checkUnauthenticated} from "./CheckAuthenticated";
 
@@ -21,9 +21,22 @@ export function ConfirmScreen() {
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [email, setEmail] = useState("");
+    const [code, setCode] = useState("");
 
-    const onFinish = values => {
-        Auth.confirmSignUp(values.email, values.code, {
+    const handleChange = event => {
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+
+        if (name === "email") {
+            setEmail(value);
+        } else if (name === "code") {
+            setCode(value);
+        }
+    }
+
+    const onFinish = () => {
+        Auth.confirmSignUp(email, code, {
             forceAliasCreation: true
         }).then(data => {
             history.push("/login");
@@ -36,11 +49,6 @@ export function ConfirmScreen() {
             setErrorMessage(message);
             // TODO some weird wait
         });
-    };
-
-    const onFinishFailed = errorInfo => {
-        setFailed(true);
-        setErrorMessage("Error Confirming");
     };
 
     const resendCode = () => {
@@ -56,72 +64,48 @@ export function ConfirmScreen() {
         });
     };
 
-    const handleEmailChange = (event) => {
-        setEmail(event.target.value);
-    };
-
     return (
         <div>
 
             <Header/>
 
-            <Row style={{display: 'flex', justifyContent: 'center', margin: "15px"}}>
+            <p>
                 Use the emailed code to confirm your email
-            </Row>
+            </p>
 
             { failed &&
                 <p style={authStyles.errorMsg} >{errorMessage}</p>
             }
 
-            <Row>
-                <Form
-                    name="basic"
-                    onFinish={onFinish}
-                    onFinishFailed={onFinishFailed}
-                    style={authStyles.form}>
-                    <Form.Item
-                        name="email"
-                        onChange={handleEmailChange}
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your email',
-                            }
-                        ]}>
-                        <Input
-                            prefix={<UserOutlined/>}
-                            placeholder="Email"
-                        />
-                    </Form.Item>
-                    <Form.Item
-                        name="code"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your confirmation code!'
-                            }
-                        ]}>
+            <form
+                onChange={handleChange}>
 
-                        <Input
-                            prefix={<LockOutlined/>}
-                            type="string"
-                            placeholder="Code"
-                        />
-                    </Form.Item>
+                <TextInput
+                    name={"email"}
+                    label={"Email"}
+                    value={email}/>
+                <br/>
+                <br/>
 
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit" style={authStyles.formButton}>
-                            Confirm Email
-                        </Button>
-                        <Button type="primary" onClick={resendCode} style={authStyles.formButton}>
-                            Resend Code
-                        </Button>
-                        Already confirmed? <Link to="login">Login</Link>
-                        <br/>
-                        Not registered yet? <Link to="register">register</Link>
-                    </Form.Item>
-                </Form>
-            </Row>
+                <TextInput
+                    name={"code"}
+                    label={"Code"}
+                    value={code}/>
+                <br/>
+                <br/>
+
+                <FormButton
+                    onClick={onFinish}
+                    value={"Confirm Email"}/>
+                <FormButton
+                    onClick={resendCode} 
+                    value={"Send New Code"}/>
+            </form>
+
+            <a href="/login">Already Confirmed?</a>
+            <br/>
+            <a href="/register">Not registered yet?</a>
+
         </div>
     );
 
