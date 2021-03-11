@@ -37,18 +37,6 @@ export const Header = () => {
         setShow(false);
     }
 
-    const showAboutUsDropdownA = () => {
-        setShow(true);
-    }
-    const hideAboutUsDropdownA = () => {
-        setShow(false);
-    }
-
-
-    const onMouseOverAboutUs = () => {
-        
-    }
-
     return (
 
         <Navbar sticky="bottom"  style={navbarStyle}>
@@ -93,7 +81,7 @@ export const Header = () => {
 
                 <a class="navBar" href="/get-involved">Become A Tutor </a>
 
-                <a class="navBar" href="/about-us" onMouseEnter={showAboutUsDropdown} onMouseEnterLeave={hideAboutUsDropdown}>
+                <a class="navBar" href="/about-us" onMouseEnter={showAboutUsDropdown} onMouseLeave={hideAboutUsDropdown}>
 
                     <NavDropdown
                         id="collasible-nav-dropdown"
