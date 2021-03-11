@@ -41,31 +41,31 @@ export const Header = () => {
 
         <Navbar sticky="bottom"  style={navbarStyle}>
 
-            <a class="navLogo"  marginLeft="0px" href="/home"> <img width="100px" height="52px"src={logo} alt="logo"/></a>
+            <a className="navLogo"  marginLeft="0px" href="/home"> <img width="100px" height="52px"src={logo} alt="logo"/></a>
 
             <MediaQuery maxWidth={765}>
 
                 <NavDropdown title={<img style={imgStyle} src={burger} alt="dropdown"/>} id="collasible-nav-dropdown">
 
-                    <a class="dropDown" href="/" >Home  </a>
+                    <a className="dropDown" href="/" >Home  </a>
                     <NavDropdown.Divider />
 
-                    <a class="dropDown" href="/about-us" >About STS </a>
+                    <a className="dropDown" href="/about-us" >About STS </a>
                     <NavDropdown.Divider />
 
-                    <a class="dropDown" href="/process" >Our Process </a>
+                    <a className="dropDown" href="/process" >Our Process </a>
                     <NavDropdown.Divider />
 
-                    <a class="dropDown" href="/get-involved">Become A Tutor </a>
+                    <a className="dropDown" href="/get-involved">Become A Tutor </a>
                     <NavDropdown.Divider />
 
-                    <a class="dropDown" href="/request-a-tutor" >Request A Tutor  </a>
+                    <a className="dropDown" href="/request-a-tutor" >Request A Tutor  </a>
                     <NavDropdown.Divider />
 
-                    <a class="dropDown" href="/contacts">Contact Us   </a>
+                    <a className="dropDown" href="/contacts">Contact Us   </a>
                     <NavDropdown.Divider />
 
-                    <a class="dropDown" href="/profile" className="navbar-right">Profile   </a>
+                    <a className="dropDown" href="/profile">Profile   </a>
 
                 </NavDropdown>
 
@@ -73,29 +73,29 @@ export const Header = () => {
 
             <Navbar.Collapse>
 
-                <a class="navBar" href="/profile">Profile</a>
+                <a className="navBar" href="/profile">Profile</a>
 
-                <a class="navBar" href="/contacts">Contact Us  </a>
+                <a className="navBar" href="/contacts">Contact Us  </a>
 
-                <a class="navBar" href="/request-a-tutor" >Request A Tutor  </a>
+                <a className="navBar" href="/request-a-tutor" >Request A Tutor  </a>
 
-                <a class="navBar" href="/get-involved">Become A Tutor </a>
+                <a className="navBar" href="/get-involved">Become A Tutor </a>
 
-                <a class="navBar" href="/about-us" onMouseEnter={showAboutUsDropdown} onMouseLeave={hideAboutUsDropdown}>
+                <a className="navBar" href="/about-us" onMouseEnter={showAboutUsDropdown} onMouseLeave={hideAboutUsDropdown}>
 
                     <NavDropdown
                         id="collasible-nav-dropdown"
                         drop="down"
                         key="down"
                         show={show}
-                        title={<a class="navBarA" href="/about-us">About Us <i class="arrow down"></i></a>}>
-                        <a class ="navBar2" href="/about-us" >About STS </a>
-                        <a class ="navBar2" href="/process" >Our Process  </a>
+                        title={<a className="navBarA" href="/about-us">About Us <i className="arrow down"></i></a>}>
+                        <a className="navBar2" href="/about-us" >About STS </a>
+                        <a className="navBar2" href="/process" >Our Process  </a>
                     </NavDropdown>
 
                 </a>
 
-                <a class="navBar" href="/" >Home  </a>
+                <a className="navBar" href="/" >Home  </a>
 
             </Navbar.Collapse>
 

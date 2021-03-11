@@ -111,7 +111,7 @@ export const AboutUs = () => (
     
     			<header style ={pageBorder}>
         
-        			<h2 class= "pageHeader">
+        			<h2 className= "pageHeader">
           				About Students Teaching Students 
        				</h2>
 
@@ -177,7 +177,7 @@ export const AboutUs = () => (
 
     			<header style ={pageBorder2}>
 
-     			   	<h2 class= "pageHeader">
+     			   	<h2 className= "pageHeader">
          			 About Students Teaching Students 
        			  	</h2>
 

@@ -76,7 +76,7 @@ export const Home = () => (
 
         <header style ={pageBorder2}>
 
-          <h1 class= "titleMain">
+          <h1 className= "titleMain">
             Students Teaching Students
           </h1>
 
@@ -94,7 +94,7 @@ export const Home = () => (
 
        <header style ={pageBorder}>
 
-          <h1 class= "titleMain">
+          <h1 className= "titleMain">
             Students Teaching Students
           </h1>
 

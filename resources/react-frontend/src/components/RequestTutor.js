@@ -65,22 +65,22 @@ export const RequestTutor = () => (
 
       <header style ={pageBorder}>
 
-        <h2 class= "pageHeader">
+        <h2 className= "pageHeader">
           Request A Tutor
         </h2>
 
 		    <hr style ={underLine}/>
 	
-        <p class= "mainText">
+        <p className= "mainText">
           Students Teaching Students is a nonprofit tutoring organization that pairs students in their own area for free tutoring services. 
         </p>
-	      <p class= "mainText">
+	      <p className= "mainText">
 	        If you are looking for help with test preperation, homework, or general subject matter, request a tutor for your subjects of interest and state you availability in the form below. 
 		    </p>
 
 		    <hr style ={underLine}/>
 
-		    <p class= "formStyle">
+		    <p className= "formStyle">
          <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSf4uPCMvxLew5migtPBZwiavpJRrS24SdE9XbYlScTLzEpdeQ/viewform?embedded=true" width="700" height="520" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
 		    </p>
 	
@@ -92,22 +92,22 @@ export const RequestTutor = () => (
 
      <header style ={pageBorder2}>
 
-        <h2 class= "pageHeader">
+        <h2 className= "pageHeader">
          Request A Tutor
         </h2>
 
 		    <hr style ={underLine2}/>
 	
-        <p class= "mainText2">
+        <p className= "mainText2">
            Students Teaching Students is a nonprofit tutoring organization that pairs students in their own area for free tutoring services. 
         </p>
-		    <p class="mainText2">
+		    <p className="mainText2">
 		      If you are looking for help with test preperation, homework, or general subject matter, request a tutor for your subjects of interest and state you availability in the form below. 
 	     	</p>
 
 		    <hr style ={underLine2}/>
 
-		    <p class= "formStyle">
+		    <p className= "formStyle">
           <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSf4uPCMvxLew5migtPBZwiavpJRrS24SdE9XbYlScTLzEpdeQ/viewform?embedded=true" width="100%" height="520" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
 		  	</p>
 	

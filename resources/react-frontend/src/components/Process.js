@@ -110,7 +110,7 @@ export const Process = () => (
     
     			<header style ={pageBorder}>
         
-        			<h2 class= "pageHeader">
+        			<h2 className= "pageHeader">
           				Our Process
        				</h2>
 
@@ -192,7 +192,7 @@ export const Process = () => (
 
     			<header style ={pageBorder2}>
 
-     			   	<h2 class= "pageHeader">
+     			   	<h2 className= "pageHeader">
          			 Our Process
        			  	</h2>
 

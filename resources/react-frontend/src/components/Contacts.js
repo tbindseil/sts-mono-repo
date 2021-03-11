@@ -68,19 +68,19 @@ export const Contacts= () => (
 
        <header style ={pageBorder}>
 
-          <h2 class= "pageHeader">
+          <h2 className= "pageHeader">
             Contact Us
           </h2>
 
 	       	<hr style ={underLine}/>
 	
-          <p class= "mainText">
+          <p className= "mainText">
 		        Feel free to reach out to us with any questions, concerns, or suggestions for our organization. We are always working to improve, and would love to hear from you!
 		      </p>
 
 		      <hr style ={underLine}/>
 
-	       	<p class= "formStyle">
+	       	<p className= "formStyle">
 		        Email: <a href="mailto:bjkearbey@studentsts.org"> bjkearbey@studentsts.org</a>			
 		      </p>
 	
@@ -94,19 +94,19 @@ export const Contacts= () => (
 
          <header style ={pageBorder2}>
 
-            <h2 class= "pageHeader">
+            <h2 className= "pageHeader">
               Contact Us
             </h2>
 
 	         	<hr style ={underLine2}/>
 	
-            <p class= "mainText2">
+            <p className= "mainText2">
 	           	Feel free to reach out to us with any questions, concerns, or suggestions for our organization. We are always working to improve, and would love to hear from you!
 		        </p>
 
 		        <hr style ={underLine2}/>
 
-	         	<p class= "formStyle">
+	         	<p className= "formStyle">
 		          Email: <a href="mailto:bjkearbey@studentsts.org"> bjkearbey@studentsts.org</a>			
 		        </p>
 	

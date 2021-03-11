@@ -66,13 +66,13 @@ export const GetInvolved = () => (
 
         <header style ={pageBorder}>
 
-          <h2 class= "pageHeader">
+          <h2 className= "pageHeader">
             Become A Tutor
           </h2>
 
 		      <hr style ={underLine}/>
 	
-          <p class= "mainText">
+          <p className= "mainText">
             We are always looking for additional high-performing high school students from various locations and subject matters to become tutors.
 		      </p>
 		    	<p class = "mainText">
@@ -81,7 +81,7 @@ export const GetInvolved = () => (
 		
 		      <hr style ={underLine}/>
 
-		      <p class= "formStyle">
+		      <p className= "formStyle">
 			     <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSetv8vY2dH-ur938u0qKqJchiEnqry9ivWc0tDHmnED5epPYA/viewform?embedded=true" width="700" height="520" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
 			    </p>
 	
@@ -93,13 +93,13 @@ export const GetInvolved = () => (
 
 	     <header style ={pageBorder2}>
 
-          <h2 class= "pageHeader">
+          <h2 className= "pageHeader">
             Get Involved
           </h2>
 
 		      <hr style ={underLine2}/>
 	
-          <p class= "mainText2">
+          <p className= "mainText2">
            We are always looking for additional high-performing high school students from various locations and subject matters to become tutors.
 		      </p>
 		      <p class = "mainText2">
@@ -108,7 +108,7 @@ export const GetInvolved = () => (
 		
 		      <hr style ={underLine2}/>
 
-		      <p class= "formStyle">
+		      <p className= "formStyle">
 	   		    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSetv8vY2dH-ur938u0qKqJchiEnqry9ivWc0tDHmnED5epPYA/viewform?embedded=true" width="100%" height="520" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
 			    </p>
 	
