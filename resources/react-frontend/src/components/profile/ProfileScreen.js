@@ -3,7 +3,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {useHistory} from 'react-router-dom';
 import {cloneDeep} from 'lodash';
 
-import {Header} from '../Header';
+import {Header} from '../header/Header';
 import {FormButton} from '../forms/FormButton'
 import {TextInput} from '../forms/TextInput'
 import {checkAuthenticated} from "../auth/CheckAuthenticated";

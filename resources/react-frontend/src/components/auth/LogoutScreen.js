@@ -3,7 +3,7 @@ import {useHistory} from 'react-router-dom';
 
 import {Auth} from "aws-amplify";
 
-import {Header} from '../Header';
+import {Header} from '../header/Header';
 import {authStyles} from './styles';
 import {checkAuthenticated} from "./CheckAuthenticated";
 

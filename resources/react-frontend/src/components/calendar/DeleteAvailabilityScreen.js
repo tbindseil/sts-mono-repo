@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {useHistory} from 'react-router-dom';
 import moment from 'moment';
 
-import {Header} from '../Header';
+import {Header} from '../header/Header';
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
 
 // TODO here we should be able to choose between modifying (put), creating (post) and deleteing (delete)

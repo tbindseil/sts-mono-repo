@@ -3,7 +3,7 @@ import {useHistory} from 'react-router-dom';
 
 import moment from 'moment';
 
-import {Header} from '../Header';
+import {Header} from '../header/Header';
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
 import {CalendarDayContent} from './CalendarDayContent';
 

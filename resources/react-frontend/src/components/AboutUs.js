@@ -1,5 +1,5 @@
 import React, {useState, useEffect }  from 'react';
-import {Header} from './Header';
+import {Header} from './header/Header';
 import stock_photo from '../images/books.jpg';
 import course from '../images/course.PNG';
 import MediaQuery from 'react-responsive';

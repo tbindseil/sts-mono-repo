@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {useHistory} from 'react-router-dom';
 import moment from 'moment';
 
-import {Header} from '../Header';
+import {Header} from '../header/Header';
 import {TextInput} from '../forms/TextInput';
 import {FormButton} from '../forms/FormButton';
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
