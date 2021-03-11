@@ -36,22 +36,22 @@ const imgStyle = {
 };
 
 const pageBorder = {
-  borderLeft: '150px solid #b4c7e7',
-   borderRight: '150px solid #b4c7e7',
+  borderLeft: '10vw solid #b4c7e7',
+   borderRight: '10vw solid #b4c7e7',
    borderTop:'0px solid #005D8c',
    borderBottom:'0px solid #005D8c',
    paddingTop: '5px',
-  paddingBottom:'50px',
+  paddingBottom:'200px',
   marginTop: '0px',
 };
 
 const pageBorder2 = {
-  borderLeft: '10px solid #b4c7e7',
-   borderRight: '10px solid #b4c7e7',
+  borderLeft: '5vw solid #b4c7e7',
+   borderRight: '5vw solid #b4c7e7',
    borderTop:'0px solid #005D8c',
    borderBottom:'0px solid #005D8c',
    paddingTop: '5px',
-  paddingBottom:'100px',
+  paddingBottom:'200px',
   marginTop: '0px',
 };
 
@@ -72,7 +72,7 @@ export const RequestTutor = () => (
 		    <hr style ={underLine}/>
 	
         <p class= "mainText">
-          Students Teaching Students is a nonprofit tutoring organization that pairs students in ther own area for free tutoring services. 
+          Students Teaching Students is a nonprofit tutoring organization that pairs students in their own area for free tutoring services. 
         </p>
 	      <p class= "mainText">
 	        If you are looking for help with test preperation, homework, or general subject matter, request a tutor for your subjects of interest and state you availability in the form below. 
@@ -99,7 +99,7 @@ export const RequestTutor = () => (
 		    <hr style ={underLine2}/>
 	
         <p class= "mainText2">
-           Students Teaching Students is a nonprofit tutoring organization that pairs students in ther own area for free tutoring services. 
+           Students Teaching Students is a nonprofit tutoring organization that pairs students in their own area for free tutoring services. 
         </p>
 		    <p class="mainText2">
 		      If you are looking for help with test preperation, homework, or general subject matter, request a tutor for your subjects of interest and state you availability in the form below. 
