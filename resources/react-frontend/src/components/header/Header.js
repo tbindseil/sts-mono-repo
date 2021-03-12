@@ -1,8 +1,11 @@
 import React, {useState} from 'react';
-import logo from '../../images/logo-square(1).png';
-import burger from '../../images/burger.png';
 import MediaQuery from 'react-responsive'
 import { Navbar, NavDropdown } from 'react-bootstrap';
+
+import logo from '../../images/logo-square(1).png';
+import burger from '../../images/burger.png';
+
+import {ProfileButton} from './ProfileButton';
 
 export const Header = () => {
 
@@ -73,7 +76,7 @@ export const Header = () => {
 
             <Navbar.Collapse>
 
-                <a className="navBar" href="/profile">Profile</a>
+                <ProfileButton/>
 
                 <a className="navBar" href="/contacts">Contact Us  </a>
 
