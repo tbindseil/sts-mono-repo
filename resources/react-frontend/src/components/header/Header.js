@@ -76,7 +76,8 @@ export const Header = () => {
 
             <Navbar.Collapse>
 
-                <ProfileButton/>
+        { // <ProfileButton/>
+        }
 
                 <a className="navBar" href="/contacts">Contact Us  </a>
 

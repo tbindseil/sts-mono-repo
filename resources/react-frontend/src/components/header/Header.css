@@ -1,0 +1,91 @@
+
+ul.NavBar {
+  border-top-width: 0px;
+  border-right-width: 0px;
+  border-left-width: 0px;
+  border-bottom-width: 10px;
+  border-color: #005D8c;
+  border-style: solid;
+  border-radius: 0px;
+  margin-bottom: 0px;
+  position: sticky;
+  top: 0;
+  background-color: white;
+  display: block;
+
+  overflow: hidden;  /* Remove this comments */
+}
+
+.NavBarItem {
+  color: #005D8c; 
+  font-family: Arial;
+  margin-top:7.5px;
+  margin-bottom: 7.5px;
+  margin-left:0px;
+  margin-right:0px;
+  padding-top: 15px;
+  padding-bottom:15px;
+  padding-left:10px;
+  padding-right:10px;
+  text-align:center;
+  font-Weight: bold;
+  font-variant: small-caps;
+  float: right;
+  border-radius:20px;
+  background-color: white;
+  list-style-type: none;
+}
+
+.NavLogo {
+  margin-left: 0px;
+  margin-right: 0px;
+  margin-bottom: 5px;
+  margin-top: 6px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 10px;
+  padding-right: 10px;
+  float: left;
+}
+
+.DropBtn {
+  color: #005D8c; 
+  padding: 16px;
+  border: none;
+}
+
+.DropDown {
+  position: relative;
+  display: inline-block;
+}
+
+.DropDownContent {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 160px;
+  z-index: 1;
+}
+
+.DropDownContent a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.DropDownContent a:hover {
+  background-color: #ddd;
+}
+
+.DropDown:hover .DropDownContent {
+  display: block;
+}
+
+.DropDown:hover .dropbtn {
+  background-color: #3e8e41;
+}
+
+.RightAlign {
+  float: right;
+}
