@@ -15,11 +15,12 @@ export function PlainHeader() {
             <a className="NavBarItem" href="/get-involved">Become A Tutor</a>
 
             <div className="DropDown RightAlign">
-                <button className="NavBarItem DropBtn">About Us  <i className="arrow down"/></button>
-                <div className="DropDownContent">
-                    <a href="/about-us">About STS</a>
-                    <a href="/process">Our Process</a>
-                </div>
+                <button className="NavBarItem DropBtn">About Us  <i className="arrow down"/>
+                    <div className="DropDownContent">
+                        <a href="/about-us">About STS</a>
+                        <a href="/process">Our Process</a>
+                    </div>
+                </button>
             </div>
 
             <a className="NavBarItem" href="/">Home</a>

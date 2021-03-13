@@ -14,7 +14,8 @@ ul.NavBar {
   padding-left: 15px;
   padding-right: 15px;
 
-  overflow: hidden;  /* this makes the ul take up the space of its li elements for border to work */
+  float: right; /* need float to have border be around children, or something like that */
+  width: 100%;
 }
 
 a { /* gotta override bootstrap here */
