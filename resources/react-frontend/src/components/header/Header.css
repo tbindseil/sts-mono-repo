@@ -6,18 +6,23 @@ ul.NavBar {
   border-bottom-width: 10px;
   border-color: #005D8c;
   border-style: solid;
-  border-radius: 0px;
   margin-bottom: 0px;
   position: sticky;
   top: 0;
   background-color: white;
   display: block;
+  padding-left: 15px;
+  padding-right: 15px;
 
-  overflow: hidden;  /* Remove this comments */
+  overflow: hidden;  /* this makes the ul take up the space of its li elements for border to work */
+}
+
+a { /* gotta override bootstrap here */
+  color: #005D8c;
 }
 
 .NavBarItem {
-  color: #005D8c; 
+  color: #005D8c;
   font-family: Arial;
   margin-top:7.5px;
   margin-bottom: 7.5px;
@@ -31,9 +36,15 @@ ul.NavBar {
   font-Weight: bold;
   font-variant: small-caps;
   float: right;
-  border-radius:20px;
+  border-radius: 20px;
   background-color: white;
   list-style-type: none;
+}
+
+.NavBarItem:hover {
+  color: white; 
+  background-color: #b4c7e7;
+  text-decoration: none;
 }
 
 .NavLogo {
@@ -43,14 +54,13 @@ ul.NavBar {
   margin-top: 6px;
   padding-top: 0px;
   padding-bottom: 0px;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 0px;
+  padding-right: 0px;
   float: left;
 }
 
 .DropBtn {
   color: #005D8c; 
-  padding: 16px;
   border: none;
 }
 
