@@ -17,8 +17,8 @@ export function PlainHeader() {
             <div className="DropDown RightAlign">
                 <button className="NavBarItem DropBtn">About Us  <i className="arrow down"/>
                     <div className="DropDownContent">
-                        <a href="/about-us">About STS</a>
-                        <a href="/process">Our Process</a>
+                        <a className="NavBarDropDownItem" href="/about-us">About STS</a>
+                        <a className="NavBarDropDownItem" href="/process">Our Process</a>
                     </div>
                 </button>
             </div>
