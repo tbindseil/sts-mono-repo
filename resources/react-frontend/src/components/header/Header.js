@@ -1,109 +1,67 @@
 import React, {useState} from 'react';
-import MediaQuery from 'react-responsive'
-import { Navbar, NavDropdown } from 'react-bootstrap';
 
+import MediaQuery from 'react-responsive'
+
+import './Header.css';
 import logo from '../../images/logo-square(1).png';
 import burger from '../../images/burger.png';
 
-import {ProfileButton} from './ProfileButton';
+export function Header() {
 
-export const Header = () => {
-
-    const navbarStyle = {
-        borderTopWidth: '0px',
-        borderRightWidth: '0px',
-        borderLeftWidth: '0px',
-        borderBottomWidth: '10px',
-        borderColor: '#005D8c',
-        borderstyle: 'solid',
-        borderRadius: '0px',
-        marginBottom: '0px',
-        position: 'sticky',
-        top: '0',
-        backgroundColor: 'white',
-    };
-
-    const imgStyle = {
-        width: '25px',
-        height: '25px',
-        marginRight: '0px',
-        marginBottom: '2px',
-        marginTop: '35px',
-        marginLeft: '5px',
-    };
-
-    const [show, setShow] = useState(false);
-    const showAboutUsDropdown = () => {
-        setShow(true);
-    }
-    const hideAboutUsDropdown = () => {
-        setShow(false);
+    const [hamburgerDisplay, setHamburgerDisplay] = useState("none")
+    const hamburgerOnClick = () => {
+        if (hamburgerDisplay === "none") {
+            setHamburgerDisplay("block");
+        } else if (hamburgerDisplay === "block") {
+            setHamburgerDisplay("none");
+        }
     }
 
     return (
-
-        <Navbar sticky="bottom"  style={navbarStyle}>
+        <ul className="NavBar">
 
             <a className="navLogo"  marginLeft="0px" href="/home"> <img width="100px" height="52px"src={logo} alt="logo"/></a>
 
             <MediaQuery maxWidth={765}>
 
-                <NavDropdown title={<img style={imgStyle} src={burger} alt="dropdown"/>} id="collasible-nav-dropdown">
+                <div className="HamburgerDropDown">
+                    <img className="Hamburger" src={burger} onClick={hamburgerOnClick} alt="dropdown"/>
 
-                    <a className="dropDown" href="/" >Home  </a>
-                    <NavDropdown.Divider />
+                    <div style={{display: hamburgerDisplay}} className="HamburgerDropDownContent">
 
-                    <a className="dropDown" href="/about-us" >About STS </a>
-                    <NavDropdown.Divider />
+                        <a className="HamburgerItem" href="/">Home</a>
+                        <a className="HamburgerItem" href="/about-us">About STS</a>
+                        <a className="HamburgerItem" href="/process">Our Process</a>
+                        <a className="HamburgerItem" href="/get-involved">Become A Tutor</a>
+                        <a className="HamburgerItem" href="/request-a-tutor">Request A Tutor</a>
+                        <a className="HamburgerItem" href="/contacts">Contact Us</a>
+                        <a className="HamburgerItem" href="/profile">Profile</a>
 
-                    <a className="dropDown" href="/process" >Our Process </a>
-                    <NavDropdown.Divider />
-
-                    <a className="dropDown" href="/get-involved">Become A Tutor </a>
-                    <NavDropdown.Divider />
-
-                    <a className="dropDown" href="/request-a-tutor" >Request A Tutor  </a>
-                    <NavDropdown.Divider />
-
-                    <a className="dropDown" href="/contacts">Contact Us   </a>
-                    <NavDropdown.Divider />
-
-                    <a className="dropDown" href="/profile">Profile   </a>
-
-                </NavDropdown>
+                    </div>
+                </div>
 
             </MediaQuery>
 
-            <Navbar.Collapse>
 
-        { // <ProfileButton/>
-        }
+            <MediaQuery minWidth={765}>
 
-                <a className="navBar" href="/contacts">Contact Us  </a>
+                <a className="NavBarItem" href="/contacts">Contact Us</a>
+                <a className="NavBarItem" href="/request-a-tutor">Request A Tutor</a>
+                <a className="NavBarItem" href="/get-involved">Become A Tutor</a>
 
-                <a className="navBar" href="/request-a-tutor" >Request A Tutor  </a>
+                <div className="DropDown RightAlign">
+                    <a className="NavBarItem DropBtn button" href="/about-us">About Us  <i className="arrow down"/>
+                        <div className="DropDownContent">
+                            <a className="NavBarDropDownItem" href="/about-us">About STS</a>
+                            <a className="NavBarDropDownItem" href="/process">Our Process</a>
+                        </div>
+                    </a>
+                </div>
 
-                <a className="navBar" href="/get-involved">Become A Tutor </a>
+                <a className="NavBarItem" href="/">Home</a>
 
-                <a className="navBar" href="/about-us" onMouseEnter={showAboutUsDropdown} onMouseLeave={hideAboutUsDropdown}>
+            </MediaQuery>
 
-                    <NavDropdown
-                        id="collasible-nav-dropdown"
-                        drop="down"
-                        key="down"
-                        show={show}
-                        title={<a className="navBarA" href="/about-us">About Us <i className="arrow down"></i></a>}>
-                        <a className="navBar2" href="/about-us" >About STS </a>
-                        <a className="navBar2" href="/process" >Our Process  </a>
-                    </NavDropdown>
-
-                </a>
-
-                <a className="navBar" href="/" >Home  </a>
-
-            </Navbar.Collapse>
-
-        </Navbar>
-
+        </ul>
     );
-};
+}

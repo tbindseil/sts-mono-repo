@@ -1,6 +1,5 @@
 import React from 'react';
 import {Header} from './header/Header';
-import {PlainHeader} from './header/PlainHeader';
 import stock_photo from '../images/skyline.jpg';
 import MediaQuery from 'react-responsive';
 import  Media from 'react-media'
@@ -61,7 +60,7 @@ export const Contacts= () => (
 
   <div>
 
-    <PlainHeader/>
+    <Header/>
 
       <MediaQuery minWidth={765}>
 
