@@ -3,6 +3,7 @@ import React, {useState} from 'react';
 import MediaQuery from 'react-responsive'
 
 import './Header.css';
+import {ProfileButton} from './ProfileButton';
 import logo from '../../images/logo-square(1).png';
 import burger from '../../images/burger.png';
 
@@ -45,6 +46,7 @@ export function Header() {
 
             <MediaQuery minWidth={765}>
 
+                <ProfileButton/>
                 <a className="NavBarItem" href="/contacts">Contact Us</a>
                 <a className="NavBarItem" href="/request-a-tutor">Request A Tutor</a>
                 <a className="NavBarItem" href="/get-involved">Become A Tutor</a>

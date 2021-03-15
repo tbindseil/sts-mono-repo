@@ -66,6 +66,8 @@ a { /* gotta override bootstrap here */
   font-variant: small-caps;
   float: left;
   border-radius: 20px;
+  width: 100%;
+  text-align: left;
 }
 
 .NavBarDropDownItem:hover {
@@ -119,6 +121,9 @@ a { /* gotta override bootstrap here */
   display: block;
 }
 
+.ProfileDropDownContent {
+    right: 0;
+}
 
 /* hamburger stuff */
 
