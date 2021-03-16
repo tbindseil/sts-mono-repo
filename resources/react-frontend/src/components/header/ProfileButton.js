@@ -31,7 +31,10 @@ export const ProfileButton = () => {
     } else {
 
         return (
-            <a className="NavBarItem" href="/anonymous-user">Sign Up</a>
+            <>
+                <a className="NavBarItem" href="/anonymous-user">Sign Up</a>
+                <a className="NavBarItem" href="/login">Log In</a>
+            </>
         );
 
     }

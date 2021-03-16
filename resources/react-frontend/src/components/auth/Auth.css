@@ -1,0 +1,20 @@
+
+.Centered {
+  text-align: center;
+  margin: 0 auto;
+}
+
+.MaxWidth {
+  max-width: 700px;
+}
+
+.FillScreen {
+  width: 100%;
+  justify-content: center;
+}
+
+.HelperLink {
+  margin-left: 2px;
+  margin-right: 2px;
+  display: inline list-item;
+}
