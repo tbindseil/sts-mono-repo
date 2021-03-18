@@ -9,7 +9,7 @@ import {
 	Container,
 } from 'react-bootstrap';
 
-export const Bottom = ({screenTitle}) => {
+export const Bottom = (props) => {
 
 	const navbarStyle = {
 		borderRadius: '0px',
@@ -18,12 +18,13 @@ export const Bottom = ({screenTitle}) => {
   	};
   
 
+
   
 return (
 
 	<Navbar fixed = "bottom"  style = {navbarStyle}>
 		
-		<h4 class = "bottomTitle">
+		<h4 className = {props.className ? props.className : "bottomTitle"}>
 			Students Teaching Students 
 		</h4>
 

@@ -3,6 +3,7 @@ import {useHistory} from 'react-router-dom';
 
 import './Auth.css';
 import {Header} from '../header/Header';
+import {Bottom} from '../Bottom';
 import {checkUnauthenticated} from "./CheckAuthenticated";
 
 export function AnonymousUserScreen() {
@@ -18,9 +19,10 @@ export function AnonymousUserScreen() {
         <>
             <Header/>
 
-            <h2 className="Centered">Welcome to Students Teaching Students</h2>
+            <div className="FillScreen PageBorder">
 
-            <div className="FillScreen">
+                <h2 className="Centered pageHeader">Welcome to Students Teaching Students</h2>
+                <hr className="UnderLine MaxWidth"/>
 
                 <br/>
                 <p className="Centered MaxWidth">In order to post availability as a tutor or request a posted tutoring session, you must have an account</p>
@@ -39,24 +41,22 @@ export function AnonymousUserScreen() {
                     should be redirected to where you need to go. But, in case you get turned around, use the following links to access any part of the process.</p>
                 <br/>
 
-                <ul className="Centered MaxWidth">
-                    <a className="HelperLink" href="/login">Login</a>
-                    <a className="HelperLink" href="/register">Register</a>
-                    <a className="HelperLink" href="/confirm">Confirm</a>
-                    <a className="HelperLink" href="/initiate-password-reset">Initiate Password Reset</a>
-                    <a className="HelperLink" href="/confirm-password-reset">Confirm Password Reset</a>
+                <ul className="Centered">
+                    <li className="HelperLink"><a href="/login">Login</a></li>
+                    <li className="HelperLink"><a href="/register">Register</a></li>
+                    <li className="HelperLink"><a href="/confirm">Confirm</a></li>
+                    <li className="HelperLink"><a href="/initiate-password-reset">Initiate Password Reset</a></li>
+                    <li className="HelperLink"><a href="/confirm-password-reset">Confirm Password Reset</a></li>
                 </ul>
+
+            { /*
+                TJTAG working on reworking this page. The footer is a pain and is sort of hte last straw before having to clean up
+                some of the stuff from about us/ contacts etc. Then I should finally be styling some forms
+              */}
+                <Bottom className="Footer"/>
+
             </div>
 
-        {/*
-            <p>In order to utilize the functionality of this site, you must be authenticated</p>
-            <p>Please <a href="/login">Login</a> if you are a returning user</p>
-            <p>Please <a href="/register">Register</a> if you are a new user</p>
-            <p>Please <a href="/confirm">Confirm</a> if you are a recently registered user</p>
-            <p>Please <a href="/initiate-password-reset">Initiate Password Reset</a> if you have forgotten your passord</p>
-            <p>Please <a href="/confirm-password-reset">Confirm Password Reset</a> if you have recently initated a passord reset</p>
-            */
-        }
         </>
     );
 }
