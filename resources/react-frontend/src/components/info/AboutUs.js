@@ -6,12 +6,6 @@ import MediaQuery from 'react-responsive';
 import {Bottom} from '../Bottom';
 
 // TODO move to css and clean up
-const underLine = {
-  border: '1px solid grey', //header underLine
-  marginLeft:'150px',
-  marginRight:'150px',
-};
-
 const underLine2 = {
   border: '1px solid grey', //header underLine
   marginLeft:'10px',
@@ -105,7 +99,7 @@ export const AboutUs = () => (
                     About Students Teaching Students
                 </h2>
 
-                <hr style ={underLine}/>
+                <hr className={"UnderLine"}/>
 
                 <section style = {sideBy}>
 
@@ -147,7 +141,7 @@ export const AboutUs = () => (
                     Tutoring Offered
                 </h2>
 
-                <hr style ={underLine}/>
+                <hr className={"UnderLine"}/>
 
                 <section>
 
@@ -182,6 +176,8 @@ export const AboutUs = () => (
                             Vision
                         </h4>
 
+    {// TODO dry it out
+    }
                         Students Teaching Students is a non-profit tutoring organization
                         that provides free tutoring for any student seeking additional help with their schoolwork.
                         <br/>
