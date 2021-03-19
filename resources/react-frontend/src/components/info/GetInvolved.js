@@ -3,12 +3,6 @@ import {Header} from '../header/Header';
 import MediaQuery from 'react-responsive';
 import {Bottom} from '../Bottom'; // TODO move to header
 
-const underLine = {
-  border: '1px solid grey', //header underLine
-  marginLeft:'150px',
-  marginRight:'150px',
-};
-
 const pageBorder = {
   clear: 'both', // don't let anything float left or right of this, for nav bar
   borderLeft: '10vw solid #b4c7e7',
@@ -45,7 +39,7 @@ export const GetInvolved = () => (
                     Become A Tutor
                 </h2>
 
-                <hr style ={underLine}/>
+                <hr className="UnderLine"/>
 
                 <p className= "mainText">
                     We are always looking for additional high-performing high school students from various locations and subject matters to become tutors.
@@ -54,7 +48,7 @@ export const GetInvolved = () => (
                     If you are interested in giving back to your community through tutoring, please fill out the survey below so we can better match you with students looking for additional help.
                 </p>
 
-                <hr style ={underLine}/>
+                <hr className="UnderLine"/>
 
                 <p className= "formStyle">
                     <iframe

@@ -94,7 +94,7 @@ export const AboutUs = () => (
                     About Students Teaching Students
                 </h2>
 
-                <hr className={"UnderLine"}/>
+                <hr className="UnderLine"/>
 
                 <section style = {sideBy}>
 
@@ -136,7 +136,7 @@ export const AboutUs = () => (
                     Tutoring Offered
                 </h2>
 
-                <hr className={"UnderLine"}/>
+                <hr className="UnderLine"/>
 
                 <section>
 

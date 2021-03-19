@@ -3,12 +3,6 @@ import {Header} from '../header/Header';
 import MediaQuery from 'react-responsive';
 import {Bottom} from '../Bottom';
 
-const underLine = {
- border: '1px solid grey', //header underLine
- marginLeft:'150px',
- marginRight:'150px',
-};
-
 const pageBorder = {
   clear: 'both', // don't let anything float left or right of this, for nav bar
   borderLeft: '10vw solid #b4c7e7',
@@ -46,7 +40,7 @@ export const RequestTutor = () => (
                     Request A Tutor
                 </h2>
 
-                <hr style ={underLine}/>
+                <hr className="UnderLine"/>
 
                 <p className= "mainText">
                     Students Teaching Students is a nonprofit tutoring organization that pairs students in their own area for free tutoring services.
@@ -55,7 +49,7 @@ export const RequestTutor = () => (
                     If you are looking for help with test preperation, homework, or general subject matter, request a tutor for your subjects of interest and state you availability in the form below.
                 </p>
 
-                <hr style ={underLine}/>
+                <hr className="UnderLine"/>
 
                 <p className= "formStyle">
                     <iframe

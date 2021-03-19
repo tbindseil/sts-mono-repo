@@ -4,12 +4,6 @@ import stock_photo from '../../images/Flo.PNG';
 import MediaQuery from 'react-responsive';
 import {Bottom} from '../Bottom';
 
-const underLine = {
-  border: '1px solid grey', //header underLine
-  marginLeft:'150px',
-  marginRight:'150px',
-};
-
 const imgStyle = {
   maxWidth: '35%',
   height: '35%',
@@ -82,7 +76,7 @@ export const Process = () => (
                     Our Process
                 </h2>
 
-                <hr style ={underLine}/>
+                <hr className="UnderLine"/>
 
                 <section style = {sideBy}>
 

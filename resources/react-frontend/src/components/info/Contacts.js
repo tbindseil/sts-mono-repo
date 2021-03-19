@@ -4,12 +4,6 @@ import stock_photo from '../../images/skyline.jpg';
 import MediaQuery from 'react-responsive';
 import {Bottom} from '../Bottom';
 
-const underLine = {
-  border: '1px solid grey', //header underLine
-  marginLeft:'150px',
-  marginRight:'150px',
-};
-
 const imgStyle = {
   maxWidth: '100%',
   height: 'auto',
@@ -54,13 +48,13 @@ export const Contacts= () => (
                     Contact Us
                 </h2>
 
-                <hr style ={underLine}/>
+                <hr className="UnderLine"/>
 
                 <p className= "mainText">
                     Feel free to reach out to us with any questions, concerns, or suggestions for our organization. We are always working to improve, and would love to hear from you!
                 </p>
 
-                <hr style ={underLine}/>
+                <hr className="UnderLine"/>
 
                 <p className= "formStyle">
                     Email: <a href="mailto:bjkearbey@studentsts.org"> bjkearbey@studentsts.org</a>

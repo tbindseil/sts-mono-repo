@@ -5,12 +5,6 @@ import MediaQuery from 'react-responsive'
 import {Bottom} from '../Bottom';
 
 
-const underLine = {
- border: '1px solid grey', //header underLine
- marginLeft:'50px',
- marginRight:'50px',
-};
-
 const imgStyle = {
   maxWidth: '100%',
   height: 'auto',
@@ -80,7 +74,7 @@ export const Home = () => (
                     Students Teaching Students
                 </h1>
 
-                <hr style ={underLine}/>
+                <hr className="UnderLine"/>
 
                 <p style= {modo}>
                     Enhancing education through student to student tutoring
