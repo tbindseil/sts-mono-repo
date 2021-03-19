@@ -1,21 +1,9 @@
-import React, {useState, useEffect }  from 'react';
+import React from 'react';
 import {Header} from './header/Header';
 import stock_photo from '../images/books.jpg';
 import course from '../images/course.PNG';
 import MediaQuery from 'react-responsive';
-import  Media from 'react-media'
 import {Bottom} from './Bottom';
-
-const breakStyle = {              //light blue line 
-  backgroundColor: "#b4c7e7",
-  height: "20px",
-  margin: '0px',
-  marginTop: '-10px'
-};
-
-const breakStyle2 = { 
-  border: '5px solid #005D8c', //Dark Blue line 
-};
 
 // TODO move to css and clean up
 const underLine = { 
@@ -98,7 +86,6 @@ const pageBorder2 = {
 };
 
 const sideBy = { 
-  display: '-webkit-flex',
   display: 'flex',
 };
   

@@ -1,20 +1,7 @@
 import React from 'react';
 import {Header} from './header/Header';
-import stock_photo from '../images/stock_photo.jpg';
 import MediaQuery from 'react-responsive';
-import  Media from 'react-media'
 import {Bottom} from './Bottom';
-
-const breakStyle = {              //light blue line 
-  backgroundColor: "#b4c7e7",
-  height: "20px",
-  margin: '0px',
-  marginTop: '-10px'
-};
-
-const breakStyle2 = { 
- border: '5px solid #005D8c', //Dark Blue line 
-};
 
 const underLine = { 
  border: '1px solid grey', //header underLine
@@ -26,13 +13,6 @@ const underLine2 = {
  border: '1px solid grey', //header underLine
  marginLeft:'10px',
  marginRight:'10px',
-};
-
-const imgStyle = {
-  border: '10px solid #005D8c',
-  maxWidth: '100%',
-  height: 'auto',
-  margin:'0px'
 };
 
 const pageBorder = {
@@ -81,7 +61,7 @@ export const RequestTutor = () => (
 		    <hr style ={underLine}/>
 
 		    <p className= "formStyle">
-         <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSf4uPCMvxLew5migtPBZwiavpJRrS24SdE9XbYlScTLzEpdeQ/viewform?embedded=true" width="700" height="520" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+         <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSf4uPCMvxLew5migtPBZwiavpJRrS24SdE9XbYlScTLzEpdeQ/viewform?embedded=true" width="700" height="520" frameborder="0" marginheight="0" marginwidth="0" title="getInvolvedBigScreenIFrame">Loading…</iframe>
 		    </p>
 	
       </header>
@@ -108,7 +88,7 @@ export const RequestTutor = () => (
 		    <hr style ={underLine2}/>
 
 		    <p className= "formStyle">
-          <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSf4uPCMvxLew5migtPBZwiavpJRrS24SdE9XbYlScTLzEpdeQ/viewform?embedded=true" width="100%" height="520" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+          <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSf4uPCMvxLew5migtPBZwiavpJRrS24SdE9XbYlScTLzEpdeQ/viewform?embedded=true" width="100%" height="520" frameborder="0" marginheight="0" marginwidth="0" title="getInvolvedSmallScreenIFrame">Loading…</iframe>
 		  	</p>
 	
       </header>

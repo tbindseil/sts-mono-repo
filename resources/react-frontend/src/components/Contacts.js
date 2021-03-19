@@ -2,19 +2,7 @@ import React from 'react';
 import {Header} from './header/Header';
 import stock_photo from '../images/skyline.jpg';
 import MediaQuery from 'react-responsive';
-import  Media from 'react-media'
 import {Bottom} from './Bottom';
-
-const breakStyle = {              //light blue line 
-  backgroundColor: "#b4c7e7",
-  height: "20px",
-  margin: '0px',
-  marginTop: '-10px'
-};
-
-const breakStyle2 = { 
-  border: '5px solid #005D8c', //Dark Blue line 
-};
 
 const underLine = { 
   border: '1px solid grey', //header underLine

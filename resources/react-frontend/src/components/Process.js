@@ -1,21 +1,8 @@
-import React, {useState, useEffect }  from 'react';
+import React from 'react';
 import {Header} from './header/Header';
 import stock_photo from '../images/Flo.PNG';
-import course from '../images/course.PNG';
 import MediaQuery from 'react-responsive';
-import  Media from 'react-media'
 import {Bottom} from './Bottom';
-const breakStyle = {              //light blue line 
-  backgroundColor: "#b4c7e7",
-  height: "20px",
-  margin: '0px',
-  marginTop: '-10px'
-};
-
-const breakStyle2 = { 
-  border: '5px solid #005D8c', //Dark Blue line 
-};
-
 const underLine = { 
   border: '1px solid grey', //header underLine
   marginLeft:'150px',
@@ -42,14 +29,6 @@ const imgStyle2 = {
   marginTop: '25px',
   display: 'block',
 };
-const imgStyle3 = {
-  maxWidth: '95%',
-  height: '95%',
-  position: 'center',
-  margin: 'auto',
-  marginTop: '25px',
-  display: 'block',
-};
 
 const sideText= {
   textAlign: 'justify',
@@ -64,14 +43,6 @@ const sideText2= {
   fontFamily: 'Arial',
   paddingRight: '20px',
   paddingLeft:'20px',
-  paddingTop: '10px',
-}
-
-const sideText3= {
-  textAlign: 'justify',
-  fontFamily: 'Arial',
-  paddingRight: '150px',
-  paddingLeft:'150px',
   paddingTop: '10px',
 }
 
@@ -96,7 +67,6 @@ const pageBorder2 = {
 };
 
 const sideBy = { 
-  display: '-webkit-flex',
   display: 'flex',
 };
   

@@ -5,17 +5,6 @@ import MediaQuery from 'react-responsive'
 import {Bottom} from './Bottom';
 
 
-const breakStyle = {              //light blue line 
-  backgroundColor: "#b4c7e7",
-  height: "20px",
-  margin: '0px',
-  marginTop: '-10px'
-};
-
-const breakStyle2 = { 
- border: '5px solid #005D8c', //Dark Blue line 
-};
-
 const underLine = { 
  border: '1px solid grey', //header underLine
  marginLeft:'50px',
@@ -107,6 +96,8 @@ export const Home = () => (
         </header>
 
      </MediaQuery>
+
+    <Bottom/>
 
   </div>
 );
