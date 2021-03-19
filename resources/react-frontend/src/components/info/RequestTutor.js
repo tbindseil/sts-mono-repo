@@ -1,7 +1,7 @@
 import React from 'react';
-import {Header} from './header/Header';
+import {Header} from '../header/Header';
 import MediaQuery from 'react-responsive';
-import {Bottom} from './Bottom';
+import {Bottom} from '../Bottom';
 
 const underLine = { 
  border: '1px solid grey', //header underLine
