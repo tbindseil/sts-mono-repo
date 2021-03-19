@@ -53,7 +53,7 @@ export function AnonymousUserScreen() {
                 TJTAG working on reworking this page. The footer is a pain and is sort of hte last straw before having to clean up
                 some of the stuff from about us/ contacts etc. Then I should finally be styling some forms
               */}
-                <Bottom className="Footer"/>
+                <Bottom/>
 
             </div>
 

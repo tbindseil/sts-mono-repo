@@ -156,7 +156,7 @@
 
 
 
-.navBarProfile{
+.navBarProfile {
   color: #005D8c; 
   font-family: Arial;
   margin-top:5px;
@@ -174,5 +174,16 @@
   border-radius:20px;
 }
 
-
-
+.Footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #005D8c;
+  color: white;
+  text-align: center;
+  font-family: Arial;
+  font-size: 18px;
+  font-variant: small-caps;
+  padding: 8px;
+}
