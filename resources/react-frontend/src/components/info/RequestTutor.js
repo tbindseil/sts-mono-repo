@@ -9,12 +9,6 @@ const underLine = {
  marginRight:'150px',
 };
 
-const underLine2 = {
- border: '1px solid grey', //header underLine
- marginLeft:'10px',
- marginRight:'10px',
-};
-
 const pageBorder = {
   clear: 'both', // don't let anything float left or right of this, for nav bar
   borderLeft: '10vw solid #b4c7e7',
@@ -48,7 +42,7 @@ export const RequestTutor = () => (
 
             <header style ={pageBorder}>
 
-                <h2 className= "pageHeader">
+                <h2 className="PageHeader">
                     Request A Tutor
                 </h2>
 
@@ -83,11 +77,11 @@ export const RequestTutor = () => (
 
             <header style ={pageBorder2}>
 
-                <h2 className= "pageHeader">
+                <h2 className="PageHeader">
                     Request A Tutor
                 </h2>
 
-                <hr style ={underLine2}/>
+                <hr className="UnderLine2"/>
 
                 <p className= "mainText2">
                     Students Teaching Students is a nonprofit tutoring organization that pairs students in their own area for free tutoring services.
@@ -96,7 +90,7 @@ export const RequestTutor = () => (
                     If you are looking for help with test preperation, homework, or general subject matter, request a tutor for your subjects of interest and state you availability in the form below.
                 </p>
 
-                <hr style ={underLine2}/>
+                <hr className="UnderLine2"/>
 
                 <p className= "formStyle">
                     <iframe

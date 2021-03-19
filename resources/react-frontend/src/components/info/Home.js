@@ -11,12 +11,6 @@ const underLine = {
  marginRight:'50px',
 };
 
-const underLine2 = {
- border: '1px solid grey', //header underLine
- marginLeft:'10px',
- marginRight:'10px',
-};
-
 const imgStyle = {
   maxWidth: '100%',
   height: 'auto',
@@ -69,7 +63,7 @@ export const Home = () => (
                     Students Teaching Students
                 </h1>
 
-                <hr style ={underLine2}/>
+                <hr className="UnderLine2"/>
 
                 <p style= {modo}>
                     Enhancing education through student to student tutoring

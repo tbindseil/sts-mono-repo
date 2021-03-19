@@ -5,13 +5,6 @@ import course from '../../images/course.PNG';
 import MediaQuery from 'react-responsive';
 import {Bottom} from '../Bottom';
 
-// TODO move to css and clean up
-const underLine2 = {
-  border: '1px solid grey', //header underLine
-  marginLeft:'10px',
-  marginRight:'10px',
-};
-
 const imgStyle = {
   maxWidth: '35%',
   height: '35%',
@@ -97,7 +90,7 @@ export const AboutUs = () => (
 
             <div style ={pageBorder}>
 
-                <h2 className= "pageHeader">
+                <h2 className="PageHeader">
                     About Students Teaching Students
                 </h2>
 
@@ -108,7 +101,7 @@ export const AboutUs = () => (
                     <div>
                         <p style = {sideText}>
 
-                            <h4 className = "pageHeader">
+                            <h4 className="PageHeader">
                                 Vision
                             </h4>
 
@@ -139,7 +132,7 @@ export const AboutUs = () => (
 
                 </section>
 
-                <h2 className = "pageHeader">
+                <h2 className="PageHeader">
                     Tutoring Offered
                 </h2>
 
@@ -165,16 +158,16 @@ export const AboutUs = () => (
 
             <header style ={pageBorder2}>
 
-                <h2 className= "pageHeader">
+                <h2 className="PageHeader">
                     About Students Teaching Students
                 </h2>
 
-                <hr style ={underLine2}/>
+                <hr className="UnderLine2"/>
 
                 <div>
                     <p style = {sideText2}>
 
-                        <h4 className = "pageHeader">
+                        <h4 className="PageHeader">
                             Vision
                         </h4>
 
@@ -203,11 +196,11 @@ export const AboutUs = () => (
                     </p>
                 </div>
 
-                <h2 className = "pageHeader">
+                <h2 className="PageHeader">
                     Tutoring Offered
                 </h2>
 
-                <hr style ={underLine2}/>
+                <hr className="UnderLine2"/>
 
                 <section>
 

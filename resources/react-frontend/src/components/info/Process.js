@@ -10,12 +10,6 @@ const underLine = {
   marginRight:'150px',
 };
 
-const underLine2 = {
-  border: '1px solid grey', //header underLine
-  marginLeft:'10px',
-  marginRight:'10px',
-};
-
 const imgStyle = {
   maxWidth: '35%',
   height: '35%',
@@ -84,7 +78,7 @@ export const Process = () => (
 
             <header style ={pageBorder}>
 
-                <h2 className= "pageHeader">
+                <h2 className="PageHeader">
                     Our Process
                 </h2>
 
@@ -95,7 +89,7 @@ export const Process = () => (
                     <div>
                         <p style = {sideText}>
 
-                            <h4 class = "pageHeader">
+                            <h4 className="PageHeader">
                                 Establish District Partnerships
                             </h4>
 
@@ -111,7 +105,7 @@ export const Process = () => (
                             <br/>
                             <br/>
 
-                            <h4 class = "pageHeader">
+                            <h4 className="PageHeader">
                                 Recruit Tutors
                             </h4>
 
@@ -127,7 +121,7 @@ export const Process = () => (
                             <br/>
                             <br/>
 
-                            <h4 class = "pageHeader">
+                            <h4 className="PageHeader">
                                 Evaluate Tutors
                             </h4>
 
@@ -136,7 +130,7 @@ export const Process = () => (
                             <br/>
                             <br/>
 
-                            <h4 class = "pageHeader">
+                            <h4 className="PageHeader">
                                 Broadcast Tutors
                             </h4>
                             Now, the fun part… We are able to communicate the amazing resource of high-performing student tutors to all of the grade levels in your district.
@@ -144,7 +138,7 @@ export const Process = () => (
                             <br/>
                             <br/>
 
-                            <h4 class = "pageHeader">
+                            <h4 className="PageHeader">
                                 Connect Students with Tutors
                             </h4>
 
@@ -153,7 +147,7 @@ export const Process = () => (
                             <br/>
                             <br/>
 
-                            <h4 class = "pageHeader">
+                            <h4 className="PageHeader">
                                 Tutoring Sessions and Continuous improvement
                             </h4>
 
@@ -177,11 +171,11 @@ export const Process = () => (
 
             <header style ={pageBorder2}>
 
-                <h2 className= "pageHeader">
+                <h2 className="PageHeader">
                     Our Process
                 </h2>
 
-                <hr style ={underLine2}/>
+                <hr className="UnderLine2"/>
 
                 <img style={imgStyle2} src={stock_photo} alt="stock"/>
 
@@ -189,7 +183,7 @@ export const Process = () => (
 
                     <p style = {sideText2}>
 
-                        <h4 class = "pageHeader">
+                        <h4 className="PageHeader">
                             Establish District Partnerships
                         </h4>
 
@@ -205,7 +199,7 @@ export const Process = () => (
                         <br/>
                         <br/>
 
-                        <h4 class = "pageHeader">
+                        <h4 className="PageHeader">
                             Recruit Tutors
                         </h4>
 
@@ -221,7 +215,7 @@ export const Process = () => (
                         <br/>
                         <br/>
 
-                        <h4 class = "pageHeader">
+                        <h4 className="PageHeader">
                             Evaluate Tutors
                         </h4>
 
@@ -230,7 +224,7 @@ export const Process = () => (
                         <br/>
                         <br/>
 
-                        <h4 class = "pageHeader">
+                        <h4 className="PageHeader">
                             Broadcast Tutors
                         </h4>
 
@@ -239,7 +233,7 @@ export const Process = () => (
                         <br/>
                         <br/>
 
-                        <h4 class = "pageHeader">
+                        <h4 className="PageHeader">
                             Connect Students with Tutors
                         </h4>
 
@@ -248,7 +242,7 @@ export const Process = () => (
                         <br/>
                         <br/>
 
-                        <h4 class = "pageHeader">
+                        <h4 className="PageHeader">
                             Tutoring Sessions and Continuous improvement
                         </h4>
 

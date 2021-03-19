@@ -9,12 +9,6 @@ const underLine = {
   marginRight:'150px',
 };
 
-const underLine2 = {
-  border: '1px solid grey', //header underLine
-  marginLeft:'10px',
-  marginRight:'10px',
-};
-
 const pageBorder = {
   clear: 'both', // don't let anything float left or right of this, for nav bar
   borderLeft: '10vw solid #b4c7e7',
@@ -47,7 +41,7 @@ export const GetInvolved = () => (
 
             <header style ={pageBorder}>
 
-                <h2 className= "pageHeader">
+                <h2 className="PageHeader">
                     Become A Tutor
                 </h2>
 
@@ -82,11 +76,11 @@ export const GetInvolved = () => (
 
             <header style ={pageBorder2}>
 
-                <h2 className= "pageHeader">
+                <h2 className="PageHeader">
                     Get Involved
                 </h2>
 
-                <hr style ={underLine2}/>
+                <hr className="UnderLine2"/>
 
                 <p className= "mainText2">
                     We are always looking for additional high-performing high school students from various locations and subject matters to become tutors.
@@ -95,7 +89,7 @@ export const GetInvolved = () => (
                     If you are interested in giving back to your community through tutoring, please fill out the survey below so we can better match you with students looking for additional help.
                 </p>
 
-                <hr style ={underLine2}/>
+                <hr className="UnderLine2"/>
 
                 <p className= "formStyle">
                     <iframe

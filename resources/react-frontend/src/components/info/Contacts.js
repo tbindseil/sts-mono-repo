@@ -10,12 +10,6 @@ const underLine = {
   marginRight:'150px',
 };
 
-const underLine2 = {
-  border: '1px solid grey', //header underLine
-  marginLeft:'10px',
-  marginRight:'10px',
-};
-
 const imgStyle = {
   maxWidth: '100%',
   height: 'auto',
@@ -56,7 +50,7 @@ export const Contacts= () => (
 
             <header style ={pageBorder}>
 
-                <h2 className= "pageHeader">
+                <h2 className="PageHeader">
                     Contact Us
                 </h2>
 
@@ -81,17 +75,17 @@ export const Contacts= () => (
 
             <header style ={pageBorder2}>
 
-                <h2 className= "pageHeader">
+                <h2 className="PageHeader">
                     Contact Us
                 </h2>
 
-                <hr style ={underLine2}/>
+                <hr className="UnderLine2"/>
 
                 <p className= "mainText2">
                     Feel free to reach out to us with any questions, concerns, or suggestions for our organization. We are always working to improve, and would love to hear from you!
                 </p>
 
-                <hr style ={underLine2}/>
+                <hr className="UnderLine2"/>
 
                 <p className= "formStyle">
                     Email: <a href="mailto:bjkearbey@studentsts.org"> bjkearbey@studentsts.org</a>
