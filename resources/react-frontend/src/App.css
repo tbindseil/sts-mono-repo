@@ -31,14 +31,8 @@
   transform: rotate(45deg);
   -webkit-transform: rotate(45deg);
 }
-.bottomTitle{
-  text-align: Center;
-  font-family: Arial;
-  color: white;
-  font-variant: small-caps;
-}
 
-.titleMain{
+.titleMain {
   text-align: Center;
   font-family: Arial;
   color: #005D8c;
@@ -46,11 +40,11 @@
   font-variant: small-caps;
 }
 
-.formStyle{
+.formStyle {
   text-align: center;
 }
 
-.navLogo{
+.navLogo {
   margin-left:0px;
   margin-right:0px;
   margin-bottom:5px;
@@ -62,26 +56,6 @@
   float: left;
 }
 
-.dropDown{
-	color: #005D8c; 
-  font-family: Arial;
-  padding-top: 5px;
-  padding-bottom:5px;
-  padding-left:5px;
-  padding-right:5px;
-  text-align:center;
-  font-Weight: bold;
-  font-size: 20px;
-  font-variant: small-caps;
-  border-radius: 10px;
-}
-
-.dropDown:hover{
-  color: white; 
-  background-color: #b4c7e7;
-  text-decoration: none;
-}
-	
 .navBar{
   color: #005D8c; 
   font-family: Arial;
@@ -97,80 +71,6 @@
   font-Weight: bold;
   font-variant: small-caps;
   float: right;
-  border-radius:20px;
-}
-
-.navBar:hover{
-  color: white; 
-  background-color: #b4c7e7;
-  text-decoration: none;
-}
-.navBarA{
-  color: #005D8c; 
-  font-family: Arial;
-  text-align:center;
-  font-Weight: bold;
-  font-variant: small-caps;
-  float: right;
-}
-
-.navBarA:hover{
-  color: white; 
-  background-color: #b4c7e7;
-  text-decoration: none;
-}
-
-.navBar2{
-  color: #005D8c; 
-  font-family: Arial;
-  margin-top:5px;
-  margin-bottom: 5px;
-  margin-left:0px;
-  margin-right:0px;
-  padding-top: 5px;
-  padding-bottom:5px;
-  padding-left:5px;
-  padding-right:5px;
-  text-align:center;
-  font-Weight: bold;
-  font-variant: small-caps;
-  float: left;
-  border-radius:20px;
-}
-
-.navBar2:hover{
-  color: white; 
-  background-color: #b4c7e7;
-  text-decoration: none;
-}
-
-.breakStyle = {
-  border: 20px solid #b4c7e7;
-  border-radius: 20px;
-};
-
-
-
-
-/* i guess I'll use css */
-
-
-
-.navBarProfile {
-  color: #005D8c; 
-  font-family: Arial;
-  margin-top:5px;
-  margin-bottom: 5px;
-  margin-left:0px;
-  margin-right:0px;
-  padding-top: 5px;
-  padding-bottom:5px;
-  padding-left:5px;
-  padding-right:5px;
-  text-align:center;
-  font-Weight: bold;
-  font-variant: small-caps;
-  float: left;
   border-radius:20px;
 }
 
