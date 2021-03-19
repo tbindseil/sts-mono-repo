@@ -1,6 +1,7 @@
 import React from 'react';
 import {Header} from '../header/Header';
 import stock_photo from '../../images/books.jpg';
+import wtfstock_photo from '../../images/skyline.jpg';
 import course from '../../images/course.PNG';
 import MediaQuery from 'react-responsive';
 import {Bottom} from '../Bottom';
@@ -10,6 +11,12 @@ const underLine2 = {
   border: '1px solid grey', //header underLine
   marginLeft:'10px',
   marginRight:'10px',
+};
+
+const wtfimgStyle = {
+  maxWidth: '100%',
+  height: 'auto',
+  margin:'0px'
 };
 
 const imgStyle = {
@@ -93,7 +100,8 @@ export const AboutUs = () => (
 
         <MediaQuery minWidth={765}>
 
-            <header style ={pageBorder}>
+            <img style={wtfimgStyle} src={wtfstock_photo} alt="stock"/>
+            <div style ={pageBorder}>
 
                 <h2 className= "pageHeader">
                     About Students Teaching Students
@@ -156,7 +164,7 @@ export const AboutUs = () => (
                     <img style={imgStyle2} src={course} alt="stock"/>
 
                 </section>
-            </header>
+            </div>
         </MediaQuery>
 
         <MediaQuery maxWidth={765}>
