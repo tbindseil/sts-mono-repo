@@ -46,63 +46,62 @@ const pageBorder2 = {
 
 export const Contacts= () => (
 
-  <div>
+    <div>
 
-    <Header/>
+        <Header/>
 
-      <MediaQuery minWidth={765}>
+        <MediaQuery minWidth={765}>
 
-       <img style={imgStyle} src={stock_photo} alt="stock"/>
+            <img style={imgStyle} src={stock_photo} alt="stock"/>
 
-       <header style ={pageBorder}>
+            <header style ={pageBorder}>
 
-          <h2 className= "pageHeader">
-            Contact Us
-          </h2>
+                <h2 className= "pageHeader">
+                    Contact Us
+                </h2>
 
-               <hr style ={underLine}/>
+                <hr style ={underLine}/>
 
-          <p className= "mainText">
-                Feel free to reach out to us with any questions, concerns, or suggestions for our organization. We are always working to improve, and would love to hear from you!
-              </p>
+                <p className= "mainText">
+                    Feel free to reach out to us with any questions, concerns, or suggestions for our organization. We are always working to improve, and would love to hear from you!
+                </p>
 
-              <hr style ={underLine}/>
+                <hr style ={underLine}/>
 
-               <p className= "formStyle">
-                Email: <a href="mailto:bjkearbey@studentsts.org"> bjkearbey@studentsts.org</a>
-              </p>
+                <p className= "formStyle">
+                    Email: <a href="mailto:bjkearbey@studentsts.org"> bjkearbey@studentsts.org</a>
+                </p>
 
-        </header>
-
+            </header>
         </MediaQuery>
 
         <MediaQuery maxWidth={765}>
 
-          <img style={imgStyle} src={stock_photo} alt="stock"/>
+            <img style={imgStyle} src={stock_photo} alt="stock"/>
 
-         <header style ={pageBorder2}>
+            <header style ={pageBorder2}>
 
-            <h2 className= "pageHeader">
-              Contact Us
-            </h2>
+                <h2 className= "pageHeader">
+                    Contact Us
+                </h2>
 
-                 <hr style ={underLine2}/>
+                <hr style ={underLine2}/>
 
-            <p className= "mainText2">
-                   Feel free to reach out to us with any questions, concerns, or suggestions for our organization. We are always working to improve, and would love to hear from you!
+                <p className= "mainText2">
+                    Feel free to reach out to us with any questions, concerns, or suggestions for our organization. We are always working to improve, and would love to hear from you!
                 </p>
 
                 <hr style ={underLine2}/>
 
-                 <p className= "formStyle">
-                  Email: <a href="mailto:bjkearbey@studentsts.org"> bjkearbey@studentsts.org</a>
+                <p className= "formStyle">
+                    Email: <a href="mailto:bjkearbey@studentsts.org"> bjkearbey@studentsts.org</a>
                 </p>
 
-          </header>
+            </header>
+        </MediaQuery>
 
-          </MediaQuery>
         <Bottom/>
-  </div>
+
+    </div>
 
 );
-

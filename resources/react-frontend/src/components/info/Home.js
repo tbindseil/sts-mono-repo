@@ -55,50 +55,47 @@ const modo = {
 
 export const Home = () => (
 
-  <div>
+    <div>
 
-    <Header/>
+        <Header/>
 
-      <img style={imgStyle} src={stock_photo} alt="stock"/>
+        <img style={imgStyle} src={stock_photo} alt="stock"/>
 
         <MediaQuery maxWidth={765}>
 
-        <header style ={pageBorder2}>
+            <header style ={pageBorder2}>
 
-          <h1 className= "titleMain">
-            Students Teaching Students
-          </h1>
+                <h1 className= "titleMain">
+                    Students Teaching Students
+                </h1>
 
-              <hr style ={underLine2}/>
+                <hr style ={underLine2}/>
 
-          <p style= {modo}>
-                Enhancing education through student to student tutoring
-          </p>
+                <p style= {modo}>
+                    Enhancing education through student to student tutoring
+                </p>
 
-        </header>
+            </header>
+        </MediaQuery>
 
-      </MediaQuery>
+        <MediaQuery minWidth={765}>
 
-     <MediaQuery minWidth={765}>
+            <header style ={pageBorder}>
 
-       <header style ={pageBorder}>
+                <h1 className= "titleMain">
+                    Students Teaching Students
+                </h1>
 
-          <h1 className= "titleMain">
-            Students Teaching Students
-          </h1>
+                <hr style ={underLine}/>
 
-              <hr style ={underLine}/>
+                <p style= {modo}>
+                    Enhancing education through student to student tutoring
+                </p>
 
-          <p style= {modo}>
-                Enhancing education through student to student tutoring
-          </p>
+            </header>
+        </MediaQuery>
 
-        </header>
+        <Bottom/>
 
-     </MediaQuery>
-
-    <Bottom/>
-
-  </div>
+    </div>
 );
-
