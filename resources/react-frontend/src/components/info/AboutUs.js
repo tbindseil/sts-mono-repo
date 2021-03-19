@@ -1,7 +1,6 @@
 import React from 'react';
 import {Header} from '../header/Header';
 import stock_photo from '../../images/books.jpg';
-import wtfstock_photo from '../../images/skyline.jpg';
 import course from '../../images/course.PNG';
 import MediaQuery from 'react-responsive';
 import {Bottom} from '../Bottom';
@@ -11,12 +10,6 @@ const underLine2 = {
   border: '1px solid grey', //header underLine
   marginLeft:'10px',
   marginRight:'10px',
-};
-
-const wtfimgStyle = {
-  maxWidth: '100%',
-  height: 'auto',
-  margin:'0px'
 };
 
 const imgStyle = {
@@ -69,6 +62,7 @@ const sideText3 = {
 }
 
 const pageBorder = {
+  clear: 'both', // don't let anything float left or right of this, for nav bar
   borderLeft: '10vw solid #b4c7e7',
   borderRight: '10vw solid #b4c7e7',
   borderTop:'0px solid #005D8c',
@@ -79,6 +73,7 @@ const pageBorder = {
 };
 
 const pageBorder2 = {
+  clear: 'both', // don't let anything float left or right of this, for nav bar
   borderLeft: '5vw solid #b4c7e7',
   borderRight: '5vw solid #b4c7e7',
   borderTop:'0px solid #005D8c',
@@ -100,7 +95,6 @@ export const AboutUs = () => (
 
         <MediaQuery minWidth={765}>
 
-            <img style={wtfimgStyle} src={wtfstock_photo} alt="stock"/>
             <div style ={pageBorder}>
 
                 <h2 className= "pageHeader">

@@ -49,6 +49,7 @@ const sideText2= {
 }
 
 const pageBorder = {
+  clear: 'both', // don't let anything float left or right of this, for nav bar
   borderLeft: '10vw solid #b4c7e7',
   borderRight: '10vw solid #b4c7e7',
   borderTop:'0px solid #005D8c',
@@ -59,6 +60,7 @@ const pageBorder = {
 };
 
 const pageBorder2 = {
+  clear: 'both', // don't let anything float left or right of this, for nav bar
   borderLeft: '5vw solid #b4c7e7',
   borderRight: '5vw solid #b4c7e7',
   borderTop:'0px solid #005D8c',
