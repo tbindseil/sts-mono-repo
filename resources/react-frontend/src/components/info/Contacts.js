@@ -4,13 +4,13 @@ import stock_photo from '../../images/skyline.jpg';
 import MediaQuery from 'react-responsive';
 import {Bottom} from '../Bottom';
 
-const underLine = { 
+const underLine = {
   border: '1px solid grey', //header underLine
   marginLeft:'150px',
   marginRight:'150px',
 };
 
-const underLine2 = { 
+const underLine2 = {
   border: '1px solid grey', //header underLine
   marginLeft:'10px',
   marginRight:'10px',
@@ -60,25 +60,25 @@ export const Contacts= () => (
             Contact Us
           </h2>
 
-	       	<hr style ={underLine}/>
-	
+               <hr style ={underLine}/>
+
           <p className= "mainText">
-		        Feel free to reach out to us with any questions, concerns, or suggestions for our organization. We are always working to improve, and would love to hear from you!
-		      </p>
+                Feel free to reach out to us with any questions, concerns, or suggestions for our organization. We are always working to improve, and would love to hear from you!
+              </p>
 
-		      <hr style ={underLine}/>
+              <hr style ={underLine}/>
 
-	       	<p className= "formStyle">
-		        Email: <a href="mailto:bjkearbey@studentsts.org"> bjkearbey@studentsts.org</a>			
-		      </p>
-	
+               <p className= "formStyle">
+                Email: <a href="mailto:bjkearbey@studentsts.org"> bjkearbey@studentsts.org</a>
+              </p>
+
         </header>
 
-	    </MediaQuery>
-	  
-	    <MediaQuery maxWidth={765}>
+        </MediaQuery>
 
-	      <img style={imgStyle} src={stock_photo} alt="stock"/>
+        <MediaQuery maxWidth={765}>
+
+          <img style={imgStyle} src={stock_photo} alt="stock"/>
 
          <header style ={pageBorder2}>
 
@@ -86,23 +86,23 @@ export const Contacts= () => (
               Contact Us
             </h2>
 
-	         	<hr style ={underLine2}/>
-	
+                 <hr style ={underLine2}/>
+
             <p className= "mainText2">
-	           	Feel free to reach out to us with any questions, concerns, or suggestions for our organization. We are always working to improve, and would love to hear from you!
-		        </p>
+                   Feel free to reach out to us with any questions, concerns, or suggestions for our organization. We are always working to improve, and would love to hear from you!
+                </p>
 
-		        <hr style ={underLine2}/>
+                <hr style ={underLine2}/>
 
-	         	<p className= "formStyle">
-		          Email: <a href="mailto:bjkearbey@studentsts.org"> bjkearbey@studentsts.org</a>			
-		        </p>
-	
+                 <p className= "formStyle">
+                  Email: <a href="mailto:bjkearbey@studentsts.org"> bjkearbey@studentsts.org</a>
+                </p>
+
           </header>
 
-	      </MediaQuery>
+          </MediaQuery>
         <Bottom/>
   </div>
-  
+
 );
-	
+

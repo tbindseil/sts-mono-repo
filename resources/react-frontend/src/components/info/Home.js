@@ -5,13 +5,13 @@ import MediaQuery from 'react-responsive'
 import {Bottom} from '../Bottom';
 
 
-const underLine = { 
+const underLine = {
  border: '1px solid grey', //header underLine
  marginLeft:'50px',
  marginRight:'50px',
 };
 
-const underLine2 = { 
+const underLine2 = {
  border: '1px solid grey', //header underLine
  marginLeft:'10px',
  marginRight:'10px',
@@ -61,7 +61,7 @@ export const Home = () => (
 
       <img style={imgStyle} src={stock_photo} alt="stock"/>
 
-	    <MediaQuery maxWidth={765}>
+        <MediaQuery maxWidth={765}>
 
         <header style ={pageBorder2}>
 
@@ -69,14 +69,14 @@ export const Home = () => (
             Students Teaching Students
           </h1>
 
-		      <hr style ={underLine2}/>
+              <hr style ={underLine2}/>
 
-          <p style= {modo}>	
-		        Enhancing education through student to student tutoring 
+          <p style= {modo}>
+                Enhancing education through student to student tutoring
           </p>
 
         </header>
-    
+
       </MediaQuery>
 
      <MediaQuery minWidth={765}>
@@ -87,12 +87,12 @@ export const Home = () => (
             Students Teaching Students
           </h1>
 
-		      <hr style ={underLine}/>
+              <hr style ={underLine}/>
 
-          <p style= {modo}>	
-		        Enhancing education through student to student tutoring 
+          <p style= {modo}>
+                Enhancing education through student to student tutoring
           </p>
-		
+
         </header>
 
      </MediaQuery>
