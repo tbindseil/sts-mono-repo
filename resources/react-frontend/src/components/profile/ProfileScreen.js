@@ -221,22 +221,6 @@ export function ProfileScreen() {
 
             <br/>
             <br/>
-
-            { // TODO could probably be part of profile drop down
-            }
-
-            <button onClick={onClickMyCalendar}>
-                <a href="/my-calendar">My Calendar</a>
-            </button>
-            <button>
-                <a href="/logout">Logout</a>
-            </button>
-            <button>
-                <a href="/change-password">Change Password</a>
-            </button>
-            <button>
-                <a href="/delete-account">Delete Account</a>
-            </button>
         </>
 
     );

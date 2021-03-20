@@ -2,8 +2,7 @@ import React, {useEffect, useState} from 'react';
 
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
 
-// TODO define small screen profile dropdown
-export const ProfileButton = () => {
+export const BigScreenProfileButton = () => {
 
     const [user, setUser] = useState(undefined);
     useEffect(() => {
@@ -39,4 +38,52 @@ export const ProfileButton = () => {
 
     }
 
+}
+
+export const SmallScreenProfileButton = () => {
+    const profileArrowDropdownWidth = '20px';
+
+    const [extraProfileDisplay, setExtraProfileDisplay] = useState("none")
+    const profileOnClick = () => {
+        if (extraProfileDisplay === "none") {
+            setExtraProfileDisplay("block");
+        } else if (extraProfileDisplay === "block") {
+            setExtraProfileDisplay("none");
+        }
+    }
+
+    const [user, setUser] = useState(undefined);
+    useEffect(() => {
+        checkAuthenticated(() => void(0), setUser);
+    }, [
+        setUser
+    ]);
+
+    if (user) {
+
+        return (
+            <>
+                <section style={{display: 'flex'}}>
+                    <a className="HamburgerItem" style={{width: `calc(100% - ${profileArrowDropdownWidth})`}} href="/profile">Profile</a>
+                    <div style={{width: profileArrowDropdownWidth, height: '100%'}}>
+                        <i onClick={profileOnClick} className="arrow down"/>
+                    </div>
+                </section>
+                <a style={{display: extraProfileDisplay}} className="HamburgerItem" href="/my-calendar">My Calendar</a>
+                <a style={{display: extraProfileDisplay}} className="HamburgerItem" href="/change-password">Change Password</a>
+                <a style={{display: extraProfileDisplay}} className="HamburgerItem" href="/logout">Logout</a>
+                <a style={{display: extraProfileDisplay}} className="HamburgerItem" href="/delete-account">Delete Account</a>
+            </>
+        );
+
+    } else {
+
+        return (
+            <>
+                <a className="HamburgerItem" href="/anonymous-user">Sign Up</a>
+                <a className="HamburgerItem" href="/login">Log In</a>
+            </>
+        );
+
+    }
 }
