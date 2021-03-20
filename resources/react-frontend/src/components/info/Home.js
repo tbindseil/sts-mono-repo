@@ -2,7 +2,7 @@ import React from 'react';
 import {Header} from '../header/Header';
 import stock_photo from '../../images/stock_photo.jpg';
 import MediaQuery from 'react-responsive'
-import {Bottom} from '../Bottom';
+import {Bottom} from '../header/Bottom';
 
 export const Home = () => (
 
@@ -16,7 +16,7 @@ export const Home = () => (
 
             <HomeBody
                 pageBorderClass={"PageBorder"}
-                underlineClass={"UnderLine"}/>
+                underlineClass={"Underline"}/>
 
         </MediaQuery>
 
@@ -24,7 +24,7 @@ export const Home = () => (
 
             <HomeBody
                 pageBorderClass={"PageBorder2"}
-                underlineClass={"UnderLine2"}/>
+                underlineClass={"Underline2"}/>
 
         </MediaQuery>
 

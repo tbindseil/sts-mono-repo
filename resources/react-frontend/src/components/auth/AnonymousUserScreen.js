@@ -3,7 +3,7 @@ import {useHistory} from 'react-router-dom';
 
 import './Auth.css';
 import {Header} from '../header/Header';
-import {Bottom} from '../Bottom';
+import {Bottom} from '../header/Bottom';
 import {checkUnauthenticated} from "./CheckAuthenticated";
 
 export function AnonymousUserScreen() {
@@ -22,7 +22,7 @@ export function AnonymousUserScreen() {
             <div className="FillScreen PageBorder">
 
                 <h2 className="Centered pageHeader">Welcome to Students Teaching Students</h2>
-                <hr className="UnderLine MaxWidth"/>
+                <hr className="Underline MaxWidth"/>
 
                 <br/>
                 <p className="Centered MaxWidth">In order to post availability as a tutor or request a posted tutoring session, you must have an account</p>
@@ -49,10 +49,6 @@ export function AnonymousUserScreen() {
                     <li className="HelperLink"><a href="/confirm-password-reset">Confirm Password Reset</a></li>
                 </ul>
 
-            { /*
-                TJTAG working on reworking this page. The footer is a pain and is sort of hte last straw before having to clean up
-                some of the stuff from about us/ contacts etc. Then I should finally be styling some forms
-              */}
                 <Bottom/>
 
             </div>

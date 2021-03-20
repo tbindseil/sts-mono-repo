@@ -2,7 +2,7 @@ import React from 'react';
 import {Header} from '../header/Header';
 import stock_photo from '../../images/Flo.PNG';
 import MediaQuery from 'react-responsive';
-import {Bottom} from '../Bottom';
+import {Bottom} from '../header/Bottom';
 
 const sideBy = {
   display: 'flex',
@@ -19,7 +19,7 @@ export const Process = () => (
             <header className="PageBorder">
 
                 <ProcessTitle
-                    underlineClass={"UnderLine"}/>
+                    underlineClass={"Underline"}/>
 
                 <section style={sideBy}>
 
@@ -37,7 +37,7 @@ export const Process = () => (
             <header className="PageBorder2">
 
                 <ProcessTitle
-                    underlineClass={"UnderLine2"}/>
+                    underlineClass={"Underline2"}/>
 
                 <img className="MediumImg" src={stock_photo} alt="stock"/>
 

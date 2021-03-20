@@ -3,7 +3,7 @@ import {Header} from '../header/Header';
 import stock_photo from '../../images/books.jpg';
 import course from '../../images/course.PNG';
 import MediaQuery from 'react-responsive';
-import {Bottom} from '../Bottom';
+import {Bottom} from '../header/Bottom';
 
 const sideBy = {
   display: 'flex',
@@ -20,7 +20,7 @@ export const AboutUs = () => (
             <header className="PageBorder">
 
                 <AboutUsTitle
-                    underlineClass={"UnderLine"}/>
+                    underlineClass={"Underline"}/>
 
                 <section style={sideBy}>
 
@@ -32,7 +32,7 @@ export const AboutUs = () => (
                 </section>
 
                 <AboutUsTutotingOffered
-                    underlineClass={"UnderLine"}
+                    underlineClass={"Underline"}
                     textClass={"SideText3"}
                     imgClass={"MediumImg"}/>
 
@@ -44,13 +44,13 @@ export const AboutUs = () => (
             <header className="PageBorder2">
 
                 <AboutUsTitle
-                    underlineClass={"UnderLine2"}/>
+                    underlineClass={"Underline2"}/>
 
                 <AboutUsBody
                     sideTextClass={"SideText2"}/>
 
                 <AboutUsTutotingOffered
-                    underlineClass={"UnderLine2"}
+                    underlineClass={"Underline2"}
                     textClass={"SideText2"}
                     imgClass={"LargeImg"}/>
 

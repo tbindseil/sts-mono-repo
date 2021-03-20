@@ -1,7 +1,7 @@
 import React from 'react';
 import {Header} from '../header/Header';
 import MediaQuery from 'react-responsive';
-import {Bottom} from '../Bottom';
+import {Bottom} from '../header/Bottom';
 
 export const RequestTutor = () => (
 
@@ -13,7 +13,7 @@ export const RequestTutor = () => (
 
             <RequestTutorBody
                 pageBorderClass={"PageBorder"}
-                underlineClass={"UnderLine"}
+                underlineClass={"Underline"}
                 textClass={"mainText"}
                 iframeWidth={"700"}
                 iframeTitle={"getInvolvedBigScreenIFrame"}/>
@@ -24,7 +24,7 @@ export const RequestTutor = () => (
 
             <RequestTutorBody
                 pageBorderClass={"PageBorder2"}
-                underlineClass={"UnderLine2"}
+                underlineClass={"Underline2"}
                 textClass={"mainText2"}
                 iframeWidth={"100%"}
                 iframeTitle={"getInvolvedSmallScreenIFrame"}/>
