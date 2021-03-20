@@ -37,6 +37,14 @@ html, body {
   height: 100%;
 }
 
+/* TODO underLine => underline
+*/
+.UnderLine {
+  border: 1px solid grey;
+  margin-left: 150px;
+  margin-right: 150px;
+}
+
 .UnderLine2 {
   border: 1px solid grey;
   margin-left: 10px;
@@ -169,10 +177,4 @@ html, body {
   font-size: 18px;
   font-variant: small-caps;
   padding: 8px;
-}
-
-.UnderLine {
-  border: 1px solid grey;
-  margin-left: 150px;
-  margin-right: 150px;
 }
