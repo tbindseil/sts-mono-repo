@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import MediaQuery from 'react-responsive'
 
 import './Header.css';
-import {ProfileButton} from './ProfileButton';
+// import {ProfileButton} from './ProfileButton';
 import logo from '../../images/logo-square(1).png';
 import burger from '../../images/burger.png';
 
@@ -36,7 +36,8 @@ export function Header() {
                         <a className="HamburgerItem" href="/get-involved">Become A Tutor</a>
                         <a className="HamburgerItem" href="/request-a-tutor">Request A Tutor</a>
                         <a className="HamburgerItem" href="/contacts">Contact Us</a>
-                        <a className="HamburgerItem" href="/profile">Profile</a>
+{ //<a className="HamburgerItem" href="/profile">Profile</a>
+}
 
                     </div>
                 </div>
@@ -46,7 +47,8 @@ export function Header() {
 
             <MediaQuery minWidth={765}>
 
-                <ProfileButton/>
+{ // <ProfileButton/>
+}
                 <a className="NavBarItem" href="/contacts">Contact Us</a>
                 <a className="NavBarItem" href="/request-a-tutor">Request A Tutor</a>
                 <a className="NavBarItem" href="/get-involved">Become A Tutor</a>
