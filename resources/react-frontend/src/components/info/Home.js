@@ -38,11 +38,11 @@ function HomeBody(props) {
         <>
             <header className={props.pageBorderClass}>
 
-                <h1 className="titleMain">
+                <h1 id="HomeTitle" className="titleMain">
                     Students Teaching Students
                 </h1>
 
-                <hr className={props.underlineClass}/>
+                <hr id="HomeUnderline" className={props.underlineClass}/>
 
                 <p className="Modo">
                     Enhancing education through student to student tutoring

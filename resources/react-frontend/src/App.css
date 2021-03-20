@@ -55,6 +55,12 @@ html, body {
   margin-right: 150px;
 }
 
+/* Home screen underline is wider */
+#HomeUnderline.UnderLine {
+  margin-left: 50px;
+  margin-right: 50px;
+}
+
 .UnderLine2 {
   border: 1px solid grey;
   margin-left: 10px;
@@ -158,6 +164,11 @@ html, body {
   color: #005D8c;
   font-Weight: bold;
   font-variant: small-caps;
+}
+
+/* Home screen title is lower */
+#HomeTitle.titleMain {
+  padding-top: 50px;
 }
 
 .FormStyle {
