@@ -11,75 +11,65 @@ export const GetInvolved = () => (
 
         <MediaQuery minWidth={765}>
 
-            <header className="PageBorder">
+            <GetInvolvedBody
+                pageBorderClass={"PageBorder"}
+                underlineClass={"UnderLine"}
+                textClass={"mainText"}
+                iframeWidth={"700"}
+                iframeTitle="getInvolvedBigScreenIFrame"/>
 
-                <h2 className="PageHeader">
-                    Become A Tutor
-                </h2>
-
-                <hr className="UnderLine"/>
-
-                <p className= "mainText">
-                    We are always looking for additional high-performing high school students from various locations and subject matters to become tutors.
-                </p>
-                <p class = "mainText">
-                    If you are interested in giving back to your community through tutoring, please fill out the survey below so we can better match you with students looking for additional help.
-                </p>
-
-                <hr className="UnderLine"/>
-
-                <p className="FormStyle">
-                    <iframe
-                        src="https://docs.google.com/forms/d/e/1FAIpQLSetv8vY2dH-ur938u0qKqJchiEnqry9ivWc0tDHmnED5epPYA/viewform?embedded=true"
-                        width="700"
-                        height="520"
-                        frameborder="0"
-                        marginheight="0"
-                        marginwidth="0"
-                        title="getInvolvedBigScreenIFrame">
-                        Loading…
-                    </iframe>
-                </p>
-
-            </header>
         </MediaQuery>
 
         <MediaQuery maxWidth={765}>
 
-            <header className="PageBorder2">
+            <GetInvolvedBody
+                pageBorderClass={"PageBorder2"}
+                underlineClass={"UnderLine2"}
+                textClass={"mainText2"}
+                iframeWidth={"100%"}
+                iframeTitle="getInvolvedSmallScreenIFrame"/>
 
-                <h2 className="PageHeader">
-                    Get Involved
-                </h2>
-
-                <hr className="UnderLine2"/>
-
-                <p className= "mainText2">
-                    We are always looking for additional high-performing high school students from various locations and subject matters to become tutors.
-                </p>
-                <p class = "mainText2">
-                    If you are interested in giving back to your community through tutoring, please fill out the survey below so we can better match you with students looking for additional help.
-                </p>
-
-                <hr className="UnderLine2"/>
-
-                <p className="FormStyle">
-                    <iframe
-                        src="https://docs.google.com/forms/d/e/1FAIpQLSetv8vY2dH-ur938u0qKqJchiEnqry9ivWc0tDHmnED5epPYA/viewform?embedded=true"
-                        width="100%"
-                        height="520"
-                        frameborder="0"
-                        marginheight="0"
-                        marginwidth="0"
-                        title="getInvolvedSmallScreenIFrame">
-                        Loading…
-                    </iframe>
-                </p>
-
-            </header>
         </MediaQuery>
 
         <Bottom/>
 
    </div>
 );
+
+function GetInvolvedBody(props) {
+    return (
+        <>
+            <header className={props.pageBorderClass}>
+
+                <h2 className="PageHeader">
+                    Get Involved
+                </h2>
+
+                <hr className={props.underlineClass}/>
+
+                <p className={props.textClass}>
+                    We are always looking for additional high-performing high school students from various locations and subject matters to become tutors.
+                </p>
+                <p className={props.textClass}>
+                    If you are interested in giving back to your community through tutoring, please fill out the survey below so we can better match you with students looking for additional help.
+                </p>
+
+                <hr className={props.underlineClass}/>
+
+                <p className="FormStyle">
+                    <iframe
+                        src="https://docs.google.com/forms/d/e/1FAIpQLSetv8vY2dH-ur938u0qKqJchiEnqry9ivWc0tDHmnED5epPYA/viewform?embedded=true"
+                        width={props.iframeWidth}
+                        height="520"
+                        frameborder="0"
+                        marginheight="0"
+                        marginwidth="0"
+                        title={props.iframeTitle}>
+                        Loading…
+                    </iframe>
+                </p>
+
+            </header>
+        </>
+    );
+}
