@@ -14,14 +14,14 @@ export const Contacts = () => (
             <ContactUsBody
                 pageBorderClass={"PageBorder"}
                 mainTextClass={"mainText"}
-                underlineClass={"UnderLine"}/>
+                underlineClass={"Underline"}/>
         </MediaQuery>
 
         <MediaQuery maxWidth={765}>
             <ContactUsBody
                 pageBorderClass={"PageBorder2"}
                 mainTextClass={"mainText2"}
-                underlineClass={"UnderLine2"}/>
+                underlineClass={"Underline2"}/>
         </MediaQuery>
 
         <Bottom/>
@@ -30,7 +30,6 @@ export const Contacts = () => (
 
 );
 
-// only differenc is PageBorder <=> PageBorder2 , mainText <=> mainText2 , Underline <=> UnderLine2
 function ContactUsBody(props) {
     return (
         <>

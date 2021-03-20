@@ -16,7 +16,7 @@ export const Home = () => (
 
             <HomeBody
                 pageBorderClass={"PageBorder"}
-                underlineClass={"UnderLine"}/>
+                underlineClass={"Underline"}/>
 
         </MediaQuery>
 
@@ -24,7 +24,7 @@ export const Home = () => (
 
             <HomeBody
                 pageBorderClass={"PageBorder2"}
-                underlineClass={"UnderLine2"}/>
+                underlineClass={"Underline2"}/>
 
         </MediaQuery>
 

@@ -47,21 +47,19 @@ html, body {
   height: 100%;
 }
 
-/* TODO underLine => underline
-*/
-.UnderLine {
+.Underline {
   border: 1px solid grey;
   margin-left: 150px;
   margin-right: 150px;
 }
 
 /* Home screen underline is wider */
-#HomeUnderline.UnderLine {
+#HomeUnderline.Underline {
   margin-left: 50px;
   margin-right: 50px;
 }
 
-.UnderLine2 {
+.Underline2 {
   border: 1px solid grey;
   margin-left: 10px;
   margin-right: 10px;

@@ -13,7 +13,7 @@ export const GetInvolved = () => (
 
             <GetInvolvedBody
                 pageBorderClass={"PageBorder"}
-                underlineClass={"UnderLine"}
+                underlineClass={"Underline"}
                 textClass={"mainText"}
                 iframeWidth={"700"}
                 iframeTitle="getInvolvedBigScreenIFrame"/>
@@ -24,7 +24,7 @@ export const GetInvolved = () => (
 
             <GetInvolvedBody
                 pageBorderClass={"PageBorder2"}
-                underlineClass={"UnderLine2"}
+                underlineClass={"Underline2"}
                 textClass={"mainText2"}
                 iframeWidth={"100%"}
                 iframeTitle="getInvolvedSmallScreenIFrame"/>
