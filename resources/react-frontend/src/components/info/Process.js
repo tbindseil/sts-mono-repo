@@ -4,22 +4,6 @@ import stock_photo from '../../images/Flo.PNG';
 import MediaQuery from 'react-responsive';
 import {Bottom} from '../Bottom';
 
-const imgStyle = {
-  maxWidth: '35%',
-  height: '35%',
-  marginTop:'75px',
-  marginRight: '100px',
-};
-
-const imgStyle2 = {
-  maxWidth: '75%',
-  height: '75%',
-  position: 'center',
-  margin: 'auto',
-  marginTop: '25px',
-  display: 'block',
-};
-
 const sideText= {
   textAlign: 'justify',
   fontFamily: 'Arial',
@@ -155,7 +139,7 @@ export const Process = () => (
                         </p>
                     </div>
 
-                    <img style={imgStyle} src={stock_photo} alt="stock"/>
+                    <img className="SmallImg" src={stock_photo} alt="stock"/>
 
                 </section>
             </header>
@@ -171,7 +155,7 @@ export const Process = () => (
 
                 <hr className="UnderLine2"/>
 
-                <img style={imgStyle2} src={stock_photo} alt="stock"/>
+                <img className="MediumImg" src={stock_photo} alt="stock"/>
 
                 <div>
 

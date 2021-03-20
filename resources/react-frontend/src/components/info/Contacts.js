@@ -4,12 +4,6 @@ import stock_photo from '../../images/skyline.jpg';
 import MediaQuery from 'react-responsive';
 import {Bottom} from '../Bottom';
 
-const imgStyle = {
-  maxWidth: '100%',
-  height: 'auto',
-  margin:'0px'
-};
-
 const pageBorder = {
   borderLeft: '10vw solid #b4c7e7',
   borderRight: '10vw solid #b4c7e7',
@@ -40,7 +34,7 @@ export const Contacts= () => (
 
         <MediaQuery minWidth={765}>
 
-            <img style={imgStyle} src={stock_photo} alt="stock"/>
+            <img className="FullScreenImg" src={stock_photo} alt="stock"/>
 
             <header style ={pageBorder}>
 
@@ -65,7 +59,7 @@ export const Contacts= () => (
 
         <MediaQuery maxWidth={765}>
 
-            <img style={imgStyle} src={stock_photo} alt="stock"/>
+            <img className="FullScreenImg" src={stock_photo} alt="stock"/>
 
             <header style ={pageBorder2}>
 

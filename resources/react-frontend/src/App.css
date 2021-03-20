@@ -24,7 +24,38 @@
   border: 1px solid grey;
   margin-left: 10px;
   margin-right: 10px;
-};
+}
+
+.SmallImg {
+  max-width: 35%;
+  height: 35%;
+  margin-top: 75px;
+  margin-right: 100px;
+}
+
+.MediumImg {
+  max-width: 75%;
+  height: 75%;
+  position: center;
+  margin: auto;
+  margin-top: 25px;
+  display: block;
+}
+
+.LargeImg {
+  width: 95%;
+  height: 95%;
+  position: center;
+  margin: auto;
+  margin-top: 25px;
+  display: block;
+}
+
+.FullScreenImg {
+  max-width: 100%;
+  height: auto;
+  margin: 0px;
+}
 
 .arrow {
   border: solid black;

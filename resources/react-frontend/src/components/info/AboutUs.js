@@ -5,31 +5,6 @@ import course from '../../images/course.PNG';
 import MediaQuery from 'react-responsive';
 import {Bottom} from '../Bottom';
 
-const imgStyle = {
-  maxWidth: '35%',
-  height: '35%',
-  marginTop:'75px',
-  marginRight: '100px',
-};
-
-const imgStyle2 = {
-  width: '75%',
-  height: '75%',
-  position: 'center',
-  margin: 'auto',
-  marginTop: '25px',
-  display: 'block',
-};
-
-const imgStyle3 = {
-  width: '95%',
-  height: '95%',
-  position: 'center',
-  margin: 'auto',
-  marginTop: '25px',
-  display: 'block',
-};
-
 const sideText = {
   textAlign: 'justify',
   fontFamily: 'Arial',
@@ -128,7 +103,7 @@ export const AboutUs = () => (
                         </p>
                     </div>
 
-                    <img style={imgStyle} src={stock_photo} alt="stock"/>
+                    <img className="SmallImg" src={stock_photo} alt="stock"/>
 
                 </section>
 
@@ -148,7 +123,7 @@ export const AboutUs = () => (
                         </p>
                     </div>
 
-                    <img style={imgStyle2} src={course} alt="stock"/>
+                    <img className="MediumImg" src={course} alt="stock"/>
 
                 </section>
             </div>
@@ -212,7 +187,7 @@ export const AboutUs = () => (
                         </p>
                     </div>
 
-                    <img style={imgStyle3} src={course} alt="stock"/>
+                    <img className="LargeImg" src={course} alt="stock"/>
 
                 </section>
 
