@@ -28,6 +28,16 @@ html, body {
   padding-left:10px;
 }
 
+
+.Modo {
+  text-align: center;
+  font-family: Arial;
+  font-variant: small-caps;
+  font-weight: bold;
+  color: #005D8c;
+}
+
+
 .PageHeader {
   text-align: Center;
   font-family: Arial;
