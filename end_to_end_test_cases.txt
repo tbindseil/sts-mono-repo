@@ -1,0 +1,3 @@
+register with new user
+
+view and update profile info in website

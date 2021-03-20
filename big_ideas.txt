@@ -1,0 +1,1 @@
+lambda that houses debug level, then don't have to redeploy everytime I want to add debug

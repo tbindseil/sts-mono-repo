@@ -12,7 +12,7 @@ export interface RDSStackProps extends cdk.StackProps {
 // use lambda.Code.fromAssetImage its not deprecated for grabbing zip file for lambda
 export class RDSStack extends cdk.Stack {
 
-    readonly dbSecret: rds.DatabaseSecret;
+    public readonly dbSecret: rds.DatabaseSecret;
     readonly postgresRDSInstance: rds.DatabaseInstance;
 
     constructor(scope: cdk.App, id: string, props: RDSStackProps) {
@@ -22,6 +22,7 @@ export class RDSStack extends cdk.Stack {
             username: 'tj'
         });
 
+        // TODO set backup retention to 0 days while developing to stay in free tier
         this.postgresRDSInstance = new rds.DatabaseInstance(this, 'Postgres-rds-instance', {
             engine: rds.DatabaseInstanceEngine.postgres({
                 version: rds.PostgresEngineVersion.VER_12_4

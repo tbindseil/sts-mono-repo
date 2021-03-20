@@ -1,12 +1,15 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
-import * as cdk from '@aws-cdk/core';
+import { App } from '@aws-cdk/core';
 import { UsersStack } from '../lib/users-stack';
 import { VpcStack } from '../lib/vpc-stack';
 import { RDSStack } from "../lib/rds-stack";
-import { MyWidgetServiceStack } from "../lib/my_widget_service-stack";
+import { CognitoStack } from "../lib/cognito-stack";
+import { UserLambdaServiceStack } from "../lib/lambdas/user-lambda-stack";
+import { AvailabilityLambdaServiceStack } from "../lib/lambdas/availability-lambda-stack";
+import { UserRegisteredLambdaServiceStack } from "../lib/lambdas/user-registered-stack";
 
-const app = new cdk.App();
+const app = new App();
 
 const userStack = new UsersStack(app, 'UsersStack');
 
@@ -15,7 +18,20 @@ const rdsStack = new RDSStack(app, 'RDSStack', {
     vpc: vpcStack.vpc
 });
 
-const myWidgetServiceStack = new MyWidgetServiceStack(app, 'MyWidgetServiceStack');
+const userRegisteredLambdaServiceStack = new UserRegisteredLambdaServiceStack(app, 'UserRegisteredLambdaServiceStack', {
+    dbSecret: rdsStack.dbSecret
+});
+const cognitoStack = new CognitoStack(app, 'CognitoStack', {
+    userRegisteredLambda: userRegisteredLambdaServiceStack.userRegisteredService.handler
+});
+
+const userServiceStack = new UserLambdaServiceStack(app, 'UserLambdaServiceStack', {
+    dbSecret: rdsStack.dbSecret
+});
+
+const availabilityServiceStack = new AvailabilityLambdaServiceStack(app, 'AvailabilityLambdaServiceStack', {
+    dbSecret: rdsStack.dbSecret
+});
 
 vpcStack.grantDeployPrivileges(userStack.buildScriptsUser);
 rdsStack.grantDeployPrivileges(userStack.buildScriptsUser);

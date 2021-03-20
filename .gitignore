@@ -1,9 +1,6 @@
-bin/*.js
-lib/*.js
-test/*.js
 !jest.config.js
-*.d.ts
 node_modules
+build_output
 
 # CDK asset staging directory
 .cdk.staging
@@ -11,6 +8,12 @@ cdk.out
 
 # Parcel default cache directory
 .parcel-cache
+
+# python
+*.pyc
+*.gz
+*.whl
+**/build/*
 
 # venv
 **/venv/*

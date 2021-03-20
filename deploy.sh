@@ -15,15 +15,19 @@ esac
 git pull
 git checkout $STAGE
 
+# TODO db migrations, pypi packaging before pip install requirements.txt
+
 # zip lambda and dependencies
 FILE_SEPARATOR="/"
 ROOT_FULL_PATH="$(pwd)"
 LAMBDA_ROOT="${ROOT_FULL_PATH}/resources/"
-DEPENDENCIES_SUBDIR="venv/lib/python3.7/site-packages/"
+# TODO auto determine latest python version for below directory
+DEPENDENCIES_SUBDIR="venv/lib/python3.8/site-packages/"
 ZIP_FILE_NAME="my-deployment-package.zip"
 ZIP_INPUT_DIR="."
 LAMBDA_FUNCTION_FILE_NAME="lambda_function.py"
 
+# TODO make own script so I can do it without full blown ./deploy.sh
 for LAMBDA_SUBDIR in $(ls $LAMBDA_ROOT | grep lambda); do
     # TODO pip install requirements.txt
     LAMBDA_FULL_PATH="$LAMBDA_ROOT$FILE_SEPARATOR$LAMBDA_SUBDIR"

@@ -1,3 +1,19 @@
+html, body {
+  height: 100%;
+}
+
+#root {
+  height: 100%;
+}
+
+.App {
+  height: 100%;
+}
+
+.TopLevelContainer {
+  height: 100%;
+}
+
 .mainText {
   text-align: justify;
   font-family: Arial;
@@ -12,12 +28,122 @@
   padding-left:10px;
 }
 
-.pageHeader{
+
+.Modo {
+  text-align: center;
+  font-family: Arial;
+  font-variant: small-caps;
+  font-weight: bold;
+  color: #005D8c;
+}
+
+
+.PageHeader {
   text-align: Center;
   font-family: Arial;
   color: #005D8c;
   font-Weight: bold;
   font-variant: small-caps;
+  height: 100%;
+}
+
+/* TODO underLine => underline
+*/
+.UnderLine {
+  border: 1px solid grey;
+  margin-left: 150px;
+  margin-right: 150px;
+}
+
+/* Home screen underline is wider */
+#HomeUnderline.UnderLine {
+  margin-left: 50px;
+  margin-right: 50px;
+}
+
+.UnderLine2 {
+  border: 1px solid grey;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.SmallImg {
+  max-width: 35%;
+  height: 35%;
+  margin-top: 75px;
+  margin-right: 100px;
+}
+
+.MediumImg {
+  max-width: 75%;
+  height: 75%;
+  position: center;
+  margin: auto;
+  margin-top: 25px;
+  display: block;
+}
+
+.LargeImg {
+  width: 95%;
+  height: 95%;
+  position: center;
+  margin: auto;
+  margin-top: 25px;
+  display: block;
+}
+
+.FullScreenImg {
+  max-width: 100%;
+  height: auto;
+  margin: 0px;
+}
+
+.SideText {
+  text-align: justify;
+  font-family: Arial;
+  padding-right: 50px;
+  padding-left: 100px;
+  padding-top: 10px;
+}
+
+.SideText2 {
+  text-align: justify;
+  font-family: Arial;
+  padding-right: 20px;
+  padding-left: 20px;
+  padding-top: 10px;
+}
+
+.SideText3 {
+  text-align: justify;
+  font-family: Arial;
+  padding-right: 150px;
+  padding-left: 150px;
+  padding-top: 10px;
+}
+
+.PageBorder {
+  clear: both;
+  border-left: 10vw solid #b4c7e7;
+  border-right: 10vw solid #b4c7e7;
+  border-top: 0px solid #005D8c;
+  border-bottom: 0px solid #005D8c;
+  padding-top: 5px;
+  padding-bottom: 100px;
+  margin-top: 0px;
+
+  height: calc(100% - 75px); /* uh, stretching the page border to at least the bottom is a major pain */
+}
+
+.PageBorder2 {
+  clear: both;
+  border-left: 5vw solid #b4c7e7;
+  border-right: 5vw solid #b4c7e7;
+  border-top: 0px solid #005D8c;
+  border-bottom: 0px solid #005D8c;
+  padding-top: 5px;
+  padding-bottom: 100px;
+  margin-top: 0px;
 }
 
 .arrow {
@@ -31,14 +157,8 @@
   transform: rotate(45deg);
   -webkit-transform: rotate(45deg);
 }
-.bottomTitle{
-  text-align: Center;
-  font-family: Arial;
-  color: white;
-  font-variant: small-caps;
-}
 
-.titleMain{
+.titleMain {
   text-align: Center;
   font-family: Arial;
   color: #005D8c;
@@ -46,11 +166,16 @@
   font-variant: small-caps;
 }
 
-.formStyle{
+/* Home screen title is lower */
+#HomeTitle.titleMain {
+  padding-top: 50px;
+}
+
+.FormStyle {
   text-align: center;
 }
 
-.navLogo{
+.NavLogo {
   margin-left:0px;
   margin-right:0px;
   margin-bottom:5px;
@@ -62,91 +187,15 @@
   float: left;
 }
 
-.dropDown{
-	color: #005D8c; 
+.Footer {
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #005D8c;
+  color: white;
+  text-align: center;
   font-family: Arial;
-  padding-top: 5px;
-  padding-bottom:5px;
-  padding-left:5px;
-  padding-right:5px;
-  text-align:center;
-  font-Weight: bold;
-  font-size: 20px;
+  font-size: 18px;
   font-variant: small-caps;
-  border-radius: 10px;
+  padding: 8px;
 }
-
-.dropDown:hover{
-  color: white; 
-  background-color: #b4c7e7;
-  text-decoration: none;
-}
-	
-.navBar{
-  color: #005D8c; 
-  font-family: Arial;
-  margin-top:7.5px;
-  margin-bottom: 7.5px;
-  margin-left:0px;
-  margin-right:0px;
-  padding-top: 15px;
-  padding-bottom:15px;
-  padding-left:10px;
-  padding-right:10px;
-  text-align:center;
-  font-Weight: bold;
-  font-variant: small-caps;
-  float: right;
-  border-radius:20px;
-}
-
-.navBar:hover{
-  color: white; 
-  background-color: #b4c7e7;
-  text-decoration: none;
-}
-.navBarA{
-  color: #005D8c; 
-  font-family: Arial;
-  text-align:center;
-  font-Weight: bold;
-  font-variant: small-caps;
-  float: right;
-}
-
-.navBarA:hover{
-  color: white; 
-  background-color: #b4c7e7;
-  text-decoration: none;
-}
-
-.navBar2{
-  color: #005D8c; 
-  font-family: Arial;
-  margin-top:5px;
-  margin-bottom: 5px;
-  margin-left:0px;
-  margin-right:0px;
-  padding-top: 5px;
-  padding-bottom:5px;
-  padding-left:5px;
-  padding-right:5px;
-  text-align:center;
-  font-Weight: bold;
-  font-variant: small-caps;
-  float: left;
-  border-radius:20px;
-}
-
-.navBar2:hover{
-  color: white; 
-  background-color: #b4c7e7;
-  text-decoration: none;
-}
-
-.breakStyle = {
-  border: 20px solid #b4c7e7;
-  border-radius: 20px;
-};
-
-
