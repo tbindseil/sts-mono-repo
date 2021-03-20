@@ -18,9 +18,6 @@ ul.NavBar {
 
   float: right; /* need float to have border be around children, or something like that */
   width: 100%;
-
-  /* margin-bottom: 30px; /* looks like the nav bar doesn't get its box measurements taken into account */
-  /* TJTAG keep moving stuff into css and don't forget to check visually! */
 }
 
 a { /* gotta override bootstrap here */

@@ -4,31 +4,9 @@ import stock_photo from '../../images/skyline.jpg';
 import MediaQuery from 'react-responsive';
 import {Bottom} from '../Bottom';
 
-const pageBorder = {
-  borderLeft: '10vw solid #b4c7e7',
-  borderRight: '10vw solid #b4c7e7',
-  borderTop:'0px solid #005D8c',
-  borderBottom:'0px solid #005D8c',
-  paddingTop: '5px',
-  paddingBottom:'50px',
-  marginTop: '0px',
-  height: '75vh'
-};
-
-const pageBorder2 = {
-  borderLeft: '5vw solid #b4c7e7',
-  borderRight: '5vw solid #b4c7e7',
-  borderTop:'0px solid #005D8c',
-  borderBottom:'0px solid #005D8c',
-  paddingTop: '5px',
-  paddingBottom:'100px',
-  marginTop: '0px',
-  height: '75vh'
-};
-
 export const Contacts= () => (
 
-    <div>
+    <div className="TopLevelContainer">
 
         <Header/>
 
@@ -36,9 +14,9 @@ export const Contacts= () => (
 
             <img className="FullScreenImg" src={stock_photo} alt="stock"/>
 
-            <header style ={pageBorder}>
+            <header className="PageBorder">
 
-                <h2 className="PageHeader">
+                <h2 className="titleMain">
                     Contact Us
                 </h2>
 
@@ -50,7 +28,7 @@ export const Contacts= () => (
 
                 <hr className="UnderLine"/>
 
-                <p className= "formStyle">
+                <p className="FormStyle">
                     Email: <a href="mailto:bjkearbey@studentsts.org"> bjkearbey@studentsts.org</a>
                 </p>
 
@@ -61,9 +39,9 @@ export const Contacts= () => (
 
             <img className="FullScreenImg" src={stock_photo} alt="stock"/>
 
-            <header style ={pageBorder2}>
+            <header className="PageBorder2">
 
-                <h2 className="PageHeader">
+                <h2 className="titleMain">
                     Contact Us
                 </h2>
 
@@ -75,7 +53,7 @@ export const Contacts= () => (
 
                 <hr className="UnderLine2"/>
 
-                <p className= "formStyle">
+                <p className="FormStyle">
                     Email: <a href="mailto:bjkearbey@studentsts.org"> bjkearbey@studentsts.org</a>
                 </p>
 

@@ -4,28 +4,6 @@ import stock_photo from '../../images/Flo.PNG';
 import MediaQuery from 'react-responsive';
 import {Bottom} from '../Bottom';
 
-const pageBorder = {
-  clear: 'both', // don't let anything float left or right of this, for nav bar
-  borderLeft: '10vw solid #b4c7e7',
-  borderRight: '10vw solid #b4c7e7',
-  borderTop:'0px solid #005D8c',
-  borderBottom:'0px solid #005D8c',
-  paddingTop: '5px',
-  paddingBottom:'100px',
-  marginTop: '0px',
-};
-
-const pageBorder2 = {
-  clear: 'both', // don't let anything float left or right of this, for nav bar
-  borderLeft: '5vw solid #b4c7e7',
-  borderRight: '5vw solid #b4c7e7',
-  borderTop:'0px solid #005D8c',
-  borderBottom:'0px solid #005D8c',
-  paddingTop: '5px',
-  paddingBottom:'100px',
-  marginTop: '0px',
-};
-
 const sideBy = {
   display: 'flex',
 };
@@ -38,7 +16,7 @@ export const Process = () => (
 
         <MediaQuery minWidth={765}>
 
-            <header style ={pageBorder}>
+            <header className="PageBorder">
 
                 <h2 className="PageHeader">
                     Our Process
@@ -131,7 +109,7 @@ export const Process = () => (
 
         <MediaQuery maxWidth={765}>
 
-            <header style ={pageBorder2}>
+            <header className="PageBorder2">
 
                 <h2 className="PageHeader">
                     Our Process

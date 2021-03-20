@@ -19,9 +19,9 @@ export function Header() {
     }
 
     return (
-        <ul className="NavBar">
+        <ul id="NavBar" className="NavBar">
 
-            <a className="navLogo"  marginLeft="0px" href="/home"> <img width="100px" height="52px"src={logo} alt="logo"/></a>
+            <a className="NavLogo"  marginLeft="0px" href="/home"> <img width="100px" height="52px"src={logo} alt="logo"/></a>
 
             <MediaQuery maxWidth={765}>
 
