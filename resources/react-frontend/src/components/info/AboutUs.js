@@ -3,7 +3,7 @@ import {Header} from '../header/Header';
 import stock_photo from '../../images/books.jpg';
 import course from '../../images/course.PNG';
 import MediaQuery from 'react-responsive';
-import {Bottom} from '../Bottom';
+import {Bottom} from '../header/Bottom';
 
 const sideBy = {
   display: 'flex',

@@ -2,7 +2,7 @@ import React from 'react';
 import {Header} from '../header/Header';
 import stock_photo from '../../images/skyline.jpg';
 import MediaQuery from 'react-responsive';
-import {Bottom} from '../Bottom';
+import {Bottom} from '../header/Bottom';
 
 export const Contacts = () => (
 

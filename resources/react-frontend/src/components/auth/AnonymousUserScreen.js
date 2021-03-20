@@ -3,7 +3,7 @@ import {useHistory} from 'react-router-dom';
 
 import './Auth.css';
 import {Header} from '../header/Header';
-import {Bottom} from '../Bottom';
+import {Bottom} from '../header/Bottom';
 import {checkUnauthenticated} from "./CheckAuthenticated";
 
 export function AnonymousUserScreen() {
