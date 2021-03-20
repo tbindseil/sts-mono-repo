@@ -4,22 +4,6 @@ import stock_photo from '../../images/Flo.PNG';
 import MediaQuery from 'react-responsive';
 import {Bottom} from '../Bottom';
 
-const sideText= {
-  textAlign: 'justify',
-  fontFamily: 'Arial',
-  paddingRight: '50px',
-  paddingLeft:'100px',
-  paddingTop: '10px',
-}
-
-const sideText2= {
-  textAlign: 'justify',
-  fontFamily: 'Arial',
-  paddingRight: '20px',
-  paddingLeft:'20px',
-  paddingTop: '10px',
-}
-
 const pageBorder = {
   clear: 'both', // don't let anything float left or right of this, for nav bar
   borderLeft: '10vw solid #b4c7e7',
@@ -65,7 +49,7 @@ export const Process = () => (
                 <section style = {sideBy}>
 
                     <div>
-                        <p style = {sideText}>
+                        <p className="SideText">
 
                             <h4 className="PageHeader">
                                 Establish District Partnerships
@@ -159,7 +143,7 @@ export const Process = () => (
 
                 <div>
 
-                    <p style = {sideText2}>
+                    <p className="SideText2">
 
                         <h4 className="PageHeader">
                             Establish District Partnerships

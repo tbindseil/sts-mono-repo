@@ -57,6 +57,30 @@
   margin: 0px;
 }
 
+.SideText {
+  text-align: justify;
+  font-family: Arial;
+  padding-right: 50px;
+  padding-left: 100px;
+  padding-top: 10px;
+}
+
+.SideText2 {
+  text-align: justify;
+  font-family: Arial;
+  padding-right: 20px;
+  padding-left: 20px;
+  padding-top: 10px;
+}
+
+.SideText3 {
+  text-align: justify;
+  font-family: Arial;
+  padding-right: 150px;
+  padding-left: 150px;
+  padding-top: 10px;
+}
+
 .arrow {
   border: solid black;
   border-width: 0 3px 3px 0;

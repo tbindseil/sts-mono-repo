@@ -5,30 +5,6 @@ import course from '../../images/course.PNG';
 import MediaQuery from 'react-responsive';
 import {Bottom} from '../Bottom';
 
-const sideText = {
-  textAlign: 'justify',
-  fontFamily: 'Arial',
-  paddingRight: '50px',
-  paddingLeft:'100px',
-  paddingTop: '10px',
-}
-
-const sideText2 = {
-  textAlign: 'justify',
-  fontFamily: 'Arial',
-  paddingRight: '20px',
-  paddingLeft:'20px',
-  paddingTop: '10px',
-}
-
-const sideText3 = {
-  textAlign: 'justify',
-  fontFamily: 'Arial',
-  paddingRight: '150px',
-  paddingLeft:'150px',
-  paddingTop: '10px',
-}
-
 const pageBorder = {
   clear: 'both', // don't let anything float left or right of this, for nav bar
   borderLeft: '10vw solid #b4c7e7',
@@ -74,7 +50,7 @@ export const AboutUs = () => (
                 <section style = {sideBy}>
 
                     <div>
-                        <p style = {sideText}>
+                        <p className="SideText">
 
                             <h4 className="PageHeader">
                                 Vision
@@ -116,7 +92,7 @@ export const AboutUs = () => (
                 <section>
 
                     <div>
-                        <p style = {sideText3}>
+                        <p className="SideText3">
                             **We are actively working through our network of Chicago and Chicago Suburb based schools to form partnerships
                             with the various districts. As those partnerships are established,
                             this section will be updated with the grade levels, subjects, and locations tutoring is offered.
@@ -140,7 +116,7 @@ export const AboutUs = () => (
                 <hr className="UnderLine2"/>
 
                 <div>
-                    <p style = {sideText2}>
+                    <p className="SideText2">
 
                         <h4 className="PageHeader">
                             Vision
@@ -180,7 +156,7 @@ export const AboutUs = () => (
                 <section>
 
                     <div>
-                        <p style = {sideText2} >
+                        <p className="SideText2">
                             **We are actively working through our network of Chicago and Chicago Suburb based schools to form partnerships
                             with the various districts. As those partnerships are established,
                             this section will be updated with the grade levels, subjects, and locations tutoring is offered.
