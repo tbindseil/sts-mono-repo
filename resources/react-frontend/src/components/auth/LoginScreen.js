@@ -1,15 +1,40 @@
 import React, {useEffect, useState} from 'react';
+import MediaQuery from 'react-responsive';
 import {useHistory} from 'react-router-dom';
 
 import {Auth} from "aws-amplify";
 
 import {Header} from '../header/Header';
+import {Bottom} from '../header/Bottom';
+import {Title} from '../layout/Title';
 import {TextInput} from '../forms/TextInput';
 import {FormButton} from '../forms/FormButton';
 import {authStyles} from './styles';
 import {checkUnauthenticated} from "./CheckAuthenticated";
 
 export function LoginScreen() {
+    return (
+        <div className="TopLevelContainer">
+            <Header/>
+
+            <MediaQuery minWidth={765}>
+                <LoginBody
+                    pageBorderClass={"PageBorder"}
+                    underlineClass={"Underline"}/>
+            </MediaQuery>
+
+            <MediaQuery maxWidth={765}>
+                <LoginBody
+                    pageBorderClass={"PageBorder2"}
+                    underlineClass={"Underline2"}/>
+            </MediaQuery>
+
+            <Bottom/>
+        </div>
+    );
+}
+
+function LoginBody(props) {
     const history = useHistory();
 
     useEffect(() => {
@@ -53,42 +78,46 @@ export function LoginScreen() {
 
     return (
         <>
-            <Header/>
+            <header className={props.pageBorderClass}>
+                <Title
+                    titleText={"Log In"}
+                    underlineClass={props.underlineClass}/>
 
-            <h1>Login</h1>
+                <div className="Centered MaxWidth">
+                    { failed &&
+                        <p style={authStyles.errorMsg} >{errorMessage}</p>
+                    }
+                </div>
 
-            { failed &&
-                <p style={authStyles.errorMsg} >{errorMessage}</p>
-            }
+                <form
+                    className="Centered MaxWidth"
+                    onChange={handleChange}>
 
-            <form
-                onChange={handleChange}>
+                    <TextInput
+                        name={"email"}
+                        placeHolder={"Email"}
+                        value={email}/>
+                    <br/>
 
-                <TextInput
-                    name={"email"}
-                    label={"Email"}
-                    value={email}/>
+                    <TextInput
+                        name={"password"}
+                        placeHolder={"Password"}
+                        value={password}
+                        type={"password"}/>
+                    <br/>
+
+                    <FormButton
+                        onClick={onFinish}
+                        value={"Log in"}/>
+                </form>
                 <br/>
-                <br/>
 
-                <TextInput
-                    name={"password"}
-                    label={"Password"}
-                    value={password}
-                    type={"password"}/>
-                <br/>
-                <br/>
+                <div className="Centered MaxWidth">
+                    <p>Forgot password? <a href="/initiate-password-reset">Reset it here</a></p>
+                    <p>Don't have an account? <a href="/register">Register here</a></p>
+                </div>
 
-                <FormButton
-                    onClick={onFinish}
-                    value={"Log in"}/>
-            </form>
-
-            <a href="/initiate-password-reset">Forgot Password?</a>
-            <br/>
-            <a href="/register">Don't have an account?</a>
-
+            </header>
         </>
-
     );
 }
