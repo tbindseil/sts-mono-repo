@@ -1,15 +1,40 @@
 import React, {useEffect, useState} from 'react';
+import MediaQuery from 'react-responsive';
 import {useHistory} from 'react-router-dom';
 
 import {Auth} from 'aws-amplify';
 
 import {Header} from '../header/Header';
+import {Bottom} from '../header/Bottom';
+import {Title} from '../layout/Title';
 import {TextInput} from '../forms/TextInput';
 import {FormButton} from '../forms/FormButton';
 import {authStyles} from './styles';
 import {checkUnauthenticated} from "./CheckAuthenticated";
 
 export function ConfirmScreen() {
+    return (
+        <div className="TopLevelContainer">
+            <Header/>
+
+            <MediaQuery minWidth={765}>
+                <ConfirmBody
+                    pageBorderClass={"PageBorder"}
+                    underlineClass={"Underline"}/>
+            </MediaQuery>
+
+            <MediaQuery maxWidth={765}>
+                <ConfirmBody
+                    pageBorderClass={"PageBorder2"}
+                    underlineClass={"Underline2"}/>
+            </MediaQuery>
+
+            <Bottom/>
+        </div>
+    );
+}
+
+function ConfirmBody(props) {
     const history = useHistory();
 
     useEffect(() => {
@@ -65,48 +90,55 @@ export function ConfirmScreen() {
     };
 
     return (
-        <div>
+        <>
+            <header className={props.pageBorderClass}>
 
-            <Header/>
+                <Title
+                    titleText={"Confirm Registration"}
+                    underlineClass={props.underlineClass}/>
 
-            <p>
-                Use the emailed code to confirm your email
-            </p>
+                <div className="Centered MaxWidth">
+                    <p>
+                        Use the emailed code to confirm your email
+                    </p>
 
-            { failed &&
-                <p style={authStyles.errorMsg} >{errorMessage}</p>
-            }
+                    { failed &&
+                        <p style={authStyles.errorMsg} >{errorMessage}</p>
+                    }
+                </div>
 
-            <form
-                onChange={handleChange}>
+                <form
+                    className="Centered MaxWidth"
+                    onChange={handleChange}>
 
-                <TextInput
-                    name={"email"}
-                    label={"Email"}
-                    value={email}/>
+                    <TextInput
+                        name={"email"}
+                        placeHolder={"Email"}
+                        value={email}/>
+                    <br/>
+
+                    <TextInput
+                        name={"code"}
+                        placeHolder={"Code"}
+                        value={code}/>
+                    <br/>
+
+                    <FormButton
+                        onClick={onFinish}
+                        value={"Confirm Email"}/>
+                    <FormButton
+                        onClick={resendCode}
+                        value={"Send New Code"}/>
+                </form>
                 <br/>
-                <br/>
 
-                <TextInput
-                    name={"code"}
-                    label={"Code"}
-                    value={code}/>
-                <br/>
-                <br/>
+                <div className="Centered MaxWidth">
+                    <p>Already confirmed? <a href="/login">Login here</a></p>
+                    <p>Not registered yet? <a href="/register">Register here</a></p>
+                </div>
 
-                <FormButton
-                    onClick={onFinish}
-                    value={"Confirm Email"}/>
-                <FormButton
-                    onClick={resendCode} 
-                    value={"Send New Code"}/>
-            </form>
+            </header>
 
-            <a href="/login">Already Confirmed?</a>
-            <br/>
-            <a href="/register">Not registered yet?</a>
-
-        </div>
+        </>
     );
-
 }
