@@ -1,15 +1,42 @@
 import React, {useEffect, useState} from 'react';
+import MediaQuery from 'react-responsive';
 import {useHistory} from 'react-router-dom';
 
 import {Auth} from "aws-amplify";
 
 import {Header} from '../header/Header';
+import {Bottom} from '../header/Bottom';
+import {Title} from '../layout/Title';
 import {TextInput} from '../forms/TextInput';
 import {FormButton} from '../forms/FormButton';
 import {authStyles} from './styles';
 import {checkUnauthenticated} from "./CheckAuthenticated";
 
 export function InitiatePasswordResetScreen() {
+    return (
+        <div className="TopLevelContainer">
+
+            <Header/>
+
+            <MediaQuery minWidth={765}>
+                <InitiatePasswordResetBody
+                    pageBorderClass={"PageBorder"}
+                    underlineClass={"Underline"}/>
+            </MediaQuery>
+
+            <MediaQuery maxWidth={765}>
+                <InitiatePasswordResetBody
+                    pageBorderClass={"PageBorder2"}
+                    underlineClass={"Underline2"}/>
+            </MediaQuery>
+
+            <Bottom/>
+
+        </div>
+    );
+}
+
+function InitiatePasswordResetBody(props) {
     const history = useHistory();
 
     useEffect(() => {
@@ -32,7 +59,6 @@ export function InitiatePasswordResetScreen() {
         }
     }
 
-
     const onFinish = () => {
         Auth.forgotPassword(email)
             .then(data => {
@@ -49,34 +75,34 @@ export function InitiatePasswordResetScreen() {
     };
 
     return (
-        <div>
+        <>
+            <header className={props.pageBorderClass}>
 
-            <Header/>
+            <Title
+                titleText={"Initiate Password Reset"}
+                underlineClass={props.underlineClass}/>
 
-            <p>
-                Initiate Password Reset
-            </p>
+            <div className="Centered MaxWidth">
+                { failed &&
+                    <p style={authStyles.errorMsg} >{errorMessage}</p>
+                }
 
-            { failed &&
-                <p style={authStyles.errorMsg} >{errorMessage}</p>
-            }
+                <form
+                    onChange={handleChange}>
 
-            <form
-                onChange={handleChange}>
+                    <TextInput
+                        name={"email"}
+                        placeHolder={"Email"}
+                        value={email}/>
+                    <br/>
 
-                <TextInput
-                    name={"email"}
-                    label={"Email"}
-                    value={email}/>
-                <br/>
-                <br/>
+                    <FormButton
+                        onClick={onFinish}
+                        value={"Initiate Password Reset"}/>
+                </form>
+            </div>
 
-                <FormButton
-                    onClick={onFinish}
-                    value={"Initiate Password Reset"}/>
-            </form>
-
-        </div>
+            </header>
+        </>
     );
-
 }
