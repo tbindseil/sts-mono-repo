@@ -1,7 +1,9 @@
 import React from 'react';
-import {Header} from '../header/Header';
 import MediaQuery from 'react-responsive';
+
+import {Header} from '../header/Header';
 import {Bottom} from '../header/Bottom';
+import {Title} from '../layout/Title';
 
 export const RequestTutor = () => (
 
@@ -42,11 +44,9 @@ function RequestTutorBody(props) {
         <>
             <header className={props.pageBorderClass}>
 
-                <h2 className="PageHeader">
-                    Request A Tutor
-                </h2>
-
-                <hr className={props.underlineClass}/>
+                <Title
+                    titleText={"Request A Tutor"}
+                    underlineClass={props.underlineClass}/>
 
                 <p className={props.textClass}>
                     Students Teaching Students is a nonprofit tutoring organization that pairs students in their own area for free tutoring services.

@@ -53,7 +53,8 @@ html, body {
 }
 
 /* Home screen underline is wider */
-#HomeUnderline.Underline {
+.HomeUnderline {
+  border: 1px solid grey;
   margin-left: 50px;
   margin-right: 50px;
 }

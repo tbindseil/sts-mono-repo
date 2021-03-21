@@ -1,9 +1,12 @@
 import React from 'react';
-import {Header} from '../header/Header';
+import MediaQuery from 'react-responsive';
+
 import stock_photo from '../../images/books.jpg';
 import course from '../../images/course.PNG';
-import MediaQuery from 'react-responsive';
+
+import {Header} from '../header/Header';
 import {Bottom} from '../header/Bottom';
+import {Title} from '../layout/Title';
 
 const sideBy = {
   display: 'flex',
@@ -19,7 +22,8 @@ export const AboutUs = () => (
 
             <header className="PageBorder">
 
-                <AboutUsTitle
+                <Title
+                    titleText={"About Students Teaching Students"}
                     underlineClass={"Underline"}/>
 
                 <section style={sideBy}>
@@ -43,8 +47,9 @@ export const AboutUs = () => (
 
             <header className="PageBorder2">
 
-                <AboutUsTitle
-                    underlineClass={"Underline2"}/>
+                <Title
+                    titleText={"About Students Teaching Students"}
+                    underlineClass={"Underline"}/>
 
                 <AboutUsBody
                     sideTextClass={"SideText2"}/>
@@ -62,18 +67,6 @@ export const AboutUs = () => (
 
     </div>
 );
-
-function AboutUsTitle(props) {
-    return (
-        <>
-            <h2 className="PageHeader">
-                About Students Teaching Students
-            </h2>
-
-            <hr className={props.underlineClass}/>
-        </>
-    );
-}
 
 function AboutUsBody(props) {
     return (

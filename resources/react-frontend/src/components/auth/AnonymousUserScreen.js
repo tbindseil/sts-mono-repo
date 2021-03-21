@@ -4,6 +4,7 @@ import {useHistory} from 'react-router-dom';
 import './Auth.css';
 import {Header} from '../header/Header';
 import {Bottom} from '../header/Bottom';
+import {Title} from '../layout/Title';
 import {checkUnauthenticated} from "./CheckAuthenticated";
 
 export function AnonymousUserScreen() {
@@ -21,10 +22,9 @@ export function AnonymousUserScreen() {
 
             <header className="PageBorder">
 
-                <h2 className="PageHeader">
-                    Welcome to Students Teaching Students
-                </h2>
-                <hr className="Underline"/>
+                <Title
+                    titleText={"Welcome to Students Teaching Students"}
+                    underlineClass={"Underline"}/>
 
                 <p className="Centered MaxWidth">In order to post availability as a tutor or request a posted tutoring session, you must have an account</p>
                 <br/>

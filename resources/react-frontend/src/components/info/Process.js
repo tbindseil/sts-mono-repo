@@ -1,8 +1,11 @@
 import React from 'react';
-import {Header} from '../header/Header';
-import stock_photo from '../../images/Flo.PNG';
 import MediaQuery from 'react-responsive';
+
+import stock_photo from '../../images/Flo.PNG';
+
+import {Header} from '../header/Header';
 import {Bottom} from '../header/Bottom';
+import {Title} from '../layout/Title';
 
 const sideBy = {
   display: 'flex',
@@ -18,7 +21,8 @@ export const Process = () => (
 
             <header className="PageBorder">
 
-                <ProcessTitle
+                <Title
+                    titleText={"Out Process"}
                     underlineClass={"Underline"}/>
 
                 <section style={sideBy}>
@@ -36,7 +40,8 @@ export const Process = () => (
 
             <header className="PageBorder2">
 
-                <ProcessTitle
+                <Title
+                    titleText={"Out Process"}
                     underlineClass={"Underline2"}/>
 
                 <img className="MediumImg" src={stock_photo} alt="stock"/>
@@ -52,18 +57,6 @@ export const Process = () => (
 
     </div>
 );
-
-function ProcessTitle(props) {
-    return (
-        <>
-            <h2 className="PageHeader">
-                Our Process
-            </h2>
-
-            <hr className={props.underlineClass}/>
-        </>
-    );
-}
 
 function ProcessBody(props) {
     return (

@@ -1,7 +1,9 @@
 import React from 'react';
-import {Header} from '../header/Header';
 import MediaQuery from 'react-responsive';
+
+import {Header} from '../header/Header';
 import {Bottom} from '../header/Bottom';
+import {Title} from '../layout/Title';
 
 export const GetInvolved = () => (
 
@@ -41,11 +43,9 @@ function GetInvolvedBody(props) {
         <>
             <header className={props.pageBorderClass}>
 
-                <h2 className="PageHeader">
-                    Get Involved
-                </h2>
-
-                <hr className={props.underlineClass}/>
+                <Title
+                    titleText={"Get Involved"}
+                    underlineClass={props.underlineClass}/>
 
                 <p className={props.textClass}>
                     We are always looking for additional high-performing high school students from various locations and subject matters to become tutors.

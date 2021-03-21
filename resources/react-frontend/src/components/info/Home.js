@@ -1,8 +1,11 @@
 import React from 'react';
-import {Header} from '../header/Header';
-import stock_photo from '../../images/stock_photo.jpg';
 import MediaQuery from 'react-responsive'
+
+import stock_photo from '../../images/stock_photo.jpg';
+
+import {Header} from '../header/Header';
 import {Bottom} from '../header/Bottom';
+import {Title} from '../layout/Title';
 
 export const Home = () => (
 
@@ -16,7 +19,7 @@ export const Home = () => (
 
             <HomeBody
                 pageBorderClass={"PageBorder"}
-                underlineClass={"Underline"}/>
+                underlineClass={"HomeUnderline"}/>
 
         </MediaQuery>
 
@@ -38,11 +41,9 @@ function HomeBody(props) {
         <>
             <header className={props.pageBorderClass}>
 
-                <h1 id="HomeTitle" className="titleMain">
-                    Students Teaching Students
-                </h1>
-
-                <hr id="HomeUnderline" className={props.underlineClass}/>
+                <Title
+                    titleText={"Students Teaching Students"}
+                    underlineClass={props.underlineClass}/>
 
                 <p className="Modo">
                     Enhancing education through student to student tutoring
