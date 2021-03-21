@@ -1,13 +1,39 @@
 import React, {useEffect, useState} from 'react';
+import MediaQuery from 'react-responsive';
 import {useHistory} from 'react-router-dom';
 
 import {Auth} from "aws-amplify";
 
 import {Header} from '../header/Header';
+import {Bottom} from '../header/Bottom';
+import {Title} from '../layout/Title';
 import {authStyles} from './styles';
 import {checkAuthenticated} from "./CheckAuthenticated";
 
 export function LogoutScreen() {
+    return (
+        <div className="TopLevelContainer">
+
+            <Header/>
+
+            <MediaQuery minWidth={765}>
+                <LogoutBody
+                    pageBorderClass={"PageBorder"}
+                    underlineClass={"Underline"}/>
+            </MediaQuery>
+
+            <MediaQuery maxWidth={765}>
+                <LogoutBody
+                    pageBorderClass={"PageBorder2"}
+                    underlineClass={"Underline2"}/>
+            </MediaQuery>
+
+            <Bottom/>
+        </div>
+    );
+}
+
+function LogoutBody(props) {
     const history = useHistory();
 
     useEffect(() => {
@@ -35,22 +61,24 @@ export function LogoutScreen() {
     };
 
     return (
-        <div>
+        <>
+            <header className={props.pageBorderClass}>
 
-            <Header/>
+                <Title
+                    titleText={"Log Out"}
+                    underlineClass={props.underlineClass}/>
 
-            <p>
-                Logout
-            </p>
+                <div className="Centered MaxWidth">
+                    { failed &&
+                        <p style={authStyles.errorMsg} >{errorMessage}</p>
+                    }
 
-            { failed &&
-                <p style={authStyles.errorMsg} >{errorMessage}</p>
-            }
+                    <button onClick={onFinish}>
+                        Log Out
+                    </button>
+                </div>
 
-            <button onClick={onFinish}>
-                Log out?
-            </button>
-
-        </div>
+            </header>
+        </>
     );
 }
