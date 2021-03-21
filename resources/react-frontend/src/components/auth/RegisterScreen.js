@@ -1,16 +1,43 @@
 import React, {useEffect, useState} from 'react';
+import MediaQuery from 'react-responsive';
 import {useHistory} from 'react-router-dom';
 
 import {Auth} from 'aws-amplify';
 
 import {Header} from '../header/Header';
+import {Bottom} from '../header/Bottom';
 import {TextInput} from '../forms/TextInput';
+import {Title} from '../layout/Title';
 import {FormButton} from '../forms/FormButton';
 import {authStyles} from './styles';
 import {checkUnauthenticated} from "./CheckAuthenticated";
 import {PasswordRequirements} from './PasswordRequirements';
 
 export function RegisterScreen() {
+    return (
+        <div className="TopLevelContainer">
+
+            <Header/>
+
+            <MediaQuery minWidth={765}>
+                <RegisterBody
+                    pageBorderClass={"PageBorder"}
+                    underlineClass={"Underline"}/>
+            </MediaQuery>
+
+            <MediaQuery maxWidth={765}>
+                <RegisterBody
+                    pageBorderClass={"PageBorder2"}
+                    underlineClass={"Underline2"}/>
+            </MediaQuery>
+
+            <Bottom/>
+
+        </div>
+    );
+}
+
+function RegisterBody(props) {
     const history = useHistory();
 
     useEffect(() => {
@@ -61,56 +88,57 @@ export function RegisterScreen() {
     };
 
     return (
-        <div>
+        <>
+            <header className={props.pageBorderClass}>
 
-            <Header/>
+                <Title
+                    titleText={"Register"}
+                    underlineClass={props.underlineClass}/>
 
-            <p>
-                Register
-            </p>
+                <div className="Centered MaxWidth">
+                    <PasswordRequirements/>
 
-            <PasswordRequirements/>
+                    { failed &&
+                        <p style={authStyles.errorMsg}>{errorMessage}</p>
+                    }
+                </div>
 
-            { failed &&
-                <p style={authStyles.errorMsg} >{errorMessage}</p>
-            }
+                <form
+                    className="Centered MaxWidth"
+                    onChange={handleChange}>
 
-            <form
-                onChange={handleChange}>
+                    <TextInput
+                        name={"email"}
+                        placeHolder={"Email"}
+                        value={email}/>
+                    <br/>
 
-                <TextInput
-                    name={"email"}
-                    label={"Email"}
-                    value={email}/>
+                    <TextInput
+                        name={"password"}
+                        value={password}
+                        placeHolder={"Password"}
+                        type={"password"}/>
+                    <br/>
+
+                    <TextInput
+                        name={"confirmPassword"}
+                        value={confirmPassword}
+                        placeHolder={'Confirm Password'}
+                        type={"password"}/>
+                    <br/>
+
+                    <FormButton
+                        onClick={onFinish}
+                        value={"Register"}/>
+                </form>
                 <br/>
-                <br/>
 
-                <TextInput
-                    name={"password"}
-                    label={"Password"}
-                    value={password}
-                    type={"password"}/>
-                <br/>
-                <br/>
+                <div className="Centered MaxWidth">
+                    <p>Already registered? <a href="/login">Log in here</a></p>
+                    <p>Looking to confirm registration? <a href="/confirm">Go here</a></p>
+                </div>
 
-                <TextInput
-                    name={"confirmPassword"}
-                    label={'Confirm Password'}
-                    value={confirmPassword}
-                    type={"password"}/>
-                <br/>
-                <br/>
-
-                <FormButton
-                    onClick={onFinish}
-                    value={"Register"}/>
-            </form>
-
-            <a href="/login">Already registered?</a>
-            <br/>
-            <a href="/confirm">Looking to confirm registration?</a>
-
-        </div>
+            </header>
+        </>
     );
-
 }

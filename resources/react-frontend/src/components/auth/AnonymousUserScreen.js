@@ -77,31 +77,31 @@ function AnonymousUserBody(props) {
                 <br/>
 
                 <div className="HelperContainer">
-                <ul className="Centered HelperList">
-                    <li className="HelperLink">
-                        <a href="/login">Login</a>
-                    </li>
-                    <p className="HelperSeparator">|</p>
+                    <ul className="Centered HelperList">
+                        <li className="HelperLink">
+                            <a href="/register">Register</a>
+                        </li>
+                        <p className="HelperSeparator">|</p>
 
-                    <li className="HelperLink">
-                        <a href="/register">Register</a>
-                    </li>
-                    <p className="HelperSeparator">|</p>
+                        <li className="HelperLink">
+                            <a href="/confirm">Confirm</a>
+                        </li>
+                        <p className="HelperSeparator">|</p>
 
-                    <li className="HelperLink">
-                        <a href="/confirm">Confirm</a>
-                    </li>
-                    <p className="HelperSeparator">|</p>
+                        <li className="HelperLink">
+                            <a href="/login">Login</a>
+                        </li>
+                        <p className="HelperSeparator">|</p>
 
-                    <li className="HelperLink">
-                        <a href="/initiate-password-reset">Initiate Password Reset</a>
-                    </li>
-                    <p className="HelperSeparator">|</p>
+                        <li className="HelperLink">
+                            <a href="/initiate-password-reset">Initiate Password Reset</a>
+                        </li>
+                        <p className="HelperSeparator">|</p>
 
-                    <li className="HelperLink">
-                        <a href="/confirm-password-reset">Confirm Password Reset</a>
-                    </li>
-                </ul>
+                        <li className="HelperLink">
+                            <a href="/confirm-password-reset">Confirm Password Reset</a>
+                        </li>
+                    </ul>
                 </div>
 
             </header>
