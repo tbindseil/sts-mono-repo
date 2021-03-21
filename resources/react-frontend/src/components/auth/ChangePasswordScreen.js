@@ -1,9 +1,12 @@
 import React, {useEffect, useState} from 'react';
+import MediaQuery from 'react-responsive';
 import {useHistory} from 'react-router-dom';
 
 import {Auth} from "aws-amplify";
 
 import {Header} from '../header/Header';
+import {Bottom} from '../header/Bottom';
+import {Title} from '../layout/Title';
 import {TextInput} from '../forms/TextInput';
 import {FormButton} from '../forms/FormButton';
 import {authStyles} from './styles';
@@ -11,6 +14,30 @@ import {checkAuthenticated} from "./CheckAuthenticated";
 import {PasswordRequirements} from './PasswordRequirements';
 
 export function ChangePasswordScreen() {
+    return (
+        <div className="TopLevelContainer">
+
+            <Header/>
+
+            <MediaQuery minWidth={765}>
+                <ChangePasswordBody
+                    pageBorderClass={"PageBorder"}
+                    underlineClass={"Underline"}/>
+            </MediaQuery>
+
+            <MediaQuery maxWidth={765}>
+                <ChangePasswordBody
+                    pageBorderClass={"PageBorder2"}
+                    underlineClass={"Underline2"}/>
+            </MediaQuery>
+
+            <Bottom/>
+
+        </div>
+    );
+}
+
+function ChangePasswordBody(props) {
     const history = useHistory();
 
     const [user, setUser] = useState(undefined)
@@ -60,53 +87,51 @@ export function ChangePasswordScreen() {
     };
 
     return (
-        <div>
+        <>
+            <header className={props.pageBorderClass}>
+                <Title
+                    titleText={"Change Password"}
+                    underlineClass={props.underlineClass}/>
 
-            <Header/>
+                <div className={"Centered MaxWidth"}>
 
-            <p>
-                Change Password
-            </p>
+                    <PasswordRequirements/>
 
-            <PasswordRequirements/>
+                    { failed &&
+                        <p style={authStyles.errorMsg} >{errorMessage}</p>
+                    }
 
-            { failed &&
-                <p style={authStyles.errorMsg} >{errorMessage}</p>
-            }
+                    <form
+                        onChange={handleChange}>
 
-            <form
-                onChange={handleChange}>
+                        <TextInput
+                            name={"oldPassword"}
+                            placeHolder={"Old Password"}
+                            value={oldPassword}
+                            type={"password"}/>
+                        <br/>
 
-                <TextInput
-                    name={"oldPassword"}
-                    label={"Old Password"}
-                    value={oldPassword}
-                    type={"password"}/>
-                <br/>
-                <br/>
+                        <TextInput
+                            name={"newPassword"}
+                            placeHolder={"New Password"}
+                            value={newPassword}
+                            type={"password"}/>
+                        <br/>
 
-                <TextInput
-                    name={"newPassword"}
-                    label={"New Password"}
-                    value={newPassword}
-                    type={"password"}/>
-                <br/>
-                <br/>
+                        <TextInput
+                            name={"confirmPassword"}
+                            placeHolder={"Confirm New Password"}
+                            value={confirmPassword}
+                            type={"password"}/>
+                        <br/>
 
-                <TextInput
-                    name={"confirmPassword"}
-                    label={"Confirm New Password"}
-                    value={confirmPassword}
-                    type={"password"}/>
-                <br/>
-                <br/>
+                        <FormButton
+                            onClick={onFinish}
+                            value={"Change Password"}/>
+                    </form>
+                </div>
 
-                <FormButton
-                    onClick={onFinish}
-                    value={"Change Password"}/>
-            </form>
-
-        </div>
+            </header>
+        </>
     );
-
 }
