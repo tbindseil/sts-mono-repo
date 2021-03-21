@@ -9,6 +9,7 @@ import burger from '../../images/burger.png';
 
 export function Header() {
 
+    // TODO close menu when click is made elsewhere
     const [hamburgerDisplay, setHamburgerDisplay] = useState("none")
     const hamburgerOnClick = () => {
         if (hamburgerDisplay === "none") {

@@ -8,17 +8,22 @@
   max-width: 700px;
 }
 
-.FillScreen {
-  width: 100%;
+.HelperContainer {
+  display: flex;
   justify-content: center;
 }
 
+.HelperList {
+  display: inline;
+}
+
 .HelperLink {
+  display: inline;
   margin-left: 2px;
   margin-right: 2px;
   list-style-type: none;
 }
 
-.Underline {
-  border: 1px solid grey;
+.HelperSeparator {
+  display: inline;
 }
