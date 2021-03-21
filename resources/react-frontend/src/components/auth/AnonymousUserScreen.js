@@ -16,15 +16,16 @@ export function AnonymousUserScreen() {
     ]);
 
     return (
-        <>
+        <div className="TopLevelContainer">
             <Header/>
 
-            <div className="FillScreen PageBorder">
+            <header className="PageBorder">
 
-                <h2 className="Centered pageHeader">Welcome to Students Teaching Students</h2>
-                <hr className="Underline MaxWidth"/>
+                <h2 className="PageHeader">
+                    Welcome to Students Teaching Students
+                </h2>
+                <hr className="Underline"/>
 
-                <br/>
                 <p className="Centered MaxWidth">In order to post availability as a tutor or request a posted tutoring session, you must have an account</p>
                 <br/>
 
@@ -49,10 +50,9 @@ export function AnonymousUserScreen() {
                     <li className="HelperLink"><a href="/confirm-password-reset">Confirm Password Reset</a></li>
                 </ul>
 
-                <Bottom/>
+            </header>
 
-            </div>
-
-        </>
+            <Bottom/>
+        </div>
     );
 }
