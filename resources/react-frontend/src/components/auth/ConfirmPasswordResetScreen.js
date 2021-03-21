@@ -1,9 +1,12 @@
 import React, {useEffect, useState} from 'react';
+import MediaQuery from 'react-responsive';
 import {useHistory} from 'react-router-dom';
 
 import {Auth} from 'aws-amplify';
 
 import {Header} from '../header/Header';
+import {Bottom} from '../header/Bottom';
+import {Title} from '../layout/Title';
 import {TextInput} from '../forms/TextInput';
 import {FormButton} from '../forms/FormButton';
 import {authStyles} from './styles';
@@ -11,6 +14,30 @@ import {checkUnauthenticated} from "./CheckAuthenticated";
 import {PasswordRequirements} from './PasswordRequirements';
 
 export function ConfirmPasswordResetScreen() {
+    return (
+        <div className="TopLevelContainer">
+
+            <Header/>
+
+            <MediaQuery minWidth={765}>
+                <ConfirmPasswordResetBody
+                    pageBorderClass={"PageBorder"}
+                    underlineClass={"Underline"}/>
+            </MediaQuery>
+
+            <MediaQuery maxWidth={765}>
+                <ConfirmPasswordResetBody
+                    pageBorderClass={"PageBorder2"}
+                    underlineClass={"Underline2"}/>
+            </MediaQuery>
+
+            <Bottom/>
+
+        </div>
+    );
+}
+
+function ConfirmPasswordResetBody(props) {
     const history = useHistory();
 
     useEffect(() => {
@@ -65,59 +92,61 @@ export function ConfirmPasswordResetScreen() {
     };
 
     return (
-        <div>
+        <>
+            <header className={props.pageBorderClass}>
 
-            <Header/>
+                <Title
+                    titleText={"Confirm Password Reset"}
+                    underlineClass={props.underlineClass}/>
 
-            <p>
-                Use the emailed code change your password
-            </p>
+                <div className={"Centered MaxWidth"}>
+                    <p>
+                        Use the emailed code change your password
+                    </p>
 
-            <PasswordRequirements/>
+                    <PasswordRequirements/>
 
-            { failed &&
-                <p style={authStyles.errorMsg} >{errorMessage}</p>
-            }
+                    { failed &&
+                        <p style={authStyles.errorMsg} >{errorMessage}</p>
+                    }
 
-            <form
-                onChange={handleChange}>
+                    <form
+                        onChange={handleChange}>
 
-                <TextInput
-                    name={"email"}
-                    label={"Email"}
-                    value={email}/>
-                <br/>
-                <br/>
+                        <TextInput
+                            name={"email"}
+                            placeHolder={"Email"}
+                            value={email}/>
+                        <br/>
 
-                <TextInput
-                    name={"code"}
-                    label={"Code"}
-                    value={code}/>
-                <br/>
-                <br/>
+                        <TextInput
+                            name={"code"}
+                            placeHolder={"Code"}
+                            value={code}/>
+                        <br/>
 
-                <TextInput
-                    name={"newPassword"}
-                    label={"New Password"}
-                    value={newPassword}
-                    type={"password"}/>
-                <br/>
-                <br/>
+                        <TextInput
+                            name={"newPassword"}
+                            placeHolder={"New Password"}
+                            value={newPassword}
+                            type={"password"}/>
+                        <br/>
 
-                <TextInput
-                    name={"confirmPassword"}
-                    label={"Confirm New Password"}
-                    value={confirmPassword}
-                    type={"password"}/>
-                <br/>
-                <br/>
+                        <TextInput
+                            name={"confirmPassword"}
+                            placeHolder={"Confirm New Password"}
+                            value={confirmPassword}
+                            type={"password"}/>
+                        <br/>
 
-                <FormButton
-                    onClick={onFinish}
-                    value={"Reset Passord"}/>
-            </form>
+                        <FormButton
+                            onClick={onFinish}
+                            value={"Reset Passord"}/>
+                    </form>
+                </div>
 
-        </div>
+            </header>
+        </>
     );
-
 }
+
