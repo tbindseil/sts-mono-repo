@@ -1,14 +1,41 @@
 import React, {useEffect, useState} from 'react';
+import MediaQuery from 'react-responsive';
 import {useHistory} from 'react-router-dom';
 
 import {Auth} from "aws-amplify";
 import {CognitoIdentityProvider} from '@aws-sdk/client-cognito-identity-provider';
 
 import {Header} from '../header/Header';
+import {Bottom} from '../header/Bottom';
+import {Title} from '../layout/Title';
 import {authStyles} from './styles';
 import {checkAuthenticated} from "./CheckAuthenticated";
 
 export function DeleteScreen() {
+    return (
+        <div className="TopLevelContainer">
+
+            <Header/>
+
+            <MediaQuery minWidth={765}>
+                <DeleteBody
+                    pageBorderClass={"PageBorder"}
+                    underlineClass={"Underline"}/>
+            </MediaQuery>
+
+            <MediaQuery maxWidth={765}>
+                <DeleteBody
+                    pageBorderClass={"PageBorder2"}
+                    underlineClass={"Underline2"}/>
+            </MediaQuery>
+
+            <Bottom/>
+
+        </div>
+    );
+}
+
+function DeleteBody(props) {
     const baseUrl = 'https://oercmchy3l.execute-api.us-west-2.amazonaws.com/prod/';
 
     const history = useHistory();
@@ -62,31 +89,32 @@ export function DeleteScreen() {
     };
 
     return (
-        <div>
+        <>
+            <header className={props.pageBorderClass}>
 
-            <Header/>
+                <Title
+                    titleText={"Delete Account"}
+                    underlineClass={props.underlineClass}/>
 
-            <p>
-                Delete Account
-            </p>
+                <div className="Centered MaxWidth">
+                    { failed &&
+                        <p style={authStyles.errorMsg} >Error deleting account</p>
+                    }
 
-            { failed &&
-                <p style={authStyles.errorMsg} >Error deleting account</p>
-            }
+                    <button onClick={onFinish}>
+                        Delete Account
+                    </button>
+                </div>
 
-            <button onClick={onFinish}>
-                Delete Account?
-            </button>
+                { confirming &&
+                    <div className="Centered MaxWidth">
+                        <p>Are you sure you'd like to delete your account and all the associated data?</p>
+                        <button onClick={onClickYes}>Yes</button>
+                        <button onClick={onClickNo}>No</button>
+                    </div>
+                }
 
-            { confirming &&
-                <>
-                    <p>Are you sure you'd like to delete your account and all the associated data?</p>
-                    <button onClick={onClickYes}>Yes</button>
-                    <button onClick={onClickNo}>No</button>
-                </>
-            }
-
-        </div>
-    )
-
+            </header>
+        </>
+    );
 }
