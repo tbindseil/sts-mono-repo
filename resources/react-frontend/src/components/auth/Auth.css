@@ -27,3 +27,7 @@
 .HelperSeparator {
   display: inline;
 }
+
+form.AuthForm input {
+  width: 160px;
+}

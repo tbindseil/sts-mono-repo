@@ -102,6 +102,7 @@ function ChangePasswordBody(props) {
                     }
 
                     <form
+                        className={"AuthForm"}
                         onChange={handleChange}>
 
                         <TextInput

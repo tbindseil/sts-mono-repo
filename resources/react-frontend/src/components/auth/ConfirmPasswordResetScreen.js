@@ -111,6 +111,7 @@ function ConfirmPasswordResetBody(props) {
                     }
 
                     <form
+                        className={"AuthForm"}
                         onChange={handleChange}>
 
                         <TextInput

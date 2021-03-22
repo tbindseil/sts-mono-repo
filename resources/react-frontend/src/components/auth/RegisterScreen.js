@@ -104,7 +104,7 @@ function RegisterBody(props) {
                 </div>
 
                 <form
-                    className="Centered MaxWidth"
+                    className="Centered MaxWidth AuthForm"
                     onChange={handleChange}>
 
                     <TextInput

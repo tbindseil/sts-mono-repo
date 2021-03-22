@@ -88,6 +88,7 @@ function InitiatePasswordResetBody(props) {
                 }
 
                 <form
+                    className={"AuthForm"}
                     onChange={handleChange}>
 
                     <TextInput
