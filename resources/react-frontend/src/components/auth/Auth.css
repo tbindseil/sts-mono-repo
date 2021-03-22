@@ -1,13 +1,4 @@
 
-.Centered {
-  text-align: center;
-  margin: 0 auto;
-}
-
-.MaxWidth {
-  max-width: 700px;
-}
-
 .HelperContainer {
   display: flex;
   justify-content: center;
@@ -28,6 +19,8 @@
   display: inline;
 }
 
+/* apply to all inputs to forms with class AuthForm */
+/* cause "Confirm New Password" is too damn long! */
 form.AuthForm input {
   width: 160px;
 }

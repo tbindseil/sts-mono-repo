@@ -1,15 +1,40 @@
 import React, {useCallback, useEffect, useState} from 'react';
+import MediaQuery from 'react-responsive';
 
 import {useHistory} from 'react-router-dom';
 import {cloneDeep} from 'lodash';
 
+import './Profile.css';
 import {Header} from '../header/Header';
+import {Bottom} from '../header/Bottom';
+import {Title} from '../layout/Title';
 import {FormButton} from '../forms/FormButton'
-import {TextInput} from '../forms/TextInput'
+import {FormTableRow, TextInput} from '../forms/TextInput'
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
 
 export function ProfileScreen() {
+    return (
+        <div className="TopLevelContainer">
+            <Header/>
 
+            <MediaQuery minWidth={765}>
+                <ProfileBody
+                    pageBorderClass={"PageBorder"}
+                    underlineClass={"Underline"}/>
+            </MediaQuery>
+
+            <MediaQuery maxWidth={765}>
+                <ProfileBody
+                    pageBorderClass={"PageBorder2"}
+                    underlineClass={"Underline2"}/>
+            </MediaQuery>
+
+            <Bottom/>
+        </div>
+    );
+};
+
+function ProfileBody(props) {
     const history = useHistory();
 
     // TODO dry access this from cfn exports somehow, and keep it dry, its in delete now
@@ -118,20 +143,14 @@ export function ProfileScreen() {
         getProfile();
     }
 
-    const onClickMyCalendar = () => {
-        history.push({
-            pathname: "/my-calendar",
-            state: {
-                selectedDate: new Date()
-            }
-        });
-    }
-
     const onFinish = () => {
+        console.log("profile is:");
+        console.log(profile);
         onSave(profile);
     }
 
     const handleChange = (event) => {
+        console.log("handling change");
         const target = event.target;
         const value = target.value;
         const name = target.name;
@@ -143,85 +162,110 @@ export function ProfileScreen() {
     }
 
     return (
-
         <>
-            <Header/>
+            <header className={props.pageBorderClass}>
 
-            <h2>
-                Profile
-            </h2>
+                <Title
+                    titleText={"Profile"}
+                    underlineClass={props.underlineClass}/>
 
-            <form
-                onChange={handleChange}>
+                <div className="Centered MaxWidth">
+                    <table className="ProfileTable">
+                        <FormTableRow
+                            onChange={handleChange}
+                            name={"email"}
+                            label={"Email:"}
+                            value={profile.email}
+                            readOnly={true}/>
 
-                <TextInput
-                    name={"email"}
-                    label={"Email:"}
-                    value={profile.email}
-                    readOnly={true}/>
-                <br/>
-                <br/>
+                        <FormTableRow
+                            onChange={handleChange}
+                            name={"firstName"}
+                            label={"First Name:"}
+                            placeHolder={"<firstname>"}
+                            value={profile.firstName}
+                            readOnly={!editting}/>
 
-                <TextInput
-                    name={"firstName"}
-                    label={"First Name:"}
-                    value={profile.firstName}
-                    readOnly={!editting}/>
-                <br/>
-                <br/>
+                        <FormTableRow
+                            onChange={handleChange}
+                            name={"lastName"}
+                            label={"Last Name:"}
+                            placeHolder={"<lastname>"}
+                            value={profile.lastName}
+                            readOnly={!editting}/>
 
-                <TextInput
-                    name={"lastName"}
-                    label={"Last Name:"}
-                    value={profile.lastName}
-                    readOnly={!editting}/>
-                <br/>
-                <br/>
+                        <FormTableRow
+                            onChange={handleChange}
+                            name={"school"}
+                            label={"School:"}
+                            placeHolder={"Where do you study?"}
+                            value={profile.school}
+                            readOnly={!editting}/>
 
-                <TextInput
-                    name={"school"}
-                    label={"School:"}
-                    value={profile.school}
-                    readOnly={!editting}/>
-                <br/>
-                <br/>
+                        <FormTableRow
+                            onChange={handleChange}
+                            name={"grade"}
+                            label={"Grade:"}
+                            placeHolder={"K-12? Junior in College? Young at Heart??"}
+                            value={profile.grade}
+                            readOnly={!editting}/>
 
-                <TextInput
-                    name={"grade"}
-                    label={"Grade:"}
-                    value={profile.grade}
-                    readOnly={!editting}/>
-                <br/>
-                <br/>
+                                    {//TJTAG uhhhhhhhhh Kind of got resizing to work, and now it won't do the handle change
+                                    }
+                        <tr>
+                            <td>
+                                <label
+                                    for="bio">
+                                    Bio:
+                                </label>
+                            </td>
+                            <td>
+                                {editting ?
+                                    <div
+                                        draggable="false"
+                                        className="ExpandableTextarea"
+                                        role="textbox"
+                                        contentEditable>
+                                        {profile.bio ? profile.bio : "Tell us a little about where you are in your scholastic journey.."}
+                                    </div> :
+                                    <div
+                                        draggable="false"
+                                        className="ExpandableTextarea"
+                                        role="textbox">
+                                        {profile.bio ? profile.bio : "Tell us a little about where you are in your scholastic journey.."}
+                                    </div> }
+                            </td>
+                        </tr>
 
-                <TextInput
-                    name={"bio"}
-                    label={"Bio:"}
-                    value={profile.bio}
-                    readOnly={!editting}/>
-                <br/>
-                <br/>
+                        { editting ?
+                            <tr>
+                                <td>
+                                    <button onClick={onCancel}>
+                                        Cancel
+                                    </button>
+                                </td>
+                                <td>
+                                    <button onClick={onFinish}>
+                                        Update Profile
+                                    </button>
+                                </td>
+                            </tr> :
+                            <tr>
+                                <td>
+                                    <button onClick={editProfileOnClickHandler}>
+                                        Edit
+                                    </button>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                        }
 
-                { editting ?
-                    <>
+                    </table>
 
-                        <FormButton
-                            onClick={onFinish}
-                            value={"Update Profile"}/>
-                        <FormButton
-                            onClick={onCancel}
-                            value={"Cancel"}/>
-                    </> :
-                    <>
-                        <FormButton
-                            onClick={editProfileOnClickHandler}
-                            value={"Edit Profile"}/>
-                    </> }
-            </form>
+                </div>
 
-            <br/>
-            <br/>
+            </header>
         </>
-
     );
-};
+}
