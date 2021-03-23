@@ -18,8 +18,12 @@ table.ProfileTable button {
   width: 100%;
 }
 
-table.ProfileTable div, table.ProfileTable input {
+table.ProfileTable p, table.ProfileTable input {
   width: 200px;
+}
+
+table.ProfileTable p {
+  text-align: left;
 }
 
 .ExpandableTextarea {

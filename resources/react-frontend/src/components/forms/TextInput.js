@@ -32,14 +32,21 @@ export function FormTableRow(props) {
                     </label>
                 </td>
                 <td>
-                    <input
-                        className={props.className}
-                        onChange={props.onChange}
-                        type={props.type ? props.type : "text"}
-                        name={props.name}
-                        value={props.value}
-                        placeHolder={props.placeHolder}
-                        readOnly={props.readOnly}/>
+                    { props.readOnly ?
+                        <p
+                            name={props.name}
+                            className={props.className}>
+                            {props.value}
+                        </p> :
+                        <input
+                            className={props.className}
+                            onChange={props.onChange}
+                            type={props.type ? props.type : "text"}
+                            name={props.name}
+                            value={props.value}
+                            placeHolder={props.placeHolder}
+                            readOnly={props.readOnly}/>
+                    }
                 </td>
             </tr>
         </>

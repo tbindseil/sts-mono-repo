@@ -143,13 +143,10 @@ function ProfileBody(props) {
     }
 
     const onFinish = () => {
-        console.log("profile is:");
-        console.log(profile);
         onSave(profile);
     }
 
     const handleChange = (event) => {
-        console.log("handling change");
         const target = event.target;
         const value = target.value;
         const name = target.name;
