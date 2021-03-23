@@ -8,8 +8,7 @@ import './Profile.css';
 import {Header} from '../header/Header';
 import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
-import {FormButton} from '../forms/FormButton'
-import {FormTableRow, TextInput} from '../forms/TextInput'
+import {FormTableRow} from '../forms/TextInput'
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
 
 export function ProfileScreen() {
@@ -210,32 +209,13 @@ function ProfileBody(props) {
                             value={profile.grade}
                             readOnly={!editting}/>
 
-                                    {//TJTAG uhhhhhhhhh Kind of got resizing to work, and now it won't do the handle change
-                                    }
-                        <tr>
-                            <td>
-                                <label
-                                    for="bio">
-                                    Bio:
-                                </label>
-                            </td>
-                            <td>
-                                {editting ?
-                                    <div
-                                        draggable="false"
-                                        className="ExpandableTextarea"
-                                        role="textbox"
-                                        contentEditable>
-                                        {profile.bio ? profile.bio : "Tell us a little about where you are in your scholastic journey.."}
-                                    </div> :
-                                    <div
-                                        draggable="false"
-                                        className="ExpandableTextarea"
-                                        role="textbox">
-                                        {profile.bio ? profile.bio : "Tell us a little about where you are in your scholastic journey.."}
-                                    </div> }
-                            </td>
-                        </tr>
+                        <FormTableRow
+                            onChange={handleChange}
+                            name={"bio"}
+                            label={"Bio:"}
+                            placeHolder={"Tell us a little about where you are in your scholastic journey.."}
+                            value={profile.bio}
+                            readOnly={!editting}/>
 
                         { editting ?
                             <tr>
