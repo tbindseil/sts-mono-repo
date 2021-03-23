@@ -23,7 +23,12 @@ table.ProfileTable p, table.ProfileTable input {
 }
 
 table.ProfileTable p {
+  width: 200px;
   text-align: left;
+  margin-bottom: 0px;
+  margin-top: 3px;
+  margin-left: 5px;
+  height: 23px;
 }
 
 .ExpandableTextarea {
