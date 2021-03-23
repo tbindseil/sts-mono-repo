@@ -9,7 +9,6 @@ import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
 import {TextInput} from '../forms/TextInput';
 import {FormButton} from '../forms/FormButton';
-import {authStyles} from './styles';
 import {checkAuthenticated} from "./CheckAuthenticated";
 import {PasswordRequirements} from './PasswordRequirements';
 
@@ -98,7 +97,7 @@ function ChangePasswordBody(props) {
                     <PasswordRequirements/>
 
                     { failed &&
-                        <p style={authStyles.errorMsg} >{errorMessage}</p>
+                        <p className="ErrorMessage">{errorMessage}</p>
                     }
 
                     <form

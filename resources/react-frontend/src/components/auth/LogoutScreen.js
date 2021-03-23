@@ -7,7 +7,6 @@ import {Auth} from "aws-amplify";
 import {Header} from '../header/Header';
 import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
-import {authStyles} from './styles';
 import {checkAuthenticated} from "./CheckAuthenticated";
 
 export function LogoutScreen() {
@@ -70,7 +69,7 @@ function LogoutBody(props) {
 
                 <div className="Centered MaxWidth">
                     { failed &&
-                        <p style={authStyles.errorMsg} >{errorMessage}</p>
+                        <p className="ErrorMessage">{errorMessage}</p>
                     }
 
                     <button onClick={onFinish}>

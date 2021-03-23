@@ -9,7 +9,6 @@ import {Bottom} from '../header/Bottom';
 import {TextInput} from '../forms/TextInput';
 import {Title} from '../layout/Title';
 import {FormButton} from '../forms/FormButton';
-import {authStyles} from './styles';
 import {checkUnauthenticated} from "./CheckAuthenticated";
 import {PasswordRequirements} from './PasswordRequirements';
 
@@ -99,7 +98,7 @@ function RegisterBody(props) {
                     <PasswordRequirements/>
 
                     { failed &&
-                        <p style={authStyles.errorMsg}>{errorMessage}</p>
+                        <p className="ErrorMessage">{errorMessage}</p>
                     }
                 </div>
 

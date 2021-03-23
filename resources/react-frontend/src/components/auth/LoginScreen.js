@@ -9,7 +9,6 @@ import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
 import {TextInput} from '../forms/TextInput';
 import {FormButton} from '../forms/FormButton';
-import {authStyles} from './styles';
 import {checkUnauthenticated} from "./CheckAuthenticated";
 
 export function LoginScreen() {
@@ -85,7 +84,7 @@ function LoginBody(props) {
 
                 <div className="Centered MaxWidth">
                     { failed &&
-                        <p style={authStyles.errorMsg} >{errorMessage}</p>
+                        <p className="ErrorMessage">{errorMessage}</p>
                     }
                 </div>
 

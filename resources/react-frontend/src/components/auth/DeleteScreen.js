@@ -8,7 +8,6 @@ import {CognitoIdentityProvider} from '@aws-sdk/client-cognito-identity-provider
 import {Header} from '../header/Header';
 import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
-import {authStyles} from './styles';
 import {checkAuthenticated} from "./CheckAuthenticated";
 
 export function DeleteScreen() {
@@ -98,7 +97,7 @@ function DeleteBody(props) {
 
                 <div className="Centered MaxWidth">
                     { failed &&
-                        <p style={authStyles.errorMsg} >Error deleting account</p>
+                        <p className="ErrorMessage">Error deleting account</p>
                     }
 
                     <button onClick={onFinish}>
