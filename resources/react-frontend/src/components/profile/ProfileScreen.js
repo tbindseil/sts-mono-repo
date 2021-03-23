@@ -41,6 +41,9 @@ function ProfileBody(props) {
 
     const [editting, setEditting] = useState(false);
 
+    const [failed, setFailed] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+
     const [user, setUser] = useState(undefined);
     useEffect(() => {
         checkAuthenticated(() => history.push("/anonymous-user"), setUser);
@@ -48,7 +51,6 @@ function ProfileBody(props) {
         history, setUser
     ]);
 
-    // TODO use callback
     const getProfile = useCallback(() => {
         if (!user) {
             return;
@@ -74,14 +76,15 @@ function ProfileBody(props) {
                 // exceptions from actual bugs in components.
                 (error) => {
                     setProfile({
-                        // TODO so bad..
-                        email: "error",
-                        firstName: "error",
-                        lastName: "error",
-                        school: "error",
-                        grade: "error",
-                        bio: "error"
+                        email: "",
+                        firstName: "",
+                        lastName: "",
+                        school: "",
+                        grade: "",
+                        bio: ""
                     });
+                    setFailed(true);
+                    setErrorMessage("Error getting profile");
                 }
             );
     }, [
@@ -129,9 +132,16 @@ function ProfileBody(props) {
                 setProfile(profile);
             })
             .catch(error => {
-                // TODO
-                console.log("@@@ @@@ error @@@ @@@")
-                console.log(error);
+                setProfile({
+                    email: "",
+                    firstName: "",
+                    lastName: "",
+                    school: "",
+                    grade: "",
+                    bio: ""
+                });
+                setFailed(true);
+                setErrorMessage("Error saving profile");
             });
 
         setEditting(false);
@@ -239,6 +249,10 @@ function ProfileBody(props) {
                         }
 
                     </table>
+
+                    { failed &&
+                        <p className="ErrorMessage">{errorMessage}</p>
+                    }
 
                 </div>
 
