@@ -17,14 +17,14 @@ export function MyCalendarScreen(props) {
             <Header/>
 
             <MediaQuery minWidth={765}>
-                <MyCalendarBody
+                <BigScreenMyCalendarBody
                     location={props.location}
                     pageBorderClass={"PageBorderCalendar"}
                     underlineClass={"Underline"}/>
             </MediaQuery>
 
             <MediaQuery maxWidth={765}>
-                <MyCalendarBody
+                <SmallScreenMyCalendarBody
                     location={props.location}
                     pageBorderClass={"PageBorder2"}
                     underlineClass={"Underline2"}/>
@@ -35,8 +35,7 @@ export function MyCalendarScreen(props) {
     );
 }
 
-
-function MyCalendarBody(props) {
+function BigScreenMyCalendarBody(props) {
     const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
 
     const history = useHistory();
@@ -142,6 +141,215 @@ function MyCalendarBody(props) {
         currDay = moment(currDay).add(1, "days").toDate(); 
     }
 
+    // looks like defaults don't refresh when navigating to the same page
+    const [jumpToDate, setJumpToDate] = useState(selectedDate);
+    const handleChangeJumpToDate = (event) => {
+        setJumpToDate(event.target.value);
+    };
+
+    const onClickJumpToDate = () => {
+        history.push({
+            pathname: "/my-calendar",
+            state: {
+                selectedDate: moment(jumpToDate).toDate()
+            }
+        });
+    };
+
+    return (
+        <header className={props.pageBorderClass}>
+            <Title
+                titleText="My Calendar Screen"
+                underlineClass={props.underlineClass}/>
+
+            { failed &&
+                <p className="ErrorMessage">{errorMessage}</p>
+            }
+
+            <BigScreenNavigationTable
+                selectedDate={selectedDate}/>
+
+            <div className="NavigationDatePicker">
+                <label for="jumpToDate">Jump to Date:</label>
+                <input onChange={handleChangeJumpToDate} type="date" name="jumpToDate" value={moment(jumpToDate).format("YYYY-MM-DD")}/>
+                <button onClick={onClickJumpToDate}>Go</button>
+            </div>
+
+            <table className="CalendarTable">
+                <tr>
+                    {calendarHeaders}
+                </tr>
+                <tr>
+                    {calendarDays}
+                </tr>
+            </table>
+
+            <div className="BelowCalendar">
+                <p>
+                    Click somewhere on a given day to add tutoring availability to that day.
+                    <br/>
+
+                    Click on an existing availability to adjust or delete it
+                </p>
+            </div>
+
+        </header>
+    );
+}
+
+function SmallScreenMyCalendarBody(props) {
+    const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
+
+    const history = useHistory();
+
+    const [user, setUser] = useState(undefined)
+    useEffect(() => {
+        checkAuthenticated(() => history.push("/anonymous-user"), setUser);
+    }, [
+        history, setUser
+    ]);
+
+    useEffect(() => {
+        getAvailabilities(user);
+    }, [
+        user
+    ]);
+
+    const [availabilities, setAvailabilities] = useState([]);
+    const getAvailabilities = (user) => {
+        if (!user) {
+            return;
+        }
+
+        const url = baseUrl;
+        const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
+        fetch(url, {
+                method: 'GET',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': tokenString
+                }
+                })
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    const availabilitiesWithDates = result.map(a => {
+                        return {
+                            endTime: moment.utc(a.endTime).local().toDate(),
+                            startTime: moment.utc(a.startTime).local().toDate(),
+                            subjects: a.subjects,
+                            tutor: a.tutor,
+                            id: a.id
+                        }
+                    });
+
+                    setAvailabilities(availabilitiesWithDates);
+                },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    setFailed(true);
+                    var message = "Error getting availabilties";
+                    if (error.message) {
+                        message += ": " + error.message;
+                    }
+                    setErrorMessage(message);
+                }
+            )
+            .catch(err => {
+                setFailed(true);
+                var message = "Error getting availabilties";
+                if (err.message) {
+                    message += ": " + err.message;
+                }
+                setErrorMessage(message);
+            });
+    };
+
+    const [failed, setFailed] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+
+    // based off stateProps.selectedDate
+    const stateProps = props.location.state;
+    const selectedDate = stateProps ? (stateProps.selectedDate ? stateProps.selectedDate : new Date()) : new Date();
+
+    // make a single CalendarDayContent
+    const calendarDay = (
+        <td className="CalendarDayBody">
+            <CalendarDayContent
+                key={selectedDate.toString()}
+                date={selectedDate}
+                availabilities={availabilities}/>
+        </td>
+    );
+    const calendarHeader = (
+        <th className="CalendarDayHeader">
+            {moment(selectedDate).format("dddd, MMM D")}
+        </th>
+    );
+
+    // looks like defaults don't refresh when navigating to the same page
+    const [jumpToDate, setJumpToDate] = useState(selectedDate);
+    const handleChangeJumpToDate = (event) => {
+        setJumpToDate(event.target.value);
+    };
+
+    const onClickJumpToDate = () => {
+        history.push({
+            pathname: "/my-calendar",
+            state: {
+                selectedDate: moment(jumpToDate).toDate()
+            }
+        });
+    };
+
+    return (
+        <header className={props.pageBorderClass}>
+            <Title
+                titleText="My Calendar Screen"
+                underlineClass={props.underlineClass}/>
+
+            { failed &&
+                <p className="ErrorMessage">{errorMessage}</p>
+            }
+
+            <BigScreenNavigationTable
+                selectedDate={selectedDate}/>
+
+            <div className="NavigationDatePicker">
+                <label for="jumpToDate">Jump to Date:</label>
+                <input onChange={handleChangeJumpToDate} type="date" name="jumpToDate" value={moment(jumpToDate).format("YYYY-MM-DD")}/>
+                <button onClick={onClickJumpToDate}>Go</button>
+            </div>
+
+            <table className="CalendarTable">
+                <tr>
+                    {calendarHeader}
+                </tr>
+                <tr>
+                    {calendarDay}
+                </tr>
+            </table>
+
+            <div className="BelowCalendar">
+                <p>
+                    Click somewhere on a given day to add tutoring availability to that day.
+                    <br/>
+
+                    Click on an existing availability to adjust or delete it
+                </p>
+            </div>
+
+        </header>
+    );
+}
+
+function BigScreenNavigationTable(props) {
+    const history = useHistory();
+    const selectedDate = props.selectedDate;
+
     const onClickPreviousWeek = () => {
         history.push({
             pathname: "/my-calendar",
@@ -169,70 +377,71 @@ function MyCalendarBody(props) {
         });
     };
 
-    const [jumpToDate, setJumpToDate] = useState(selectedDate);
-    const handleChangeJumpToDate = (event) => {
-        setJumpToDate(event.target.value);
-    };
+    return (
+        <table className="NavigationTable">
+            <tr>
+                <td>
+                    <button onClick={onClickPreviousWeek}>
+                        Previous Week
+                    </button>
+                    <button onClick={onClickCurrentWeek}>
+                        Current Week
+                    </button>
+                    <button onClick={onClickNextWeek}>
+                        Next Week
+                    </button>
+                </td>
+            </tr>
+        </table>
+    );
+}
 
-    const onClickJumpToDate = () => {
+function SmallScreenNavigationTable(props) {
+    const history = useHistory();
+    const selectedDate = props.selectedDate;
+
+    const onClickPreviousDay = () => {
         history.push({
             pathname: "/my-calendar",
             state: {
-                selectedDate: moment(jumpToDate).toDate()
+                selectedDate: moment(selectedDate).subtract(1, "days").toDate()
+            }
+        });
+    };
+
+    const onClickCurrentDay = () => {
+        history.push({
+            pathname: "/my-calendar",
+            state: {
+                selectedDate: moment().toDate()
+            }
+        });
+    };
+
+    const onClickNextDay = () => {
+        history.push({
+            pathname: "/my-calendar",
+            state: {
+                selectedDate: moment(selectedDate).add(1, "days").toDate()
             }
         });
     };
 
     return (
-        <header className={props.pageBorderClass}>
-            <Title
-                titleText="My Calendar Screen"
-                underlineClass={props.underlineClass}/>
-
-            { failed &&
-                <p className="ErrorMessage">{errorMessage}</p>
-            }
-
-            <table className="NavigationTable">
-                <tr>
-                    <td>
-                        <button onClick={onClickPreviousWeek}>
-                            Previous Week
-                        </button>
-                        <button onClick={onClickCurrentWeek}>
-                            Current Week
-                        </button>
-                        <button onClick={onClickNextWeek}>
-                            Next Week
-                        </button>
-                    </td>
-                </tr>
-            </table>
-
-            <div className="NavigationDatePicker">
-                <label for="jumpToDate">Jump to Date:</label>
-                <input onChange={handleChangeJumpToDate} type="date" name="jumpToDate" value={moment(jumpToDate).format("YYYY-MM-DD")}/>
-                <button onClick={onClickJumpToDate}>Go</button>
-            </div>
-
-            <table className="CalendarTable">
-                <tr>
-                    {calendarHeaders}
-                </tr>
-                <tr>
-                    {calendarDays}
-                </tr>
-            </table>
-
-            <div className="BelowCalendar">
-                <p>
-                    Click somewhere on a given day to add tutoring availability to that day.
-                    <br/>
-
-                    Click on an existing availability to adjust or delete it
-                </p>
-            </div>
-
-        </header>
+        <table className="NavigationTable">
+            <tr>
+                <td>
+                    <button onClick={onClickPreviousDay}>
+                        Previous Day
+                    </button>
+                    <button onClick={onClickCurrentDay}>
+                        Today
+                    </button>
+                    <button onClick={onClickNextDay}>
+                        Next Day
+                    </button>
+                </td>
+            </tr>
+        </table>
     );
 }
