@@ -1,8 +1,27 @@
 .Availability-button {
-    background-color: red;
-    text-align: Center;
-};
+  background-color: red;
+  text-align: Center;
+}
 
-.Open-time-button {
-    background-color: blue;
-};
+.NavigationTable {
+  float: left;
+}
+
+.NavigationDatePicker {
+  float: right;
+}
+
+.CalendarTable {
+  width: 100%;
+}
+
+.CalendarDayHeader {
+  text-align: center;
+  width: 14.28574%;
+  border: solid black;
+  border-width: 2px 2px 2px 0;
+}
+
+.CalendarDayBody {
+  border: solid black 2px;
+}

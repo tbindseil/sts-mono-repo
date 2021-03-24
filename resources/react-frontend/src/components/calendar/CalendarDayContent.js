@@ -101,7 +101,6 @@ export function CalendarDayContent(props) {
                         return (
                             <div
                                 key={timeSlice.key}
-                                className="Open-time-button"
                                 style={style}
                                 onClick={() => {
                                     onClickDay(props.date)

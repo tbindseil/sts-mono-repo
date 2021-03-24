@@ -1,33 +1,42 @@
 import React, {useEffect, useState} from 'react';
+import MediaQuery from 'react-responsive';
 import {useHistory} from 'react-router-dom';
 
 import moment from 'moment';
 
+import './Calendar.css';
 import {Header} from '../header/Header';
+import {Bottom} from '../header/Bottom';
+import {Title} from '../layout/Title';
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
 import {CalendarDayContent} from './CalendarDayContent';
 
-const errorStyle = {
-    color: "red"
-};
-
-const tableStyle = {
-    width: 1750
-};
-
-const headerStyle = {
-    textAlign: "Center",
-    width: (tableStyle.width / 7),
-    border: "solid black",
-    borderWidth: "2px 2px 2px 0"
-};
-
-const calendarDayStyle = {
-    border: "solid black 2px"
-};
-
 export function MyCalendarScreen(props) {
+    return (
+        <div>
+            <Header/>
 
+            <MediaQuery minWidth={765}>
+                <MyCalendarBody
+                    location={props.location}
+                    pageBorderClass={"PageBorderCalendar"}
+                    underlineClass={"Underline"}/>
+            </MediaQuery>
+
+            <MediaQuery maxWidth={765}>
+                <MyCalendarBody
+                    location={props.location}
+                    pageBorderClass={"PageBorder2"}
+                    underlineClass={"Underline2"}/>
+            </MediaQuery>
+
+            <Bottom/>
+        </div>
+    );
+}
+
+
+function MyCalendarBody(props) {
     const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
 
     const history = useHistory();
@@ -80,6 +89,12 @@ export function MyCalendarScreen(props) {
                 // instead of a catch() block so that we don't swallow
                 // exceptions from actual bugs in components.
                 (error) => {
+                    setFailed(true);
+                    var message = "Error getting availabilties";
+                    if (error.message) {
+                        message += ": " + error.message;
+                    }
+                    setErrorMessage(message);
                 }
             )
             .catch(err => {
@@ -96,7 +111,6 @@ export function MyCalendarScreen(props) {
     const [errorMessage, setErrorMessage] = useState("");
 
     // based off stateProps.selectedDate
-    // const today = 
     const stateProps = props.location.state;
     const selectedDate = stateProps ? (stateProps.selectedDate ? stateProps.selectedDate : new Date()) : new Date();
 
@@ -111,13 +125,13 @@ export function MyCalendarScreen(props) {
     const calendarHeaders = [];
     for (var i = 0; i < 7; i++) {
         calendarHeaders.push(
-            <th style={headerStyle}>
+            <th className="CalendarDayHeader">
                 {moment(currDay).format("dddd, MMM D")}
             </th>
         );
 
         calendarDays.push(
-            <td style={calendarDayStyle}>
+            <td className="CalendarDayBody">
                 <CalendarDayContent
                     key={currDay.toString()}
                     date={currDay}
@@ -155,19 +169,31 @@ export function MyCalendarScreen(props) {
         });
     };
 
-    return (
-        <>
-            <Header/>
+    const [jumpToDate, setJumpToDate] = useState(selectedDate);
+    const handleChangeJumpToDate = (event) => {
+        setJumpToDate(event.target.value);
+    };
 
-            <p>
-                My Calendar Screen
-            </p>
+    const onClickJumpToDate = () => {
+        history.push({
+            pathname: "/my-calendar",
+            state: {
+                selectedDate: moment(jumpToDate).toDate()
+            }
+        });
+    };
+
+    return (
+        <header className={props.pageBorderClass}>
+            <Title
+                titleText="My Calendar Screen"
+                underlineClass={props.underlineClass}/>
 
             { failed &&
-                <p style={errorStyle} >{errorMessage}</p>
+                <p className="ErrorMessage">{errorMessage}</p>
             }
 
-            <table>
+            <table className="NavigationTable">
                 <tr>
                     <td>
                         <button onClick={onClickPreviousWeek}>
@@ -183,7 +209,13 @@ export function MyCalendarScreen(props) {
                 </tr>
             </table>
 
-            <table style={tableStyle}>
+            <div className="NavigationDatePicker">
+                <label for="jumpToDate">Jump to Date:</label>
+                <input onChange={handleChangeJumpToDate} type="date" name="jumpToDate" value={moment(jumpToDate).format("YYYY-MM-DD")}/>
+                <button onClick={onClickJumpToDate}>Go</button>
+            </div>
+
+            <table className="CalendarTable">
                 <tr>
                     {calendarHeaders}
                 </tr>
@@ -191,6 +223,16 @@ export function MyCalendarScreen(props) {
                     {calendarDays}
                 </tr>
             </table>
-        </>
+
+            <div className="BelowCalendar">
+                <p>
+                    Click somewhere on a given day to add tutoring availability to that day.
+                    <br/>
+
+                    Click on an existing availability to adjust or delete it
+                </p>
+            </div>
+
+        </header>
     );
 }
