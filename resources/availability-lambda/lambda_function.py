@@ -196,6 +196,7 @@ def lambda_handler(event, context):
 
     if method == 'POST':
         # add new availability to user
+        # TODO make sure there are no overlapping availabilties
         posted_availability = json_to_availability(event["body"])
         user.availabilities.append(posted_availability)
         session.add(user)
