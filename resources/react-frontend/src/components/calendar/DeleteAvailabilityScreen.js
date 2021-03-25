@@ -10,6 +10,9 @@ import {checkAuthenticated} from "../auth/CheckAuthenticated";
 //      I guess that means this is the availabilityscreen compononent
 export function DeleteAvailabilityScreen(props) {
 
+    // TJTAG
+    // TODO forms, uhhh
+
     const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod/'
 
     const history = useHistory();

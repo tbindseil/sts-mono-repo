@@ -1,24 +1,47 @@
 import React, {useEffect, useState} from 'react';
 
+import MediaQuery from 'react-responsive';
 import {useHistory} from 'react-router-dom';
 import moment from 'moment';
 
 import {Header} from '../header/Header';
-import {TextInput} from '../forms/TextInput';
-import {FormButton} from '../forms/FormButton';
+import {Bottom} from '../header/Bottom';
+import {Title} from '../layout/Title';
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
 
 export function CreateAvailabilityScreen(props) {
+    return (
+        <div className="TopLevelContainer">
 
+            <Header/>
+
+            <MediaQuery minWidth={765}>
+                <CreateAvailabilityBody
+                    location={props.location}
+                    pageBorderClass={"PageBorder"}
+                    underlineClass={"Underline"}/>
+            </MediaQuery>
+
+            <MediaQuery maxWidth={765}>
+                <CreateAvailabilityBody
+                    location={props.location}
+                    pageBorderClass={"PageBorder2"}
+                    underlineClass={"Underline2"}/>
+            </MediaQuery>
+
+            <Bottom/>
+
+        </div>
+    );
+}
+
+function CreateAvailabilityBody(props) {
     const history = useHistory();
 
     const stateProps = props.location.state;
     const selectedDate = stateProps ? (stateProps.selectedDate ? stateProps.selectedDate : new Date()) : new Date();
 
     const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
-
-    // TJTAG
-    // TODO forms, uhhh
 
     const [user, setUser] = useState(undefined)
     useEffect(() => {
@@ -27,19 +50,46 @@ export function CreateAvailabilityScreen(props) {
         history, setUser
     ]);
 
+    // default to 6pm
+    const at6pm = moment(selectedDate).hours(0).minutes(0).seconds(0).milliseconds(0).add(18, "hours").toDate();
+    const [day, setDay] = useState(at6pm);
+    const handleChangeDay = (event) => {
+        const dayMoment = moment(day);
+        const currStartHour = dayMoment.hours();
+        const currStartMinute = dayMoment.minutes();
+
+        const nextDay = moment(event.target.value).add(currStartHour, "hours").add(currStartMinute, "minutes").toDate();
+
+        setDay(nextDay);
+    }
+
     const [subjects, setSubjects] = useState("");
-    const [startTime, setStartTime] = useState(16);
+    const handleChangeSubjects = (event) => {
+        setSubjects(event.target.value);
+    }
+
+    const handleChangeStartTime = (event) => {
+        const splitTime = event.target.value.split(":");
+        const hours = splitTime[0];
+        const minutes = splitTime[1];
+
+        // zero day's minutes
+        const startOfDay = moment(day).hours(0).minutes(0).seconds(0).milliseconds(0);
+
+        // add new start time's hours and minutes
+        setDay(moment(startOfDay).add(hours, "hours").add(minutes, "minutes").toDate());
+    }
+
     const [duration, setDuration] = useState(15);
+    const handleChangeDuration = (event) => {
+        setDuration(event.target.value);
+    }
 
-    // TODO input validation, amongst many other things like using better input methods
     const postAvailability = async () => {
-
-        const startTimeAsDate = moment(selectedDate).startOf("day").add(startTime, 'h').toDate();
-
         const availability = {
             subjects: subjects,
-            startTime: startTimeAsDate,
-            endTime: moment(startTimeAsDate).add(duration, 'm').toDate(),
+            startTime: day,
+            endTime: moment(day).add(duration, 'm').toDate(),
             tutor: user.username
         };
 
@@ -56,24 +106,8 @@ export function CreateAvailabilityScreen(props) {
         return response;
     }
 
-    const handleChange = event => {
-        const target = event.target;
-        const value = target.value;
-        const name = target.name;
-
-        if (name === "subjects") {
-            setSubjects(value);
-        } else if (name === "startTime") {
-            setStartTime(value);
-        } else if (name === "duration") {
-            setDuration(value);
-        }
-    }
-
     const onFinish = async () => {
-        console.log("calling onFinish");
         await postAvailability();
-        console.log("done calling onFinish");
         history.push({
             pathname: "/my-calendar",
             state: {
@@ -92,53 +126,66 @@ export function CreateAvailabilityScreen(props) {
     };
 
     return (
-        <>
-            <Header/>
+        <header className={props.pageBorderClass}>
+            <Title
+                titleText={"CreateAvailability"}
+                underlineClass={props.underlineClass}/>
 
-            <h2>
-                CreateAvailability
-            </h2>
+            <table className="AvailabilityForm">
+                <tr>
+                    <td>
+                        <label for="subject">
+                            Subjects
+                        </label>
+                    </td>
+                    <td>
+                        <input onChange={handleChangeSubjects} type="text" name="subjects" value={subjects}/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="day">
+                            Day:
+                        </label>
+                    </td>
+                    <td>
+                        <input onChange={handleChangeDay} type="date" name="day" value={moment(day).format("YYYY-MM-DD")}/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="startTime">
+                            Start Time:
+                        </label>
+                    </td>
+                    <td>
+                        <input onChange={handleChangeStartTime} type="time" name="startTime" value={moment(day).format("HH:mm")}/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="durationMinutes">
+                            Duration (in Minutes):
+                        </label>
+                    </td>
+                    <td>
+                        <input onChange={handleChangeDuration} type="text" name="durationMinutes" value={duration}/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button onClick={onCancel}>
+                            Cancel
+                        </button>
+                    </td>
+                    <td>
+                        <button onClick={onFinish}>
+                            Create Availability
+                        </button>
+                    </td>
+                </tr>
+            </table>
 
-            <form
-                onChange={handleChange}>
-
-                <TextInput
-                    name={"selectedDate"}
-                    label={"Selected Date"}
-                    value={moment(selectedDate).format("dddd, MMM D")}
-                    readOnly={true}/>
-                <br/>
-                <br/>
-
-                <TextInput
-                    name={"subjects"}
-                    label={"Subjects"}
-                    value={subjects}/>
-                <br/>
-                <br/>
-
-                <TextInput
-                    name={"startTime"}
-                    label={'Start Time (in hours, think military time..)'}
-                    value={startTime}/>
-                <br/>
-                <br/>
-
-                <TextInput
-                    name={"duration"}
-                    label={'Duration (in minutes)'}
-                    value={duration}/>
-                <br/>
-                <br/>
-
-                <FormButton
-                    onClick={onCancel}
-                    value={"Cancel"}/>
-                <FormButton
-                    onClick={onFinish}
-                    value={"Create Availability"}/>
-            </form>
-
-        </>
+        </header>
     );
 }

@@ -40,3 +40,24 @@
 .CalendarDayBody {
   border: solid black 2px;
 }
+
+table.AvailabilityForm {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+table.AvailabilityForm td {
+  width: 160px;
+}
+
+table.AvailabilityForm button {
+  width: 160px;
+}
+
+table.AvailabilityForm input {
+  width: 160px;
+}
+
+table.AvailabilityForm label {
+  width: 160px;
+}
