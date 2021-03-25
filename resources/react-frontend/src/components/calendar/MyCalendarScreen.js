@@ -11,23 +11,26 @@ import {Title} from '../layout/Title';
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
 import {CalendarDayContent} from './CalendarDayContent';
 
+// using a two layered "MediaQueryWrapper" here
 export function MyCalendarScreen(props) {
     return (
         <div>
             <Header/>
 
             <MediaQuery minWidth={765}>
-                <BigScreenMyCalendarBody
+                <MyCalendarBody
                     location={props.location}
                     pageBorderClass={"PageBorderCalendar"}
-                    underlineClass={"Underline"}/>
+                    underlineClass={"Underline"}
+                    datePickerClass={"BigScreenNavigationDatePicker"}/>
             </MediaQuery>
 
             <MediaQuery maxWidth={765}>
-                <SmallScreenMyCalendarBody
+                <MyCalendarBody
                     location={props.location}
                     pageBorderClass={"PageBorder2"}
-                    underlineClass={"Underline2"}/>
+                    underlineClass={"Underline2"}
+                    datePickerClass={"SmallScreenNavigationDatePicker"}/>
             </MediaQuery>
 
             <Bottom/>
@@ -35,7 +38,7 @@ export function MyCalendarScreen(props) {
     );
 }
 
-function BigScreenMyCalendarBody(props) {
+function MyCalendarBody(props) {
     const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
 
     const history = useHistory();
@@ -148,12 +151,7 @@ function BigScreenMyCalendarBody(props) {
     };
 
     const onClickJumpToDate = () => {
-        history.push({
-            pathname: "/my-calendar",
-            state: {
-                selectedDate: moment(jumpToDate).toDate()
-            }
-        });
+        goToDate(history, moment(jumpToDate).toDate());
     };
 
     return (
@@ -166,10 +164,16 @@ function BigScreenMyCalendarBody(props) {
                 <p className="ErrorMessage">{errorMessage}</p>
             }
 
-            <BigScreenNavigationTable
-                selectedDate={selectedDate}/>
+            <MediaQuery minWidth={765}>
+                <BigScreenNavigationTable
+                    selectedDate={selectedDate}/>
+            </MediaQuery>
+            <MediaQuery maxWidth={765}>
+                <SmallScreenNavigationTable
+                    selectedDate={selectedDate}/>
+            </MediaQuery>
 
-            <div className="BigScreenNavigationDatePicker">
+            <div className={props.datePickerClass}>
                 <label for="jumpToDate">Jump to Date:</label>
                 <input onChange={handleChangeJumpToDate} type="date" name="jumpToDate" value={moment(jumpToDate).format("YYYY-MM-DD")}/>
                 <button onClick={onClickJumpToDate}>Go</button>
@@ -177,159 +181,20 @@ function BigScreenMyCalendarBody(props) {
 
             <table className="CalendarTable">
                 <tr>
-                    {calendarHeaders}
+                    <MediaQuery minWidth={765}>
+                        {calendarHeaders}
+                    </MediaQuery>
+                    <MediaQuery maxWidth={765}>
+                        {calendarHeaders[weekDayNumber]}
+                    </MediaQuery>
                 </tr>
                 <tr>
-                    {calendarDays}
-                </tr>
-            </table>
-
-            <div className="BelowCalendar">
-                <p>
-                    Click somewhere on a given day to add tutoring availability to that day.
-                    <br/>
-
-                    Click on an existing availability to adjust or delete it
-                </p>
-            </div>
-
-        </header>
-    );
-}
-
-function SmallScreenMyCalendarBody(props) {
-    const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
-
-    const history = useHistory();
-
-    const [user, setUser] = useState(undefined)
-    useEffect(() => {
-        checkAuthenticated(() => history.push("/anonymous-user"), setUser);
-    }, [
-        history, setUser
-    ]);
-
-    useEffect(() => {
-        getAvailabilities(user);
-    }, [
-        user
-    ]);
-
-    const [availabilities, setAvailabilities] = useState([]);
-    const getAvailabilities = (user) => {
-        if (!user) {
-            return;
-        }
-
-        const url = baseUrl;
-        const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
-        fetch(url, {
-                method: 'GET',
-                mode: 'cors',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': tokenString
-                }
-                })
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    const availabilitiesWithDates = result.map(a => {
-                        return {
-                            endTime: moment.utc(a.endTime).local().toDate(),
-                            startTime: moment.utc(a.startTime).local().toDate(),
-                            subjects: a.subjects,
-                            tutor: a.tutor,
-                            id: a.id
-                        }
-                    });
-
-                    setAvailabilities(availabilitiesWithDates);
-                },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
-                (error) => {
-                    setFailed(true);
-                    var message = "Error getting availabilties";
-                    if (error.message) {
-                        message += ": " + error.message;
-                    }
-                    setErrorMessage(message);
-                }
-            )
-            .catch(err => {
-                setFailed(true);
-                var message = "Error getting availabilties";
-                if (err.message) {
-                    message += ": " + err.message;
-                }
-                setErrorMessage(message);
-            });
-    };
-
-    const [failed, setFailed] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
-
-    // based off stateProps.selectedDate
-    const stateProps = props.location.state;
-    const selectedDate = stateProps ? (stateProps.selectedDate ? stateProps.selectedDate : new Date()) : new Date();
-
-    // make a single CalendarDayContent
-    const calendarDay = (
-        <td className="CalendarDayBody">
-            <CalendarDayContent
-                key={selectedDate.toString()}
-                date={selectedDate}
-                availabilities={availabilities}/>
-        </td>
-    );
-    const calendarHeader = (
-        <th className="CalendarDayHeader">
-            {moment(selectedDate).format("dddd, MMM D")}
-        </th>
-    );
-
-    // looks like defaults don't refresh when navigating to the same page
-    const [jumpToDate, setJumpToDate] = useState(selectedDate);
-    const handleChangeJumpToDate = (event) => {
-        setJumpToDate(event.target.value);
-    };
-
-    const onClickJumpToDate = () => {
-        history.push({
-            pathname: "/my-calendar",
-            state: {
-                selectedDate: moment(jumpToDate).toDate()
-            }
-        });
-    };
-
-    return (
-        <header className={props.pageBorderClass}>
-            <Title
-                titleText="My Calendar Screen"
-                underlineClass={props.underlineClass}/>
-
-            { failed &&
-                <p className="ErrorMessage">{errorMessage}</p>
-            }
-
-            <SmallScreenNavigationTable
-                selectedDate={selectedDate}/>
-
-            <div className="SmallScreenNavigationDatePicker">
-                <label for="jumpToDate">Jump to Date:</label>
-                <input onChange={handleChangeJumpToDate} type="date" name="jumpToDate" value={moment(jumpToDate).format("YYYY-MM-DD")}/>
-                <button onClick={onClickJumpToDate}>Go</button>
-            </div>
-
-            <table className="CalendarTable">
-                <tr>
-                    {calendarHeader}
-                </tr>
-                <tr>
-                    {calendarDay}
+                    <MediaQuery minWidth={765}>
+                        {calendarDays}
+                    </MediaQuery>
+                    <MediaQuery maxWidth={765}>
+                        {calendarDays[weekDayNumber]}
+                    </MediaQuery>
                 </tr>
             </table>
 
@@ -351,30 +216,15 @@ function BigScreenNavigationTable(props) {
     const selectedDate = props.selectedDate;
 
     const onClickPreviousWeek = () => {
-        history.push({
-            pathname: "/my-calendar",
-            state: {
-                selectedDate: moment(selectedDate).subtract(7, "days").toDate()
-            }
-        });
+        goToDate(history, moment(selectedDate).subtract(7, "days").toDate());
     };
 
     const onClickCurrentWeek = () => {
-        history.push({
-            pathname: "/my-calendar",
-            state: {
-                selectedDate: moment().toDate()
-            }
-        });
+        goToDate(history, moment().toDate());
     };
 
     const onClickNextWeek = () => {
-        history.push({
-            pathname: "/my-calendar",
-            state: {
-                selectedDate: moment(selectedDate).add(7, "days").toDate()
-            }
-        });
+        goToDate(history, moment(selectedDate).add(7, "days").toDate());
     };
 
     return (
@@ -401,30 +251,15 @@ function SmallScreenNavigationTable(props) {
     const selectedDate = props.selectedDate;
 
     const onClickPreviousDay = () => {
-        history.push({
-            pathname: "/my-calendar",
-            state: {
-                selectedDate: moment(selectedDate).subtract(1, "days").toDate()
-            }
-        });
+        goToDate(history, moment(selectedDate).subtract(1, "days").toDate());
     };
 
     const onClickCurrentDay = () => {
-        history.push({
-            pathname: "/my-calendar",
-            state: {
-                selectedDate: moment().toDate()
-            }
-        });
+        goToDate(history, moment().toDate());
     };
 
     const onClickNextDay = () => {
-        history.push({
-            pathname: "/my-calendar",
-            state: {
-                selectedDate: moment(selectedDate).add(1, "days").toDate()
-            }
-        });
+        goToDate(history, moment(selectedDate).add(1, "days").toDate());
     };
 
     return (
@@ -444,4 +279,13 @@ function SmallScreenNavigationTable(props) {
             </tr>
         </table>
     );
+}
+
+function goToDate(history, date) {
+    history.push({
+        pathname: "/my-calendar",
+        state: {
+            selectedDate: date
+        }
+    });
 }
