@@ -1,18 +1,41 @@
 import React, {useEffect, useState} from 'react';
 
+import MediaQuery from 'react-responsive';
 import {useHistory} from 'react-router-dom';
 import moment from 'moment';
 
 import {Header} from '../header/Header';
+import {Bottom} from '../header/Bottom';
+import {Title} from '../layout/Title';
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
 
-// TODO here we should be able to choose between modifying (put), creating (post) and deleteing (delete)
-//      I guess that means this is the availabilityscreen compononent
 export function DeleteAvailabilityScreen(props) {
+    return (
+        <div className="TopLevelContainer">
 
-    // TJTAG
-    // TODO forms, uhhh
+            <Header/>
 
+            <MediaQuery minWidth={765}>
+                <DeleteAvailabilityBody
+                    location={props.location}
+                    pageBorderClass={"PageBorder"}
+                    underlineClass={"Underline"}/>
+            </MediaQuery>
+
+            <MediaQuery maxWidth={765}>
+                <DeleteAvailabilityBody
+                    location={props.location}
+                    pageBorderClass={"PageBorder2"}
+                    underlineClass={"Underline2"}/>
+            </MediaQuery>
+
+            <Bottom/>
+
+        </div>
+    );
+}
+
+function DeleteAvailabilityBody(props) {
     const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod/'
 
     const history = useHistory();
@@ -65,48 +88,57 @@ export function DeleteAvailabilityScreen(props) {
     const availability = stateProps.availability;
 
     return (
-        <>
-            <Header/>
+        <header className={props.pageBorderClass}>
+            <Title
+                titleText={"View Availability"}
+                underlineClass={props.underlineClass}/>
 
-            <h2>
-                Delete Availability
-            </h2>
+            <table className="AvailabilityForm">
+                <tr>
+                    <AvailabilityPiece
+                        header={"Subjects:"}
+                        content={availability.subjects}
+                    />
+                </tr>
+                <tr>
+                    <AvailabilityPiece
+                        header={"Start Time:"}
+                        content={moment(availability.startTime).format('MMMM Do YYYY, h:mm:ss a')}
+                    />
+                </tr>
+                <tr>
+                    <AvailabilityPiece
+                        header={"End Time:"}
+                        content={moment(availability.endTime).format('MMMM Do YYYY, h:mm:ss a')}
+                    />
+                </tr>
+                <tr>
+                    <td>
+                        <button onClick={onClickDelete}>
+                            Delete
+                        </button>
+                    </td>
+                    <td>
+                        <button onClick={onCancel}>
+                            Cancel
+                        </button>
+                    </td>
+                </tr>
+            </table>
 
-            <AvailabilityPiece
-                header={"Subjects:"}
-                content={availability.subjects}
-            />
-
-            <AvailabilityPiece
-                header={"Start Time:"}
-                content={moment(availability.startTime).format('MMMM Do YYYY, h:mm:ss a')}
-            />
-
-            <AvailabilityPiece
-                header={"End Time:"}
-                content={moment(availability.endTime).format('MMMM Do YYYY, h:mm:ss a')}
-            />
-
-            <button onClick={onClickDelete}>
-               Delete 
-            </button>
-
-            <button onClick={onCancel}>
-               Cancel 
-            </button>
-        </>
+        </header>
     );
 }
 
 function AvailabilityPiece(props) {
     return (
         <>
-            <h4>
+            <td>
                 {props.header}
-            </h4>
-            <p>
+            </td>
+            <td>
                 {props.content}
-            </p>
+            </td>
         </>
     );
 }

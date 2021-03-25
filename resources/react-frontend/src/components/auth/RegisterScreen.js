@@ -83,7 +83,6 @@ function RegisterBody(props) {
                 }
                 setErrorMessage(message);
             });
-
     };
 
     return (
