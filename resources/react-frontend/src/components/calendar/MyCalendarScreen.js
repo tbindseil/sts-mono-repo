@@ -169,7 +169,7 @@ function BigScreenMyCalendarBody(props) {
             <BigScreenNavigationTable
                 selectedDate={selectedDate}/>
 
-            <div className="NavigationDatePicker">
+            <div className="BigScreenNavigationDatePicker">
                 <label for="jumpToDate">Jump to Date:</label>
                 <input onChange={handleChangeJumpToDate} type="date" name="jumpToDate" value={moment(jumpToDate).format("YYYY-MM-DD")}/>
                 <button onClick={onClickJumpToDate}>Go</button>
@@ -315,10 +315,10 @@ function SmallScreenMyCalendarBody(props) {
                 <p className="ErrorMessage">{errorMessage}</p>
             }
 
-            <BigScreenNavigationTable
+            <SmallScreenNavigationTable
                 selectedDate={selectedDate}/>
 
-            <div className="NavigationDatePicker">
+            <div className="SmallScreenNavigationDatePicker">
                 <label for="jumpToDate">Jump to Date:</label>
                 <input onChange={handleChangeJumpToDate} type="date" name="jumpToDate" value={moment(jumpToDate).format("YYYY-MM-DD")}/>
                 <button onClick={onClickJumpToDate}>Go</button>
@@ -378,7 +378,7 @@ function BigScreenNavigationTable(props) {
     };
 
     return (
-        <table className="NavigationTable">
+        <table className="BigScreenNavigationTable">
             <tr>
                 <td>
                     <button onClick={onClickPreviousWeek}>
@@ -428,7 +428,7 @@ function SmallScreenNavigationTable(props) {
     };
 
     return (
-        <table className="NavigationTable">
+        <table className="SmallScreenNavigationTable">
             <tr>
                 <td>
                     <button onClick={onClickPreviousDay}>

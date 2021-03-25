@@ -2,6 +2,13 @@ html, body {
   height: 100%;
 }
 
+/* safari on ios has whack settings, so I made my own whack settings */
+button {
+  background-color: rgb(159, 159, 159);
+  border-color: -internal-light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
+  border-radius: 2px;
+}
+
 #root {
   height: 100%;
 }
