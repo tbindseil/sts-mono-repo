@@ -27,34 +27,19 @@ class TestCognitoValidation(unittest.TestCase):
 
         import urllib.request
 
-        # mock_f = MagicMock()
-        # mock_read = MagicMock()
-        # mock_response = MagicMock()
-        # mock_f.read = mock_read
-        # mock_read.return_value = mock_response
-
         mock_f = MagicMock()
         mock_response = MagicMock()
-        # for while part, see
+        # for context manager (with syntax), see
         # https://stackoverflow.com/questions/48113538/mocking-urllib-request-urlopens-read-function-returns-magicmock-signature
         mock_f.__enter__.return_value.read.return_value = mock_response
 
-        # mock_decode = MagicMock()
-        # mock_response.decode = mock_decode
-        # mock_decode.return_value = "{keys: KEYS}"
         mock_response.decode.return_value = json.dumps({"keys": "KEYS"})
 
         def urlopen(url):
             return mock_f
 
+        # monkey patch urlopen for code that runs in __init__ of authentication_validation
         urllib.request.urlopen = urlopen
-
-
-        # need to monkey patch urllib
-        # with urllib.request.urlopen(keys_url) as f:
-        # mock_urlopen.return_value = "claims"
-        # with urllib.request.urlopen(keys_url) as f:
-
         from src.authentication_validation.cognito_validation import get_and_verify_claims
 
     @patch('urllib.request.urlopen')

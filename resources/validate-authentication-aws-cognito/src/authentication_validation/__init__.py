@@ -2,6 +2,10 @@ import json
 import urllib.request
 
 
+# TODO really, this package's name should specify cognito since the __init__
+# (one per package) is cognito specific.
+# Unless I extract it into cognito init method or something..
+
 # Copyright 2017-2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file
@@ -12,8 +16,6 @@ import urllib.request
 # or in the "license" file accompanying this file. This file is distributed on an "AS IS"
 # BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations under the License.
-
-print("$$$$$$$$$$$$$$$$$$$$$$$$starting...")
 
 region = 'us-west-2'
 userpool_id = 'us-west-2_uzjaqz0n2'
@@ -27,10 +29,4 @@ with urllib.request.urlopen(keys_url) as f:
     print("within keys request context, should only show up on cold start")
     response = f.read()
 
-print("response is:")
-print(response)
-print("response.decode('utf-8') is:")
-print(response.decode('utf-8'))
 keys = json.loads(response.decode('utf-8'))['keys']
-print("keys is:")
-print(keys)
