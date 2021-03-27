@@ -22,7 +22,7 @@ from jose import jwk, jwt
 
 # first, mock
 
-@patch('jose.jwt.get_unverified_headers')
+@patch('jose.jwt')
 class TestCognitoValidation(unittest.TestCase):
 
     def setup_initial_request(self, valid_keys):
@@ -52,7 +52,7 @@ class TestCognitoValidation(unittest.TestCase):
     def test_when_public_key_not_found_then_get_and_verify_claims_raises(self, mock_jwt):
         get_and_verify_claims = self.setup_initial_request(False)
 
-        mock_jwt.get_unverified_claims.return_value = { 'kid', 'not_supposed_to_be_found' }
+        mock_jwt.get_unverified_headers.return_value = { 'kid': 'not_supposed_to_be_found' }
 
         with self.assertRaises(Exception) as e:
             get_and_verify_claims("claims")
