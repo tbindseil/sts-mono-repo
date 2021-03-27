@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import MagicMock
 
 # TODO do i need to worry about importing from src as top level module?
 from src.authentication_validation.cognito_validation import get_and_verify_claims
@@ -15,7 +16,15 @@ from src.authentication_validation.cognito_validation import get_and_verify_clai
 
 class TestCognitoValidation(unittest.TestCase):
 
-    def test_when_public_key_not_found_then_get_and_verify_claims_raises(self):
+    def setUp(self):
+        print("in setup")
+        # mock_urlopen.return_value = "claims"
+        # with urllib.request.urlopen(keys_url) as f:
+
+    @patch('urllib.request.urlopen')
+    def test_when_public_key_not_found_then_get_and_verify_claims_raises(self, mock_urlopen):
+        mock_urlopen.return_value = "claims"
+        # i think i have to patch request, then say patched_request.urlopen = MagicMock()
         claims = "claims"
         get_and_verify_claims(claims)
         self.assertEqual(True, False)

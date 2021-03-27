@@ -13,6 +13,8 @@ import urllib.request
 # BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations under the License.
 
+print("$$$$$$$$$$$$$$$$$$$$$$$$starting...")
+
 region = 'us-west-2'
 userpool_id = 'us-west-2_uzjaqz0n2'
 keys_url = 'https://cognito-idp.{}.amazonaws.com/{}/.well-known/jwks.json'.format(region, userpool_id)
