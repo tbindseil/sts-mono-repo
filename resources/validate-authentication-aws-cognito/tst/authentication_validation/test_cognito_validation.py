@@ -86,8 +86,23 @@ class TestCognitoValidation(unittest.TestCase):
             get_and_verify_claims("message.encoded_signatureeee")
         self.assertEqual(str(e.exception), 'Token is expired')
 
-    #def test_when_unexpected_audience_then_get_and_verify_claims_raises(self):
-        #self.assertEqual(True, False)
+    def test_when_unexpected_audience_then_get_and_verify_claims_raises(self, mock_get_unverified_headers, mock_construct, mock_get_unverified_claims):
+        get_and_verify_claims = self.setup_initial_request(False)
+
+        mock_get_unverified_headers.return_value = { 'kid': 'supposed_to_be_found' }
+
+        mock_public_key = MagicMock()
+        mock_public_key.verify.return_value = True
+        mock_construct.return_value = mock_public_key
+
+        five_minutes_from_now = time.time() + 5 * 60
+        claims = {'exp': five_minutes_from_now, 'aud': 'not_right_audience'}
+        mock_get_unverified_claims.return_value = claims
+
+        with self.assertRaises(Exception) as e:
+            get_and_verify_claims("message.encoded_signatureeee")
+        self.assertEqual(str(e.exception), 'Token was not issued for this audience')
+
 
     #def test_when_input_valid_then_get_and_verify_claims_returns_claims(self):
         #self.assertEqual(True, False)
