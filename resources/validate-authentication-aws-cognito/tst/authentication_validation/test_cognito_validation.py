@@ -25,10 +25,6 @@ from jose import jwk, jwt
 @patch('jose.jwt.get_unverified_headers')
 class TestCognitoValidation(unittest.TestCase):
 
-    # def setup_invalid_keys(self):
-
-    # def setup_valid_keys(self):
-
     def setup_initial_request(self, valid_keys):
         import urllib.request
 
@@ -50,12 +46,14 @@ class TestCognitoValidation(unittest.TestCase):
         # monkey patch urlopen for code that runs in __init__ of authentication_validation
         urllib.request.urlopen = urlopen
 
+        from src.authentication_validation.cognito_validation import get_and_verify_claims
+        return get_and_verify_claims
+
     def test_when_public_key_not_found_then_get_and_verify_claims_raises(self, mock_jwt):
-        self.setup_initial_request(False)
+        get_and_verify_claims = self.setup_initial_request(False)
 
         mock_jwt.get_unverified_claims.return_value = { 'kid', 'not_supposed_to_be_found' }
 
-        from src.authentication_validation.cognito_validation import get_and_verify_claims
         with self.assertRaises(Exception) as e:
             get_and_verify_claims("claims")
 
