@@ -21,8 +21,8 @@ from jose import jwk, jwt
 #       I could do both :)
 
 # first, mock
-
-@patch('jose.jwt')
+@patch('jose.jwk.construct')
+@patch('jose.jwt.get_unverified_headers')
 class TestCognitoValidation(unittest.TestCase):
 
     def setup_initial_request(self, valid_keys):
@@ -34,11 +34,7 @@ class TestCognitoValidation(unittest.TestCase):
         # https://stackoverflow.com/questions/48113538/mocking-urllib-request-urlopens-read-function-returns-magicmock-signature
         mock_f.__enter__.return_value.read.return_value = mock_response
 
-        if valid_keys:
-            # TODO
-            mock_response.decode.return_value = json.dumps({"keys": "KEYS"})
-        else:
-            mock_response.decode.return_value = json.dumps({"keys": [{"kid": "KEYS1"}]})
+        mock_response.decode.return_value = json.dumps({"keys": [{"kid": "supposed_to_be_found"}]})
 
         def urlopen(url):
             return mock_f
@@ -49,19 +45,29 @@ class TestCognitoValidation(unittest.TestCase):
         from src.authentication_validation.cognito_validation import get_and_verify_claims
         return get_and_verify_claims
 
-    def test_when_public_key_not_found_then_get_and_verify_claims_raises(self, mock_jwt):
+    def test_when_public_key_not_found_then_get_and_verify_claims_raises(self, mock_get_unverified_headers, mock_construct):
         get_and_verify_claims = self.setup_initial_request(False)
 
-        mock_jwt.get_unverified_headers.return_value = { 'kid': 'not_supposed_to_be_found' }
+        mock_get_unverified_headers.return_value = { 'kid': 'not_supposed_to_be_found' }
 
         with self.assertRaises(Exception) as e:
-            get_and_verify_claims("claims")
-
+            get_and_verify_claims("message.encoded_signatureeee")
         self.assertEqual(str(e.exception), "Public key not found in jwks.json")
 
 
-    #def test_when_verify_fails_then_get_and_verify_claims_raises(self):
-        #self.assertEqual(True, False)
+    def test_when_verify_fails_then_get_and_verify_claims_raises(self, mock_get_unverified_headers, mock_construct):
+        get_and_verify_claims = self.setup_initial_request(False)
+
+        mock_get_unverified_headers.return_value = { 'kid': 'supposed_to_be_found' }
+
+        mock_public_key = MagicMock()
+        mock_public_key.verify.return_value = False
+        mock_construct.return_value = mock_public_key
+
+        with self.assertRaises(Exception) as e:
+            get_and_verify_claims("message.encoded_signatureeee")
+        self.assertEqual(str(e.exception), 'Signature verification failed')
+
 
     #def test_when_token_is_expired_then_get_and_verify_claims_raises(self):
         #self.assertEqual(True, False)

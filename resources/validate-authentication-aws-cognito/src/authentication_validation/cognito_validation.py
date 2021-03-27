@@ -25,6 +25,8 @@ def get_and_verify_claims(token):
     if key_index == -1:
         raise Exception("Public key not found in jwks.json")
 
+    print("at least got here ")
+
     # construct the public key
     public_key = jwk.construct(keys[key_index])
 
