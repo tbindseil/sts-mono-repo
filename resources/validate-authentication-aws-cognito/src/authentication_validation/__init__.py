@@ -27,4 +27,10 @@ with urllib.request.urlopen(keys_url) as f:
     print("within keys request context, should only show up on cold start")
     response = f.read()
 
+print("response is:")
+print(response)
+print("response.decode('utf-8') is:")
+print(response.decode('utf-8'))
 keys = json.loads(response.decode('utf-8'))['keys']
+print("keys is:")
+print(keys)
