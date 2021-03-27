@@ -3,6 +3,9 @@ from unittest.mock import MagicMock, patch
 
 import json
 
+# imports to mock
+from jose import jwk, jwt
+
 # need to monkey patch urllib
 # with urllib.request.urlopen(keys_url) as f:
 
@@ -19,12 +22,14 @@ import json
 
 # first, mock
 
+@patch('jose.jwt.get_unverified_headers')
 class TestCognitoValidation(unittest.TestCase):
 
-    def setUp(self):
-        print("")
-        print("in setup")
+    # def setup_invalid_keys(self):
 
+    # def setup_valid_keys(self):
+
+    def setup_initial_request(self, valid_keys):
         import urllib.request
 
         mock_f = MagicMock()
@@ -33,22 +38,29 @@ class TestCognitoValidation(unittest.TestCase):
         # https://stackoverflow.com/questions/48113538/mocking-urllib-request-urlopens-read-function-returns-magicmock-signature
         mock_f.__enter__.return_value.read.return_value = mock_response
 
-        mock_response.decode.return_value = json.dumps({"keys": "KEYS"})
+        if valid_keys:
+            # TODO
+            mock_response.decode.return_value = json.dumps({"keys": "KEYS"})
+        else:
+            mock_response.decode.return_value = json.dumps({"keys": [{"kid": "KEYS1"}]})
 
         def urlopen(url):
             return mock_f
 
         # monkey patch urlopen for code that runs in __init__ of authentication_validation
         urllib.request.urlopen = urlopen
-        from src.authentication_validation.cognito_validation import get_and_verify_claims
 
-    @patch('urllib.request.urlopen')
-    def test_when_public_key_not_found_then_get_and_verify_claims_raises(self, mock_urlopen):
-        mock_urlopen.return_value = "claims"
-        # i think i have to patch request, then say patched_request.urlopen = MagicMock()
-        claims = "claims"
-        get_and_verify_claims(claims)
-        self.assertEqual(True, False)
+    def test_when_public_key_not_found_then_get_and_verify_claims_raises(self, mock_jwt):
+        self.setup_initial_request(False)
+
+        mock_jwt.get_unverified_claims.return_value = { 'kid', 'not_supposed_to_be_found' }
+
+        from src.authentication_validation.cognito_validation import get_and_verify_claims
+        with self.assertRaises(Exception) as e:
+            get_and_verify_claims("claims")
+
+        self.assertEqual(str(e.exception), "Public key not found in jwks.json")
+
 
     #def test_when_verify_fails_then_get_and_verify_claims_raises(self):
         #self.assertEqual(True, False)

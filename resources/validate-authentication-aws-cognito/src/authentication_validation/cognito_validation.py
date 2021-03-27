@@ -2,7 +2,7 @@ import time
 from jose import jwk, jwt
 from jose.utils import base64url_decode
 
-from authentication_validation import keys
+from src.authentication_validation import keys
 
 # from aws cognito
 app_client_id = '55egf9s4qqoie5d4qodrqtolkk'
