@@ -103,9 +103,21 @@ class TestCognitoValidation(unittest.TestCase):
             get_and_verify_claims("message.encoded_signatureeee")
         self.assertEqual(str(e.exception), 'Token was not issued for this audience')
 
+    def test_when_input_valid_then_get_and_verify_claims_returns_claims(self, mock_get_unverified_headers, mock_construct, mock_get_unverified_claims):
+        get_and_verify_claims = self.setup_initial_request(False)
 
-    #def test_when_input_valid_then_get_and_verify_claims_returns_claims(self):
-        #self.assertEqual(True, False)
+        mock_get_unverified_headers.return_value = { 'kid': 'supposed_to_be_found' }
+
+        mock_public_key = MagicMock()
+        mock_public_key.verify.return_value = True
+        mock_construct.return_value = mock_public_key
+
+        five_minutes_from_now = time.time() + 5 * 60
+        claims = {'exp': five_minutes_from_now, 'aud': '55egf9s4qqoie5d4qodrqtolkk'} # TODO get from file under test
+        mock_get_unverified_claims.return_value = claims
+
+        returned_claims = get_and_verify_claims("message.encoded_signatureeee")
+        self.assertEqual(returned_claims, claims)
 
 
 if __name__ == '__main__':
