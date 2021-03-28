@@ -27,7 +27,7 @@ from jose import jwk, jwt
 @patch('jose.jwt.get_unverified_headers')
 class TestCognitoValidation(unittest.TestCase):
 
-    def setup_initial_request(self, valid_keys):
+    def setup_initial_request(self):
         import urllib.request
 
         mock_f = MagicMock()
@@ -47,8 +47,33 @@ class TestCognitoValidation(unittest.TestCase):
         from src.authentication_validation.cognito_validation import get_and_verify_claims
         return get_and_verify_claims
 
+    # making it through the tests is like russian dolls...
+    # these helper methods setup the mocking framework to make it a bit further with each method
+    def setup_successful_through_kid_header(self, mock_get_unverified_headers):
+        mock_get_unverified_headers.return_value = { 'kid': 'supposed_to_be_found' }
+
+    def setup_successful_through_public_key_verify(self, mock_get_unverified_headers, mock_construct):
+        self.setup_successful_through_kid_header(mock_get_unverified_headers)
+
+        mock_public_key = MagicMock()
+        mock_public_key.verify.return_value = True
+        mock_construct.return_value = mock_public_key
+
+    def setup_successful_through_expire_time(self, mock_get_unverified_headers, mock_construct, mock_get_unverified_claims, claims):
+        self.setup_successful_through_public_key_verify(mock_get_unverified_headers, mock_construct)
+
+        five_minutes_from_now = time.time() + 5 * 60
+        claims['exp'] = five_minutes_from_now
+        mock_get_unverified_claims.return_value = claims
+
+    def setup_successful(self, mock_get_unverified_headers, mock_construct, mock_get_unverified_claims, claims):
+        self.setup_successful_through_expire_time(mock_get_unverified_headers, mock_construct, mock_get_unverified_claims, claims)
+
+        from src.authentication_validation.cognito_validation import app_client_id
+        claims['aud'] = app_client_id
+
     def test_when_public_key_not_found_then_get_and_verify_claims_raises(self, mock_get_unverified_headers, mock_construct, mock_get_unverified_claims):
-        get_and_verify_claims = self.setup_initial_request(False)
+        get_and_verify_claims = self.setup_initial_request()
 
         mock_get_unverified_headers.return_value = { 'kid': 'not_supposed_to_be_found' }
 
@@ -57,9 +82,9 @@ class TestCognitoValidation(unittest.TestCase):
         self.assertEqual(str(e.exception), "Public key not found in jwks.json")
 
     def test_when_verify_fails_then_get_and_verify_claims_raises(self, mock_get_unverified_headers, mock_construct, mock_get_unverified_claims):
-        get_and_verify_claims = self.setup_initial_request(False)
+        get_and_verify_claims = self.setup_initial_request()
 
-        mock_get_unverified_headers.return_value = { 'kid': 'supposed_to_be_found' }
+        self.setup_successful_through_kid_header(mock_get_unverified_headers)
 
         mock_public_key = MagicMock()
         mock_public_key.verify.return_value = False
@@ -70,13 +95,9 @@ class TestCognitoValidation(unittest.TestCase):
         self.assertEqual(str(e.exception), 'Signature verification failed')
 
     def test_when_token_is_expired_then_get_and_verify_claims_raises(self, mock_get_unverified_headers, mock_construct, mock_get_unverified_claims):
-        get_and_verify_claims = self.setup_initial_request(False)
+        get_and_verify_claims = self.setup_initial_request()
 
-        mock_get_unverified_headers.return_value = { 'kid': 'supposed_to_be_found' }
-
-        mock_public_key = MagicMock()
-        mock_public_key.verify.return_value = True
-        mock_construct.return_value = mock_public_key
+        self.setup_successful_through_public_key_verify(mock_get_unverified_headers, mock_construct)
 
         five_seconds_ago = time.time() - 5
         claims = {'exp': five_seconds_ago}
@@ -87,35 +108,22 @@ class TestCognitoValidation(unittest.TestCase):
         self.assertEqual(str(e.exception), 'Token is expired')
 
     def test_when_unexpected_audience_then_get_and_verify_claims_raises(self, mock_get_unverified_headers, mock_construct, mock_get_unverified_claims):
-        get_and_verify_claims = self.setup_initial_request(False)
+        get_and_verify_claims = self.setup_initial_request()
 
-        mock_get_unverified_headers.return_value = { 'kid': 'supposed_to_be_found' }
+        claims = {}
+        self.setup_successful_through_expire_time(mock_get_unverified_headers, mock_construct, mock_get_unverified_claims, claims)
 
-        mock_public_key = MagicMock()
-        mock_public_key.verify.return_value = True
-        mock_construct.return_value = mock_public_key
-
-        five_minutes_from_now = time.time() + 5 * 60
-        claims = {'exp': five_minutes_from_now, 'aud': 'not_right_audience'}
-        mock_get_unverified_claims.return_value = claims
+        claims['aud'] = 'not_right_audience'
 
         with self.assertRaises(Exception) as e:
             get_and_verify_claims("message.encoded_signatureeee")
         self.assertEqual(str(e.exception), 'Token was not issued for this audience')
 
     def test_when_input_valid_then_get_and_verify_claims_returns_claims(self, mock_get_unverified_headers, mock_construct, mock_get_unverified_claims):
-        get_and_verify_claims = self.setup_initial_request(False)
+        get_and_verify_claims = self.setup_initial_request()
 
-        mock_get_unverified_headers.return_value = { 'kid': 'supposed_to_be_found' }
-
-        mock_public_key = MagicMock()
-        mock_public_key.verify.return_value = True
-        mock_construct.return_value = mock_public_key
-
-        from src.authentication_validation.cognito_validation import app_client_id
-        five_minutes_from_now = time.time() + 5 * 60
-        claims = {'exp': five_minutes_from_now, 'aud': app_client_id}
-        mock_get_unverified_claims.return_value = claims
+        claims = {}
+        self.setup_successful(mock_get_unverified_headers, mock_construct, mock_get_unverified_claims, claims)
 
         returned_claims = get_and_verify_claims("message.encoded_signatureeee")
         self.assertEqual(returned_claims, claims)

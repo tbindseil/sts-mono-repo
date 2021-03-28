@@ -2,7 +2,7 @@ import json
 import urllib.request
 
 
-# TODO really, this package's name should specify cognito since the __init__
+# really, this package's name should specify cognito since the __init__
 # (one per package) is cognito specific.
 # Unless I extract it into cognito init method or something..
 
