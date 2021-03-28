@@ -112,8 +112,9 @@ class TestCognitoValidation(unittest.TestCase):
         mock_public_key.verify.return_value = True
         mock_construct.return_value = mock_public_key
 
+        from src.authentication_validation.cognito_validation import app_client_id
         five_minutes_from_now = time.time() + 5 * 60
-        claims = {'exp': five_minutes_from_now, 'aud': '55egf9s4qqoie5d4qodrqtolkk'} # TODO get from file under test
+        claims = {'exp': five_minutes_from_now, 'aud': app_client_id}
         mock_get_unverified_claims.return_value = claims
 
         returned_claims = get_and_verify_claims("message.encoded_signatureeee")
