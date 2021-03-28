@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: sts-validate-authentication-aws-cognito-tj
-Version: 0.0.4
+Version: 0.0.5
 Summary: authentication validation for sts with aws cognito implementation
 Home-page: https://github.com/tbindseil/sts-mono-repo
 Author: tj

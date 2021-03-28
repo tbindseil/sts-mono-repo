@@ -1,12 +1,41 @@
+import json
+import urllib.request
 import time
+
 from jose import jwk, jwt
 from jose.utils import base64url_decode
-
-from authentication_validation import keys
 
 # from aws cognito
 app_client_id = '55egf9s4qqoie5d4qodrqtolkk'
 
+
+
+# really, this package's name should specify cognito since the __init__
+# (one per package) is cognito specific.
+# Unless I extract it into cognito init method or something..
+
+# Copyright 2017-2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file
+# except in compliance with the License. A copy of the License is located at
+#
+#     http://aws.amazon.com/apache2.0/
+#
+# or in the "license" file accompanying this file. This file is distributed on an "AS IS"
+# BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations under the License.
+
+region = 'us-west-2'
+userpool_id = 'us-west-2_uzjaqz0n2'
+keys_url = 'https://cognito-idp.{}.amazonaws.com/{}/.well-known/jwks.json'.format(region, userpool_id)
+
+# instead of re-downloading the public keys every time
+# we download them only on cold start
+# https://aws.amazon.com/blogs/compute/container-reuse-in-lambda/
+with urllib.request.urlopen(keys_url) as f:
+    response = f.read()
+
+keys = json.loads(response.decode('utf-8'))['keys']
 
 def get_and_verify_claims(token):
 
@@ -24,8 +53,6 @@ def get_and_verify_claims(token):
 
     if key_index == -1:
         raise Exception("Public key not found in jwks.json")
-
-    print("at least got here ")
 
     # construct the public key
     public_key = jwk.construct(keys[key_index])
