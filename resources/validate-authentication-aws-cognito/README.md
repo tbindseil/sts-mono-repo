@@ -4,6 +4,10 @@ this module houses shared code used to verify the claims in the authentication t
 when performing backend operations
 
 
+first time stuff:
+pip install wheel
+pip install twine
+
 use python3 setup.py sdist bdist_wheel to make new version
 then remove old whl and tar files
 then use ```python3 -m twine upload --repository testpypi dist/*``` to reupload

@@ -1,0 +1,10 @@
+README.md
+setup.py
+src/authentication_validation/__init__.py
+src/authentication_validation/cognito_validation.py
+src/authentication_validation/test_cognito_validation.py
+src/sts_validate_authentication_aws_cognito_tj.egg-info/PKG-INFO
+src/sts_validate_authentication_aws_cognito_tj.egg-info/SOURCES.txt
+src/sts_validate_authentication_aws_cognito_tj.egg-info/dependency_links.txt
+src/sts_validate_authentication_aws_cognito_tj.egg-info/requires.txt
+src/sts_validate_authentication_aws_cognito_tj.egg-info/top_level.txt
