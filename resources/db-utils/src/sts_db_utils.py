@@ -15,6 +15,12 @@ def get_database_engine():
         region_name=region_name,
     )
 
+    print("session is:")
+    print(session)
+
+    print("client is:")
+    print(client)
+
     try:
         get_secret_value_response = client.get_secret_value(
             SecretId=secret_name
