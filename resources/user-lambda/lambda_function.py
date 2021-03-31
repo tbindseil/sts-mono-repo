@@ -1,17 +1,12 @@
 import json
 import boto3
 
-import time
-import urllib.request
-from jose import jwk, jwt
-from jose.utils import base64url_decode
-
-from models.user import User
-from authentication_validation.cognito_validation import get_and_verify_claims
-
 from botocore.exceptions import ClientError
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
+from authentication_validation.cognito_validation import get_and_verify_claims
+from models.user import User
 
 
 # TODO keep it DRY! this is in user-registered-lambda/lambda_function.py as well
