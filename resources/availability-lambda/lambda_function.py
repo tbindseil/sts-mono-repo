@@ -2,7 +2,6 @@ import json
 import boto3
 
 from botocore.exceptions import ClientError
-from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from authentication_validation.cognito_validation import get_and_verify_claims
