@@ -1,0 +1,6 @@
+README.md
+setup.py
+src/sts_db_utils_tj.egg-info/PKG-INFO
+src/sts_db_utils_tj.egg-info/SOURCES.txt
+src/sts_db_utils_tj.egg-info/dependency_links.txt
+src/sts_db_utils_tj.egg-info/top_level.txt
