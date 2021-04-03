@@ -19,6 +19,9 @@ export function Header() {
         }
     }
 
+
+    // TODO profile button is rendered after user deletes account
+    // it goes away with a refresh
     return (
         <ul id="NavBar" className="NavBar">
 
