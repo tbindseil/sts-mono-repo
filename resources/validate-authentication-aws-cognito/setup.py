@@ -22,3 +22,4 @@ setuptools.setup(
     install_requires=['python-jose', 'requests'],
     python_requires='>=3.6',
 )
+

@@ -15,8 +15,6 @@ def get_database_engine():
         region_name=region_name,
     )
 
-    print("session is:")
-    print(session)
 
     print("client is:")
     print(client)

@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="sts-db-utils-tj", # Replace with your own username
-    version="0.0.1",
+    version="0.0.6",
     author="tj",
     author_email="tjbindseil@gmail.com",
     description="used to connect to the database",
@@ -19,7 +19,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    install_requires=[],
+    install_requires=['SQLAlchemy', 'boto3'],
     # TODO install_requires=['python-jose', 'requests'],
     python_requires='>=3.6',
 )

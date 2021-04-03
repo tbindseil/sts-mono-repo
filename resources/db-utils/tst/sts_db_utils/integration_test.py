@@ -2,7 +2,7 @@ import unittest
 import datetime
 from sqlalchemy.orm import sessionmaker
 
-from src.sts_db_utils import get_database_engine
+from src.sts_db_utils.sts_db_utils import get_database_engine
 
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
