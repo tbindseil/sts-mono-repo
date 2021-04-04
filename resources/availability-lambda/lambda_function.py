@@ -113,7 +113,7 @@ def lambda_handler(event, context):
 
         session.delete(avail_to_delete)
         session.commit()
-        print("ddelete committed")
+        print("delete committed")
         return make_response(200, "")
 
     return make_response(500, "")
@@ -125,3 +125,32 @@ if __name__ == '__main__':
     # for testing locally you can enter the JWT ID Token here
     event = {'token': ""}
     lambda_handler(event, None)
+
+
+
+# each httpmethodhandler does:
+# abstract validation
+# virtualized work function,
+#   receives a session that the one top class is responsible for commiting and rolling back
+# error handling sequence
+
+# could this be simplified?
+
+# probably..
+# lets say it (GuidedLambdaHandler) goes as follows
+# new GuidedLambdaHandler(dict_http_method_to_http_method_handler)
+# try:
+#   return GuidedLambdaHandler.handle(event, context)
+# except AuthException as e:
+#   make_response(401, "")
+# except Exception as e:
+#   make_response(500, "")
+
+# class GuidedLambdaHandler():
+# 
+# def handle(event, context):
+#   response_code, response_body = http_handlers[event['httpMethod']]()
+#   return make_response(response_code, response_body)
+#
+# # here is definitely where we have make_response
+# # maybe here is were we do model to dict, dict to model, probably do this second
