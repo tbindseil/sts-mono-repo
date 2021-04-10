@@ -16,9 +16,6 @@ def get_database_engine():
     )
 
 
-    print("client is:")
-    print(client)
-
     try:
         get_secret_value_response = client.get_secret_value(
             SecretId=secret_name
