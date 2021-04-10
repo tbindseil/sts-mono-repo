@@ -1,3 +1,4 @@
+import json
 from sqlalchemy import orm
 
 from sts_db_utils import sts_db_utils
@@ -24,7 +25,7 @@ class GuidedLambdaHanlder():
                 "Access-Control-Allow-Origin" : "*",
                 "X-Requested-With" : "*"
             },
-            'body': body
+            'body': json.dumps(body)
         }
 
     def handle(self, event, context):
