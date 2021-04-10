@@ -1,4 +1,4 @@
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import orm
 
 from sts_db_utils import sts_db_utils
 
@@ -30,7 +30,7 @@ class GuidedLambdaHanlder():
     def handle(self, event, context):
         try:
             engine = sts_db_utils.get_database_engine()
-            Session = sessionmaker(bind=engine)
+            Session = orm.sessionmaker(bind=engine)
             session = Session()
 
             response_code, response_body = self.http_method_strategies[event['httpMethod']](event, context, session)
