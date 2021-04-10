@@ -40,7 +40,7 @@ class GuidedLambdaHanlder():
             response_body = "unauthorized"
             session.rollback()
         except Exception as e:
-            print('e is:')
+            print('exception handling http request, e is:')
             print(e)
             response_code = 500
             response_body = "service error"

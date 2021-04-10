@@ -17,17 +17,6 @@ class TestCognitoValidation(unittest.TestCase):
         self.guided_lambda_handler = GuidedLambdaHanlder(http_method_strategies)
 
     def test_handler_returns_401_on_auth_exception(self, mock_get_database_engine, mock_session_maker):
-        # print("mock_get_database_engine is:")
-        # print(mock_get_database_engine)
-
-        # mock_engine = MagicMock()
-        # mock_get_database_engine.return_value = mock_engine
-
-        mock_Session = MagicMock()
-        mock_session = MagicMock()
-        mock_session_maker.return_value = mock_Session
-        mock_Session.return_value = mock_session
-
         self.magic_mock_method.side_effect = AuthException
 
         event = { 'httpMethod': self.http_method }
