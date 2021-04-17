@@ -1,15 +1,15 @@
 import json
 
-from guided_lambda_handler import GuidedLambdaHanlder, AuthException
+from guided_lambda_handler.guided_lambda_handler import GuidedLambdaHandler, AuthException
 from models.user import User
 from models.availability import Availability
 
 
 # TODO this and avail_to_dict could probably be done more genericlly in guided_lambda_handler
+# TODO not sure where to put this item, but I think that db utils and auth validation modules
+# are only used by glh, and could therefore be absorbed into that
 def json_to_availability(body):
     avail_dict = json.loads(body)
-    print("avail_dict is:")
-    print(avail_dict)
     return Availability(subjects=avail_dict["subjects"], startTime=avail_dict["startTime"], endTime=avail_dict["endTime"], tutor=avail_dict["tutor"])
 
 

@@ -1,20 +1,20 @@
 import unittest
 from unittest.mock import MagicMock, patch
+from datetime import datetime
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 from sts_db_utils.sts_db_utils import get_database_engine
 
 from models import Base
+from models.user import User
+from models.availability import Availability
 
+from lambda_function import get_handler, availability_to_dict
 
 class TestLambdaFunction(unittest.TestCase):
-    engine = create_engine('mysql://root:password@127.0.0.1:3306/test', echo=True)
-
-    def test_setup(self):
-        self.assertEqual(True, True)
-
-    @patch('sts_db_utils.sts_db_utils.get_database_engine')
-    def test_get_adds_availability(self):
-
+    engine = create_engine('sqlite:///:memory:')
 
     # now I could patch away..
     # or I could go for a sqllite version of this
@@ -28,33 +28,49 @@ class TestLambdaFunction(unittest.TestCase):
     # call lambda_handler with mocked event and context
 
     def setUp(self):
-        Base.metadata.create_all(self.engine, checkfirst=True)
+        Base.metadata.create_all(self.engine)
+        Session = sessionmaker(bind=self.engine)
+        self.session = Session()
 
-    def test_db_works(self):
-        User write_user = User("ci", "e")
-        session.add(write_user)
-        session.commit()
-        read_user = session.query(User).filter(User.cognitoId==cognito_id).one()
+        self.cognito_id = "cognito_id" # TODO should I just reference test_user.cognito_id?
+        test_user = User(email="email", cognitoId=self.cognito_id, firstName="f", lastName="l", school="s", grade="g", bio="b")
+        test_user.school = "s" # for some weird reason, school and grade were showing up as "('s',)" and "('g',)"
+        test_user.grade = "g"
 
-    def tearDown(self):
-        # destroy all tables
-        tables = Base.__subclasses__()
-        for t in tables:
-            t.__table__.drop(self.engine)
+        self.session.add(test_user)
+        self.session.commit()
 
+    def test_get_adds_availability(self):
+        # arrange
+        avail1_start = datetime(year=2020, month=1, day=15, hour=13)
+        avail1_end = datetime(year=2020, month=1, day=15, hour=14)
+        avail1 = Availability("subjects1", avail1_start, avail1_end, self.cognito_id)
 
-    # so what am i testing?
-    # 
-    # user gets validated
-    # otherwise a 401 is returned
+        avail2_start = datetime(year=2020, month=2, day=15, hour=13)
+        avail2_end = datetime(year=2020, month=2, day=15, hour=14)
+        avail2 = Availability("subjects2", avail2_start, avail2_end, self.cognito_id)
 
-    # GET adds availability
-    # can take a date range
-    # if any exception occurs, 500 is returned
+        expected_availabilities = [avail1, avail2]
 
-    # POST adds availability
-    # if it overlaps with an existing, return more pointed error (maybe 409 for conflict)
-    # if any exception occurs, 500 is returned
+        user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
+        for avail in expected_availabilities:
+            user.availabilities.append(avail)
+        self.session.add(user)
+        self.session.commit()
 
-    # DELETE removes availability
-    # if any exception occurs, 500 is returned
+        user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
+        expected_availabilities_json = []
+        for avail in user.availabilities:
+            expected_availabilities_json.append(availability_to_dict(avail))
+
+        claims = {"cognito:username": self.cognito_id}
+        get_claims = MagicMock()
+        get_claims.return_value = claims
+
+        # act
+        response_code, actual_availabilities = get_handler("event", "context", self.session, get_claims)
+
+        # assert
+        self.assertEquals(actual_availabilities, expected_availabilities_json)
+
+    # def tearDown(self): not needed since sqlite is in memory only

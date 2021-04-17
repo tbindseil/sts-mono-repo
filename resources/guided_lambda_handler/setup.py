@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="guided-lambda-handler-tj", # Replace with your own username
-    version="0.0.1",
+    version="0.0.7",
     author="tj",
     author_email="tjbindseil@gmail.com",
     description="lambda handling framework",
@@ -19,7 +19,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    install_requires=[],
+    install_requires=['sts-validate-authentication-aws-cognito-tj'],
     python_requires='>=3.6',
 )
 

@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, patch
 import json
 
 from sts_db_utils import sts_db_utils
-from src.guided_lambda_handler import GuidedLambdaHanlder, AuthException, get_claims_from_event
+from src.guided_lambda_handler.guided_lambda_handler import GuidedLambdaHandler, AuthException, get_claims_from_event
 from authentication_validation import cognito_validation
 
 
@@ -16,7 +16,7 @@ class TestCognitoValidation(unittest.TestCase):
     def setUp(self):
         self.magic_mock_method = MagicMock()
         http_method_strategies = {self.http_method: self.magic_mock_method}
-        self.guided_lambda_handler = GuidedLambdaHanlder(http_method_strategies)
+        self.guided_lambda_handler = GuidedLambdaHandler(http_method_strategies)
 
     def test_handler_returns_401_on_auth_exception(self, mock_get_database_engine, mock_session_maker):
         self.magic_mock_method.side_effect = AuthException

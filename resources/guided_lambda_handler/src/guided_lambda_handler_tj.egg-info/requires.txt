@@ -1,0 +1,1 @@
+sts-validate-authentication-aws-cognito-tj

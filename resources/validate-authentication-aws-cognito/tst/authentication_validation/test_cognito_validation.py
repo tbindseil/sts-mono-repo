@@ -10,28 +10,12 @@ from jose import jwk, jwt
 
 from src.authentication_validation.cognito_validation import get_and_verify_claims, app_client_id
 
-# need to monkey patch urllib
-# with urllib.request.urlopen(keys_url) as f:
-
-# TODO do i need to worry about importing from src as top level module?
-# from src.authentication_validation.cognito_validation import get_and_verify_claims
-
-# some initial thoughts:
-#   instead of mocking, I could make a test only user
-#       I think the only complexity this involves is to refresh the token if it expires
-#   otherwise
-#       I could just mock it all out
-#   lastly
-#       I could do both :)
-
-# first, mock
 @patch('jose.jwt.get_unverified_claims')
 @patch('jose.jwk.construct')
 @patch('jose.jwt.get_unverified_headers')
 class TestCognitoValidation(unittest.TestCase):
 
     def setUp(self):
-
         mock_f = MagicMock()
         mock_response = MagicMock()
         # for context manager (with syntax), see

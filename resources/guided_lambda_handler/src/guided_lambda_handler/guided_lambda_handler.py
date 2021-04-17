@@ -20,7 +20,7 @@ def get_claims_from_event(event):
         raise AuthException()
 
 
-class GuidedLambdaHanlder():
+class GuidedLambdaHandler():
 
     def __init__(self, http_method_strategies):
         self.http_method_strategies = http_method_strategies
