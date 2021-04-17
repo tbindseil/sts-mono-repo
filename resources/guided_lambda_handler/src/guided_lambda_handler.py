@@ -1,12 +1,13 @@
 import json
+import functools
 from sqlalchemy import orm
 
 from sts_db_utils import sts_db_utils
+from authentication_validation.cognito_validation import get_and_verify_claims
 
 
 class AuthException(Exception):
     pass
-
 
 
 class GuidedLambdaHanlder():
@@ -34,7 +35,19 @@ class GuidedLambdaHanlder():
             Session = orm.sessionmaker(bind=engine)
             session = Session()
 
-            response_code, response_body = self.http_method_strategies[event['httpMethod']](event, context, session)
+            # provide a mechanism to fetch claims when they are needed, but ensure that they aren't always
+            # required (for cases like user registration when they won't exist
+            def get_claims_from_event(event):
+                try:
+                    token = event['headers']['Authorization'].split()[-1]
+                    return get_and_verify_claims(token)
+                except Exception as e:
+                    print('Issue getting claims, e is:')
+                    print(e)
+                    raise AuthException()
+            get_claims = functools.partial(get_claims_from_event, event)
+
+            response_code, response_body = self.http_method_strategies[event['httpMethod']](event, context, session, get_claims)
             session.commit()
         except AuthException as e:
             response_code = 401
