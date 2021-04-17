@@ -32,12 +32,20 @@ keys_url = 'https://cognito-idp.{}.amazonaws.com/{}/.well-known/jwks.json'.forma
 # instead of re-downloading the public keys every time
 # we download them only on cold start
 # https://aws.amazon.com/blogs/compute/container-reuse-in-lambda/
-with urllib.request.urlopen(keys_url) as f:
-    response = f.read()
+global_keys = None
+def get_keys():
+    global global_keys
+    if global_keys == None:
+        with urllib.request.urlopen(keys_url) as f:
+            response = f.read()
+        global_keys = json.loads(response.decode('utf-8'))['keys']
+    return global_keys
 
-keys = json.loads(response.decode('utf-8'))['keys']
 
 def get_and_verify_claims(token):
+
+    # get keys from aws
+    keys = get_keys()
 
     # kid means key identifier
     # get the kid from the headers prior to verification
