@@ -34,6 +34,9 @@ keys_url = 'https://cognito-idp.{}.amazonaws.com/{}/.well-known/jwks.json'.forma
 # https://aws.amazon.com/blogs/compute/container-reuse-in-lambda/
 global_keys = None
 def get_keys():
+    # this is basically a lazy initialized singleton
+    # this way we can mock its initialization without
+    # having to mock all the details of its initialization
     global global_keys
     if global_keys == None:
         with urllib.request.urlopen(keys_url) as f:
