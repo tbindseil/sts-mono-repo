@@ -3,7 +3,8 @@ from unittest.mock import MagicMock, patch
 import json
 
 from sts_db_utils import sts_db_utils
-from src.guided_lambda_handler import GuidedLambdaHanlder, AuthException
+from src.guided_lambda_handler import GuidedLambdaHanlder, AuthException, get_claims_from_event
+from authentication_validation import cognito_validation
 
 
 @patch('sqlalchemy.orm.sessionmaker')
@@ -89,3 +90,29 @@ class TestCognitoValidation(unittest.TestCase):
         context = "context"
         actual_response = self.guided_lambda_handler.handle(event, context)
         mock_session.commit.assert_called_once()
+
+    def test_get_claims_from_event_throws_when_token_not_present(self, mock_get_database_engine, mock_session_maker):
+        event = {}
+
+        with self.assertRaises(AuthException) as e:
+            get_claims_from_event(event)
+
+
+    def test_get_claims_from_event_throws_when_get_and_verify_claims_throws(self, mock_get_database_engine, mock_session_maker):
+        event = {'headers': {'Authorization': 'auth_token'}}
+
+        with patch('authentication_validation.cognito_validation.get_and_verify_claims') as mock_get_and_verify_claims:
+            mock_get_and_verify_claims.side_effect = Exception
+            with self.assertRaises(AuthException) as e:
+                get_claims_from_event(event)
+
+    def test_get_claims_from_event_returns_token_when_successful(self, mock_get_database_engine, mock_session_maker):
+        event = {'headers': {'Authorization': 'auth_token'}}
+
+        expected_result = "token"
+
+        with patch('authentication_validation.cognito_validation.get_and_verify_claims') as mock_get_and_verify_claims:
+            mock_get_and_verify_claims.return_value = expected_result
+
+            actual_result = get_claims_from_event(event)
+            self.assertEqual(expected_result, actual_result)
