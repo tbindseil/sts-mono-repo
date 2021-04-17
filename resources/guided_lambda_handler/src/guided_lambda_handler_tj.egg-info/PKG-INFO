@@ -1,15 +1,14 @@
 Metadata-Version: 2.1
-Name: sts-validate-authentication-aws-cognito-tj
-Version: 0.0.6
-Summary: authentication validation for sts with aws cognito implementation
+Name: guided-lambda-handler-tj
+Version: 0.0.1
+Summary: lambda handling framework
 Home-page: https://github.com/tbindseil/sts-mono-repo
 Author: tj
 Author-email: tjbindseil@gmail.com
 License: UNKNOWN
-Description: sts validate authentication
+Description: guided lambda handler
         
-        this module houses shared code used to verify the claims in the authentication token
-        when performing backend operations
+        this module houses shared code used to run lambda functions in a more focused manner
         
         
         first time stuff:

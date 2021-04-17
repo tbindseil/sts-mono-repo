@@ -27,6 +27,7 @@ s3transfer==0.3.6
 six==1.15.0
 SQLAlchemy==1.4.5
 sts-db-utils-tj==0.0.6
+sts-validate-authentication-aws-cognito-tj==0.0.6
 tqdm==4.60.0
 twine==3.4.1
 urllib3==1.26.4
