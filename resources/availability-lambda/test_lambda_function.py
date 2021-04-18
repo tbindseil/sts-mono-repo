@@ -28,6 +28,10 @@ class TestLambdaFunction(unittest.TestCase):
         self.session.add(test_user)
         self.session.commit()
 
+        claims = {"cognito:username": self.cognito_id}
+        self.get_claims = MagicMock()
+        self.get_claims.return_value = claims
+
     def test_get_retrieves_availabilities(self):
         avail1_start = datetime(year=2020, month=1, day=15, hour=13)
         avail1_end = datetime(year=2020, month=1, day=15, hour=14)
@@ -50,11 +54,7 @@ class TestLambdaFunction(unittest.TestCase):
         for avail in user.availabilities:
             expected_availabilities_json.append(lambda_function.availability_to_dict(avail))
 
-        claims = {"cognito:username": self.cognito_id}
-        get_claims = MagicMock()
-        get_claims.return_value = claims
-
-        response_code, actual_availabilities = lambda_function.get_handler("event", "context", self.session, get_claims)
+        response_code, actual_availabilities = lambda_function.get_handler("event", "context", self.session, self.get_claims)
 
         self.assertEquals(actual_availabilities, expected_availabilities_json)
 
@@ -69,11 +69,7 @@ class TestLambdaFunction(unittest.TestCase):
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
         self.assertEqual(0, len(user.availabilities))
 
-        claims = {"cognito:username": self.cognito_id}
-        get_claims = MagicMock()
-        get_claims.return_value = claims
-
-        response_code, actual_availabilities = lambda_function.post_handler(event, "context", self.session, get_claims)
+        response_code, actual_availabilities = lambda_function.post_handler(event, "context", self.session, self.get_claims)
 
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
 
@@ -91,14 +87,3 @@ class TestLambdaFunction(unittest.TestCase):
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
         self.session.delete(user)
         self.session.commit()
-        
-def post_handler(event, context, session, get_claims):
-    claims = get_claims()
-    cognito_id = claims["cognito:username"]
-    user = session.query(User).filter(User.cognitoId==cognito_id).one()
-
-    posted_availability = json_to_availability(event["body"])
-    user.availabilities.append(posted_availability)
-    session.add(user)
-
-    return 200, "success"
