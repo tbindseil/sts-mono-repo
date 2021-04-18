@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import MagicMock, patch
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 
 from sqlalchemy import create_engine
@@ -35,13 +35,10 @@ class TestLambdaFunction(unittest.TestCase):
         self.get_claims.return_value = claims
 
     def test_get_retrieves_availabilities(self):
-        avail1_start = datetime(year=2020, month=1, day=15, hour=13)
-        avail1_end = datetime(year=2020, month=1, day=15, hour=14)
-        avail1 = Availability("subjects1", avail1_start, avail1_end, self.cognito_id)
-
-        avail2_start = datetime(year=2020, month=2, day=15, hour=13)
-        avail2_end = datetime(year=2020, month=2, day=15, hour=14)
-        avail2 = Availability("subjects2", avail2_start, avail2_end, self.cognito_id)
+        avail1 = self.build_default_availability()
+        avail2 = self.build_default_availability()
+        avail2.startTime += timedelta(days=1)
+        avail2.endTime += timedelta(days=1)
 
         expected_availabilities = [avail1, avail2]
 
@@ -61,9 +58,11 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertEquals(actual_availabilities, expected_availabilities_json)
 
     def test_post_adds_availability(self):
-        avail_start = datetime(year=2020, month=1, day=15, hour=13).strftime('%Y-%m-%dT%H:%M:%S.%fZ')
-        avail_end = datetime(year=2020, month=1, day=15, hour=14).strftime('%Y-%m-%dT%H:%M:%S.%fZ')
-        avail = Availability("subjects", avail_start, avail_end, self.cognito_id)
+        avail = self.build_default_availability()
+
+        avail.startTime = datetime(year=2020, month=1, day=15, hour=13).strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        avail.endTime = datetime(year=2020, month=1, day=15, hour=14).strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
         expected_avail_dict = lambda_function.availability_to_dict(avail)
         expected_avail_dict["id"] = 1 # it gets set to 1 by the db / sql alchemy since its the first and only avail
         event = {"body": json.dumps(expected_avail_dict)}
@@ -86,9 +85,7 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertEqual(expected_avail_dict, actual_avail_dict)
 
     def test_delete_removes_availability(self):
-        avail_start = datetime(year=2020, month=1, day=15, hour=13)
-        avail_end = datetime(year=2020, month=1, day=15, hour=14)
-        avail = Availability("subjects", avail_start, avail_end, self.cognito_id)
+        avail = self.build_default_availability()
         event = {'path': "url/id/for/avail/to/delete/is/1"}
 
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
@@ -112,9 +109,7 @@ class TestLambdaFunction(unittest.TestCase):
         claims = {"cognito:username": "NOT_TEST_USER_COGNITO_ID"}
         self.get_claims.return_value = claims
 
-        avail_start = datetime(year=2020, month=1, day=15, hour=13)
-        avail_end = datetime(year=2020, month=1, day=15, hour=14)
-        avail = Availability("subjects", avail_start, avail_end, self.cognito_id)
+        avail = self.build_default_availability()
         event = {'path': "url/id/for/avail/to/delete/is/1"}
 
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
@@ -132,3 +127,8 @@ class TestLambdaFunction(unittest.TestCase):
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
         self.session.delete(user)
         self.session.commit()
+
+    def build_default_availability(self):
+        avail_start = datetime(year=2020, month=1, day=15, hour=13)
+        avail_end = datetime(year=2020, month=1, day=15, hour=14)
+        return Availability("subjects", avail_start, avail_end, self.cognito_id)
