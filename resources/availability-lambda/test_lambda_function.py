@@ -6,6 +6,8 @@ import json
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+from guided_lambda_handler.guided_lambda_handler import AuthException
+
 from sts_db_utils.sts_db_utils import get_database_engine
 
 from models import Base
@@ -82,6 +84,49 @@ class TestLambdaFunction(unittest.TestCase):
         actual_avail_dict["endTime"] = datetime.strptime(actual_avail_dict["endTime"], '%Y-%m-%d %H:%M:%S').strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
         self.assertEqual(expected_avail_dict, actual_avail_dict)
+
+    def test_delete_removes_availability(self):
+        avail_start = datetime(year=2020, month=1, day=15, hour=13)
+        avail_end = datetime(year=2020, month=1, day=15, hour=14)
+        avail = Availability("subjects", avail_start, avail_end, self.cognito_id)
+        event = {'path': "url/id/for/avail/to/delete/is/1"}
+
+        user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
+        user.availabilities.append(avail)
+        self.session.add(user)
+        self.session.commit()
+
+        user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
+        self.assertEqual(1, len(user.availabilities))
+
+        response_code, actual_availabilities = lambda_function.delete_handler(event, "context", self.session, self.get_claims)
+
+        # gotta commit since that is what the glh does
+        self.session.commit()
+
+        user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
+
+        self.assertEqual(0, len(user.availabilities))
+
+    def test_delete_throws_auth_exception_when_tutor_does_not_match_id_from_token(self):
+        claims = {"cognito:username": "NOT_TEST_USER_COGNITO_ID"}
+        self.get_claims.return_value = claims
+
+        avail_start = datetime(year=2020, month=1, day=15, hour=13)
+        avail_end = datetime(year=2020, month=1, day=15, hour=14)
+        avail = Availability("subjects", avail_start, avail_end, self.cognito_id)
+        event = {'path': "url/id/for/avail/to/delete/is/1"}
+
+        user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
+        user.availabilities.append(avail)
+        self.session.add(user)
+        self.session.commit()
+
+        user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
+        self.assertEqual(1, len(user.availabilities))
+
+        with self.assertRaises(AuthException) as e:
+            response_code, actual_availabilities = lambda_function.delete_handler(event, "context", self.session, self.get_claims)
 
     def tearDown(self):
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
