@@ -32,16 +32,6 @@ from models.availability import Availability
 
 # also having trouble with time stamps
 
-def json_to_availability(body):
-    avail_dict = json.loads(body)
-    # TODO verify this didn't get f-ed up when changing to accomidate sqlite
-    # comes in as "startTime":"2021-04-21T00:00:00.000Z"
-    start_time = datetime.strptime(avail_dict["startTime"], '%Y-%m-%dT%H:%M:%S.%fZ')
-    end_time = datetime.strptime(avail_dict["endTime"], '%Y-%m-%dT%H:%M:%S.%fZ')
-    avail = Availability(subjects=avail_dict["subjects"], startTime=start_time, endTime=end_time, tutor=avail_dict["tutor"])
-    return avail
-
-
 def availability_to_dict(availability):
     return {
         'startTime': availability.startTime.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
@@ -72,7 +62,7 @@ def post_handler(event, context, session, get_claims):
     cognito_id = claims["cognito:username"]
     user = session.query(User).filter(User.cognitoId==cognito_id).one()
 
-    posted_availability = json_to_availability(event["body"])
+    posted_availability = Availability(**json.loads(event["body"]))
     user.availabilities.append(posted_availability)
     session.add(user)
 

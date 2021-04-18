@@ -88,6 +88,22 @@ def update_model_from_json(json, model):
 
     return user
 
+
+# maybe all handlers are objects with input and output translators
+# the input translator takes in event, context (maybe session and claims too?)
+# and it returns objects to use in the operation
+# the output translator takes in objects used in the operation and
+# returns a json formatted string to be used as respsonse body
+# then we could have generic ones here, and override in the case that we need to
+
+
+
+
+# I would like to wrap this up today.
+# maybe i could simplify it even more
+
+
+
 # TODO not sure where to put this item, but I think that db utils and auth validation modules
 # are only used by glh, and could therefore be absorbed into that
 class GuidedLambdaHandler():

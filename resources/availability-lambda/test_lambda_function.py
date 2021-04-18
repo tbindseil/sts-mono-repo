@@ -55,7 +55,7 @@ class TestLambdaFunction(unittest.TestCase):
 
         response_code, actual_availabilities = lambda_function.get_handler("event", "context", self.session, self.get_claims)
 
-        self.assertEquals(actual_availabilities, expected_availabilities_json)
+        self.assertEqual(actual_availabilities, expected_availabilities_json)
 
     def test_post_adds_availability(self):
         avail = self.build_default_availability()
