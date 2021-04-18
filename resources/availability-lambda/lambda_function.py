@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 from guided_lambda_handler.guided_lambda_handler import GuidedLambdaHandler, AuthException
 from models.user import User
@@ -10,11 +11,18 @@ from models.availability import Availability
 # are only used by glh, and could therefore be absorbed into that
 def json_to_availability(body):
     avail_dict = json.loads(body)
-    return Availability(subjects=avail_dict["subjects"], startTime=avail_dict["startTime"], endTime=avail_dict["endTime"], tutor=avail_dict["tutor"])
+    # TODO verify this didn't get f-ed up when changing to accomidate sqlite
+    # comes in as "startTime":"2021-04-21T00:00:00.000Z"
+    start_time = datetime.strptime(avail_dict["startTime"], '%Y-%m-%dT%H:%M:%S.%fZ')
+    end_time = datetime.strptime(avail_dict["endTime"], '%Y-%m-%dT%H:%M:%S.%fZ')
+    avail = Availability(subjects=avail_dict["subjects"], startTime=start_time, endTime=end_time, tutor=avail_dict["tutor"])
+    return avail
 
 
 def availability_to_dict(availability):
     return {
+        # 'startTime': datetime.strptime(availability.startTime, '%Y-%m-%d %H:%M:%S').strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+        # 'endTime': datetime.strptime(availability.endTime, '%Y-%m-%d %H:%M:%S').strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
         'startTime': str(availability.startTime),
         'endTime': str(availability.endTime),
         'subjects': availability.subjects,

@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import MagicMock, patch
 from datetime import datetime
+import json
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -11,37 +12,23 @@ from models import Base
 from models.user import User
 from models.availability import Availability
 
-from lambda_function import get_handler, availability_to_dict
+import lambda_function
 
 class TestLambdaFunction(unittest.TestCase):
-    engine = create_engine('sqlite:///:memory:')
-
-    # now I could patch away..
-    # or I could go for a sqllite version of this
-    #
-    # sqllite version of tests is as follows
-
-    # make sql lite instance
-    # make tables for all models
-
-    # patch get_database_engine such that it returns an engine to the sqllite instance
-    # call lambda_handler with mocked event and context
+    engine = create_engine('sqlite:///:memory:') # note tear down not needed since this is in memory
 
     def setUp(self):
         Base.metadata.create_all(self.engine)
         Session = sessionmaker(bind=self.engine)
         self.session = Session()
 
-        self.cognito_id = "cognito_id" # TODO should I just reference test_user.cognito_id?
-        test_user = User(email="email", cognitoId=self.cognito_id, firstName="f", lastName="l", school="s", grade="g", bio="b")
-        test_user.school = "s" # for some weird reason, school and grade were showing up as "('s',)" and "('g',)"
-        test_user.grade = "g"
+        self.cognito_id = "cognito_id"
+        test_user = User(email="email", cognitoId=self.cognito_id)
 
         self.session.add(test_user)
         self.session.commit()
 
-    def test_get_adds_availability(self):
-        # arrange
+    def test_get_retrieves_availabilities(self):
         avail1_start = datetime(year=2020, month=1, day=15, hour=13)
         avail1_end = datetime(year=2020, month=1, day=15, hour=14)
         avail1 = Availability("subjects1", avail1_start, avail1_end, self.cognito_id)
@@ -61,16 +48,57 @@ class TestLambdaFunction(unittest.TestCase):
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
         expected_availabilities_json = []
         for avail in user.availabilities:
-            expected_availabilities_json.append(availability_to_dict(avail))
+            expected_availabilities_json.append(lambda_function.availability_to_dict(avail))
 
         claims = {"cognito:username": self.cognito_id}
         get_claims = MagicMock()
         get_claims.return_value = claims
 
-        # act
-        response_code, actual_availabilities = get_handler("event", "context", self.session, get_claims)
+        response_code, actual_availabilities = lambda_function.get_handler("event", "context", self.session, get_claims)
 
-        # assert
         self.assertEquals(actual_availabilities, expected_availabilities_json)
 
-    # def tearDown(self): not needed since sqlite is in memory only
+    def test_post_adds_availability(self):
+        avail_start = datetime(year=2020, month=1, day=15, hour=13).strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        avail_end = datetime(year=2020, month=1, day=15, hour=14).strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        avail = Availability("subjects", avail_start, avail_end, self.cognito_id)
+        expected_avail_dict = lambda_function.availability_to_dict(avail)
+        expected_avail_dict["id"] = 1 # it gets set to 1 by the db / sql alchemy since its the first and only avail
+        event = {"body": json.dumps(expected_avail_dict)}
+
+        user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
+        self.assertEqual(0, len(user.availabilities))
+
+        claims = {"cognito:username": self.cognito_id}
+        get_claims = MagicMock()
+        get_claims.return_value = claims
+
+        response_code, actual_availabilities = lambda_function.post_handler(event, "context", self.session, get_claims)
+
+        user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
+
+        self.assertEqual(1, len(user.availabilities))
+        actual_avail_dict = lambda_function.availability_to_dict(user.availabilities[0])
+
+        # uhh date formats are a pain! hopefully this gets solved when I consolidated going from python objects to json
+        # maybe this means I should learn node..
+        actual_avail_dict["startTime"] = datetime.strptime(actual_avail_dict["startTime"], '%Y-%m-%d %H:%M:%S').strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        actual_avail_dict["endTime"] = datetime.strptime(actual_avail_dict["endTime"], '%Y-%m-%d %H:%M:%S').strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
+        self.assertEqual(expected_avail_dict, actual_avail_dict)
+
+    def tearDown(self):
+        user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
+        self.session.delete(user)
+        self.session.commit()
+        
+def post_handler(event, context, session, get_claims):
+    claims = get_claims()
+    cognito_id = claims["cognito:username"]
+    user = session.query(User).filter(User.cognitoId==cognito_id).one()
+
+    posted_availability = json_to_availability(event["body"])
+    user.availabilities.append(posted_availability)
+    session.add(user)
+
+    return 200, "success"

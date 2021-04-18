@@ -33,8 +33,8 @@ class User(Base):
         self.cognitoId = cognitoId
         self.firstName = firstName
         self.lastName = lastName
-        self.school = school,
-        self.grade = grade,
+        self.school = school
+        self.grade = grade
         self.bio = bio
         self.registeredOn = datetime.datetime.now()
 
