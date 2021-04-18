@@ -27,8 +27,7 @@ class User(Base):
 
     availabilities = relationship("Availability", cascade="all, delete, delete-orphan")
 
-    def __init__(self, email, cognitoId, firstName="", lastName="", school="", grade="", bio=""):
-
+    def __init__(self, email, cognitoId, firstName="", lastName="", school="", grade="", bio="", **kwargs):
         self.email = email
         self.cognitoId = cognitoId
         self.firstName = firstName
@@ -37,4 +36,3 @@ class User(Base):
         self.grade = grade
         self.bio = bio
         self.registeredOn = datetime.datetime.now()
-

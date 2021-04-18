@@ -13,7 +13,7 @@ class Availability(Base):
     endTime = Column(DateTime, nullable=False)
     tutor = Column(String(255), ForeignKey('users.cognitoId'), nullable=False)
 
-    def __init__(self, subjects, startTime, endTime, tutor):
+    def __init__(self, subjects, startTime, endTime, tutor, **kwargs):
         self.subjects = subjects
         self.startTime = startTime
         self.endTime = endTime

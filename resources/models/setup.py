@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="sts-models-tj", # Replace with your own username
-    version="0.0.19",
+    version="0.0.20",
     author="tj",
     author_email="tjbindseil@gmail.com",
     description="models for sts",

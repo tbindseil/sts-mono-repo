@@ -19,7 +19,77 @@ def get_claims_from_event(event):
         print(e)
         raise AuthException()
 
+# def update_user_from_request(request_body, user):
+#     """
+#     for each key that exists in intersection of request_body and user attributes,
+#     update the user attribute with the value from the request body
+#     """
+#     user_attributes = list(user.__dict__) # list of keys for user attributes, id, email, cognitoId..
+#     for key, value in request_body.items(): # dict_items([('email', 'tjbindseil@gmail.com'), ('firstName', 'fn'), ('lastName', 'l'), ('school', 's'), ('grade', 'g'), ('bio', 'b')])
+#         if key in user_attributes:
+#             setattr(user, key, value) # setattr(object_to_set_value_on, name_of_attribute, value_to_set)
+#
+#     return user
 
+# a similar thing can be done for model to response
+
+# using getattr(object_to_get_from, name_of_attribute)
+
+def is_jsonable(value):
+    try:
+        json.dumps(x)
+        return True
+    except:
+        return False
+
+
+def model_to_json(model):
+    """
+    take in a model object,
+    strip attributes that can't be json serializable,
+    return the json serialized object
+    """
+    model_dict = model.__dict__
+    keys_to_delete = []
+
+    for key, value in model_dict.items():
+        if !is_jsonable(value):
+            keys_to_delete.append(key)
+
+    for key in keys_to_delete:
+        del model_dict[key]
+
+    return json.dumps(model_dict)
+
+
+def json_to_model(json, model_class):
+    model_dict = json.loads(json)
+
+    # filter unused args
+
+    # ok, I think this is fucked since I have to fetch usually
+    # i guess its not so much as fucked as insufficient
+    # sometimes i will need to fetch and update,
+    # while othertimes i will need to create and insert
+    # this covers create and insert
+
+    # more specifically, in the case of a user, we don't send back the cognitoId
+
+    return model_class(**model_dict)
+
+
+def update_model_from_json(json, model):
+
+
+    user_attributes = list(user.__dict__) # list of keys for user attributes, id, email, cognitoId..
+    for key, value in request_body.items(): # dict_items([('email', 'tjbindseil@gmail.com'), ('firstName', 'fn'), ('lastName', 'l'), ('school', 's'), ('grade', 'g'), ('bio', 'b')])
+        if key in user_attributes:
+            setattr(user, key, value) # setattr(object_to_set_value_on, name_of_attribute, value_to_set)
+
+    return user
+
+# TODO not sure where to put this item, but I think that db utils and auth validation modules
+# are only used by glh, and could therefore be absorbed into that
 class GuidedLambdaHandler():
 
     def __init__(self, http_method_strategies):

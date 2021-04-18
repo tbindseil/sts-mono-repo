@@ -60,9 +60,6 @@ class TestLambdaFunction(unittest.TestCase):
     def test_post_adds_availability(self):
         avail = self.build_default_availability()
 
-        avail.startTime = datetime(year=2020, month=1, day=15, hour=13).strftime('%Y-%m-%dT%H:%M:%S.%fZ')
-        avail.endTime = datetime(year=2020, month=1, day=15, hour=14).strftime('%Y-%m-%dT%H:%M:%S.%fZ')
-
         expected_avail_dict = lambda_function.availability_to_dict(avail)
         expected_avail_dict["id"] = 1 # it gets set to 1 by the db / sql alchemy since its the first and only avail
         event = {"body": json.dumps(expected_avail_dict)}
@@ -76,11 +73,6 @@ class TestLambdaFunction(unittest.TestCase):
 
         self.assertEqual(1, len(user.availabilities))
         actual_avail_dict = lambda_function.availability_to_dict(user.availabilities[0])
-
-        # uhh date formats are a pain! hopefully this gets solved when I consolidated going from python objects to json
-        # maybe this means I should learn node..
-        actual_avail_dict["startTime"] = datetime.strptime(actual_avail_dict["startTime"], '%Y-%m-%d %H:%M:%S').strftime('%Y-%m-%dT%H:%M:%S.%fZ')
-        actual_avail_dict["endTime"] = datetime.strptime(actual_avail_dict["endTime"], '%Y-%m-%d %H:%M:%S').strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
         self.assertEqual(expected_avail_dict, actual_avail_dict)
 

@@ -7,8 +7,31 @@ from models.availability import Availability
 
 
 # TODO this and avail_to_dict could probably be done more genericlly in guided_lambda_handler
-# TODO not sure where to put this item, but I think that db utils and auth validation modules
-# are only used by glh, and could therefore be absorbed into that
+# json to model
+# model to json
+
+# the below looks pretty good for request to model
+
+# def update_user_from_request(request_body, user):
+#     """
+#     for each key that exists in intersection of request_body and user attributes,
+#     update the user attribute with the value from the request body
+#     """
+#     user_attributes = list(user.__dict__) # list of keys for user attributes, id, email, cognitoId..
+#     for key, value in request_body.items(): # dict_items([('email', 'tjbindseil@gmail.com'), ('firstName', 'fn'), ('lastName', 'l'), ('school', 's'), ('grade', 'g'), ('bio', 'b')])
+#         if key in user_attributes:
+#             setattr(user, key, value) # setattr(object_to_set_value_on, name_of_attribute, value_to_set)
+#
+#     return user
+
+# a similar thing can be done for model to response
+
+# using getattr(object_to_get_from, name_of_attribute)
+
+# still having trouble with the array of models in a response
+
+# also having trouble with time stamps
+
 def json_to_availability(body):
     avail_dict = json.loads(body)
     # TODO verify this didn't get f-ed up when changing to accomidate sqlite
@@ -21,10 +44,8 @@ def json_to_availability(body):
 
 def availability_to_dict(availability):
     return {
-        # 'startTime': datetime.strptime(availability.startTime, '%Y-%m-%d %H:%M:%S').strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
-        # 'endTime': datetime.strptime(availability.endTime, '%Y-%m-%d %H:%M:%S').strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
-        'startTime': str(availability.startTime),
-        'endTime': str(availability.endTime),
+        'startTime': availability.startTime.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+        'endTime': availability.endTime.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
         'subjects': availability.subjects,
         'tutor': availability.tutor,
         'id': availability.id
