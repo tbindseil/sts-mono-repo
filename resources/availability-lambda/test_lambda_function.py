@@ -6,7 +6,7 @@ import json
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from guided_lambda_handler.guided_lambda_handler import AuthException, model_to_json
+from guided_lambda_handler.guided_lambda_handler import AuthException, model_to_json, model_list_to_json
 
 from sts_db_utils.sts_db_utils import get_database_engine
 
@@ -49,10 +49,7 @@ class TestLambdaFunction(unittest.TestCase):
         self.session.commit()
 
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
-        expected_availabilities_json = []
-        for avail in user.availabilities:
-            expected_availabilities_json.append(model_to_json(avail))
-        expected_availabilities_json = ",".join(expected_availabilities_json)
+        expected_availabilities_json = model_list_to_json(user.availabilities)
 
         response_code, actual_availabilities = lambda_function.get_handler("event", "context", self.session, self.get_claims)
 

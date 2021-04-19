@@ -8,9 +8,6 @@ from sts_db_utils import sts_db_utils
 from authentication_validation import cognito_validation
 
 
-import pdb;
-
-
 class AuthException(Exception):
     pass
 
@@ -24,24 +21,7 @@ def get_claims_from_event(event):
         print(e)
         raise AuthException()
 
-# def update_user_from_request(request_body, user):
-#     """
-#     for each key that exists in intersection of request_body and user attributes,
-#     update the user attribute with the value from the request body
-#     """
-#     user_attributes = list(user.__dict__) # list of keys for user attributes, id, email, cognitoId..
-#     for key, value in request_body.items(): # dict_items([('email', 'tjbindseil@gmail.com'), ('firstName', 'fn'), ('lastName', 'l'), ('school', 's'), ('grade', 'g'), ('bio', 'b')])
-#         if key in user_attributes:
-#             setattr(user, key, value) # setattr(object_to_set_value_on, name_of_attribute, value_to_set)
-#
-#     return user
 
-# a similar thing can be done for model to response
-
-# using getattr(object_to_get_from, name_of_attribute)
-
-
-# TODO do Decoder instead of work in the model
 class DateTimeEncoder(json.JSONEncoder):
     def default(self, z):
         if isinstance(z, datetime):
@@ -64,7 +44,6 @@ def model_to_json(model):
     strip attributes that can't be json serializable,
     return the json serialized object
     """
-    # pdb.set_trace()
     model_dict = model.__dict__
     keys_to_delete = []
 
@@ -78,43 +57,23 @@ def model_to_json(model):
     return json.dumps(model_dict, cls=DateTimeEncoder)
 
 
+def model_list_to_json(model_list):
+    return ",".join(list(map((lambda model: model_to_json(model)), model_list)))
+
+
 def json_to_model(json_str, model_class):
     return model_class(**jsondatetime.loads(json_str))
 
 
-# ok, I think this is fucked since I have to fetch usually
-# i guess its not so much fucked as insufficient
-# sometimes i will need to fetch and update,
-# while othertimes i will need to create and insert
-# this covers create and insert
-
-# more specifically, in the case of a user, we don't send back the cognitoId
 def update_model_from_json(json, model):
+    return "to do"
 
 
-    user_attributes = list(user.__dict__) # list of keys for user attributes, id, email, cognitoId..
-    for key, value in request_body.items(): # dict_items([('email', 'tjbindseil@gmail.com'), ('firstName', 'fn'), ('lastName', 'l'), ('school', 's'), ('grade', 'g'), ('bio', 'b')])
-        if key in user_attributes:
-            setattr(user, key, value) # setattr(object_to_set_value_on, name_of_attribute, value_to_set)
-
-    return user
-
-
-# maybe all handlers are objects with input and output translators
-# the input translator takes in event, context (maybe session and claims too?)
-# and it returns objects to use in the operation
-# the output translator takes in objects used in the operation and
-# returns a json formatted string to be used as respsonse body
-# then we could have generic ones here, and override in the case that we need to
-
-
-
-
-# I would like to wrap this up today.
-# maybe i could simplify it even more
-
-
-
+# TJTAG - next thing is to:
+# test this new avail lambda stuff in real life
+# comments/cleanup
+# group packages together better (maybe)
+# adopt in user lambda
 # TODO not sure where to put this item, but I think that db utils and auth validation modules
 # are only used by glh, and could therefore be absorbed into that
 class GuidedLambdaHandler():
