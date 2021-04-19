@@ -6,7 +6,7 @@ import json
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from guided_lambda_handler.guided_lambda_handler import AuthException
+from guided_lambda_handler.guided_lambda_handler import AuthException, model_to_json
 
 from sts_db_utils.sts_db_utils import get_database_engine
 
@@ -62,7 +62,7 @@ class TestLambdaFunction(unittest.TestCase):
 
         expected_avail_dict = lambda_function.availability_to_dict(avail)
         expected_avail_dict["id"] = 1 # it gets set to 1 by the db / sql alchemy since its the first and only avail
-        event = {"body": json.dumps(expected_avail_dict)}
+        event = {"body": model_to_json(avail)}
 
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
         self.assertEqual(0, len(user.availabilities))

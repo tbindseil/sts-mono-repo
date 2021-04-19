@@ -1,9 +1,13 @@
 import json
 import functools
+from datetime import datetime
 from sqlalchemy import orm
 
 from sts_db_utils import sts_db_utils
 from authentication_validation import cognito_validation
+
+
+import pdb;
 
 
 class AuthException(Exception):
@@ -35,9 +39,19 @@ def get_claims_from_event(event):
 
 # using getattr(object_to_get_from, name_of_attribute)
 
+
+# TODO do Decoder instead of work in the model
+class DateTimeEncoder(json.JSONEncoder):
+    def default(self, z):
+        if isinstance(z, datetime):
+            return z.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        else:
+            return super().default(z)
+
+
 def is_jsonable(value):
     try:
-        json.dumps(x)
+        json.dumps(value, cls=DateTimeEncoder)
         return True
     except:
         return False
@@ -49,35 +63,31 @@ def model_to_json(model):
     strip attributes that can't be json serializable,
     return the json serialized object
     """
+    # pdb.set_trace()
     model_dict = model.__dict__
     keys_to_delete = []
 
     for key, value in model_dict.items():
-        if !is_jsonable(value):
+        if not is_jsonable(value):
             keys_to_delete.append(key)
 
     for key in keys_to_delete:
         del model_dict[key]
 
-    return json.dumps(model_dict)
+    return json.dumps(model_dict, cls=DateTimeEncoder)
 
 
 def json_to_model(json, model_class):
-    model_dict = json.loads(json)
-
-    # filter unused args
-
-    # ok, I think this is fucked since I have to fetch usually
-    # i guess its not so much as fucked as insufficient
-    # sometimes i will need to fetch and update,
-    # while othertimes i will need to create and insert
-    # this covers create and insert
-
-    # more specifically, in the case of a user, we don't send back the cognitoId
-
-    return model_class(**model_dict)
+    return model_class(**json.loads(json))
 
 
+# ok, I think this is fucked since I have to fetch usually
+# i guess its not so much fucked as insufficient
+# sometimes i will need to fetch and update,
+# while othertimes i will need to create and insert
+# this covers create and insert
+
+# more specifically, in the case of a user, we don't send back the cognitoId
 def update_model_from_json(json, model):
 
 

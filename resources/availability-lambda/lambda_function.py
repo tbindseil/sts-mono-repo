@@ -1,4 +1,4 @@
-import json
+import jsondatetime as json
 from datetime import datetime
 
 from guided_lambda_handler.guided_lambda_handler import GuidedLambdaHandler, AuthException
@@ -62,7 +62,7 @@ def post_handler(event, context, session, get_claims):
     cognito_id = claims["cognito:username"]
     user = session.query(User).filter(User.cognitoId==cognito_id).one()
 
-    posted_availability = Availability(**json.loads(event["body"]))
+    posted_availability = Availability(**json.loads(event["body"])) # TODO use json_to_model
     user.availabilities.append(posted_availability)
     session.add(user)
 
