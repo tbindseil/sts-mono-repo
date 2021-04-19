@@ -1,4 +1,5 @@
 import json
+import jsondatetime
 import functools
 from datetime import datetime
 from sqlalchemy import orm
@@ -77,8 +78,8 @@ def model_to_json(model):
     return json.dumps(model_dict, cls=DateTimeEncoder)
 
 
-def json_to_model(json, model_class):
-    return model_class(**json.loads(json))
+def json_to_model(json_str, model_class):
+    return model_class(**jsondatetime.loads(json_str))
 
 
 # ok, I think this is fucked since I have to fetch usually
@@ -132,7 +133,7 @@ class GuidedLambdaHandler():
                 "Access-Control-Allow-Origin" : "*",
                 "X-Requested-With" : "*"
             },
-            'body': json.dumps(body)
+            'body': body
         }
 
     def handle(self, event, context):

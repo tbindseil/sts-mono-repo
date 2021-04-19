@@ -1,7 +1,6 @@
-import jsondatetime as json
 from datetime import datetime
 
-from guided_lambda_handler.guided_lambda_handler import GuidedLambdaHandler, AuthException
+from guided_lambda_handler.guided_lambda_handler import GuidedLambdaHandler, AuthException, json_to_model, model_to_json
 from models.user import User
 from models.availability import Availability
 
@@ -32,28 +31,16 @@ from models.availability import Availability
 
 # also having trouble with time stamps
 
-def availability_to_dict(availability):
-    return {
-        'startTime': availability.startTime.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
-        'endTime': availability.endTime.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
-        'subjects': availability.subjects,
-        'tutor': availability.tutor,
-        'id': availability.id
-    }
-
-
 # TODO accept date range
 def get_handler(event, context, session, get_claims):
     claims = get_claims()
     cognito_id = claims["cognito:username"]
     user = session.query(User).filter(User.cognitoId==cognito_id).one()
 
-    availabilities = []
-    for a in user.availabilities:
-        a_dict = availability_to_dict(a)
-        availabilities.append(a_dict)
+    availabilities = list(map((lambda a: model_to_json(a)), user.availabilities))
+    availabilities_json = ",".join(availabilities)
 
-    return 200, availabilities
+    return 200, availabilities_json
 
 
 # TODO make sure there are no overlapping availabilties
@@ -62,7 +49,8 @@ def post_handler(event, context, session, get_claims):
     cognito_id = claims["cognito:username"]
     user = session.query(User).filter(User.cognitoId==cognito_id).one()
 
-    posted_availability = Availability(**json.loads(event["body"])) # TODO use json_to_model
+    posted_availability = json_to_model(event["body"], Availability)
+
     user.availabilities.append(posted_availability)
     session.add(user)
 

@@ -51,7 +51,8 @@ class TestLambdaFunction(unittest.TestCase):
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
         expected_availabilities_json = []
         for avail in user.availabilities:
-            expected_availabilities_json.append(lambda_function.availability_to_dict(avail))
+            expected_availabilities_json.append(model_to_json(avail))
+        expected_availabilities_json = ",".join(expected_availabilities_json)
 
         response_code, actual_availabilities = lambda_function.get_handler("event", "context", self.session, self.get_claims)
 
@@ -59,10 +60,9 @@ class TestLambdaFunction(unittest.TestCase):
 
     def test_post_adds_availability(self):
         avail = self.build_default_availability()
-
-        expected_avail_dict = lambda_function.availability_to_dict(avail)
-        expected_avail_dict["id"] = 1 # it gets set to 1 by the db / sql alchemy since its the first and only avail
-        event = {"body": model_to_json(avail)}
+        avail.id = 1 # it gets set to 1 by the db / sql alchemy since its the first and only avail
+        expected_avail_json = model_to_json(avail)
+        event = {"body": expected_avail_json}
 
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
         self.assertEqual(0, len(user.availabilities))
@@ -72,9 +72,9 @@ class TestLambdaFunction(unittest.TestCase):
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
 
         self.assertEqual(1, len(user.availabilities))
-        actual_avail_dict = lambda_function.availability_to_dict(user.availabilities[0])
+        actual_avail_json = model_to_json(user.availabilities[0])
 
-        self.assertEqual(expected_avail_dict, actual_avail_dict)
+        self.assertEqual(expected_avail_json, actual_avail_json)
 
     def test_delete_removes_availability(self):
         avail = self.build_default_availability()
