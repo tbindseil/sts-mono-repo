@@ -57,6 +57,6 @@ def lambda_handler(event, context):
             "POST": post_handler,
             "DELETE": delete_handler,
     }
-    guided_lambda_handler = GuidedLambdaHanlder(http_method_strategies)
+    guided_lambda_handler = GuidedLambdaHandler(http_method_strategies)
 
     return guided_lambda_handler.handle(event, context)

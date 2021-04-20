@@ -19,6 +19,6 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    install_requires=['sts-validate-authentication-aws-cognito-tj', 'JSON-Datetime'],
+    install_requires=['sts-validate-authentication-aws-cognito-tj', 'sts-json-datetime'],
     python_requires='>=3.6',
 )

@@ -73,6 +73,7 @@ def update_model_from_json(json, model):
 # test this new avail lambda stuff in real life
 # comments/cleanup
 # group packages together better (maybe)
+# put model_to_json stuff in translator file
 # adopt in user lambda
 # TODO not sure where to put this item, but I think that db utils and auth validation modules
 # are only used by glh, and could therefore be absorbed into that
