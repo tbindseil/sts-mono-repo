@@ -73,35 +73,35 @@ function MyCalendarBody(props) {
                 }
                 })
             .then(res => res.json())
-            .then(
-                (result) => {
-                    const availabilitiesWithDates = result.map(a => {
-                        return {
-                            endTime: moment.utc(a.endTime).local().toDate(),
-                            startTime: moment.utc(a.startTime).local().toDate(),
-                            subjects: a.subjects,
-                            tutor: a.tutor,
-                            id: a.id
-                        }
-                    });
-
-                    setAvailabilities(availabilitiesWithDates);
-                },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
-                (error) => {
-                    setFailed(true);
-                    var message = "Error getting availabilties";
-                    if (error.message) {
-                        message += ": " + error.message;
+            .then((result) => {
+                console.log("result is:");
+                console.log(result);
+                const availabilitiesWithDates = result.map(a => {
+                    return {
+                        endTime: moment.utc(a.endTime).local().toDate(),
+                        startTime: moment.utc(a.startTime).local().toDate(),
+                        subjects: a.subjects,
+                        tutor: a.tutor,
+                        id: a.id
                     }
-                    setErrorMessage(message);
+                });
+
+                setAvailabilities(availabilitiesWithDates);
+            },
+            // Note: it's important to handle errors here
+            // instead of a catch() block so that we don't swallow
+            // exceptions from actual bugs in components.
+            (error) => {
+                setFailed(true);
+                var message = "1Error getting availabilties";
+                if (error.message) {
+                    message += ": " + error.message;
                 }
-            )
+                setErrorMessage(message);
+            })
             .catch(err => {
                 setFailed(true);
-                var message = "Error getting availabilties";
+                var message = "2Error getting availabilties";
                 if (err.message) {
                     message += ": " + err.message;
                 }

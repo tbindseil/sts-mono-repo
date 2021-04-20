@@ -58,7 +58,7 @@ def model_to_json(model):
 
 
 def model_list_to_json(model_list):
-    return ",".join(list(map((lambda model: model_to_json(model)), model_list)))
+    return json.dumps(list(map((lambda model: model_to_json(model)), model_list)))
 
 
 def json_to_model(json_str, model_class):
