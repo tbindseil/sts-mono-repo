@@ -48,21 +48,20 @@ class TestGLH(unittest.TestCase):
 
         self.assertEqual(actual_response, expected_response)
 
-    def est_handler_returns_401_on_auth_exception(self, mock_get_database_engine, mock_session_maker):
-        self.magic_mock_method.side_effect = AuthException
+    def test_handler_returns_401_on_auth_exception(self, mock_get_database_engine, mock_session_maker):
+        self.mock_on_handle.side_effect = AuthException
 
-        event = { 'httpMethod': self.http_method }
-        context = "context"
-        response = self.guided_lambda_handler.handle(event, context)
+        actual_response = self.glh.handle('event', 'context')
+        expected_response = response_factory(401, 'unauthorized')
 
-        self.assertEqual(response['statusCode'], 401)
+        self.assertEqual(actual_response, expected_response)
 
     def est_handler_returns_500_on_general_exception(self, mock_get_database_engine, mock_session_maker):
         self.magic_mock_method.side_effect = Exception
 
         event = { 'httpMethod': self.http_method }
         context = "context"
-        response = self.guided_lambda_handler.handle(event, context)
+        response = self.glh.handle(event, context)
 
         self.assertEqual(response['statusCode'], 500)
 
@@ -78,19 +77,19 @@ class TestGLH(unittest.TestCase):
 
         event = { 'httpMethod': self.http_method }
         context = "context"
-        actual_response = self.guided_lambda_handler.handle(event, context)
+        actual_response = self.glh.handle(event, context)
         mock_session.close.assert_called_once()
 
         mock_session.reset_mock()
 
         self.magic_mock_method.side_effect = Exception
-        actual_response = self.guided_lambda_handler.handle(event, context)
+        actual_response = self.glh.handle(event, context)
         mock_session.close.assert_called_once()
 
         mock_session.reset_mock()
 
         self.magic_mock_method.side_effect = AuthException
-        actual_response = self.guided_lambda_handler.handle(event, context)
+        actual_response = self.glh.handle(event, context)
         mock_session.close.assert_called_once()
 
 
@@ -102,7 +101,7 @@ class TestGLH(unittest.TestCase):
 
         event = { 'httpMethod': self.http_method }
         context = "context"
-        actual_response = self.guided_lambda_handler.handle(event, context)
+        actual_response = self.glh.handle(event, context)
         self.assertEqual(response_code, actual_response['statusCode'])
         self.assertEqual(expected_response_body, actual_response['body'])
 
@@ -118,7 +117,7 @@ class TestGLH(unittest.TestCase):
 
         event = { 'httpMethod': self.http_method }
         context = "context"
-        actual_response = self.guided_lambda_handler.handle(event, context)
+        actual_response = self.glh.handle(event, context)
         mock_session.commit.assert_called_once()
 
     def est_get_claims_from_event_throws_when_token_not_present(self, mock_get_database_engine, mock_session_maker):
