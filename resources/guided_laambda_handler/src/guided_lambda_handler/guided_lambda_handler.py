@@ -12,6 +12,10 @@ class AuthException(Exception):
     pass
 
 
+class InputException(Exception):
+    pass
+
+
 def get_claims_from_event(event):
     try:
         token = event['headers']['Authorization'].split()[-1]
@@ -87,11 +91,30 @@ def update_model_from_json(json, model):
 # the only decision that remains with the above is:
 # 1) use an orchestrator to call return glh.output_translator(glh.handle(glh.input_translator(event, context)))
 # 2) each handler's handle method is as follows
+#
+#
+#
+# So it seems like maybe having hearder creation in this file is incorrect
+# and since I said creation, I think it outta be a builder!
 class GLH():
-    def __init__(self, translate_input, translate_output, onHandle):
+    def __init__(self, translate_input, translate_output, on_handle):
         self.translate_input = translate_input
         self.translate_output = translate_output
-        self.onHandle = onHandle
+        self.on_handle = on_handle
+
+    def make_response(self, status, body):
+        return {
+            'statusCode': status,
+            'headers': {
+                "Content-Type" : "application/json",
+                "Access-Control-Allow-Headers" : "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                "Access-Control-Allow-Methods" : "OPTIONS,POST",
+                "Access-Control-Allow-Credentials" : True,
+                "Access-Control-Allow-Origin" : "*",
+                "X-Requested-With" : "*"
+            },
+            'body': body
+        }
 
     def handle(self, event, context):
         try:
@@ -105,7 +128,7 @@ class GLH():
 
             input = self.translate_input(event, context)
 
-            raw_output = self.onHandle(input, session, get_claims)
+            raw_output = self.on_handle(input, session, get_claims)
 
             response_code, response_body = self.translate_output(raw_output)
 

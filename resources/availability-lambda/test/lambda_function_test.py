@@ -3,6 +3,8 @@ import unittest
 import lambda_function
 
 
+# TODO I think its time to delete this
+
 class LambdaFunctionTest(unittest.TestCase):
 
     def test_json_to_availability(self):
