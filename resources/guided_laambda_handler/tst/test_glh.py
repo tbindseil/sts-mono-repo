@@ -124,3 +124,24 @@ class TestGLH(unittest.TestCase):
 
             actual_result = get_claims_from_event(event)
             self.assertEqual(expected_result, actual_result)
+
+    def test_response_factory(self, mock_get_database_engine, mock_session_maker):
+        expected_status = 200
+        expected_body = "body"
+
+        expected_response = {
+            'statusCode': expected_status,
+            'headers': {
+                "Content-Type" : "application/json",
+                "Access-Control-Allow-Headers" : "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                "Access-Control-Allow-Methods" : "OPTIONS,POST",
+                "Access-Control-Allow-Credentials" : True,
+                "Access-Control-Allow-Origin" : "*",
+                "X-Requested-With" : "*"
+            },
+            'body': expected_body
+        }
+
+        actual_response = response_factory(expected_status, expected_body)
+
+        self.assertEqual(expected_response, actual_response)
