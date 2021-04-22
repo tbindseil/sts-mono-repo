@@ -96,25 +96,31 @@ def update_model_from_json(json, model):
 #
 # So it seems like maybe having hearder creation in this file is incorrect
 # and since I said creation, I think it outta be a builder!
+#    I put it in its own file so it could be mocked
+#    JK I moved it back since it doesn't need to be mocked
+
+# should i extract db stuff to its own unit?
+
+def response_factory(status, body):
+    return {
+        'statusCode': status,
+        'headers': {
+            "Content-Type" : "application/json",
+            "Access-Control-Allow-Headers" : "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+            "Access-Control-Allow-Methods" : "OPTIONS,POST",
+            "Access-Control-Allow-Credentials" : True,
+            "Access-Control-Allow-Origin" : "*",
+            "X-Requested-With" : "*"
+        },
+        'body': body
+    }
+
+
 class GLH():
     def __init__(self, translate_input, translate_output, on_handle):
         self.translate_input = translate_input
         self.translate_output = translate_output
         self.on_handle = on_handle
-
-    def make_response(self, status, body):
-        return {
-            'statusCode': status,
-            'headers': {
-                "Content-Type" : "application/json",
-                "Access-Control-Allow-Headers" : "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
-                "Access-Control-Allow-Methods" : "OPTIONS,POST",
-                "Access-Control-Allow-Credentials" : True,
-                "Access-Control-Allow-Origin" : "*",
-                "X-Requested-With" : "*"
-            },
-            'body': body
-        }
 
     def handle(self, event, context):
         try:
@@ -150,7 +156,7 @@ class GLH():
         finally:
             session.close()
 
-        return self.make_response(response_code, response_body)
+        return response_factory(response_code, response_body)
 
 
 #   expectations/assumptions

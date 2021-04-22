@@ -3,8 +3,15 @@ from unittest.mock import MagicMock, patch
 import json
 
 from sts_db_utils import sts_db_utils
-from src.guided_lambda_handler.guided_lambda_handler import GuidedLambdaHandler, AuthException, get_claims_from_event, GLH
+from src.guided_lambda_handler.guided_lambda_handler import GuidedLambdaHandler, AuthException, get_claims_from_event, GLH, response_factory
 from authentication_validation import cognito_validation
+
+
+def Any():
+    class Any():
+        def __eq__(self, other):
+            return True
+    return Any()
 
 
 @patch('sqlalchemy.orm.sessionmaker')
@@ -22,22 +29,24 @@ class TestGLH(unittest.TestCase):
 
     def test_input_is_translated(self, mock_get_database_engine, mock_session_maker):
         event = "event"
+        context = "context"
         input = "input translated"
         handled = "handled"
-        output = "output translated"
         expected_response_code = 200
+        output = "output translated"
+        expected_response = response_factory(expected_response_code, output)
 
         self.mock_translate_input.return_value = input
         self.mock_on_handle.return_value = handled
-        self.mock_translate_output = 200, output
+        self.mock_translate_output.return_value = 200, output
 
-        response_code, response_body = self.glh.handle(event, "context")
+        actual_response = self.glh.handle(event, context)
 
-        self.mock_translate_input.assert_called_with("event")
-        self.mock_on_handle.assert_called_with(input)
-        self.mock_translate_outputd.assert_called_with(handled)
-        self.assertEquals(response_code, expected_response_code)
-        self.assertEquals(response_body, output)
+        self.mock_translate_input.assert_called_with(event, context)
+        self.mock_on_handle.assert_called_with(input, Any(), Any())
+        self.mock_translate_output.assert_called_with(handled)
+
+        self.assertEqual(actual_response, expected_response)
 
     def est_handler_returns_401_on_auth_exception(self, mock_get_database_engine, mock_session_maker):
         self.magic_mock_method.side_effect = AuthException
