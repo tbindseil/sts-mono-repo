@@ -77,6 +77,88 @@ def update_model_from_json(json, model):
 # adopt in user lambda
 # TODO not sure where to put this item, but I think that db utils and auth validation modules
 # are only used by glh, and could therefore be absorbed into that
+
+# Since the tests are failing due to the way availability is being translated to json,
+# and since I realied that some models contain other models,
+# I think that translating model generically is too difficult
+# so, I'm thinking now that a guided lambda handler is an input translator,
+# a handler, and an output translator
+
+# the only decision that remains with the above is:
+# 1) use an orchestrator to call return glh.output_translator(glh.handle(glh.input_translator(event, context)))
+# 2) each handler's handle method is as follows
+class GLH():
+    def __init__(self, translate_input, translate_output, onHandle):
+        self.translate_input = translate_input
+        self.translate_output = translate_output
+        self.onHandle = onHandle
+
+    def handle(self, event, context):
+        try:
+            engine = sts_db_utils.get_database_engine()
+            Session = orm.sessionmaker(bind=engine)
+            session = Session()
+
+            # provide a mechanism to fetch claims when they are needed, but ensure that they aren't always
+            # required (for cases like user registration when they won't exist)
+            get_claims = functools.partial(get_claims_from_event, event)
+
+            input = self.translate_input(event, context)
+
+            raw_output = self.onHandle(input, session, get_claims)
+
+            response_code, response_body = self.translate_output(raw_output)
+
+            session.commit()
+        except InputException as e:
+            response_code = 400
+            response_body = "bad input"
+            session.rollback()
+        except AuthException as e:
+            response_code = 401
+            response_body = "unauthorized"
+            session.rollback()
+        except Exception as e:
+            print('exception handling http request, e is:')
+            print(e)
+            response_code = 500
+            response_body = "service error"
+            session.rollback()
+        finally:
+            session.close()
+
+        return self.make_response(response_code, response_body)
+
+
+#   expectations/assumptions
+#   output is json string
+#   each http method will be its own full blown object (this is in order for us to have a translator for each)
+#   ~~for rest apis, the handlers for each http method can be wrapped in a decorator that delegates to the correct method based on the method~~
+#   no, for rest apis, the lambda itself is responsible for calling the glh for the incoming http method
+#   http response codes??
+#
+#
+#
+#
+#
+#   ok, what about flipping it even further, passing things into the lambda instead of passing lambda things into something else
+#   what has to happen
+#   (currently in glh)
+#   1) always return headers *always*
+#   2) return 401 on auth error *always*
+#   3) initialize, commit or rollback and close session *always*
+#   4) validate auth tokens *always*
+#   5) what to do in case of which http method
+#   (currently in avail lambda)
+#   1) translation from raw input
+#   2) validation logic (user can only delete own avails)
+#   3) translation to json output (currently broken)
+#   4) business logic, basically read/write to database and compare
+#
+#   now add an *always* to the items above that always have to happen
+#   ok, i don't think always happeneing is the right criteria,
+#   its more like always in the same way, or more precisely should only be defined once
+#   I markeda as such
 class GuidedLambdaHandler():
 
     def __init__(self, http_method_strategies):
@@ -103,7 +185,7 @@ class GuidedLambdaHandler():
             session = Session()
 
             # provide a mechanism to fetch claims when they are needed, but ensure that they aren't always
-            # required (for cases like user registration when they won't exist
+            # required (for cases like user registration when they won't exist)
             get_claims = functools.partial(get_claims_from_event, event)
 
             response_code, response_body = self.http_method_strategies[event['httpMethod']](event, context, session, get_claims)

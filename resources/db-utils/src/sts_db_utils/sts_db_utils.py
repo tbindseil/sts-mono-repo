@@ -5,6 +5,8 @@ from botocore.exceptions import ClientError
 from sqlalchemy import create_engine
 
 
+# TODO can I instantiate the db connection only on cold start?
+
 def get_database_engine():
     secret_name = "DbSecret685A0FA5-V68DtCDN2E6B"
     region_name = "us-west-2"
