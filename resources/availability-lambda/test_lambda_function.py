@@ -34,6 +34,11 @@ class TestLambdaFunction(unittest.TestCase):
         self.get_claims = MagicMock()
         self.get_claims.return_value = claims
 
+    def test_get_input_translator(self):
+        event = {"body": {"cognitoId": "this_is_the_cognito_id"}}
+        input = lambda_function.get_input_translator(event, "context")
+        self.assertEqual(input, "this_is_the_cognito_id")
+
     def test_get_retrieves_availabilities(self):
         avail1 = self.build_default_availability()
         avail2 = self.build_default_availability()
@@ -49,33 +54,78 @@ class TestLambdaFunction(unittest.TestCase):
         self.session.commit()
 
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
-        expected_availabilities_json = model_list_to_json(user.availabilities)
 
-        response_code, actual_availabilities = lambda_function.get_handler("event", "context", self.session, self.get_claims)
+        raw_output = lambda_function.get_handler(self.cognito_id, self.session, self.get_claims)
 
-        self.assertEqual(actual_availabilities, expected_availabilities_json)
+        self.assertEqual(raw_output, user.availabilities)
+
+    def test_get_output_translator(self):
+        avail1 = self.build_default_availability()
+        avail2 = self.build_default_availability()
+        avail2.startTime += timedelta(days=1)
+        avail2.endTime += timedelta(days=1)
+
+        expected_availabilities = [avail1, avail2]
+
+        user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
+        for avail in expected_availabilities:
+            user.availabilities.append(avail)
+        self.session.add(user)
+        self.session.commit()
+
+        raw_output = user.availabilities
+        output = lambda_function.get_output_translator(raw_output)
+
+        expected_output = 200, '{"1": {"subjects": "subjects", "startTime": "2020-01-15T13:00:00.000000Z", "endTime": "2020-01-15T14:00:00.000000Z", "tutor": "cognito_id"}, "2": {"subjects": "subjects", "startTime": "2020-01-16T13:00:00.000000Z", "endTime": "2020-01-16T14:00:00.000000Z", "tutor": "cognito_id"}}'
+
+        self.assertEqual(output, expected_output)
+
+    def test_post_input_translator(self):
+        avail = self.build_default_availability()
+        event = {"body": json.dumps({
+            "subjects": avail.subjects,
+            "startTime": avail.startTime.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+            "endTime": avail.endTime.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+            "tutor": avail.tutor
+        })}
+
+        input = lambda_function.post_input_translator(event, "context")
+
+        self.assertAvailEquals(avail, input)
 
     def test_post_adds_availability(self):
         avail = self.build_default_availability()
-        avail.id = 1 # it gets set to 1 by the db / sql alchemy since its the first and only avail
-        expected_avail_json = model_to_json(avail)
-        event = {"body": expected_avail_json}
+        event = {"body": json.dumps({
+            "subjects": avail.subjects,
+            "startTime": avail.startTime.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+            "endTime": avail.endTime.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+            "tutor": avail.tutor
+        })}
 
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
         self.assertEqual(0, len(user.availabilities))
 
-        response_code, actual_availabilities = lambda_function.post_handler(event, "context", self.session, self.get_claims)
+        raw_output = lambda_function.post_handler(avail, self.session, self.get_claims)
 
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
-
         self.assertEqual(1, len(user.availabilities))
-        actual_avail_json = model_to_json(user.availabilities[0])
 
-        self.assertEqual(expected_avail_json, actual_avail_json)
+        actual_avail = user.availabilities[0]
+        self.assertAvailEquals(avail, actual_avail)
 
+    def test_post_output_translator(self):
+        raw_output = "raw_output"
+        actual_code, actual_response = lambda_function.post_output_translator(raw_output)
+        self.assertEqual(actual_code, 200)
+        self.assertEqual(actual_response, json.dumps(raw_output))
+
+    def test_delete_input_translator(self):
+        event = {'path': "url/id/for/avail/to/delete/is/1"}
+        input = lambda_function.delete_input_translator(event, "context")
+        self.assertEquals(input, '1')
+        
     def test_delete_removes_availability(self):
         avail = self.build_default_availability()
-        event = {'path': "url/id/for/avail/to/delete/is/1"}
 
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
         user.availabilities.append(avail)
@@ -85,7 +135,7 @@ class TestLambdaFunction(unittest.TestCase):
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
         self.assertEqual(1, len(user.availabilities))
 
-        response_code, actual_availabilities = lambda_function.delete_handler(event, "context", self.session, self.get_claims)
+        raw_output = lambda_function.delete_handler('1', self.session, self.get_claims)
 
         # gotta commit since that is what the glh does
         self.session.commit()
@@ -99,7 +149,6 @@ class TestLambdaFunction(unittest.TestCase):
         self.get_claims.return_value = claims
 
         avail = self.build_default_availability()
-        event = {'path': "url/id/for/avail/to/delete/is/1"}
 
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
         user.availabilities.append(avail)
@@ -110,7 +159,12 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertEqual(1, len(user.availabilities))
 
         with self.assertRaises(AuthException) as e:
-            response_code, actual_availabilities = lambda_function.delete_handler(event, "context", self.session, self.get_claims)
+            raw_output = lambda_function.delete_handler('1', self.session, self.get_claims)
+
+    def test_delete_output_translator(self):
+        actual_code, actual_response = lambda_function.delete_output_translator("raw_output")
+        self.assertEqual(200, actual_code)
+        self.assertEqual("success", actual_response)
 
     def tearDown(self):
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
@@ -121,3 +175,9 @@ class TestLambdaFunction(unittest.TestCase):
         avail_start = datetime(year=2020, month=1, day=15, hour=13)
         avail_end = datetime(year=2020, month=1, day=15, hour=14)
         return Availability("subjects", avail_start, avail_end, self.cognito_id)
+
+    def assertAvailEquals(self, expected_avail, actual_avail):
+        self.assertEqual(expected_avail.subjects, actual_avail.subjects)
+        self.assertEqual(expected_avail.startTime, actual_avail.startTime)
+        self.assertEqual(expected_avail.endTime, actual_avail.endTime)
+        self.assertEqual(expected_avail.tutor, actual_avail.tutor)

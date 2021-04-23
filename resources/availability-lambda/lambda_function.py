@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 
 from guided_lambda_handler.guided_lambda_handler import GuidedLambdaHandler, AuthException, json_to_model, model_to_json, model_list_to_json, response_factory
@@ -5,7 +6,7 @@ from models.user import User
 from models.availability import Availability
 
 
-def get_input_translator(event, context)
+def get_input_translator(event, context):
     return event["body"]["cognitoId"]
 
 
@@ -25,15 +26,15 @@ def get_handler(input, session, get_claims):
     return user.availabilities
 
 
-def post_output_translator(raw_output)
+def get_output_translator(raw_output):
     availabilities = raw_output
 
     response = {}
     for avail in availabilities:
         response[avail.id] = {
             'subjects': avail.subjects,
-            'startTime': avail.startTime,
-            'endTime': avail.endTime,
+            'startTime': avail.startTime.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+            'endTime': avail.endTime.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
             'tutor': avail.tutor,
         }
 
@@ -41,7 +42,7 @@ def post_output_translator(raw_output)
     return 200, json.dumps(response)
 
 
-def post_input_translator(event, context)
+def post_input_translator(event, context):
     return json_to_model(event["body"], Availability)
 
 
@@ -58,11 +59,11 @@ def post_handler(input, session, get_claims):
 
     return "success"
 
-def post_output_translator(raw_output)
+def post_output_translator(raw_output):
     return 200, json.dumps(raw_output)
 
 
-def delete_input_translator(event, context)
+def delete_input_translator(event, context):
     return event['path'].split('/')[-1]
 
 
@@ -81,7 +82,8 @@ def delete_handler(input, session, get_claims):
     return "success"
 
 
-def delete_output_translator(raw_output)
+def delete_output_translator(raw_output):
+    # TODO make glh have basic successful output
     return 200, "success"
 
 
@@ -103,4 +105,5 @@ def lambda_handler(event, context):
         delete_glh = GLH(delete_input_translator, delete_handler, delete_output_translator)
         return glh.handle(event, context)
     else:
+        # TODO make a method on glh
         return response_factory(405, json.dumps("only GET, PUT, and DELETE are valid"))
