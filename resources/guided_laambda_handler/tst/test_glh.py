@@ -3,8 +3,7 @@ from unittest.mock import MagicMock, patch
 import json
 
 from sts_db_utils import sts_db_utils
-from src.guided_lambda_handler.guided_lambda_handler import GuidedLambdaHandler, AuthException, get_claims_from_event, GLH, response_factory
-from authentication_validation import cognito_validation
+from src.guided_lambda_handler.guided_lambda_handler import AuthException, get_claims_from_event, GLH, response_factory
 
 
 def Any():

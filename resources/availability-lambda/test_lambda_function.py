@@ -1,14 +1,12 @@
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 from datetime import datetime, timedelta
 import json
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from guided_lambda_handler.guided_lambda_handler import AuthException, model_to_json, model_list_to_json
-
-from sts_db_utils.sts_db_utils import get_database_engine
+from guided_lambda_handler.guided_lambda_handler import AuthException
 
 from models import Base
 from models.user import User
@@ -182,5 +180,3 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertEqual(expected_avail.startTime, actual_avail.startTime)
         self.assertEqual(expected_avail.endTime, actual_avail.endTime)
         self.assertEqual(expected_avail.tutor, actual_avail.tutor)
-
-    # TODO test for lambda handler

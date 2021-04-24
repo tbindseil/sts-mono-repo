@@ -1,7 +1,7 @@
 import json
 from datetime import datetime
 
-from guided_lambda_handler.guided_lambda_handler import GuidedLambdaHandler, AuthException, json_to_model, model_to_json, model_list_to_json, response_factory, GLH
+from guided_lambda_handler.guided_lambda_handler import AuthException, json_to_model, response_factory, GLH
 from models.user import User
 from models.availability import Availability
 
@@ -12,8 +12,6 @@ def get_input_translator(event, context):
 
 # TODO accept date range
 def get_handler(input, session, get_claims):
-    print("gh input is")
-    print(input)
     cognito_id = input
 
     claims = get_claims()
