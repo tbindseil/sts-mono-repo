@@ -1,6 +1,7 @@
 import json
 import jsondatetime
 import functools
+import traceback
 from datetime import datetime
 from sqlalchemy import orm
 
@@ -117,10 +118,10 @@ def response_factory(status, body):
 
 
 class GLH():
-    def __init__(self, translate_input, translate_output, on_handle):
+    def __init__(self, translate_input, on_handle, translate_output):
         self.translate_input = translate_input
-        self.translate_output = translate_output
         self.on_handle = on_handle
+        self.translate_output = translate_output
 
     def handle(self, event, context):
         try:
@@ -150,6 +151,7 @@ class GLH():
         except Exception as e:
             print('exception handling http request, e is:')
             print(e)
+            traceback.print_exception(type(e), e, e.__traceback__)
             response_code = 500
             response_body = "service error"
             session.rollback()
@@ -226,6 +228,7 @@ class GuidedLambdaHandler():
         except Exception as e:
             print('exception handling http request, e is:')
             print(e)
+            traceback.print_exception(type(e), e, e.__traceback__)
             response_code = 500
             response_body = "service error"
             session.rollback()

@@ -1,17 +1,19 @@
 import json
 from datetime import datetime
 
-from guided_lambda_handler.guided_lambda_handler import GuidedLambdaHandler, AuthException, json_to_model, model_to_json, model_list_to_json, response_factory
+from guided_lambda_handler.guided_lambda_handler import GuidedLambdaHandler, AuthException, json_to_model, model_to_json, model_list_to_json, response_factory, GLH
 from models.user import User
 from models.availability import Availability
 
 
 def get_input_translator(event, context):
-    return event["body"]["cognitoId"]
+    return event['queryStringParameters']['username']
 
 
 # TODO accept date range
 def get_handler(input, session, get_claims):
+    print("gh input is")
+    print(input)
     cognito_id = input
 
     claims = get_claims()
@@ -95,15 +97,18 @@ def lambda_handler(event, context):
     for others, return invalid method
     """
 
-    if event["method"] == "GET":
+    print("event is:")
+    print(event)
+
+    if event["httpMethod"] == "GET":
         get_glh = GLH(get_input_translator, get_handler, get_output_translator)
-        return glh.handle(event, context)
-    elif event["method"] == "POST":
+        return get_glh.handle(event, context)
+    elif event["httpMethod"] == "POST":
         post_glh = GLH(post_input_translator, post_handler, post_output_translator)
-        return glh.handle(event, context)
-    elif event["method"] == "DELETE":
+        return post_glh.handle(event, context)
+    elif event["httpMethod"] == "DELETE":
         delete_glh = GLH(delete_input_translator, delete_handler, delete_output_translator)
-        return glh.handle(event, context)
+        return delete_glh.handle(event, context)
     else:
         # TODO make a method on glh
         return response_factory(405, json.dumps("only GET, PUT, and DELETE are valid"))

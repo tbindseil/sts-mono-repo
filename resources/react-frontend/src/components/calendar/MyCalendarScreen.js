@@ -62,21 +62,38 @@ function MyCalendarBody(props) {
             return;
         }
 
-        const url = baseUrl;
+        // const url = baseUrl + "?username=" + user.username;
+        const url = new URL(baseUrl)
+        url.searchParams.append('username', user.username);
         const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
         fetch(url, {
                 method: 'GET',
+                /*data: {
+                    username: user.username
+                },*/
                 mode: 'cors',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': tokenString
-                }
-                })
+                },
+            })
             .then(res => res.json())
             .then((result) => {
                 console.log("result is:");
                 console.log(result);
-                const availabilitiesWithDates = result.map(a => {
+                // Is there really only one avail?
+                const availabilitiesWithDates = []
+                for (const [id, avail] of Object.entries(result)) {
+                    availabilitiesWithDates.push({
+                        endTime: moment.utc(avail.endTime).local().toDate(),
+                        startTime: moment.utc(avail.startTime).local().toDate(),
+                        subjects: avail.subjects,
+                        tutor: avail.tutor,
+                        id: id
+                    });
+                }
+
+                /*const availabilitiesWithDates = result.map(a => {
                     return {
                         endTime: moment.utc(a.endTime).local().toDate(),
                         startTime: moment.utc(a.startTime).local().toDate(),
@@ -84,7 +101,7 @@ function MyCalendarBody(props) {
                         tutor: a.tutor,
                         id: a.id
                     }
-                });
+                });*/
 
                 setAvailabilities(availabilitiesWithDates);
             },

@@ -35,7 +35,7 @@ class TestLambdaFunction(unittest.TestCase):
         self.get_claims.return_value = claims
 
     def test_get_input_translator(self):
-        event = {"body": {"cognitoId": "this_is_the_cognito_id"}}
+        event = {"queryStringParameters": {"username": "this_is_the_cognito_id"}}
         input = lambda_function.get_input_translator(event, "context")
         self.assertEqual(input, "this_is_the_cognito_id")
 
@@ -162,7 +162,8 @@ class TestLambdaFunction(unittest.TestCase):
             raw_output = lambda_function.delete_handler('1', self.session, self.get_claims)
 
     def test_delete_output_translator(self):
-        actual_code, actual_response = lambda_function.delete_output_translator("raw_output")
+        raw_output = 199, "not_raw_output"
+        actual_code, actual_response = lambda_function.delete_output_translator(raw_output)
         self.assertEqual(200, actual_code)
         self.assertEqual("success", actual_response)
 
@@ -181,3 +182,5 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertEqual(expected_avail.startTime, actual_avail.startTime)
         self.assertEqual(expected_avail.endTime, actual_avail.endTime)
         self.assertEqual(expected_avail.tutor, actual_avail.tutor)
+
+    # TODO test for lambda handler
