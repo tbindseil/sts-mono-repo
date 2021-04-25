@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="guided-lambda-handler-tj", # Replace with your own username
-    version="0.0.14",
+    version="0.0.15",
     author="tj",
     author_email="tjbindseil@gmail.com",
     description="lambda handling framework",

@@ -93,6 +93,14 @@ def response_factory(status, body):
     }
 
 
+def success_response_output():
+    return 200, "success"
+
+
+def invalid_http_method_factory(valid_http_methods):
+    return response_factory(405, json.dumps("only " + ",".join(valid_http_methods) + " are valid"))
+
+
 class GLH():
     def __init__(self, translate_input, on_handle, translate_output):
         self.translate_input = translate_input

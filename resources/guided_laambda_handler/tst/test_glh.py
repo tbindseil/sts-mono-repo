@@ -3,9 +3,10 @@ from unittest.mock import MagicMock, patch
 import json
 
 from sts_db_utils import sts_db_utils
-from src.guided_lambda_handler.guided_lambda_handler import AuthException, get_claims_from_event, GLH, response_factory
+from src.guided_lambda_handler.guided_lambda_handler import AuthException, get_claims_from_event, GLH, response_factory, success_response_output, invalid_http_method_factory
 
 
+# TODO probably need some place to put test helpers
 def Any():
     class Any():
         def __eq__(self, other):
@@ -22,9 +23,9 @@ class TestGLH(unittest.TestCase):
     def setUp(self):
         self.magic_mock_method = MagicMock()
         self.mock_translate_input = MagicMock()
-        self.mock_translate_output = MagicMock()
         self.mock_on_handle = MagicMock()
-        self.glh = GLH(self.mock_translate_input, self.mock_translate_output, self.mock_on_handle)
+        self.mock_translate_output = MagicMock()
+        self.glh = GLH(self.mock_translate_input, self.mock_on_handle, self.mock_translate_output)
 
     def test_input_is_translated_and_returned(self, mock_get_database_engine, mock_session_maker):
         event = "event"
@@ -123,6 +124,17 @@ class TestGLH(unittest.TestCase):
 
             actual_result = get_claims_from_event(event)
             self.assertEqual(expected_result, actual_result)
+
+    def test_success_response_factory(self, mock_get_database_engine, mock_session_maker):
+        expected = 200, "success"
+        actual = success_response_output()
+        self.assertEqual(expected, actual)
+
+    def test_invalid_http_method_factory(self, mock_get_database_engine, mock_session_maker):
+        valid_http_methods = ["GET", "PUT", "DELETE"]
+        expected = response_factory(405, json.dumps("only " + ",".join(valid_http_methods) + " are valid"))
+        actual = invalid_http_method_factory(valid_http_methods)
+        self.assertEqual(expected, actual)
 
     def test_response_factory(self, mock_get_database_engine, mock_session_maker):
         expected_status = 200

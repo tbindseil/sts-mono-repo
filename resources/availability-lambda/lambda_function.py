@@ -1,7 +1,7 @@
 import json
 from datetime import datetime
 
-from guided_lambda_handler.guided_lambda_handler import AuthException, json_to_model, response_factory, GLH
+from guided_lambda_handler.guided_lambda_handler import AuthException, json_to_model, response_factory, GLH, success_response_output, invalid_http_method_factory
 from models.user import User
 from models.availability import Availability
 
@@ -83,8 +83,7 @@ def delete_handler(input, session, get_claims):
 
 
 def delete_output_translator(raw_output):
-    # TODO make glh have basic successful output
-    return 200, "success"
+    return success_response_output()
 
 
 def lambda_handler(event, context):
@@ -108,5 +107,5 @@ def lambda_handler(event, context):
         delete_glh = GLH(delete_input_translator, delete_handler, delete_output_translator)
         return delete_glh.handle(event, context)
     else:
-        # TODO make a method on glh
-        return response_factory(405, json.dumps("only GET, PUT, and DELETE are valid"))
+        valid_http_methods = ["GET", "PUT", "DELETE"]
+        return invalid_http_method_factory(valid_http_methods)

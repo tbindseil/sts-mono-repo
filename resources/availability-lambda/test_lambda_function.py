@@ -120,7 +120,7 @@ class TestLambdaFunction(unittest.TestCase):
     def test_delete_input_translator(self):
         event = {'path': "url/id/for/avail/to/delete/is/1"}
         input = lambda_function.delete_input_translator(event, "context")
-        self.assertEquals(input, '1')
+        self.assertEqual(input, '1')
         
     def test_delete_removes_availability(self):
         avail = self.build_default_availability()
