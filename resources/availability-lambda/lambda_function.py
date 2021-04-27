@@ -1,5 +1,4 @@
 import json
-from datetime import datetime
 
 from guided_lambda_handler.guided_lambda_handler import AuthException, response_factory, GLH, success_response_output, invalid_http_method_factory
 from guided_lambda_handler.translators import json_to_model
@@ -18,8 +17,7 @@ def get_handler(input, session, get_claims):
     claims = get_claims()
     claimed_cognito_id = claims["cognito:username"]
 
-    # ultimately, I'll need a service to validate who can see whose avails..
-    # for now one can only see themselves
+    # PODO
     if claimed_cognito_id != cognito_id:
         raise AuthException
 
@@ -39,7 +37,6 @@ def get_output_translator(raw_output):
             'tutor': avail.tutor,
         }
 
-    # TODO get rid of datetimejson crap
     return 200, json.dumps(response)
 
 

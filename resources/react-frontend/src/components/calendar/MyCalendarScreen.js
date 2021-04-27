@@ -62,15 +62,11 @@ function MyCalendarBody(props) {
             return;
         }
 
-        // const url = baseUrl + "?username=" + user.username;
         const url = new URL(baseUrl)
         url.searchParams.append('username', user.username);
         const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
         fetch(url, {
                 method: 'GET',
-                /*data: {
-                    username: user.username
-                },*/
                 mode: 'cors',
                 headers: {
                     'Content-Type': 'application/json',
@@ -79,9 +75,6 @@ function MyCalendarBody(props) {
             })
             .then(res => res.json())
             .then((result) => {
-                console.log("result is:");
-                console.log(result);
-                // Is there really only one avail?
                 const availabilitiesWithDates = []
                 for (const [id, avail] of Object.entries(result)) {
                     availabilitiesWithDates.push({
@@ -92,17 +85,6 @@ function MyCalendarBody(props) {
                         id: id
                     });
                 }
-
-                /*const availabilitiesWithDates = result.map(a => {
-                    return {
-                        endTime: moment.utc(a.endTime).local().toDate(),
-                        startTime: moment.utc(a.startTime).local().toDate(),
-                        subjects: a.subjects,
-                        tutor: a.tutor,
-                        id: a.id
-                    }
-                });*/
-
                 setAvailabilities(availabilitiesWithDates);
             },
             // Note: it's important to handle errors here

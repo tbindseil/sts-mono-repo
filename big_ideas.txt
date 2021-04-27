@@ -1,1 +1,9 @@
 lambda that houses debug level, then don't have to redeploy everytime I want to add debug
+
+./run_tests at resources level in dir tree, it kicks off all ./run_tests in the resources themselves
+
+can i do a pip install -U * and update everything? can i do that at the resource level?
+
+    # ultimately, I'll need a service to validate who can see whose avails..
+    # for now one can only see themselves
+# these will be tagged as PODO for permissions todo

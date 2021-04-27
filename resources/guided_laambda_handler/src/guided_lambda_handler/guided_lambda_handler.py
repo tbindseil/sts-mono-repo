@@ -1,4 +1,5 @@
 import json
+import logging
 import functools
 import traceback
 from sqlalchemy import orm
@@ -30,6 +31,8 @@ def response_factory(status, body):
     }
 
 
+# TODO can remove need for output translators defined in lambda_function files by making this fit the
+# type of the output response(raw_output)
 def success_response_output():
     return 200, "success"
 
@@ -43,10 +46,7 @@ def get_claims_from_event(event):
         token = event['headers']['Authorization'].split()[-1]
         return cognito_validation.get_and_verify_claims(token)
     except Exception as e:
-        # TODO stacktrace
-        # TODO do that by a logger
-        print('Issue getting claims, e is:')
-        print(e)
+        logging.exception('Issue getting claims, e is:' + str(e))
         raise AuthException()
 
 
@@ -82,9 +82,7 @@ class GLH():
             response_body = "unauthorized"
             session.rollback()
         except Exception as e:
-            print('exception handling http request, e is:')
-            print(e)
-            traceback.print_exception(type(e), e, e.__traceback__)
+            logging.exception('exception handling http request, e is:' + str(e))
             response_code = 500
             response_body = "service error"
             session.rollback()
