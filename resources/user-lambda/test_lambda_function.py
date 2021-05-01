@@ -37,7 +37,7 @@ class TestLambdaFunction(unittest.TestCase):
         self.get_claims.return_value = claims
 
     def test_input_translator_returns_cognito_id(self):
-        body_str = '{"email":"tjbindseil@gmail.com","firstName":"fn","lastName":"l","school":"ssssss","grade":"g","bio":"b"}'
+        body_str = '{"email":"email@gmail.com","firstName":"fn","lastName":"l","school":"ssssss","grade":"g","bio":"b"}'
         body = json.loads(body_str)
         event = {
             'path': "cognito/id/for/request/is/" + self.cognito_id,
@@ -45,6 +45,14 @@ class TestLambdaFunction(unittest.TestCase):
         }
         input = lambda_function.input_translator(event, "context")
         self.assertEqual(input, (self.cognito_id, body))
+
+    def test_input_translator_handles_body_as_None(self):
+        event = {
+            'path': "cognito/id/for/request/is/" + self.cognito_id,
+            'body': None
+        }
+        input = lambda_function.input_translator(event, "context")
+        self.assertEqual(input, (self.cognito_id, None)) # probably a little fishy and maybe means that there should be separate input handler for put
 
     def test_get_handler_returns_user(self):
         raw_output = lambda_function.get_handler((self.cognito_id, 'request_body'), self.session, self.get_claims)
@@ -97,7 +105,7 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertUsersEqual(updated_user, queried_user)
 
     def test_delete_handler_deletes(self):
-        input = self.cognito_id
+        input = self.cognito_id, 'request_body'
         raw_output = lambda_function.delete_handler(input, self.session, self.get_claims)
 
         with self.assertRaises(NoResultFound) as e:

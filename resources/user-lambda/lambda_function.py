@@ -8,7 +8,10 @@ from models.user import User
 
 def input_translator(event, context):
     provided_cognito_id = event['path'].split('/')[-1]
-    request_body = json.loads(event['body'])
+    if event['body']:
+        request_body = json.loads(event['body'])
+    else:
+        request_body = None
 
     # PODO
     # claimed_cognito_id = get_claims(token)
@@ -47,7 +50,7 @@ def put_handler(input, session, get_claims):
 
 
 def delete_handler(input, session, get_claims):
-    cognito_id = input
+    cognito_id, request_body = input
 
     user = session.query(User).filter(User.cognitoId==cognito_id).one()
     session.delete(user)
