@@ -32,20 +32,17 @@ def put_handler(input, session, get_claims):
     user_attributes = copy.deepcopy(user.__dict__)
 
     # can't change some things
+    del user_attributes['id']
     del user_attributes['email']
     del user_attributes['cognitoId']
     del user_attributes['admin']
-    user_attributes = list(user.__dict__)
+    user_attributes = list(user_attributes)
 
-    print("request_body is:")
-    print(request_body)
     for key, value in request_body.items():
         if key in user_attributes:
             setattr(user, key, value)
 
     session.add(user)
-    print("useremail is")
-    print(user.email)
     return user
 
 
