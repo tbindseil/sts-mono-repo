@@ -1,4 +1,5 @@
 import json
+import copy
 
 from guided_lambda_handler.guided_lambda_handler import AuthException, response_factory, GLH, success_response_output, invalid_http_method_factory
 from guided_lambda_handler.translators import json_to_model
@@ -7,37 +8,44 @@ from models.user import User
 
 def input_translator(event, context):
     provided_cognito_id = event['path'].split('/')[-1]
-    claimed_cognito_id = get_and_verify_claims(token)
+    request_body = json.loads(event['body'])
 
     # PODO
-    if provided_cognito_id != claimed_cognito_id:
-        raise AuthenticationException
+    # claimed_cognito_id = get_claims(token)
+    # if provided_cognito_id != claimed_cognito_id:
+        # raise AuthenticationException
 
-    return provided_cognito_id
+    return provided_cognito_id, request_body
+
 
 
 def get_handler(input, session, get_claims):
-    cognito_id = input
+    cognito_id, request_body = input
 
     return session.query(User).filter(User.cognitoId==cognito_id).one()
 
 
 def put_handler(input, session, get_claims):
-    cognito_id = input
+    cognito_id, request_body = input
 
     user = session.query(User).filter(User.cognitoId==cognito_id).one()
-    user_attributes = list(user.__dict__)
+    user_attributes = copy.deepcopy(user.__dict__)
 
     # can't change some things
     del user_attributes['email']
     del user_attributes['cognitoId']
     del user_attributes['admin']
+    user_attributes = list(user.__dict__)
 
+    print("request_body is:")
+    print(request_body)
     for key, value in request_body.items():
         if key in user_attributes:
             setattr(user, key, value)
 
     session.add(user)
+    print("useremail is")
+    print(user.email)
     return user
 
 
@@ -51,7 +59,7 @@ def delete_handler(input, session, get_claims):
 
 def get_put_output_translator(raw_output):
     user = raw_output
-    response = {
+    response = json.dumps({
         'email': user.email,
         'cognitoId': user.cognitoId,
         'firstName': user.firstName,
@@ -59,7 +67,7 @@ def get_put_output_translator(raw_output):
         'school': user.school,
         'grade': user.grade,
         'bio': user.bio
-    }
+    })
     return 200, response
 
 

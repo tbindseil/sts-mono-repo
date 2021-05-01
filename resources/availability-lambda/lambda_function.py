@@ -28,6 +28,8 @@ def get_handler(input, session, get_claims):
 def get_output_translator(raw_output):
     availabilities = raw_output
 
+    # PODO ?? looks like i don't always do it and never(?) test it?
+
     response = {}
     for avail in availabilities:
         response[avail.id] = {
