@@ -7,3 +7,109 @@ can i do a pip install -U * and update everything? can i do that at the resource
     # ultimately, I'll need a service to validate who can see whose avails..
     # for now one can only see themselves
 # these will be tagged as PODO for permissions todo
+
+
+So, the next feature is a class, to contain tutors.
+This comes before having students be able to search
+for tutors because this will be the way we vet tutors.
+This way, students in a certain class can have a list
+of potential tutors to see, and those tutors get into
+that list in a controlled fashion.
+
+a class is a:
+name,
+teacher (user in charge),
+list of students,
+list of tutors
+
+1) teacher makes a class
+2a) teacher sends referral to student to be tutor
+2b) student sends request to tutor to be tutor
+2c) student sends request to join class
+3) student can search for availability from a class (this is next feature)
+    (for now, student goes to form page
+              selects a class,
+              sets some availability,
+              search returns all availabilities,
+    (this is instead of seeing a calendar, and
+    I am avoiding the calendar because the potential for showing
+    a bunch of different availbilities on the calendar)
+
+    Do I really need to avoid this?
+    I don't think so, lets try the algorithm
+    input, a list of start and end times
+    output, largest number of concurent availabilities
+        this is as opposed to making availabilities shrink and grow as more concurency happens (outlook)
+
+    Also, what about office hours style availabilities?
+        same deal, so far at least
+
+TODO
+models:
+    add class model
+        id, name, teacher(user fk)
+    add a student model
+        id, user(user fk), class(class fk)
+    add a tutor model
+        id, user(user fk), class(class fk)
+    add a request model
+        id, from(user fk), for(user fk), class(class fk), [student_request, student_refferal, tutor_request, tutor_referral], status
+
+apis:
+    post class
+        given name, teacher
+        save class as auto id, name, teacher
+    get class
+        given id
+        returns name, teacher, id
+        given user
+        returns all classes and their relationship to user
+    get class_search
+        given name, searches for classes with that name
+        returns list of matches
+
+    post referral
+        given, class, user, and student or tutot
+        create request
+
+    put referral
+        given id, updated referral
+        update referral
+
+    get referrals
+        given class
+        all referrals for that class
+        given class user
+        all referrals for that user and that class
+        given user
+        all referrals for user and all classes
+
+    get tutor
+        given class
+        return all tutors in that class
+
+    get students
+        given class
+        return all tutors in that class
+
+ui
+    add make class form - put under class tab for admin
+        supply class name, and teacher in charge
+            (I fill out this because I have admin (?))
+
+    ** how to add students to classes or allow students to add to classes **
+    users search for class to enroll in
+    users receive a referral with a token, use the token to enroll in class
+    search and request in addition to enroll? why not? it happens in the case of being a tutor
+    why clip things early
+    could probably have an interface defining this request/referral thing (here with students, and with tutors)
+
+    soooo I need a tab for classes
+        clicking on it shows all enrolled or tutoring or teaching classes
+        class referrals
+        class requests
+        search for classes
+    class view
+        shows signed in user's referral status (none, requested, reffered for, enrolled in, tutoring, teaching)
+        allows for requesting, referring, accepting request/ accepting refferal
+
