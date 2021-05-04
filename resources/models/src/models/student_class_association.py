@@ -1,5 +1,6 @@
 from . import Base
-from sqlalchemy import Column, ForeignKey, Integer, 
+from sqlalchemy import Column, ForeignKey, Integer, Table
+
 
 student_class_association = Table('student_class_association', Base.metadata,
         Column('student_id', Integer, ForeignKey('users.cognitoId')),
