@@ -3,6 +3,7 @@ from datetime import datetime
 from . import Base
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 
+
 class Availability(Base):
     """ Availability Model for storing when users are available to tutor """
     __tablename__ = "availability"
@@ -13,7 +14,7 @@ class Availability(Base):
     endTime = Column(DateTime, nullable=False)
     tutor = Column(String(255), ForeignKey('users.cognitoId'), nullable=False)
 
-    def __init__(self, subjects, startTime, endTime, tutor, **kwargs):
+    def __init__(self, subjects, startTime, endTime, tutor):
         self.subjects = subjects
         self.startTime = startTime
         self.endTime = endTime

@@ -7,6 +7,8 @@ from sqlalchemy.orm import relationship
 # Availability class is used, so we must define it here or else it has to be definied by clients of the User class,
 # and they don't necessarily know that they need to do this
 from .availability import Availability
+from .student_class_association import student_class_association
+from .tutor_class_association import tutor_class_association
 
 
 class User(Base):
@@ -19,7 +21,6 @@ class User(Base):
     registeredOn = Column(DateTime, nullable=False)
     firstName = Column(String(65))
     lastName = Column(String(65))
-    # TODO list of courses
     school = Column(String(127))
     grade = Column(String(15))
     bio = Column(String(511)) # TODO variable length string(s)
@@ -27,7 +28,10 @@ class User(Base):
 
     availabilities = relationship("Availability", cascade="all, delete, delete-orphan")
 
-    def __init__(self, email, cognitoId, firstName="", lastName="", school="", grade="", bio="", **kwargs):
+    classesAsStudent = relationship("Class", secondary=student_class_association, back_populates="students")
+    classesAsTutor = relationship("Class", secondary=tutor_class_association, back_populates="tutors")
+
+    def __init__(self, email, cognitoId, firstName="", lastName="", school="", grade="", bio=""):
         self.email = email
         self.cognitoId = cognitoId
         self.firstName = firstName

@@ -47,11 +47,10 @@ list of tutors
 TODO
 models:
     add class model
-        id, name, teacher(user fk)
-    add a student model
-        id, user(user fk), class(class fk)
-    add a tutor model
-        id, user(user fk), class(class fk)
+        id, name, teacher(user fk), list of students, list of tutors
+    add to user model
+        classes_as_student
+        classes_as_tutor
     add a request model
         id, from(user fk), for(user fk), class(class fk), [student_request, student_refferal, tutor_request, tutor_referral], status
 
