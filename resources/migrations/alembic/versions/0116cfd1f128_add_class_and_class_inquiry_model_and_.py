@@ -1,4 +1,4 @@
-"""add class and class inquiry model, and class relationships to user model
+"""set non null constraints on user.email, user.cogntioid, and availability.tutor"
 
 Revision ID: 0116cfd1f128
 Revises: 8659618cd84b
