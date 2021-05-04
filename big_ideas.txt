@@ -46,12 +46,12 @@ list of tutors
 
 TODO
 models:
-    add class model
+    add class model - done
         id, name, teacher(user fk), list of students, list of tutors
-    add to user model
+    add to user model - done
         classes_as_student
         classes_as_tutor
-    add a request model
+    add a request model -done
         id, from(user fk), for(user fk), class(class fk), [student_request, student_refferal, tutor_request, tutor_referral], status
 
 apis:
@@ -111,4 +111,3 @@ ui
     class view
         shows signed in user's referral status (none, requested, reffered for, enrolled in, tutoring, teaching)
         allows for requesting, referring, accepting request/ accepting refferal
-

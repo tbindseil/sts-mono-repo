@@ -1,8 +1,8 @@
 """add class and class inquiry model, and class relationships to user model
 
-Revision ID: fbc150f9ebf9
+Revision ID: 291c4c478f1c
 Revises: 0116cfd1f128
-Create Date: 2021-05-03 19:30:14.310566
+Create Date: 2021-05-03 20:54:13.785424
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'fbc150f9ebf9'
+revision = '291c4c478f1c'
 down_revision = '0116cfd1f128'
 branch_labels = None
 depends_on = None
@@ -26,13 +26,13 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('student_class_association',
-    sa.Column('student_id', sa.Integer(), nullable=True),
+    sa.Column('student_id', sa.String(length=255), nullable=True),
     sa.Column('class_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['class_id'], ['class.id'], ),
     sa.ForeignKeyConstraint(['student_id'], ['users.cognitoId'], )
     )
     op.create_table('tutor_class_association',
-    sa.Column('tutor_id', sa.Integer(), nullable=True),
+    sa.Column('tutor_id', sa.String(length=255), nullable=True),
     sa.Column('class_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['class_id'], ['class.id'], ),
     sa.ForeignKeyConstraint(['tutor_id'], ['users.cognitoId'], )
