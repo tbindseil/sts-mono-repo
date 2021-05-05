@@ -67,21 +67,22 @@ apis:
         given name, searches for classes with that name
         returns list of matches
 
-    post referral
+    post inquiry
         given, class, user, and student or tutot
         create request
 
-    put referral
-        given id, updated referral
-        update referral
+    put inquiry
+        given id, updated inquiry
+        update inquiry
+        this includes adding students and tutors to classes
 
-    get referrals
+    get inquiries
         given class
-        all referrals for that class
+        all inquirys for that class
         given class user
-        all referrals for that user and that class
+        all inquirys for that user and that class
         given user
-        all referrals for user and all classes
+        all inquirys for user and all classes
 
     get tutor
         given class
@@ -109,5 +110,5 @@ ui
         class requests
         search for classes
     class view
-        shows signed in user's referral status (none, requested, reffered for, enrolled in, tutoring, teaching)
+        shows signed in user's inquiry status (none, requested, reffered for, enrolled in, tutoring, teaching)
         allows for requesting, referring, accepting request/ accepting refferal
