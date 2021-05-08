@@ -55,16 +55,17 @@ models:
         id, from(user fk), for(user fk), class(class fk), [student_request, student_refferal, tutor_request, tutor_referral], status
 
 apis:
-    post class
+    post class - done
         given name, teacher
         save class as auto id, name, teacher
-    get class
+    get class - done
         given id
         returns name, teacher, id
         given user
         returns all classes and their relationship to user
-    delete class
+    delete class - done
         given id, delete the class
+
     get class_search
         given name, searches for classes with that name
         returns list of matches
@@ -86,6 +87,12 @@ apis:
         given user
         all inquirys for user and all classes
 
+
+
+
+    I don't think the below are necessary
+    get class returns list of student/tutor ids
+    use those to get students/tutors as needed
     get tutor
         given class
         return all tutors in that class
@@ -93,6 +100,10 @@ apis:
     get students
         given class
         return all tutors in that class
+
+
+
+
 
 ui
     add make class form - put under class tab for admin

@@ -8,6 +8,7 @@ import { CognitoStack } from "../lib/cognito-stack";
 import { UserLambdaServiceStack } from "../lib/lambdas/user-lambda-stack";
 import { AvailabilityLambdaServiceStack } from "../lib/lambdas/availability-lambda-stack";
 import { ClassLambdaServiceStack } from "../lib/lambdas/class-lambda-stack";
+import { InquiryLambdaServiceStack } from "../lib/lambdas/inquiry-lambda-stack";
 import { UserRegisteredLambdaServiceStack } from "../lib/lambdas/user-registered-stack";
 
 const app = new App();
@@ -35,6 +36,10 @@ const availabilityServiceStack = new AvailabilityLambdaServiceStack(app, 'Availa
 });
 
 const classServiceStack = new ClassLambdaServiceStack(app, 'ClassLambdaServiceStack', {
+    dbSecret: rdsStack.dbSecret
+});
+
+const inquiryServiceStack = new InquiryLambdaServiceStack(app, 'InquiryLambdaServiceStack', {
     dbSecret: rdsStack.dbSecret
 });
 

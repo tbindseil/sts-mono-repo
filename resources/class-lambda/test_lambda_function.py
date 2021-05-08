@@ -1,6 +1,5 @@
 import unittest
 from unittest.mock import MagicMock
-from datetime import datetime, timedelta
 import json
 
 from sqlalchemy import create_engine
@@ -12,7 +11,6 @@ from guided_lambda_handler.translators import json_to_model
 from models import Base
 from models.user import User
 from models.class_model import Class
-from guided_lambda_handler.translators import json_to_model
 
 import lambda_function
 
