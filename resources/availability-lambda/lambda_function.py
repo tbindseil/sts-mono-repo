@@ -1,6 +1,6 @@
 import json
 
-from guided_lambda_handler.guided_lambda_handler import AuthException, response_factory, GLH, success_response_output, invalid_http_method_factory
+from guided_lambda_handler.guided_lambda_handler import AuthException, GLH, success_response_output, invalid_http_method_factory
 from guided_lambda_handler.translators import json_to_model
 from models.user import User
 from models.availability import Availability

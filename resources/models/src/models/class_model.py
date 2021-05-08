@@ -8,8 +8,6 @@ from .student_class_association import student_class_association
 from .tutor_class_association import tutor_class_association
 
 
-# TJTAG need to work through issues here, then copy these files to models module
-# circular import
 class Class(Base):
     """ Class Model for grouping teachers, students, and tutors """
     __tablename__ = "class"
@@ -20,7 +18,7 @@ class Class(Base):
 
     # don't add here until request/referral process is successfully completed
     students = relationship("User", secondary=student_class_association, back_populates="classesAsStudent")
-    tutors = relationship("User", secondary=tutor_class_association, back_populates="classesAsTutors")
+    tutors = relationship("User", secondary=tutor_class_association, back_populates="classesAsTutor")
 
     def __init__(self, name, teacher):
         self.name = name
