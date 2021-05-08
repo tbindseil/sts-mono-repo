@@ -22,4 +22,4 @@ class Class(Base):
 
     def __init__(self, name, teacher):
         self.name = name
-        self.tutor = tutor
+        self.teacher = teacher

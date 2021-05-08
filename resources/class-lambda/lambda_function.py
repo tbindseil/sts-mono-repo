@@ -10,6 +10,12 @@ def get_input_translator(event, context):
     return event['queryStringParameters']['class']
 
 
+def get_ids(list_of_users):
+    ids = []
+    for s in list_of_users:
+        ids.append(s.cognitoId)
+    return ids
+
 def get_handler(input, session, get_claims):
     class_id = input
     clazz = session.query(Class).filter(Class.id==class_id).one()
@@ -17,7 +23,11 @@ def get_handler(input, session, get_claims):
     # throw if requester is not student, tutor or teacher
     claims = get_claims()
     claimed_cognito_id = claims["cognito:username"]
-    if claimed_cognito_id not in clazz.students and claimed_cognito_id not in clazz.tutors and claimed_cognito_id != clazz.teacher:
+
+    student_ids = get_ids(clazz.students)
+    tutor_ids = get_ids(clazz.tutors)
+
+    if claimed_cognito_id not in student_ids and claimed_cognito_id not in tutor_ids and claimed_cognito_id != clazz.teacher:
         raise AuthException('only students, tutors and the teacher can see the class')
 
     # return class
@@ -31,8 +41,8 @@ def get_output_translator(raw_output):
         'id': clazz.id,
         'name': clazz.name,
         'teacher': clazz.teacher,
-        'students': clazz.students,
-        'tutors': clazz.tutots
+        'students': get_ids(clazz.students),
+        'tutors': get_ids(clazz.tutors)
     }
     return 200, json.dumps(response)
 

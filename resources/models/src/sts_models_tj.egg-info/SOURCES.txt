@@ -2,7 +2,6 @@ README.md
 setup.py
 src/models/__init__.py
 src/models/availability.py
-src/models/class.py
 src/models/class_inquiry.py
 src/models/class_model.py
 src/models/student_class_association.py
