@@ -82,7 +82,7 @@ def delete_handler(input, session, get_claims):
     requester = session.query(User).filter(User.cognitoId==claimed_cognito_id).one()
     class_to_delete = session.query(Class).filter(Class.id==class_to_delete_id).one()
 
-    if class_to_delete.teacher != claimed_cognito_id or not requester.admin:
+    if class_to_delete.teacher != claimed_cognito_id and not requester.admin:
         raise AuthException('only teacher or admin can delete class')
 
     session.delete(class_to_delete)
