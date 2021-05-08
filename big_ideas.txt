@@ -63,6 +63,8 @@ apis:
         returns name, teacher, id
         given user
         returns all classes and their relationship to user
+    delete class
+        given id, delete the class
     get class_search
         given name, searches for classes with that name
         returns list of matches

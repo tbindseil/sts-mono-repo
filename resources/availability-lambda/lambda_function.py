@@ -107,5 +107,5 @@ def lambda_handler(event, context):
         delete_glh = GLH(delete_input_translator, delete_handler, delete_output_translator)
         return delete_glh.handle(event, context)
     else:
-        valid_http_methods = ["GET", "PUT", "DELETE"]
+        valid_http_methods = ["GET", "POST", "DELETE"]
         return invalid_http_method_factory(valid_http_methods)
