@@ -135,6 +135,9 @@ ui
 
 
 TODO (maybe teachers can be list?? its not hard, this could help for like 7th grade science class, all 7th grade science teachers register their class and refer tutors for the pool)
+https://stackoverflow.com/questions/7844460/foreign-key-to-multiple-tables
+this is really useful if classes want to request to schools or schools want to refer classes
+    maybe a class of generic 9th grade math tutors worldwide, and the school decides to allow that
 
 
 for the python rest api stuff, it seems like get, put, and post, and delete are starting form patterns. For instance, I just noticed that put is always

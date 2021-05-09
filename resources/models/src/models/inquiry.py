@@ -11,10 +11,9 @@ class TypeEnum(enum.Enum):
     TUTOR = 1
 
 
-# TODO rename to Inquiry with table name inquiry
-class ClassInquiry(Base):
+class Inquiry(Base):
     """ Class Inquiry Model for storing inquiries to join class as tutor or student """
-    __tablename__ = "ClassInquiry"
+    __tablename__ = "inquiry"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     fromUser = Column(String(255), ForeignKey('users.cognitoId'), nullable=False)

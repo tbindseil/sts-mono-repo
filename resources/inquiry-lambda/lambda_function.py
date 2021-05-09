@@ -5,7 +5,7 @@ from sqlalchemy import and_, or_
 from guided_lambda_handler.guided_lambda_handler import AuthException, GLH, success_response_output, invalid_http_method_factory
 from guided_lambda_handler.translators import json_to_model
 from models.user import User
-from models.class_inquiry import ClassInquiry
+from models.inquiry import Inquiry
 
 
 def get_input_translator(event, context):
@@ -31,17 +31,17 @@ def get_handler(input, session, get_claims):
         if claimed_cognito_id != clazz.teacher:
             raise AuthException('only teacher can see all inquiries for a class')
 
-        inquiries = session.query(ClassInquiry).filter(ClassInquiry.classId==class_id)
+        inquiries = session.query(Inquiry).filter(Inquiry.classId==class_id)
     else if clazz is None:
         if claimed_cognito_id != username:
             raise AuthException('one can only see all inquiries for themselves')
 
-        inquiries = session.query(ClassInquiry).filter(or_(ClassInquiry.forUser==username, ClassInquiry.fromUser==username))
+        inquiries = session.query(Inquiry).filter(or_(Inquiry.forUser==username, Inquiry.fromUser==username))
     else:
         if claimed_cognito_id != username:
             raise AuthException('one can only see all inquiries for themselves')
 
-        inquiries = session.query(ClassInquiry).filter(and_(ClassInquiry.forUser==username, ClassInquiry.fromUser==username))
+        inquiries = session.query(Inquiry).filter(and_(Inquiry.forUser==username, Inquiry.fromUser==username))
 
     return inquiries
 
@@ -67,7 +67,7 @@ def get_output_translator(raw_output):
 
 
 def post_input_translator(event, context):
-    return json_to_model(event["body"], ClassInquiry)
+    return json_to_model(event["body"], Inquiry)
 
 
 def post_handler(input, session, get_claims):
@@ -90,7 +90,7 @@ def post_handler(input, session, get_claims):
     claimed_cognito_id = claims["cognito:username"]
     inquiry.fromUser = claimed_cognito_id
 
-    clazz = session.query(ClassInquiry).filter(Class.id==inquiry.classId).one()
+    clazz = session.query(Inquiry).filter(Class.id==inquiry.classId).one()
     teacher = clazz.teacher
 
     if inquiry.fromUser == inquiry.forUser:
@@ -125,7 +125,7 @@ def put_handler(input, session, get_claims):
     if (accepted and denied) or (not accepted and not denied):
         raise Exception("must accept or deny and can't do both")
 
-    inquiry = session.query(ClassInquiry).filter(ClassInquiry.id==inquiry_id).one()
+    inquiry = session.query(Inquiry).filter(Inquiry.id==inquiry_id).one()
 
     if accepted:
         if claimed_cognito_id != inquiry.forUser:
