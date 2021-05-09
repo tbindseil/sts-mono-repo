@@ -32,7 +32,7 @@ def get_handler(input, session, get_claims):
             raise AuthException('only teacher can see all inquiries for a class')
 
         inquiries = session.query(Inquiry).filter(Inquiry.classId==class_id)
-    else if clazz is None:
+    elif clazz is None:
         if claimed_cognito_id != username:
             raise AuthException('one can only see all inquiries for themselves')
 
@@ -61,7 +61,6 @@ def get_output_translator(raw_output):
             'createDate': i.createDate,
             'lastUpdatedDate': i.lastUpdatedDate
         }
-    }
 
     return 200, json.dumps(response)
 
