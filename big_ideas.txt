@@ -89,6 +89,9 @@ apis:
 
 
 
+    # TODO how can a teacher remove a student or tutor?
+
+
 
     I don't think the below are necessary
     get class returns list of student/tutor ids

@@ -7,10 +7,8 @@ from sqlalchemy.orm import relationship
 
 
 class TypeEnum(enum.Enum):
-    STUDENT_REFERRAL = 0
-    STUDENT_REQUEST = 1
-    TUTOR_REFERRAL = 2
-    TUTOR_REQUEST = 3
+    STUDENT = 0
+    TUTOR = 1
 
 
 # TODO rename to Inquiry with table name inquiry
@@ -29,8 +27,7 @@ class ClassInquiry(Base):
     createDate = Column(DateTime, nullable=False, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
     lastUpdatedDate = Column(DateTime, nullable=False, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
 
-    def __init__(self, fromUser, forUser, classId, type):
-        self.fromUser = fromUser
+    def __init__(self, forUser, classId, type):
         self.forUser = forUser
         self.classId = classId
         self.type = type

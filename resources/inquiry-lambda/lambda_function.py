@@ -5,7 +5,7 @@ from sqlalchemy import and_, or_
 from guided_lambda_handler.guided_lambda_handler import AuthException, GLH, success_response_output, invalid_http_method_factory
 from guided_lambda_handler.translators import json_to_model
 from models.user import User
-from models.class_inquiry import ClassInquiry, TypeEnum
+from models.class_inquiry import ClassInquiry
 
 
 def get_input_translator(event, context):
@@ -71,20 +71,33 @@ def post_input_translator(event, context):
 
 
 def post_handler(input, session, get_claims):
-    # only for user can create request, no, teach can make referral for student
-        # so if for != from, from must be teacher
-
-    # only from user can create referal
-    # only teacher for referred class can be make referal and only as from user
-
     inquiry = input
 
-    if inquiry.type == TypeEnum.STUDENT_REQUEST or inquiry.type == TypeEnum.TUTOR_REQUEST:
-        print("only student or tutor can make")
-        # from and for are equal? what do those even mean?
-    else if inquiry.type == TypeEnum.STUDENT_REFERRAL or inquiry.type == TypeEnum.TUTOR_REFERRAL
-        print("only teacher can make")
-        # from must be teacher of class
+    # a note on validation logic:
+    # by the time I add the inquiry to the session, I know that the claimed user
+    # is valid, the inquiry's from user is set as the claimed user, the inquiry's
+    # for and from user's are different, and at least one of them is the teacher
+    # for the inquiry's class.
+
+    # in more words,
+    # If I'm a teacher, I can make a referral for anyone besides myself for the
+    # class(es) I am a teacher for.
+    # AND
+    # If I'm a student or tutor, I can request to join any class so long as I request
+    # for the teacher of that class.
+
+    claims = get_claims()
+    claimed_cognito_id = claims["cognito:username"]
+    inquiry.fromUser = claimed_cognito_id
+
+    clazz = session.query(ClassInquiry).filter(Class.id==inquiry.classId).one()
+    teacher = clazz.teacher
+
+    if inquiry.fromUser == inquiry.forUser:
+        raise Exception('inquiry must involve two parties')
+
+    if teacher != inquiry.fromUser and teacher != inquiry.forUser:
+        raise AuthException('inquiry must involve teacher for inquired class')
 
     session.add(inquiry)
     return "sucess"
@@ -104,19 +117,26 @@ def put_input_translator(event, context):
 def put_handler(input, session, get_claims):
     inquiry_id, request_body = input
 
+    claims = get_claims()
+    claimed_cognito_id = claims["cognito:username"]
+
     accepted = request_body["accepted"]
     denied = request_body["denied"]
     if (accepted and denied) or (not accepted and not denied):
         raise Exception("must accept or deny and can't do both")
 
     inquiry = session.query(ClassInquiry).filter(ClassInquiry.id==inquiry_id).one()
+
     if accepted:
+        if claimed_cognito_id != inquiry.forUser:
+            raise AuthException('only requested user can accept')
         inquiry.accepted = True
-        # add user to class as student or tutor based on type
     else:
+        if claimed_cognito_id != inquiry.forUser and claimed != inquiry.fromUser:
+            raise AuthException('only requested or requesting user can deny')
         inquiry.denied = True
 
-    session.add(user)
+    session.add(inquiry)
     return "success"
 
 
