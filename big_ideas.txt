@@ -66,16 +66,16 @@ apis:
     delete class - done
         given id, delete the class
 
-    get class_search
+    get class_search - .like sql alchemy query doc
         given name, searches for classes with that name
         returns list of matches
 
     post inquiry
-        given, class, user, and student or tutot
-        create request
+        given fromUser, forUser, classId, status
+        create inquiry
 
     put inquiry
-        given id, updated inquiry
+        given id, updated inquiry status and/or denied (maybe deny or accept?) (maybe accepted is a status?)
         update inquiry
         this includes adding students and tutors to classes
 
@@ -125,3 +125,19 @@ ui
     class view
         shows signed in user's inquiry status (none, requested, reffered for, enrolled in, tutoring, teaching)
         allows for requesting, referring, accepting request/ accepting refferal
+
+
+
+
+
+
+TODO (maybe teachers can be list?? its not hard, this could help for like 7th grade science class, all 7th grade science teachers register their class and refer tutors for the pool)
+
+
+for the python rest api stuff, it seems like get, put, and post, and delete are starting form patterns. For instance, I just noticed that put is always
+    supply id, new attrs
+    check auth
+    fetch item, copy item attrs dict, remove immutable fields
+    for each new attr, if in filtered item attrs dict, update
+    update in db
+except after thinking a smidge more, it turns out the put handler that inspired this thought is just taking in denied or accepted...
