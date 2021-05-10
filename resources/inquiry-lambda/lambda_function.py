@@ -5,7 +5,8 @@ from sqlalchemy import and_, or_
 from guided_lambda_handler.guided_lambda_handler import AuthException, GLH, success_response_output, invalid_http_method_factory
 from guided_lambda_handler.translators import json_to_model
 from models.user import User
-from models.inquiry import Inquiry
+from models.class_model import Class
+from models.inquiry import Inquiry, TypeEnum
 
 
 def get_input_translator(event, context):
@@ -41,7 +42,7 @@ def get_handler(input, session, get_claims):
         if claimed_cognito_id != username:
             raise AuthException('one can only see all inquiries for themselves')
 
-        inquiries = session.query(Inquiry).filter(and_(Inquiry.forUser==username, Inquiry.fromUser==username))
+        inquiries = session.query(Inquiry).filter(and_(Inquiry.classId==class_id, or_(Inquiry.forUser==username, Inquiry.fromUser==username)))
 
     return inquiries
 
@@ -89,7 +90,7 @@ def post_handler(input, session, get_claims):
     claimed_cognito_id = claims["cognito:username"]
     inquiry.fromUser = claimed_cognito_id
 
-    clazz = session.query(Inquiry).filter(Class.id==inquiry.classId).one()
+    clazz = session.query(Class).filter(Class.id==inquiry.classId).one()
     teacher = clazz.teacher
 
     if inquiry.fromUser == inquiry.forUser:
@@ -126,12 +127,24 @@ def put_handler(input, session, get_claims):
 
     inquiry = session.query(Inquiry).filter(Inquiry.id==inquiry_id).one()
 
+    # TODO what if the one being updated (or not being updated) is already true?
+    # could probably just not set and notify that it got cancelled right before or accepted right before cancelled
     if accepted:
         if claimed_cognito_id != inquiry.forUser:
             raise AuthException('only requested user can accept')
         inquiry.accepted = True
+
+        clazz = session.query(Class).filter(Class.id==inquiry.classId).one()
+        forUser = session.query(User).filter(User.cognitoId==inquiry.forUser).one()
+        if inquiry.type == TypeEnum.STUDENT:
+            clazz.students.append(forUser)
+        elif inquiry.type == TypeEnum.TUTOR:
+            clazz.tutors.add(forUser)
+        else:
+            raise Exception('invalid inquiry type ' + str(inquiry.type))
+        session.add(clazz)
     else:
-        if claimed_cognito_id != inquiry.forUser and claimed != inquiry.fromUser:
+        if claimed_cognito_id != inquiry.forUser and claimed_cognito_id != inquiry.fromUser:
             raise AuthException('only requested or requesting user can deny')
         inquiry.denied = True
 
