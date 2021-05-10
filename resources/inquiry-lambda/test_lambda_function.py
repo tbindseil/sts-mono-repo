@@ -298,190 +298,124 @@ class TestLambdaFunction(unittest.TestCase):
             raw_output = lambda_function.put_handler((inquiry.id, body), self.session, get_claims_other)
         self.assertEqual(str(e.exception), 'only requested or requesting user can deny')
 
-    def test_put_handler_accepts_and_denies(self):
+    def test_put_handler_accepts(self):
         class1 = Class(name="awesome class1", teacher=self.cognito_id_teacher)
         self.session.add(class1)
-        class2 = Class(name="awesome class2", teacher=self.cognito_id_teacher)
-        self.session.add(class2)
         self.session.commit()
 
         inquiry_accept = self.make_and_add_inquiry(self.session,
                                                    self.cognito_id,
                                                    self.cognito_id_teacher,
                                                    class1.id)
-        inquiry_deny = self.make_and_add_inquiry(self.session,
-                                                   self.cognito_id,
-                                                   self.cognito_id_teacher,
-                                                   class2.id)
         self.session.commit()
 
         body_accept = {
             'accepted': True,
             'denied': False
         }
+
+        self.assertEqual(inquiry_accept.accepted, False)
+        self.assertEqual(inquiry_accept.denied, False)
+
+        raw_output_accept = lambda_function.put_handler((inquiry_accept.id, body_accept), self.session, self.get_claims_teacher)
+
+        self.assertEqual(inquiry_accept.accepted, True)
+        self.assertEqual(inquiry_accept.denied, False)
+
+    def test_put_handler_denies(self):
+        class2 = Class(name="awesome class2", teacher=self.cognito_id_teacher)
+        self.session.add(class2)
+        self.session.commit()
+
+        inquiry_deny = self.make_and_add_inquiry(self.session,
+                                                   self.cognito_id,
+                                                   self.cognito_id_teacher,
+                                                   class2.id)
+        self.session.commit()
+
         body_deny = {
             'accepted': False,
             'denied': True
         }
 
-        self.assertEqual(inquiry_accept.accepted, False)
-        self.assertEqual(inquiry_accept.denied, False)
         self.assertEqual(inquiry_deny.accepted, False)
         self.assertEqual(inquiry_deny.denied, False)
 
-        raw_output_accept = lambda_function.put_handler((inquiry_accept.id, body_accept), self.session, self.get_claims_teacher)
         raw_output_deny = lambda_function.put_handler((inquiry_deny.id, body_deny), self.session, self.get_claims_teacher)
 
-        self.assertEqual(inquiry_accept.accepted, True)
-        self.assertEqual(inquiry_accept.denied, False)
         self.assertEqual(inquiry_deny.accepted, False)
         self.assertEqual(inquiry_deny.denied, True)
 
+    def test_put_handler_throws_when_accepted_by_non_for_user(self):
+        class2 = Class(name="awesome class2", teacher=self.cognito_id_teacher)
+        self.session.add(class2)
+        self.session.commit()
 
+        inquiry = self.make_and_add_inquiry(self.session,
+                                            self.cognito_id_teacher,
+                                            self.cognito_id,
+                                            class2.id)
+        self.session.commit()
 
+        body = {
+            'accepted': True,
+            'denied': False
+        }
 
+        with self.assertRaises(AuthException) as e:
+            raw_output = lambda_function.put_handler((inquiry.id, body), self.session, self.get_claims_teacher)
+        self.assertEqual(str(e.exception), 'only requested user can accept')
+
+    def test_put_handler_adds_to_tutors_when_accepted(self):
+        class2 = Class(name="awesome class2", teacher=self.cognito_id_teacher)
+        self.session.add(class2)
+        self.session.commit()
+
+        inquiry = self.make_and_add_inquiry(self.session,
+                                            self.cognito_id_teacher,
+                                            self.cognito_id,
+                                            class2.id,
+                                            TypeEnum.TUTOR)
+        self.session.commit()
+
+        body = {
+            'accepted': True,
+            'denied': False
+        }
+
+        self.assertEqual(len(class2.tutors), 0)
+
+        raw_output = lambda_function.put_handler((inquiry.id, body), self.session, self.get_claims)
+
+        self.assertEqual(len(class2.tutors), 1)
+        self.assertEqual(class2.tutors[0].cognitoId, self.cognito_id)
+
+    def test_put_handler_adds_to_students_when_accepted(self):
+        class2 = Class(name="awesome class2", teacher=self.cognito_id_teacher)
+        self.session.add(class2)
+        self.session.commit()
+
+        inquiry = self.make_and_add_inquiry(self.session,
+                                            self.cognito_id_teacher,
+                                            self.cognito_id,
+                                            class2.id,
+                                            TypeEnum.STUDENT)
+        self.session.commit()
+
+        body = {
+            'accepted': True,
+            'denied': False
+        }
+
+        self.assertEqual(len(class2.students), 0)
+
+        raw_output = lambda_function.put_handler((inquiry.id, body), self.session, self.get_claims)
+
+        self.assertEqual(len(class2.students), 1)
+        self.assertEqual(class2.students[0].cognitoId, self.cognito_id)
 
     def test_put_output_translator(self):
         response_code, response_body = lambda_function.put_output_translator("irrelevant")
-        self.assertEqual(response_code, 200)
-        self.assertEqual(response_body, "success")
-
-
-
-
-
-
-    def est_get_input_translator(self):
-        event = {"queryStringParameters": {"class": "this_is_the_class_id"}}
-        input = lambda_function.get_input_translator(event, "context")
-        self.assertEqual(input, "this_is_the_class_id")
-
-    def est_teacher_can_get_class(self):
-        clazz = Class(name="awesome class", teacher=self.cognito_id)
-        self.session.add(clazz)
-        self.session.commit()
-        raw_output = lambda_function.get_handler(clazz.id, self.session, self.get_claims)
-
-    def est_students_can_get_class(self):
-        clazz = Class(name="awesome class", teacher=self.cognito_id)
-        clazz.students.append(self.test_user_teacher)
-        self.session.add(clazz)
-        self.session.commit()
-        raw_output = lambda_function.get_handler(clazz.id, self.session, self.get_claims_teacher)
-
-    def est_tutors_can_get_class(self):
-        clazz = Class(name="awesome class", teacher=self.cognito_id)
-        clazz.tutors.append(self.test_user_teacher)
-        self.session.add(clazz)
-        self.session.commit()
-        raw_output = lambda_function.get_handler(clazz.id, self.session, self.get_claims_teacher)
-
-    def est_get_class_throws_when_not_teacher_student_or_tutor(self):
-        clazz = Class(name="awesome class", teacher=self.cognito_id)
-        self.session.add(clazz)
-        self.session.commit()
-        with self.assertRaises(AuthException) as e:
-            raw_output = lambda_function.get_handler(clazz.id, self.session, self.get_claims_teacher)
-
-    def est_get_returns_class(self):
-        clazz = Class(name="awesome class", teacher=self.cognito_id)
-        clazz.students.append(self.test_user_teacher)
-        clazz.tutors.append(self.test_user_teacher)
-        self.session.add(clazz)
-        self.session.commit()
-
-        raw_output = lambda_function.get_handler(clazz.id, self.session, self.get_claims_teacher)
-
-        self.assertClassEquals(clazz, raw_output)
-
-    def est_get_output_translator(self):
-        clazz = Class(name="awesome class", teacher=self.cognito_id)
-        clazz.students.append(self.test_user_teacher)
-        clazz.tutors.append(self.test_user_teacher)
-        clazz.id = 42
-        expected_output = {
-            'id': clazz.id,
-            'name': clazz.name,
-            'teacher': clazz.teacher,
-            'students': lambda_function.get_ids(clazz.students),
-            'tutors': lambda_function.get_ids(clazz.tutors)
-        }
-
-        response_code, response_body = lambda_function.get_output_translator(clazz)
-
-        self.assertEqual(response_code, 200)
-        self.assertEqual(response_body, json.dumps(expected_output))
-
-    def est_post_input_translator(self):
-        class_params = json.dumps({
-            "name": "this_is_the_class_name",
-            "teacher": self.cognito_id
-        })
-        expected_input = json_to_model(class_params, Class)
-        event = {"body": class_params}
-        input = lambda_function.post_input_translator(event, "context")
-        self.assertClassEquals(expected_input, input)
-
-    def est_post_throws_when_not_teacher(self):
-        clazz = Class(name="awesome class", teacher=self.cognito_id)
-
-        with self.assertRaises(AuthException) as e:
-            raw_output = lambda_function.post_handler(clazz, self.session, self.get_claims)
-
-
-    def est_post_saves_class(self):
-        class_posted = Class(name="awesome class", teacher=self.cognito_id)
-
-        raw_output = lambda_function.post_handler(class_posted, self.session, self.get_claims_teacher)
-        
-        class_queried = self.session.query(Class).one()
-
-        class_posted.id = class_queried.id
-        self.assertClassEquals(class_posted, class_queried)
-
-    def est_post_output_translator(self):
-        response_code, response_body = lambda_function.post_output_translator("irrelevant")
-        self.assertEqual(response_code, 200)
-        self.assertEqual(response_body, "success")
-
-    def est_delete_input_translator(self):
-        event = {"queryStringParameters": {"class": "this_is_the_class_id"}}
-        input = lambda_function.delete_input_translator(event, "context")
-        self.assertEqual(input, "this_is_the_class_id")
-
-    def est_teacher_can_delete(self):
-        clazz = Class(name="awesome class", teacher=self.cognito_id)
-        self.session.add(clazz)
-        self.session.commit()
-
-        raw_output = lambda_function.delete_handler(clazz.id, self.session, self.get_claims_teacher)
-
-    def est_teacher_can_delete(self):
-        clazz = Class(name="awesome class", teacher=self.cognito_id)
-        self.session.add(clazz)
-        self.session.commit()
-
-        raw_output = lambda_function.delete_handler(clazz.id, self.session, self.get_claims)
-
-    def est_delete_throws_when_not_teacher_or_teacher(self):
-        clazz = Class(name="awesome class", teacher=self.cognito_id_teacher)
-        self.session.add(clazz)
-        self.session.commit()
-
-        with self.assertRaises(AuthException) as e:
-            raw_output = lambda_function.delete_handler(clazz.id, self.session, self.get_claims)
-
-    def est_delete_deleles(self):
-        clazz = Class(name="awesome class", teacher=self.cognito_id)
-        self.session.add(clazz)
-        self.session.commit()
-
-        raw_output = lambda_function.delete_handler(clazz.id, self.session, self.get_claims)
-
-        self.assertEqual(self.session.query(Class).filter(Class.id==clazz.id).count(), 0)
-
-    def est_delete_output_translator(self):
-        response_code, response_body = lambda_function.post_output_translator("irrelevant")
         self.assertEqual(response_code, 200)
         self.assertEqual(response_body, "success")
 
@@ -491,17 +425,6 @@ class TestLambdaFunction(unittest.TestCase):
         self.session.query(Class).delete()
         self.session.query(Inquiry).delete()
         self.session.commit()
-
-    def assertClassEquals(self, expected_class, actual_class):
-        expected_student_ids = lambda_function.get_ids(expected_class.students)
-        expected_tutor_ids = lambda_function.get_ids(expected_class.tutors)
-        actual_student_ids = lambda_function.get_ids(actual_class.students)
-        actual_tutor_ids = lambda_function.get_ids(actual_class.tutors)
-
-        self.assertEqual(expected_class.name, actual_class.name)
-        self.assertEqual(expected_class.teacher, actual_class.teacher)
-        self.assertEqual(expected_student_ids, actual_student_ids)
-        self.assertEqual(expected_tutor_ids, actual_tutor_ids)
 
     def make_and_add_inquiry(self, session, fromUser, forUser, class_id, type=TypeEnum.STUDENT):
         inquiry = Inquiry(forUser, class_id, type)

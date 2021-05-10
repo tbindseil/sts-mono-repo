@@ -139,7 +139,7 @@ def put_handler(input, session, get_claims):
         if inquiry.type == TypeEnum.STUDENT:
             clazz.students.append(forUser)
         elif inquiry.type == TypeEnum.TUTOR:
-            clazz.tutors.add(forUser)
+            clazz.tutors.append(forUser)
         else:
             raise Exception('invalid inquiry type ' + str(inquiry.type))
         session.add(clazz)

@@ -70,16 +70,16 @@ apis:
         given name, searches for classes with that name
         returns list of matches
 
-    post inquiry
+    post inquiry - done
         given fromUser, forUser, classId, status
         create inquiry
 
-    put inquiry
+    put inquiry - done
         given id, updated inquiry status and/or denied (maybe deny or accept?) (maybe accepted is a status?)
         update inquiry
         this includes adding students and tutors to classes
 
-    get inquiries
+    get inquiries - done
         given class
         all inquirys for that class
         given class user
