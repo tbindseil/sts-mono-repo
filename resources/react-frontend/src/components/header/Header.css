@@ -102,7 +102,7 @@ a { /* gotta override bootstrap here */
 }
 
 .DropDownContent a:hover {
-  background-color: #ddd;
+  background-color: #b4c7e7;
 }
 
 .DropDown:hover .DropDownContent {
