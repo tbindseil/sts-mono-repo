@@ -27,6 +27,8 @@ import {MyCalendarScreen} from "./components/calendar/MyCalendarScreen";
 import {CreateAvailabilityScreen} from "./components/calendar/CreateAvailabilityScreen";
 import {DeleteAvailabilityScreen} from "./components/calendar/DeleteAvailabilityScreen";
 
+import {MakeClassScreen} from "./components/clazz/MakeClassScreen";
+
 
 // TODO add blue
 Amplify.configure(awsConfig);
@@ -59,6 +61,7 @@ const App = () => {
         <Route path={"/create-availability"} component={CreateAvailabilityScreen}/>
         <Route path={"/delete-availability"} component={DeleteAvailabilityScreen}/>
 
+        <Route path={"/make-class"} component={MakeClassScreen}/>
       </Switch>
     </div>
   );
