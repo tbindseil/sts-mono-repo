@@ -224,6 +224,9 @@ function ProfileBody(props) {
                             value={profile.bio}
                             readOnly={!editting}/>
 
+                        { // TODO add list of class and class inquiries
+                        }
+
                         { editting ?
                             <tr>
                                 <td>

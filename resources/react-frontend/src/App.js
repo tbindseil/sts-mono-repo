@@ -28,6 +28,10 @@ import {CreateAvailabilityScreen} from "./components/calendar/CreateAvailability
 import {DeleteAvailabilityScreen} from "./components/calendar/DeleteAvailabilityScreen";
 
 import {MakeClassScreen} from "./components/clazz/MakeClassScreen";
+import {SearchClassesScreen} from "./components/clazz/SearchClassesScreen";
+import {ViewClassScreen} from "./components/clazz/ViewClassScreen";
+import {MakeInquiryScreen} from "./components/inquiry/MakeInquiryScreen";
+import {ViewInquiryScreen} from "./components/inquiry/ViewInquiryScreen";
 
 
 // TODO add blue
@@ -62,6 +66,10 @@ const App = () => {
         <Route path={"/delete-availability"} component={DeleteAvailabilityScreen}/>
 
         <Route path={"/make-class"} component={MakeClassScreen}/>
+        <Route path={"/search-classes"} component={SearchClassesScreen}/>
+        <Route path={"/view-class"} component={ViewClassScreen}/>
+        <Route path={"/make-inquiry"} component={MakeInquiryScreen}/>
+        <Route path={"/view-inquiry"} component={ViewInquiryScreen}/>
       </Switch>
     </div>
   );
