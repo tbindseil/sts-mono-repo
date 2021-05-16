@@ -116,9 +116,24 @@ class TestLambdaFunction(unittest.TestCase):
         self.session.add(self.test_user)
         self.session.commit()
 
-    def test_get_put_output_translator_returns_user(self):
+    def test_delete_output_translator_returns_success(self):
         actual_response = lambda_function.delete_output_translator("raw_output")
         self.assertEqual((200, "success"), actual_response)
+
+    def test_get_put_output_translator_returns_user(self):
+        raw_output = self.test_user
+        expected_response_body = {
+            'email': "email",
+            'cognitoId': "cognito_id",
+            'firstName': "user.firstName",
+            'lastName': "user.lastName",
+            'school': "user.school",
+            'grade': "user.grade",
+            'bio': "user.bio",
+            'admin': False
+        }
+        actual_response = lambda_function.get_put_output_translator(raw_output)
+        self.assertEqual((200, json.dumps(expected_response_body)), actual_response)
 
     def tearDown(self):
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()

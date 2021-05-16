@@ -109,7 +109,7 @@ apis:
 
 
 ui
-    add make class form - put under class tab for admin
+    add make class form - put under class tab for admin - done
         supply class name, and teacher in charge
             (I fill out this because I have admin (?))
 

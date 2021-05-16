@@ -1,18 +1,52 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
 
 export const BigScreenProfileButton = () => {
 
     const [user, setUser] = useState(undefined);
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    // TODO dry it out, this is copy pasted, and will run
+    // twice when in profile screen
+    const getAdminStatus = useCallback(() => {
+        if (!user) {
+            return;
+        }
+
+        const baseUrl = 'https://oercmchy3l.execute-api.us-west-2.amazonaws.com/prod/';
+        const url = baseUrl + user.username;
+        fetch(url)
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    setIsAdmin(result.admin);
+                },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    console.log("error getting profile for profile button");
+                    console.log(error);
+                }
+            );
+    }, [
+        user
+    ]);
+
     useEffect(() => {
         checkAuthenticated(() => void(0), setUser);
     }, [
-        setUser
+        setUser,
+    ]);
+
+    useEffect(() => {
+        getAdminStatus();
+    }, [
+        getAdminStatus
     ]);
 
     if (user) {
-
         return (
             <div className="DropDown RightAlign">
                 <a className="NavBarItem DropBtn button" href="/profile">Profile  <i className="arrow down"/>
@@ -22,6 +56,9 @@ export const BigScreenProfileButton = () => {
                         <a className="NavBarDropDownItem" href="/change-password">Change Password</a>
                         <a className="NavBarDropDownItem" href="/logout">Logout</a>
                         <a className="NavBarDropDownItem" href="/delete-account">Delete Account</a>
+                        { 
+                            isAdmin && <a className="NavBarDropDownItem" href="/make-class">Make Class</a>
+                        }
                     </div>
                 </a>
             </div>
@@ -53,10 +90,45 @@ export const SmallScreenProfileButton = () => {
     }
 
     const [user, setUser] = useState(undefined);
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    // TODO dry it out, this is copy pasted, and will run
+    // twice when in profile screen
+    const getAdminStatus = useCallback(() => {
+        if (!user) {
+            return;
+        }
+
+        const baseUrl = 'https://oercmchy3l.execute-api.us-west-2.amazonaws.com/prod/';
+        const url = baseUrl + user.username;
+        fetch(url)
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    setIsAdmin(result.admin);
+                },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    console.log("error getting profile for profile button");
+                    console.log(error);
+                }
+            );
+    }, [
+        user
+    ]);
+
     useEffect(() => {
         checkAuthenticated(() => void(0), setUser);
     }, [
         setUser
+    ]);
+
+    useEffect(() => {
+        getAdminStatus();
+    }, [
+        getAdminStatus
     ]);
 
     if (user) {
@@ -73,6 +145,9 @@ export const SmallScreenProfileButton = () => {
                 <a style={{display: extraProfileDisplay}} className="HamburgerItem" href="/change-password">Change Password</a>
                 <a style={{display: extraProfileDisplay}} className="HamburgerItem" href="/logout">Logout</a>
                 <a style={{display: extraProfileDisplay}} className="HamburgerItem" href="/delete-account">Delete Account</a>
+                {
+                    isAdmin && <a style={{display: extraProfileDisplay}} className="HamburgerItem" href="/make-class">Make Class</a>
+                }
             </>
         );
 

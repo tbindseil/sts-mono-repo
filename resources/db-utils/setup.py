@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="sts-db-utils-tj", # Replace with your own username
-    version="0.0.6",
+    version="0.0.7",
     author="tj",
     author_email="tjbindseil@gmail.com",
     description="used to connect to the database",

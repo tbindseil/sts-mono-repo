@@ -66,7 +66,8 @@ def get_put_output_translator(raw_output):
         'lastName': user.lastName,
         'school': user.school,
         'grade': user.grade,
-        'bio': user.bio
+        'bio': user.bio,
+        'admin': user.admin
     })
     return 200, response
 
