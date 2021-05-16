@@ -31,6 +31,7 @@ table.ProfileTable p {
   height: 23px;
 }
 
+/* TODO this doesnt seem to be used... */
 .ExpandableTextarea {
   border: 1px solid #ccc;
   font-family: inherit;

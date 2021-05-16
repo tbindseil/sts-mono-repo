@@ -223,3 +223,38 @@ button {
 .ErrorMessage {
   color: red;
 }
+
+/* copied from profile table to be accessed by all */
+/* TODO have profile (and other tables(?)) point to this instead of profile specific */
+.StsTable {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+table.StsTable td {
+  margin-top: 5px;
+  vertical-align: top;
+}
+
+table.StsTable label {
+  margin-bottom: 0px;
+  margin-top: 3px;
+}
+
+table.StsTable button {
+  width: 100%;
+}
+
+table.StsTable p, table.StsTable input {
+  width: 200px;
+}
+
+table.StsTable p {
+  width: 200px;
+  text-align: left;
+  margin-bottom: 0px;
+  margin-top: 3px;
+  margin-left: 5px;
+  height: 23px;
+}
+

@@ -34,6 +34,7 @@ export function ViewInquiryScreen() {
 };
 
 function ViewInquiryBody(props) {
+    const baseUrl = 'https://bd03dg94de.execute-api.us-west-2.amazonaws.com/prod/';
     return (
         <p>
             ViewInquiryBody
