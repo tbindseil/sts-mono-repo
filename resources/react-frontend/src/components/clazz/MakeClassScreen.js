@@ -77,8 +77,8 @@ function MakeClassBody(props) {
         }
 
         const clazz = {
-            className: className,
-            teacherUsername: teacherUsername
+            name: className,
+            teacher: teacherUsername
         }
         postClass(baseUrl, user.signInUserSession.idToken.jwtToken, clazz)
             .then(data => {
