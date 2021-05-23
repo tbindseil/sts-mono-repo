@@ -1,4 +1,4 @@
-import { Construct, StackProps, Stack } from '@aws-cdk/core';
+import { Construct, Duration, StackProps, Stack } from '@aws-cdk/core';
 import { AuthorizationType, CfnAuthorizer, LambdaIntegration, RestApi } from "@aws-cdk/aws-apigateway";
 import { Code, IFunction, Function, Runtime } from "@aws-cdk/aws-lambda";
 import { DatabaseSecret } from '@aws-cdk/aws-rds';
@@ -18,6 +18,7 @@ export class UserRegisteredService extends Construct {
             runtime: Runtime.PYTHON_3_8,
             code: Code.fromAsset("resources/user-registered-lambda/my-deployment-package.zip"),
             handler: "lambda_function.lambda_handler",
+            timeout: Duration.seconds(29)
         });
 
         props.dbSecret.grantRead(this.handler.role!);

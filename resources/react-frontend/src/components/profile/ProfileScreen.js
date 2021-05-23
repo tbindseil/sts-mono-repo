@@ -105,6 +105,49 @@ function ProfileBody(props) {
         user, getProfile
     ]);
 
+    // once user is gotten, list classes for user
+    // each class is a list item that hyperlinks to the view class screen
+    const [classes, setClasses] = useState([]);
+    const getUserClasses = useCallback(() => {
+        if (!user) {
+            return;
+        }
+
+        // ah! urls are getting messy TODO
+        const classBaseUrl = 'https://tne2p23nkk.execute-api.us-west-2.amazonaws.com/prod/';
+
+        const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
+        fetch(classBaseUrl, {
+            headers: {
+                'Authorization': tokenString
+            },
+        })
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    console.log("result is:");
+                    console.log(result);
+                },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    console.log("error is:");
+                    console.log(error);
+                    setFailed(true);
+                    setErrorMessage("Error getting classes");
+                }
+            );
+    }, [
+        user
+    ]);
+
+    useEffect(() => {
+        getUserClasses();
+    }, [
+        user, getUserClasses
+    ]);
+
     const editProfileOnClickHandler = () => {
         setEditting(true);
     }
@@ -165,6 +208,20 @@ function ProfileBody(props) {
         updatedProfile[name] = value;
 
         setProfile(updatedProfile);
+    }
+
+    const goToViewClass = (event) => {
+        const target = event.target;
+        const value = target.value;
+        console.log("value is:");
+        console.log(value);
+        const classId = 1; // TODO
+        history.push({
+            pathname: "/view-class",
+            state: {
+                classId: classId
+            }
+        });
     }
 
     return (
@@ -252,6 +309,19 @@ function ProfileBody(props) {
                         }
 
                     </table>
+
+                    <ul>
+                        {
+                            classes.forEach(clazz => {
+                                return (
+                                    <li>
+                                        <button value={clazz.id} onClick={goToViewClass}>clazz.name</button>
+                                    </li>
+                                );
+
+                            })
+                        }
+                    </ul>
 
                     { failed &&
                         <p className="ErrorMessage">{errorMessage}</p>

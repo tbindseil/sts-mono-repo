@@ -1,4 +1,4 @@
-import { Construct } from '@aws-cdk/core';
+import { Construct, Duration } from '@aws-cdk/core';
 import { Cors, LambdaIntegration, RestApi } from "@aws-cdk/aws-apigateway";
 import { Code, Function, Runtime } from "@aws-cdk/aws-lambda";
 import { DatabaseSecret } from '@aws-cdk/aws-rds';
@@ -15,6 +15,7 @@ export class InquiryLambdaService extends Construct {
             runtime: Runtime.PYTHON_3_8,
             code: Code.fromAsset("resources/inquiry-lambda/my-deployment-package.zip"),
             handler: "lambda_function.lambda_handler",
+            timeout: Duration.seconds(29)
         });
         props.dbSecret.grantRead(handler.role!);
 
@@ -39,17 +40,21 @@ export class InquiryLambdaService extends Construct {
         });
 
         const postInquiryIntegration = new LambdaIntegration(handler, {
-            requestTemplates: { "application/json": '{ "statusCode": "200" }' }
+            requestTemplates: { "application/json": '{ "statusCode": "200" }' },
+            timeout: Duration.seconds(29)
         });
 
         const getInquriesIntegration = new LambdaIntegration(handler, {
-            requestTemplates: { "application/json": '{ "statusCode": "200" }' }
+            requestTemplates: { "application/json": '{ "statusCode": "200" }' },
+            timeout: Duration.seconds(29)
         });
 
         const inquiry = api.root.addResource("{inquiry-id}");
 
         // adjust a specific inquiry from the db with: PUT /{inquiry-id}
-        const putInquiryIntegration = new LambdaIntegration(handler);
+        const putInquiryIntegration = new LambdaIntegration(handler, {
+            timeout: Duration.seconds(29)
+        });
 
         api.root.addMethod("GET", getInquriesIntegration); // GET /
         api.root.addMethod("POST", postInquiryIntegration); // POST /

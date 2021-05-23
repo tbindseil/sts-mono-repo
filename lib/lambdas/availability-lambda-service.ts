@@ -1,4 +1,4 @@
-import { Construct } from '@aws-cdk/core';
+import { Construct, Duration } from '@aws-cdk/core';
 import { Cors, LambdaIntegration, RestApi } from "@aws-cdk/aws-apigateway";
 import { Code, Function, Runtime } from "@aws-cdk/aws-lambda";
 import { DatabaseSecret } from '@aws-cdk/aws-rds';
@@ -15,6 +15,7 @@ export class AvailabilityLambdaService extends Construct {
             runtime: Runtime.PYTHON_3_8,
             code: Code.fromAsset("resources/availability-lambda/my-deployment-package.zip"),
             handler: "lambda_function.lambda_handler",
+            timeout: Duration.seconds(29)
         });
         props.dbSecret.grantRead(handler.role!);
 
@@ -39,17 +40,21 @@ export class AvailabilityLambdaService extends Construct {
         });
 
         const getAvailabilitiesIntegration = new LambdaIntegration(handler, {
-            requestTemplates: { "application/json": '{ "statusCode": "200" }' }
+            requestTemplates: { "application/json": '{ "statusCode": "200" }' },
+            timeout: Duration.seconds(29)
         });
 
         const postAvailabilityIntegration = new LambdaIntegration(handler, {
-            requestTemplates: { "application/json": '{ "statusCode": "200" }' }
+            requestTemplates: { "application/json": '{ "statusCode": "200" }' },
+            timeout: Duration.seconds(29)
         });
 
         const availability = api.root.addResource("{availability-id}");
 
         // Remove a specific availability from the db with: DELETE /{availability-id}
-        const deleteAvailabilityIntegration = new LambdaIntegration(handler);
+        const deleteAvailabilityIntegration = new LambdaIntegration(handler, {
+            timeout: Duration.seconds(29)
+        });
 
         api.root.addMethod("GET", getAvailabilitiesIntegration); // GET /
         api.root.addMethod("POST", postAvailabilityIntegration); // POST /
