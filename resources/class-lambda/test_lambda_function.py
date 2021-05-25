@@ -15,8 +15,23 @@ from models.class_model import Class
 
 import lambda_function
 
+
+
+# TODO remove and pip remove
+from sts_db_utils import sts_db_utils
+
+
 class TestLambdaFunction(unittest.TestCase):
     engine = create_engine('sqlite:///:memory:') # note tear down not needed since this is in memory
+    # engine = sts_db_utils.get_database_engine()
+
+    def etUp(self):
+        Session = sessionmaker(bind=self.engine)
+        self.session = Session()
+
+        claims = {"cognito:username": "e3aa09c4-7121-48be-8cf2-8453924a5b80"}
+        self.get_claims = MagicMock()
+        self.get_claims.return_value = claims
 
     def setUp(self):
         Base.metadata.create_all(self.engine)
@@ -47,6 +62,15 @@ class TestLambdaFunction(unittest.TestCase):
         input = lambda_function.get_input_translator(event, "context")
         self.assertEqual(input, "this_is_the_class_id")
 
+        # experiment time
+
+        # raw_output = lambda_function.get_handler(None, self.session, self.get_claims)
+        # print("raw_output is:")
+        # print(raw_output)
+        # for c in raw_output:
+            # print("in for loop, cname is")
+            # print(c.name)
+
     def test_get_input_translator_can_handle_no_query_string_parameters(self):
         event = {"queryStringParameters": None}
         input = lambda_function.get_input_translator(event, "context")
@@ -71,6 +95,7 @@ class TestLambdaFunction(unittest.TestCase):
         self.session.add(clazz)
         self.session.commit()
         raw_output = lambda_function.get_handler(clazz.id, self.session, self.get_claims_admin)
+        # TODO test these results
 
     def test_get_class_throws_when_not_teacher_student_or_tutor(self):
         clazz = Class(name="awesome class", teacher=self.cognito_id)
@@ -90,6 +115,7 @@ class TestLambdaFunction(unittest.TestCase):
 
         self.assertClassEquals(clazz, raw_output[0])
 
+    # TODO I think I need to test individual situations..
     def test_get_all_user_classes(self):
         class_expected_teacher = Class(name="class 1", teacher=self.cognito_id)
         self.session.add(class_expected_teacher)

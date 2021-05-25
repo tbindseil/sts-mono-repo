@@ -44,30 +44,32 @@ def get_handler(input, session, get_claims):
         claimed_cognito_id = claims["cognito:username"]
         claimed_user = session.query(User).filter(User.cognitoId==claimed_cognito_id).one()
 
-        all_classes = session.query(Class).all()
-        print("all classes is:")
-        print(all_classes)
-        for c in all_classes:
-            print("c id, name and teacher is:")
-            print(c.id)
-            print(c.name)
-            print(c.teacher)
+        # all_classes = session.query(Class).all()
+        # print("all classes is:")
+        # print(all_classes)
+        # for c in all_classes:
+            # print("c id, name and teacher is:")
+            # print(c.id)
+            # print(c.name)
+            # print(c.teacher)
 
-        same_query_not_leaving_method = session.query(Class).filter(or_(Class.teacher==claimed_cognito_id,
-                                               Class.students.contains(claimed_user),
-                                               Class.tutors.contains(claimed_user))).all()
-        print("same_query_not_leaving_method is:")
-        print(same_query_not_leaving_method)
-        for c in same_query_not_leaving_method:
-            print("c id, name and teacher is:")
-            print(c.id)
-            print(c.name)
-            print(c.teacher)
+        # same_query_not_leaving_method = session.query(Class).filter(or_(Class.teacher==claimed_cognito_id,
+                                               # Class.students.contains(claimed_user),
+                                               # Class.tutors.contains(claimed_user))).all()
+        # print("same_query_not_leaving_method is:")
+        # print(same_query_not_leaving_method)
+        # for c in same_query_not_leaving_method:
+            # print("c id, name and teacher is:")
+            # print(c.id)
+            # print(c.name)
+            # print(c.teacher)
 
-        print("about to return")
+        # print("about to return")
         return session.query(Class).filter(or_(Class.teacher==claimed_cognito_id,
-                                               Class.students.contains(claimed_user),
-                                               Class.tutors.contains(claimed_user))).all()
+                                               Class.students.any(id=claimed_user.id), # if this works I could jsut use cognito id
+                                               Class.tutors.any(id=claimed_user.id))) #.all()
+                                               # Class.students.contains(claimed_user),
+                                               # Class.tutors.contains(claimed_user))).all()
 
 
 
