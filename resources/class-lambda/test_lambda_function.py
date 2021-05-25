@@ -110,17 +110,6 @@ class TestLambdaFunction(unittest.TestCase):
         for (expected, actual) in itertools.zip_longest(expected_output, raw_output):
             self.assertClassEquals(expected, actual)
 
-        print('starting experiment')
-
-        queried_classes = self.session.query(Class).filter(or_(Class.teacher==self.cognito_id,
-                                               Class.students.contains(self.test_user),
-                                               Class.tutors.contains(self.test_user)))
-
-        code, output = lambda_function.get_output_translator(queried_classes)
-        print("output is:")
-        print(output)
-
-
     def test_get_output_translator(self):
         clazz = Class(name="awesome class", teacher=self.cognito_id)
         clazz.students.append(self.test_user_admin)
