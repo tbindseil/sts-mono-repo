@@ -44,39 +44,44 @@ def get_handler(input, session, get_claims):
         claimed_cognito_id = claims["cognito:username"]
         claimed_user = session.query(User).filter(User.cognitoId==claimed_cognito_id).one()
 
-        # for some reason, the following query works in tests but not in lambda, very bizarre
-        # actual_query = session.query(Class).filter(or_(Class.teacher==claimed_cognito_id,
-                                               # Class.students.contains(claimed_user),
-                                               # Class.tutors.contains(claimed_user))).all()
+        all_classes = session.query(Class).all()
+        print("all classes is:")
+        print(all_classes)
+        for c in all_classes:
+            print("c id, name and teacher is:")
+            print(c.id)
+            print(c.name)
+            print(c.teacher)
 
-        classes_as_teacher = session.query(Class).filter(Class.teacher==claimed_cognito_id)
-        classes_as_student = session.query(Class).filter(Class.students.contains(claimed_user))
-        classes_as_tutor = session.query(Class).filter(Class.tutors.contains(claimed_user))
+        same_query_not_leaving_method = session.query(Class).filter(or_(Class.teacher==claimed_cognito_id,
+                                               Class.students.contains(claimed_user),
+                                               Class.tutors.contains(claimed_user))).all()
+        print("same_query_not_leaving_method is:")
+        print(same_query_not_leaving_method)
+        for c in same_query_not_leaving_method:
+            print("c id, name and teacher is:")
+            print(c.id)
+            print(c.name)
+            print(c.teacher)
 
-        return (classes_as_teacher, classes_as_student, classes_as_tutor)
+        print("about to return")
+        return session.query(Class).filter(or_(Class.teacher==claimed_cognito_id,
+                                               Class.students.contains(claimed_user),
+                                               Class.tutors.contains(claimed_user))).all()
+
 
 
 def get_output_translator(raw_output):
-    (classes_as_teacher, classes_as_student, classes_as_tutor) = raw_output
+    print("ot")
+    print("raw output is:")
+    print(raw_output)
+    print("done raw output is:")
+    classes = raw_output
 
     response = {}
-    for c in classes_as_teacher:
-        response[c.id] = {
-            'name': c.name,
-            'teacher': c.teacher,
-            'students': get_ids(c.students),
-            'tutors': get_ids(c.tutors)
-        }
-
-    for c in classes_as_student:
-        response[c.id] = {
-            'name': c.name,
-            'teacher': c.teacher,
-            'students': get_ids(c.students),
-            'tutors': get_ids(c.tutors)
-        }
-
-    for c in classes_as_tutor:
+    for c in classes:
+        print("c.id is:")
+        print(c.id)
         response[c.id] = {
             'name': c.name,
             'teacher': c.teacher,
