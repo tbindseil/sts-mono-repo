@@ -147,3 +147,62 @@ for the python rest api stuff, it seems like get, put, and post, and delete are 
     for each new attr, if in filtered item attrs dict, update
     update in db
 except after thinking a smidge more, it turns out the put handler that inspired this thought is just taking in denied or accepted...
+
+
+
+===========================================================================================================================================================
+
+registration enhancements
+
+ui
+    sign up info page extended to include permission disclaimer
+    registration form extended to include:
+        username
+        user email (optional)
+        parent email (required)
+        firstname
+        lastname
+        school
+        grade
+        bio
+    profile extended to include parents email
+
+backend
+    can i send extra info to user registration?
+    doesn't matter, use user lambda
+    so,
+        sign up/ register screen allows supply of profile attrs above, then I kick off cognito process AND AND
+            save profile attrs.
+        this leaves room for problems though
+        problems being user provides invalid things , but cognito process is already kicked off
+        so, I need to create user in my own database ... uh but this leaves room for cognito to fail (like invalid password)
+            so, I must handle creation of user at pre sign up
+                I just need to verify that this is safe from cognito perspective by passing in bad password and seeing if user gets saved
+    all the ^^^ to say, upon sign up (not confirmation anymore) save user info
+
+    uhhh I don't think I can pass random info to the pre signup lambda
+
+    so, I must first initiate registration,
+    then, create profile (post not put)
+    then on post confirmation,email parent and child (if present) emails saying thanks for signing up!
+
+...
+
+    in conclusion    
+        I need to change user lambda
+            get returns more stuff
+            implement post
+
+        I need to change post confirmation lambda
+            remove adding user to db
+            send emails
+
+models
+    user will change to have more sheet
+
+
+
+
+
+
+
