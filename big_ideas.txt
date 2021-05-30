@@ -165,7 +165,7 @@ ui
         school
         grade
         bio
-    profile extended to include parents email
+    profile extended to include parents email n stuff
 
 backend
     can i send extra info to user registration?

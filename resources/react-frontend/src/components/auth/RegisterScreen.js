@@ -47,21 +47,50 @@ function RegisterBody(props) {
 
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
-    const [email, setEmail] = useState("");
+
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+
+    const [parentEmail, setParentEmail] = useState("");
+    const [parentName, setParentName] = useState("");
+
+    const [email, setEmail] = useState("");
+    const [school, setSchool] = useState("");
+    const [grade, setGrade] = useState("");
+    const [age, setAge] = useState("");
+    const [address, setAddress] = useState("");
+    const [bio, setBio] = useState("");
 
     const handleChange = event => {
         const target = event.target;
         const value = target.value;
         const name = target.name;
 
-        if (name === "email") {
-            setEmail(value);
+        if (name === "username") {
+            setUsername(value);
         } else if (name === "password") {
             setPassword(value);
         } else if (name === "confirmPassword") {
             setConfirmPassword(value);
+        } else if (name === "parentEmail") {
+            setParentEmail(value);
+        } else if (name === "parentName") {
+            setParentName(value);
+        } else if (name === "email") {
+            setEmail(value);
+        } else if (name === "school") {
+            setSchool(value);
+        } else if (name === "grade") {
+            if ((value >= 1 && value <= 12) || value === "") {
+                setGrade(value);
+            }
+        } else if (name === "age") {
+            setAge(value);
+        } else if (name === "address") {
+            setAddress(value);
+        } else if (name === "bio") {
+            setBio(value);
         }
     }
 
@@ -83,6 +112,7 @@ function RegisterBody(props) {
                 }
                 setErrorMessage(message);
             });
+        // TODO .then post user
     };
 
     return (
@@ -105,10 +135,11 @@ function RegisterBody(props) {
                     className="Centered MaxWidth AuthForm"
                     onChange={handleChange}>
 
+                    <br/>Login Info<br/>
                     <TextInput
-                        name={"email"}
-                        placeHolder={"Email"}
-                        value={email}/>
+                        name={"username"}
+                        value={username}
+                        placeHolder={"Username"}/>
                     <br/>
 
                     <TextInput
@@ -123,6 +154,58 @@ function RegisterBody(props) {
                         value={confirmPassword}
                         placeHolder={'Confirm Password'}
                         type={"password"}/>
+                    <br/>
+
+                    <br/>Parent Info<br/>
+                    <TextInput
+                        name={"parentEmail"}
+                        value={parentEmail}
+                        placeHolder={"Parent Email"}/>
+                    <br/>
+
+                    <TextInput
+                        name={"parentName"}
+                        value={parentName}
+                        placeHolder={"Parent Name"}/>
+                    <br/>
+
+                    <br/>Profile Info<br/>
+                    <TextInput
+                        name={"email"}
+                        placeHolder={"Email"}
+                        value={email}/>
+                    <br/>
+
+                    <TextInput
+                        name={"school"}
+                        placeHolder={"School"}
+                        value={school}/>
+                    <br/>
+
+                    <TextInput
+                        name={"grade"}
+                        placeHolder={"Grade"}
+                        value={grade}
+                        type={"number"}/>
+                    <br/>
+
+                    <TextInput
+                        name={"age"}
+                        placeHolder={"Age"}
+                        value={age}
+                        type={"number"}/>
+                    <br/>
+
+                    <TextInput
+                        name={"address"}
+                        placeHolder={"Addrss"}
+                        value={address}/>
+                    <br/>
+
+                    <TextInput
+                        name={"bio"}
+                        placeHolder={"Bio"}
+                        value={bio}/>
                     <br/>
 
                     <FormButton
