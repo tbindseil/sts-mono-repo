@@ -23,12 +23,7 @@ class TestLambdaFunction(unittest.TestCase):
         self.session = Session()
 
         self.cognito_id = "cognito_id"
-        self.test_user = User(email="email", cognitoId=self.cognito_id)
-        self.test_user.firstName = "user.firstName"
-        self.test_user.lastName = "user.lastName"
-        self.test_user.school = "user.school"
-        self.test_user.grade = "user.grade"
-        self.test_user.bio = "user.bio"
+        self.test_user = self.createUser()
         self.session.add(self.test_user)
         self.session.commit()
 
@@ -66,7 +61,7 @@ class TestLambdaFunction(unittest.TestCase):
             "grade": "gc.grade",
             "bio": "gc.bio"
         }
-        updated_user = User(email="email", cognitoId=self.cognito_id)
+        updated_user = self.createUser()
 
         user_attributes = list(updated_user.__dict__)
         for key, value in updated_user_params.items():
@@ -91,7 +86,7 @@ class TestLambdaFunction(unittest.TestCase):
             "admin": "NEW_ADMIN",
             "bio": "gc.bio"
         }
-        updated_user = User(email="email", cognitoId=self.cognito_id)
+        updated_user = self.createUser()
         user_attributes = list(updated_user.__dict__)
         for key, value in updated_user_params.items():
             if key != "email" and key != "id" and key != "cognitoId" and key != "admin":
@@ -112,13 +107,33 @@ class TestLambdaFunction(unittest.TestCase):
             queried_user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
 
         # add user back for tear down
-        self.test_user = User(email="email", cognitoId=self.cognito_id)
+        self.test_user = self.createUser()
         self.session.add(self.test_user)
         self.session.commit()
 
-    def test_get_put_output_translator_returns_user(self):
+    def test_delete_output_translator_returns_user(self):
         actual_response = lambda_function.delete_output_translator("raw_output")
         self.assertEqual((200, "success"), actual_response)
+
+    def test_get_put_output_translator_returns_user(self):
+        raw_output = self.test_user
+        actual_response = lambda_function.get_put_output_translator(raw_output)
+
+        expected_json = json.dumps({
+            'parentName': self.test_user.parentName,
+            'parentEmail': self.test_user.parentEmail,
+            'email': self.test_user.email,
+            'cognitoId': self.test_user.cognitoId,
+            'firstName': self.test_user.firstName,
+            'lastName': self.test_user.lastName,
+            'school': self.test_user.school,
+            'grade': self.test_user.grade,
+            'age': self.test_user.age,
+            'address': self.test_user.address,
+            'bio': self.test_user.bio
+        })
+
+        self.assertEqual((200, expected_json), actual_response)
 
     def tearDown(self):
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
@@ -133,3 +148,18 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertEqual(user1.school, user2.school)
         self.assertEqual(user1.grade, user2.grade)
         self.assertEqual(user1.bio, user2.bio)
+
+    def createUser(self):
+        return User(
+                email="email",
+                cognitoId=self.cognito_id,
+                parentName = "user.parentName",
+                parentEmail = "user.parentEmail",
+                firstName = "user.firstName",
+                lastName = "user.lastName",
+                school = "user.school",
+                grade = "user.grade",
+                age = "user.age",
+                address = "user.address",
+                bio = "user.bio",
+        )

@@ -190,7 +190,7 @@ backend
 
     in conclusion    
         I need to change user lambda
-            get returns more stuff
+            get returns more stuff - done
             implement post
 
         ~~I need to add a pre signup lambda that calls post user~~

@@ -7,9 +7,6 @@ from sqlalchemy.orm import relationship
 # Availability class is used, so we must define it here or else it has to be definied by clients of the User class,
 # and they don't necessarily know that they need to do this
 from .availability import Availability
-from .class_model import Class
-from .student_class_association import student_class_association
-from .tutor_class_association import tutor_class_association
 
 
 class User(Base):

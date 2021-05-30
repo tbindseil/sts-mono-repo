@@ -60,12 +60,16 @@ def delete_handler(input, session, get_claims):
 def get_put_output_translator(raw_output):
     user = raw_output
     response = json.dumps({
+        'parentName': user.parentName,
+        'parentEmail': user.parentEmail,
         'email': user.email,
         'cognitoId': user.cognitoId,
         'firstName': user.firstName,
         'lastName': user.lastName,
         'school': user.school,
         'grade': user.grade,
+        'age': user.age,
+        'address': user.address,
         'bio': user.bio
     })
     return 200, response
