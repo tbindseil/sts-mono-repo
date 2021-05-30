@@ -36,6 +36,8 @@ def put_handler(input, session, get_claims):
 
     # can't change some things
     del user_attributes['id']
+    del user_attributes['parentName']
+    del user_attributes['parentEmail']
     del user_attributes['email']
     del user_attributes['cognitoId']
     del user_attributes['admin']
@@ -79,6 +81,26 @@ def delete_output_translator(raw_output):
     return success_response_output()
 
 
+def post_input_translator(event, context):
+    return json_to_model(event["body"], User)
+
+
+def post_handler(input, session, get_claims):
+    posted_user = input
+
+    claims = get_claims()
+    claimed_cognito_id = claims["cognito:username"]
+    if claimed_cognito_id != posted_user.cognitoId:
+        raise AuthException
+
+    session.add(posted_user)
+    return "success"
+
+
+def post_output_translator(raw_output):
+    return success_response_output()
+
+
 def lambda_handler(event, context):
     """
     for get, just query for user and return
@@ -96,9 +118,12 @@ def lambda_handler(event, context):
     elif event["httpMethod"] == "PUT":
         put_glh = GLH(input_translator, put_handler, get_put_output_translator)
         return put_glh.handle(event, context)
+    elif event["httpMethod"] == "POST":
+        post_glh = GLH(post_input_translator, post_handler, post_output_translator)
+        return post_glh.handle(event, context)
     elif event["httpMethod"] == "DELETE":
         delete_glh = GLH(input_translator, delete_handler, delete_output_translator)
         return delete_glh.handle(event, context)
     else:
-        valid_http_methods = ["GET", "PUT", "DELETE"]
+        valid_http_methods = ["GET", "PUT", "POST", "DELETE"]
         return invalid_http_method_factory(valid_http_methods)

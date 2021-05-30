@@ -44,19 +44,22 @@ export class UserLambdaService extends Construct {
             requestTemplates: { "application/json": '{ "statusCode": "200" }' }
         });
 
-        // Add new user to bucket with: PUT /{user-id}
+        // update user with: PUT /{user-id}
         const putUserIntegration = new LambdaIntegration(handler);
 
-        // Get a specific user from bucket with: GET /{user-id}
+        // Add new user with: POST /
+        const postUserIntegration = new LambdaIntegration(handler);
+
+        // Get a specific user with: GET /{user-id}
         const getUserIntegration = new LambdaIntegration(handler);
 
-        // TODO not a bucket..
-        // Remove a specific user from the bucket with: DELETE /{user-id}
+        // delete a specific user with: DELETE /{user-id}
         const deleteUserIntegration = new LambdaIntegration(handler);
 
         api.root.addMethod("GET", getUsersIntegration); // GET /
 
         user.addMethod("PUT", putUserIntegration); // PUT /{user-id}
+        api.root.addMethod("POST", postUserIntegration); // POST /
         user.addMethod("GET", getUserIntegration); // GET /{user-id}
         user.addMethod("DELETE", deleteUserIntegration); // DELETE /{user-id}
     }

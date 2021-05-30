@@ -59,6 +59,8 @@ class TestLambdaFunction(unittest.TestCase):
             "lastName": "gc.lastName",
             "school": "gc.school",
             "grade": "gc.grade",
+            "age": "gc.age",
+            "address": "gc.address",
             "bio": "gc.bio"
         }
         updated_user = self.createUser()
@@ -81,6 +83,8 @@ class TestLambdaFunction(unittest.TestCase):
             "school": "gc.school",
             "grade": "gc.grade",
             "cognitoId": "NEW_CI",
+            "parentEmail": "NEW_PARENT_EMAIL",
+            "parentName": "NEW_PARENT_NAME",
             "email": "NEW_EMAIL",
             "id": "NEW_ID",
             "admin": "NEW_ADMIN",
@@ -89,7 +93,7 @@ class TestLambdaFunction(unittest.TestCase):
         updated_user = self.createUser()
         user_attributes = list(updated_user.__dict__)
         for key, value in updated_user_params.items():
-            if key != "email" and key != "id" and key != "cognitoId" and key != "admin":
+            if key != "email" and key != "id" and key != "cognitoId" and key != "admin" and key != "parentEmail" and key != "parentName":
                 setattr(updated_user, key, value)
         input = (self.cognito_id, updated_user_params)
 
@@ -134,6 +138,51 @@ class TestLambdaFunction(unittest.TestCase):
         })
 
         self.assertEqual((200, expected_json), actual_response)
+
+    def test_post_input_translator(self):
+        event = {"body": json.dumps({
+            'parentName': self.test_user.parentName,
+            'parentEmail': self.test_user.parentEmail,
+            'email': self.test_user.email,
+            'cognitoId': self.test_user.cognitoId,
+            'firstName': self.test_user.firstName,
+            'lastName': self.test_user.lastName,
+            'school': self.test_user.school,
+            'grade': self.test_user.grade,
+            'age': self.test_user.age,
+            'address': self.test_user.address,
+            'bio': self.test_user.bio
+        })}
+
+        input = lambda_function.post_input_translator(event, "context")
+
+        self.assertUsersEqual(self.test_user, input)
+
+    def test_post_handler_throws_when_not_posting_oneself(self):
+        not_ones_self_claims = {"cognito:username": "SOMEONE_ELSE"}
+        self.get_claims.return_value = not_ones_self_claims
+
+        with self.assertRaises(AuthException) as e:
+            lambda_function.post_handler(self.test_user, self.session, self.get_claims)
+
+    def test_post_handler(self):
+        different_cognito_id = "differentCognitoId"
+
+        user = self.createUser()
+        user.cognitoId = different_cognito_id
+
+        claims = {"cognito:username": different_cognito_id}
+        self.get_claims.return_value = claims
+
+        raw_output = lambda_function.post_handler(user, self.session, self.get_claims)
+        self.session.commit()
+
+        queried_user = self.session.query(User).filter(User.cognitoId==different_cognito_id).one()
+        self.assertUsersEqual(user, queried_user)
+
+    def test_post_output_translator(self):
+        actual_response = lambda_function.post_output_translator("raw_output")
+        self.assertEqual((200, "success"), actual_response)
 
     def tearDown(self):
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()

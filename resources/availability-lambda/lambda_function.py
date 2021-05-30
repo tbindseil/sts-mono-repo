@@ -48,10 +48,11 @@ def post_input_translator(event, context):
 
 # TODO make sure there are no overlapping availabilties
 def post_handler(input, session, get_claims):
-    posted_availability = input
+    posted_user = input
 
     claims = get_claims()
     cognito_id = claims["cognito:username"]
+
     user = session.query(User).filter(User.cognitoId==cognito_id).one()
 
     user.availabilities.append(posted_availability)
