@@ -193,12 +193,17 @@ backend
             get returns more stuff
             implement post
 
+        I need to add a pre signup lambda that calls post user
+
         I need to change post confirmation lambda
             remove adding user to db
             send emails
 
 models
     user will change to have more sheet
+
+
+===========================================================================================================================================================
 
 
 
