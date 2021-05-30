@@ -2,10 +2,6 @@ README.md
 setup.py
 src/models/__init__.py
 src/models/availability.py
-src/models/class_model.py
-src/models/inquiry.py
-src/models/student_class_association.py
-src/models/tutor_class_association.py
 src/models/user.py
 src/sts_models_tj.egg-info/PKG-INFO
 src/sts_models_tj.egg-info/SOURCES.txt

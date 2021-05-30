@@ -17,27 +17,34 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    email = Column(String(255), nullable=False, unique=True)
+
+    parentName = Column(String(255))
+    parentEmail = Column(String(255), nullable=False)
+
+    email = Column(String(255))
     cognitoId = Column(String(255), nullable=False, unique=True)
     registeredOn = Column(DateTime, nullable=False)
-    firstName = Column(String(65))
-    lastName = Column(String(65))
-    school = Column(String(127))
-    grade = Column(String(15))
+    firstName = Column(String(65), nullable=False)
+    lastName = Column(String(65), nullable=False)
+    school = Column(String(127), nullable=False)
+    grade = Column(String(15), nullable=False)
+    age = Column(Integer, nullable=False)
+    address = Column(String(255), nullable=False)
     bio = Column(String(511)) # TODO variable length string(s)
     admin = Column(Boolean, nullable=False, default=False)
 
     availabilities = relationship("Availability", cascade="all, delete, delete-orphan")
 
-    classesAsStudent = relationship("Class", secondary=student_class_association, back_populates="students")
-    classesAsTutor = relationship("Class", secondary=tutor_class_association, back_populates="tutors")
-
-    def __init__(self, email, cognitoId, firstName="", lastName="", school="", grade="", bio=""):
+    def __init__(self, parentName, parentEmail, email, cognitoId, firstName, lastName, school, grade, age, address, bio=""):
+        self.parentName = parentName
+        self.parentEmail = parentEmail
         self.email = email
         self.cognitoId = cognitoId
         self.firstName = firstName
         self.lastName = lastName
         self.school = school
         self.grade = grade
+        self.age = age
+        self.address = address
         self.bio = bio
         self.registeredOn = datetime.datetime.now()
