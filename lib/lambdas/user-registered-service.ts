@@ -2,6 +2,7 @@ import { Construct, StackProps, Stack } from '@aws-cdk/core';
 import { AuthorizationType, CfnAuthorizer, LambdaIntegration, RestApi } from "@aws-cdk/aws-apigateway";
 import { Code, IFunction, Function, Runtime } from "@aws-cdk/aws-lambda";
 import { DatabaseSecret } from '@aws-cdk/aws-rds';
+import { Effect, PolicyStatement } from '@aws-cdk/aws-iam';
 
 export interface UserRegisteredProps extends StackProps {
     dbSecret: DatabaseSecret
@@ -21,5 +22,11 @@ export class UserRegisteredService extends Construct {
         });
 
         props.dbSecret.grantRead(this.handler.role!);
+
+        this.handler.addToRolePolicy(new PolicyStatement({
+            actions: ['ses:SendEmail', 'ses:SendRawEmail'],
+            resources: ['*'],
+            effect: Effect.ALLOW,
+        }));
     }
 }

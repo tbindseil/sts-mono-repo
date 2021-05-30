@@ -198,8 +198,9 @@ backend
             NO after calling amplify, call post lambda - this is more ui
 
         I need to change post confirmation lambda
-            remove adding user to db
-            send emails
+            remove adding user to db - done
+            send emails - done
+                TODO still need to escape sandbox
 
 models
     user will change to have more sheet - done
