@@ -1,4 +1,4 @@
-import { Construct } from '@aws-cdk/core';
+import { Construct, Duration } from '@aws-cdk/core';
 import { Cors, LambdaIntegration, RestApi } from "@aws-cdk/aws-apigateway";
 import { Code, Function, Runtime } from "@aws-cdk/aws-lambda";
 import { DatabaseSecret } from '@aws-cdk/aws-rds';
@@ -15,6 +15,7 @@ export class UserLambdaService extends Construct {
             runtime: Runtime.PYTHON_3_8,
             code: Code.fromAsset("resources/user-lambda/my-deployment-package.zip"),
             handler: "lambda_function.lambda_handler",
+            timeout: Duration.seconds(29)
         });
         props.dbSecret.grantRead(handler.role!);
 
@@ -41,20 +42,29 @@ export class UserLambdaService extends Construct {
         const user = api.root.addResource("{user-id}");
 
         const getUsersIntegration = new LambdaIntegration(handler, {
-            requestTemplates: { "application/json": '{ "statusCode": "200" }' }
+            requestTemplates: { "application/json": '{ "statusCode": "200" }' },
+            timeout: Duration.seconds(29)
         });
 
         // update user with: PUT /{user-id}
-        const putUserIntegration = new LambdaIntegration(handler);
+        const putUserIntegration = new LambdaIntegration(handler, {
+            timeout: Duration.seconds(29)
+        });
 
         // Add new user with: POST /
-        const postUserIntegration = new LambdaIntegration(handler);
+        const postUserIntegration = new LambdaIntegration(handler, {
+            timeout: Duration.seconds(29)
+        });
 
         // Get a specific user with: GET /{user-id}
-        const getUserIntegration = new LambdaIntegration(handler);
+        const getUserIntegration = new LambdaIntegration(handler, {
+            timeout: Duration.seconds(29)
+        });
 
         // delete a specific user with: DELETE /{user-id}
-        const deleteUserIntegration = new LambdaIntegration(handler);
+        const deleteUserIntegration = new LambdaIntegration(handler, {
+            timeout: Duration.seconds(29)
+        });
 
         api.root.addMethod("GET", getUsersIntegration); // GET /
 
