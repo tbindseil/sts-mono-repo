@@ -44,23 +44,26 @@ function ConfirmBody(props) {
 
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
-    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
     const [code, setCode] = useState("");
+
+    const [loading, setLoading] = useState(false);
 
     const handleChange = event => {
         const target = event.target;
         const value = target.value;
         const name = target.name;
 
-        if (name === "email") {
-            setEmail(value);
+        if (name === "username") {
+            setUsername(value);
         } else if (name === "code") {
             setCode(value);
         }
     }
 
     const onFinish = () => {
-        Auth.confirmSignUp(email, code, {
+        setLoading(true);
+        Auth.confirmSignUp(username, code, {
             forceAliasCreation: true
         }).then(data => {
             history.push("/login");
@@ -71,12 +74,13 @@ function ConfirmBody(props) {
                 message += ": " + err.message;
             }
             setErrorMessage(message);
-            // TODO some weird wait
+        }).finally(() => {
+            setLoading(false);
         });
     };
 
     const resendCode = () => {
-        Auth.resendSignUp(email).then(() => {
+        Auth.resendSignUp(username).then(() => {
             // do nothing
         }).catch(err => {
             setFailed(true);
@@ -88,7 +92,6 @@ function ConfirmBody(props) {
         });
     };
 
-    // TODO email to username
     return (
         <>
             <header className={props.pageBorderClass}>
@@ -99,7 +102,9 @@ function ConfirmBody(props) {
 
                 <div className="Centered MaxWidth">
                     <p>
-                        Use the emailed code to confirm your email
+                        Use the emailed code to confirm your email.
+                        <br/>
+                        Note that the code will only be emailed to the parent's email address.
                     </p>
 
                     { failed &&
@@ -112,9 +117,9 @@ function ConfirmBody(props) {
                     onChange={handleChange}>
 
                     <TextInput
-                        name={"email"}
-                        placeHolder={"Email"}
-                        value={email}/>
+                        name={"username"}
+                        placeHolder={"Username"}
+                        value={username}/>
                     <br/>
 
                     <TextInput
@@ -124,8 +129,8 @@ function ConfirmBody(props) {
                     <br/>
 
                     <FormButton
-                        onClick={onFinish}
-                        value={"Confirm Email"}/>
+                        onClick={loading ? () => {console.log("NO OP");} : onFinish}
+                        value={loading ? "Loading..." : "Confirm User"}/>
                     <FormButton
                         onClick={resendCode}
                         value={"Send New Code"}/>

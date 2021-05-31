@@ -92,14 +92,7 @@ function RegisterBody(props) {
                 setGrade(value);
             }
         } else if (name === "age") {
-            console.log("value is:");
-            console.log(value);
-            if (value === "26") {
-                console.log("isString");
-            } else if (value === 26) {
-                console.log("isInt");
-            }
-            setAge(parseInt(value));
+            setAge(value);
         } else if (name === "address") {
             setAddress(value);
         } else if (name === "bio") {
@@ -114,13 +107,11 @@ function RegisterBody(props) {
             return;
         }
 
-        // sign up through cognito, then 
+        // TODO some weird wait also on register (and probably other places?)
         Auth.signUp({username, password, attributes: {
             email: parentEmail // note, parent email is required, but kids email is not
         }})
             .then(data => {
-                console.log("data is:");
-                console.log(data);
                 const profile = {
                     parentName: parentName,
                     parentEmail: parentEmail,
@@ -133,14 +124,6 @@ function RegisterBody(props) {
                     age: age,
                     address: address,
                     bio: bio,
-                }
-
-                console.log("age is:");
-                console.log(age);
-                if (age === "26") {
-                    console.log("isString");
-                } else if (age === 26) {
-                    console.log("isInt");
                 }
 
                 const url = 'https://oercmchy3l.execute-api.us-west-2.amazonaws.com/prod/';
