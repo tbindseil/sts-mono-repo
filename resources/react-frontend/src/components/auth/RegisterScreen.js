@@ -119,11 +119,13 @@ function RegisterBody(props) {
             email: parentEmail // note, parent email is required, but kids email is not
         }})
             .then(data => {
+                console.log("data is:");
+                console.log(data);
                 const profile = {
                     parentName: parentName,
                     parentEmail: parentEmail,
                     email: email,
-                    cognitoId: data.userSub,
+                    cognitoId: data.user.username,
                     firstName: firstName,
                     lastName: lastName,
                     school: school,

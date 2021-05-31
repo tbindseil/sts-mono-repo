@@ -88,6 +88,7 @@ function ConfirmBody(props) {
         });
     };
 
+    // TODO email to username
     return (
         <>
             <header className={props.pageBorderClass}>

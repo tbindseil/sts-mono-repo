@@ -23,7 +23,19 @@ class TestLambdaFunction(unittest.TestCase):
         self.session = Session()
 
         self.cognito_id = "cognito_id"
-        test_user = User(email="email", cognitoId=self.cognito_id)
+        test_user = User(
+                email="email",
+                cognitoId=self.cognito_id,
+                parentName = "user.parentName",
+                parentEmail = "user.parentEmail",
+                firstName = "user.firstName",
+                lastName = "user.lastName",
+                school = "user.school",
+                grade = "user.grade",
+                age = "user.age",
+                address = "user.address",
+                bio = "user.bio",
+        )
 
         self.session.add(test_user)
         self.session.commit()

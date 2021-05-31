@@ -86,6 +86,7 @@ def post_input_translator(event, context):
 
     # stupid json parsing dates nonesense.
     to_ret.age = json.loads(event["body"])['age']
+    to_ret.grade = json.loads(event["body"])['grade']
 
     return to_ret
 
