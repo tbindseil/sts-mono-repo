@@ -6,7 +6,7 @@ from jose import jwk, jwt
 from jose.utils import base64url_decode
 
 # from aws cognito
-app_client_id = '55egf9s4qqoie5d4qodrqtolkk'
+app_client_id = '1juq6mcq852eu3bho4fh6b8fc'
 
 
 
@@ -26,7 +26,7 @@ app_client_id = '55egf9s4qqoie5d4qodrqtolkk'
 # License for the specific language governing permissions and limitations under the License.
 
 region = 'us-west-2'
-userpool_id = 'us-west-2_uzjaqz0n2'
+userpool_id = 'us-west-2_VSZtACGzT'
 keys_url = 'https://cognito-idp.{}.amazonaws.com/{}/.well-known/jwks.json'.format(region, userpool_id)
 
 # instead of re-downloading the public keys every time

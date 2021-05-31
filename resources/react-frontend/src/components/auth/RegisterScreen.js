@@ -56,6 +56,8 @@ function RegisterBody(props) {
     const [parentName, setParentName] = useState("");
 
     const [email, setEmail] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
     const [school, setSchool] = useState("");
     const [grade, setGrade] = useState("");
     const [age, setAge] = useState("");
@@ -77,6 +79,10 @@ function RegisterBody(props) {
             setParentEmail(value);
         } else if (name === "parentName") {
             setParentName(value);
+        } else if (name === "firstName") {
+            setFirstName(value);
+        } else if (name === "lastName") {
+            setLastName(value);
         } else if (name === "email") {
             setEmail(value);
         } else if (name === "school") {
@@ -86,7 +92,14 @@ function RegisterBody(props) {
                 setGrade(value);
             }
         } else if (name === "age") {
-            setAge(value);
+            console.log("value is:");
+            console.log(value);
+            if (value === "26") {
+                console.log("isString");
+            } else if (value === 26) {
+                console.log("isInt");
+            }
+            setAge(parseInt(value));
         } else if (name === "address") {
             setAddress(value);
         } else if (name === "bio") {
@@ -101,10 +114,49 @@ function RegisterBody(props) {
             return;
         }
 
-        Auth.signUp(email, password)
+        // sign up through cognito, then 
+        Auth.signUp({username, password, attributes: {
+            email: parentEmail // note, parent email is required, but kids email is not
+        }})
             .then(data => {
+                const profile = {
+                    parentName: parentName,
+                    parentEmail: parentEmail,
+                    email: email,
+                    cognitoId: data.userSub,
+                    firstName: firstName,
+                    lastName: lastName,
+                    school: school,
+                    grade: grade,
+                    age: age,
+                    address: address,
+                    bio: bio,
+                }
+
+                console.log("age is:");
+                console.log(age);
+                if (age === "26") {
+                    console.log("isString");
+                } else if (age === 26) {
+                    console.log("isInt");
+                }
+
+                const url = 'https://oercmchy3l.execute-api.us-west-2.amazonaws.com/prod/';
+                return fetch(url, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(profile)
+                });
+            })
+            .then(data => {
+                // TODO still goes to confirm even when fetch fails
+                // I guess that also means I have to rollback cognito stuff
                 history.push("/confirm");
-            }).catch(err => {
+            })
+            .catch(err => {
                 setFailed(true);
                 var message = "Error Registering";
                 if (err.message) {
@@ -112,7 +164,6 @@ function RegisterBody(props) {
                 }
                 setErrorMessage(message);
             });
-        // TODO .then post user
     };
 
     return (
@@ -177,6 +228,18 @@ function RegisterBody(props) {
                     <br/>
 
                     <TextInput
+                        name={"firstName"}
+                        placeHolder={"First Name"}
+                        value={firstName}/>
+                    <br/>
+
+                    <TextInput
+                        name={"lastName"}
+                        placeHolder={"Last Name"}
+                        value={lastName}/>
+                    <br/>
+
+                    <TextInput
                         name={"school"}
                         placeHolder={"School"}
                         value={school}/>
@@ -198,7 +261,7 @@ function RegisterBody(props) {
 
                     <TextInput
                         name={"address"}
-                        placeHolder={"Addrss"}
+                        placeHolder={"Address"}
                         value={address}/>
                     <br/>
 

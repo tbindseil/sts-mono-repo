@@ -28,7 +28,6 @@ sys.path.insert(0, os.getcwd())
 from models import Base
 from models.user import User
 from models.availability import Availability
-from models.inquiry import Inquiry
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,

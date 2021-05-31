@@ -82,16 +82,23 @@ def delete_output_translator(raw_output):
 
 
 def post_input_translator(event, context):
-    return json_to_model(event["body"], User)
+    to_ret = json_to_model(event["body"], User)
+
+    # stupid json parsing dates nonesense.
+    to_ret.age = json.loads(event["body"])['age']
+
+    return to_ret
 
 
 def post_handler(input, session, get_claims):
     posted_user = input
 
-    claims = get_claims()
-    claimed_cognito_id = claims["cognito:username"]
-    if claimed_cognito_id != posted_user.cognitoId:
-        raise AuthException
+    # PODO can't have jwt claims when posting user since user isn't verified yet
+    #   if this api starts getting hit a lot, I will need to do something..
+    # claims = get_claims()
+    # claimed_cognito_id = claims["cognito:username"]
+    # if claimed_cognito_id != posted_user.cognitoId:
+        # raise AuthException
 
     session.add(posted_user)
     return "success"

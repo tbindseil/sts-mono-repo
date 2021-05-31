@@ -15,7 +15,7 @@ export class CognitoStack extends Stack {
         this.userPool = new UserPool(this, "UserPool", {
             selfSignUpEnabled: true, // Allow users to sign up
             autoVerify: { email: true }, // Verify email addresses by sending a verification code
-            signInAliases: { email: true }, // Set email as an alias
+            signInAliases: { username: true }, // Set useranme as an alias
             lambdaTriggers: {
                 postConfirmation: props.userRegisteredLambda
             }

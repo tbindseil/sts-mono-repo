@@ -158,13 +158,6 @@ class TestLambdaFunction(unittest.TestCase):
 
         self.assertUsersEqual(self.test_user, input)
 
-    def test_post_handler_throws_when_not_posting_oneself(self):
-        not_ones_self_claims = {"cognito:username": "SOMEONE_ELSE"}
-        self.get_claims.return_value = not_ones_self_claims
-
-        with self.assertRaises(AuthException) as e:
-            lambda_function.post_handler(self.test_user, self.session, self.get_claims)
-
     def test_post_handler(self):
         different_cognito_id = "differentCognitoId"
 

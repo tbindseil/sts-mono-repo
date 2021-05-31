@@ -24,7 +24,7 @@ class User(Base):
     firstName = Column(String(65), nullable=False)
     lastName = Column(String(65), nullable=False)
     school = Column(String(127), nullable=False)
-    grade = Column(String(15), nullable=False)
+    grade = Column(Integer, nullable=False)
     age = Column(Integer, nullable=False)
     address = Column(String(255), nullable=False)
     bio = Column(String(511)) # TODO variable length string(s)

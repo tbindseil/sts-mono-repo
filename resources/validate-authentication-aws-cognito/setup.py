@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="sts-validate-authentication-aws-cognito-tj", # Replace with your own username
-    version="0.0.7",
+    version="0.0.8",
     author="tj",
     author_email="tjbindseil@gmail.com",
     description="authentication validation for sts with aws cognito implementation",
