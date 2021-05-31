@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "/static/css/main.a4b90259.chunk.css",
+    "main.js": "/static/js/main.07a0d2ad.chunk.js",
+    "main.js.map": "/static/js/main.07a0d2ad.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.0e27900f.js",
+    "runtime-main.js.map": "/static/js/runtime-main.0e27900f.js.map",
+    "static/js/2.68d3e456.chunk.js": "/static/js/2.68d3e456.chunk.js",
+    "static/js/2.68d3e456.chunk.js.map": "/static/js/2.68d3e456.chunk.js.map",
+    "static/js/3.bfe1b6af.chunk.js": "/static/js/3.bfe1b6af.chunk.js",
+    "static/js/3.bfe1b6af.chunk.js.map": "/static/js/3.bfe1b6af.chunk.js.map",
+    "index.html": "/index.html",
+    "static/css/main.a4b90259.chunk.css.map": "/static/css/main.a4b90259.chunk.css.map",
+    "static/js/2.68d3e456.chunk.js.LICENSE.txt": "/static/js/2.68d3e456.chunk.js.LICENSE.txt",
+    "static/media/Flo.20f04baa.PNG": "/static/media/Flo.20f04baa.PNG",
+    "static/media/books.798bc6c1.jpg": "/static/media/books.798bc6c1.jpg",
+    "static/media/course.e876643a.PNG": "/static/media/course.e876643a.PNG",
+    "static/media/skyline.85aeb6c5.jpg": "/static/media/skyline.85aeb6c5.jpg",
+    "static/media/stock_photo.ba254f8a.jpg": "/static/media/stock_photo.ba254f8a.jpg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.0e27900f.js",
+    "static/js/2.68d3e456.chunk.js",
+    "static/css/main.a4b90259.chunk.css",
+    "static/js/main.07a0d2ad.chunk.js"
+  ]
+}
