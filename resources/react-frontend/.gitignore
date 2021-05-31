@@ -9,7 +9,7 @@
 /coverage
 
 # production
-/build
+# /build can't build on box, so building and uploading I guess
 
 # misc
 .DS_Store
