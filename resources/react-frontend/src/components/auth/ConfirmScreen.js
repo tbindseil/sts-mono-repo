@@ -8,7 +8,7 @@ import {Header} from '../header/Header';
 import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
 import {TextInput} from '../forms/TextInput';
-import {FormButton} from '../forms/FormButton';
+import {LoadingFormButton} from '../forms/FormButton';
 import {checkUnauthenticated} from "./CheckAuthenticated";
 
 export function ConfirmScreen() {
@@ -80,6 +80,7 @@ function ConfirmBody(props) {
     };
 
     const resendCode = () => {
+        setLoading(true);
         Auth.resendSignUp(username).then(() => {
             // do nothing
         }).catch(err => {
@@ -89,6 +90,8 @@ function ConfirmBody(props) {
                 message += ": " + err.message;
             }
             setErrorMessage(message);
+        }).finally(() => {
+            setLoading(false);
         });
     };
 
@@ -128,10 +131,12 @@ function ConfirmBody(props) {
                         value={code}/>
                     <br/>
 
-                    <FormButton
-                        onClick={loading ? () => {console.log("NO OP");} : onFinish}
-                        value={loading ? "Loading..." : "Confirm User"}/>
-                    <FormButton
+                    <LoadingFormButton
+                        loading={loading}
+                        onClick={onFinish}
+                        value={"Confirm User"}/>
+                    <LoadingFormButton
+                        loading={loading}
                         onClick={resendCode}
                         value={"Send New Code"}/>
                 </form>

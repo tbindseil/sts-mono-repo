@@ -8,7 +8,7 @@ import {Header} from '../header/Header';
 import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
 import {TextInput} from '../forms/TextInput';
-import {FormButton} from '../forms/FormButton';
+import {LoadingFormButton} from '../forms/FormButton';
 import {checkUnauthenticated} from "./CheckAuthenticated";
 
 export function LoginScreen() {
@@ -44,16 +44,18 @@ function LoginBody(props) {
 
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
-    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+
+    const [loading, setLoading] = useState(false);
 
     const handleChange = event => {
         const target = event.target;
         const value = target.value;
         const name = target.name;
 
-        if (name === "email") {
-            setEmail(value);
+        if (name === "username") {
+            setUsername(value);
         } else if (name === "password") {
             setPassword(value);
         }
@@ -61,7 +63,8 @@ function LoginBody(props) {
 
 
     const onFinish = () => {
-        Auth.signIn(email, password)
+        setLoading(true);
+        Auth.signIn(username, password)
             .then(user => {
                 history.push("/profile");
             })
@@ -72,6 +75,9 @@ function LoginBody(props) {
                     message += ": " + err.message;
                 }
                 setErrorMessage(message);
+            })
+            .finally(() => {
+                setLoading(false);
             });
     };
 
@@ -93,9 +99,9 @@ function LoginBody(props) {
                     onChange={handleChange}>
 
                     <TextInput
-                        name={"email"}
-                        placeHolder={"Email"}
-                        value={email}/>
+                        name={"username"}
+                        placeHolder={"Username"}
+                        value={username}/>
                     <br/>
 
                     <TextInput
@@ -105,7 +111,8 @@ function LoginBody(props) {
                         type={"password"}/>
                     <br/>
 
-                    <FormButton
+                    <LoadingFormButton
+                        loading={loading}
                         onClick={onFinish}
                         value={"Log in"}/>
                 </form>

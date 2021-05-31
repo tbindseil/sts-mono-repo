@@ -8,7 +8,7 @@ import {Header} from '../header/Header';
 import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
 import {TextInput} from '../forms/TextInput';
-import {FormButton} from '../forms/FormButton';
+import {LoadingFormButton} from '../forms/FormButton';
 import {checkUnauthenticated} from "./CheckAuthenticated";
 import {PasswordRequirements} from './PasswordRequirements';
 
@@ -47,18 +47,20 @@ function ConfirmPasswordResetBody(props) {
 
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
-    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
     const [code, setCode] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+
+    const [loading, setLoading] = useState("");
 
     const handleChange = event => {
         const target = event.target;
         const value = target.value;
         const name = target.name;
 
-        if (name === "email") {
-            setEmail(value);
+        if (name === "username") {
+            setUsername(value);
         } else if (name === "code") {
             setCode(value);
         } else if (name === "newPassword") {
@@ -68,7 +70,6 @@ function ConfirmPasswordResetBody(props) {
         }
     }
 
-
     const onFinish = () => {
         if (newPassword !== confirmPassword) {
             setErrorMessage("password entries do not match");
@@ -76,7 +77,8 @@ function ConfirmPasswordResetBody(props) {
             return;
         }
 
-        Auth.forgotPasswordSubmit(email, code, newPassword)
+        setLoading(true);
+        Auth.forgotPasswordSubmit(username, code, newPassword)
             .then(data => {
                 history.push("/login");
             })
@@ -87,6 +89,9 @@ function ConfirmPasswordResetBody(props) {
                     message += ": " + err.message;
                 }
                 setErrorMessage(message);
+            })
+            .finally(() => {
+                setLoading(false);
             });
     };
 
@@ -114,9 +119,9 @@ function ConfirmPasswordResetBody(props) {
                         onChange={handleChange}>
 
                         <TextInput
-                            name={"email"}
-                            placeHolder={"Email"}
-                            value={email}/>
+                            name={"username"}
+                            placeHolder={"Username"}
+                            value={username}/>
                         <br/>
 
                         <TextInput
@@ -139,7 +144,8 @@ function ConfirmPasswordResetBody(props) {
                             type={"password"}/>
                         <br/>
 
-                        <FormButton
+                        <LoadingFormButton
+                            loading={loading}
                             onClick={onFinish}
                             value={"Reset Passord"}/>
                     </form>

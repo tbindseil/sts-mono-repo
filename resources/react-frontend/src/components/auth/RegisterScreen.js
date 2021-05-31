@@ -8,7 +8,7 @@ import {Header} from '../header/Header';
 import {Bottom} from '../header/Bottom';
 import {TextInput} from '../forms/TextInput';
 import {Title} from '../layout/Title';
-import {FormButton} from '../forms/FormButton';
+import {LoadingFormButton} from '../forms/FormButton';
 import {checkUnauthenticated} from "./CheckAuthenticated";
 import {PasswordRequirements} from './PasswordRequirements';
 
@@ -64,6 +64,8 @@ function RegisterBody(props) {
     const [address, setAddress] = useState("");
     const [bio, setBio] = useState("");
 
+    const [loading, setLoading] = useState("");
+
     const handleChange = event => {
         const target = event.target;
         const value = target.value;
@@ -107,7 +109,7 @@ function RegisterBody(props) {
             return;
         }
 
-        // TODO some weird wait also on register (and probably other places?)
+        setLoading(true);
         Auth.signUp({username, password, attributes: {
             email: parentEmail // note, parent email is required, but kids email is not
         }})
@@ -148,6 +150,9 @@ function RegisterBody(props) {
                     message += ": " + err.message;
                 }
                 setErrorMessage(message);
+            })
+            .finally(() => {
+                setLoading(false);
             });
     };
 
@@ -256,7 +261,8 @@ function RegisterBody(props) {
                         value={bio}/>
                     <br/>
 
-                    <FormButton
+                    <LoadingFormButton
+                        loading={loading}
                         onClick={onFinish}
                         value={"Register"}/>
                 </form>

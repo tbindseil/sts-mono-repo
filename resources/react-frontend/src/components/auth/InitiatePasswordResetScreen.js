@@ -46,20 +46,20 @@ function InitiatePasswordResetBody(props) {
 
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
-    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
 
     const handleChange = event => {
         const target = event.target;
         const value = target.value;
         const name = target.name;
 
-        if (name === "email") {
-            setEmail(value);
+        if (name === "username") {
+            setUsername(value);
         }
     }
 
     const onFinish = () => {
-        Auth.forgotPassword(email)
+        Auth.forgotPassword(username)
             .then(data => {
                 history.push("/confirm-password-reset");
             })
@@ -82,6 +82,10 @@ function InitiatePasswordResetBody(props) {
                 underlineClass={props.underlineClass}/>
 
             <div className="Centered MaxWidth">
+                <p>
+                    Enter the username for which to reset the password, and expect a code to be sent to the parent email address associated with the account.
+                </p>
+
                 { failed &&
                     <p className="ErrorMessage">{errorMessage}</p>
                 }
@@ -91,9 +95,9 @@ function InitiatePasswordResetBody(props) {
                     onChange={handleChange}>
 
                     <TextInput
-                        name={"email"}
-                        placeHolder={"Email"}
-                        value={email}/>
+                        name={"username"}
+                        placeHolder={"Username"}
+                        value={username}/>
                     <br/>
 
                     <FormButton
