@@ -1,10 +1,7 @@
-import json
 import boto3
 from botocore.exceptions import ClientError
 
-from sqlalchemy.orm import sessionmaker
-
-from sts_db_utils.sts_db_utils import get_database_engine
+from guided_lambda_handler.guided_lambda_handler import GLH, success_response_output
 from models.user import User
 
 
@@ -15,7 +12,7 @@ SENDER = "Sender Name <tjbindseil@gmail.com>"
 # Specify a configuration set. If you do not want to use a configuration
 # set, comment the following variable, and the
 # ConfigurationSetName=CONFIGURATION_SET argument below.
-CONFIGURATION_SET = "ConfigSet"
+# CONFIGURATION_SET = "ConfigSet"
 
 # If necessary, replace us-west-2 with the AWS Region you're using for Amazon SES.
 AWS_REGION = "us-west-2"
@@ -48,23 +45,14 @@ CHARSET = "UTF-8"
 client = boto3.client('ses',region_name=AWS_REGION)
 
 
-def lambda_handler(event, context):
-    print("event is")
-    print(event)
+def input_translator(event, context):
+    return event['userName']
 
-    trigger = event['triggerSource']
-    if trigger == 'PostConfirmation_ConfirmForgotPassword':
-        return event
 
-    engine = get_database_engine()
-    Session = sessionmaker(bind=engine)
-    session = Session()
-
-    cognito_id = event['userName']
+def handler(input, session, get_claims):
+    cognito_id  = input
     confirmed_user = session.query(User).filter(User.cognitoId==cognito_id).one()
 
-    # Replace recipient@example.com with a "To" address. If your account
-    # is still in the sandbox, this address must be verified.
     recipients = [confirmed_user.parentEmail]
     if confirmed_user.email:
         recipients.append(confirmed_user.email)
@@ -95,13 +83,29 @@ def lambda_handler(event, context):
             Source=SENDER,
             # If you are not using a configuration set, comment or delete the
             # following line
-            ConfigurationSetName=CONFIGURATION_SET,
+            # ConfigurationSetName=CONFIGURATION_SET,
         )
     # Display an error if something goes wrong.
     except ClientError as e:
         print(e.response['Error']['Message'])
-    else:
-        print("Email sent! Message ID:"),
-        print(response['MessageId'])
+        raise e
+
+    return "success"
+
+
+def output_translator(raw_output):
+    return success_response_output()
+
+
+def lambda_handler(event, context):
+    print("event is")
+    print(event)
+
+    trigger = event['triggerSource']
+    if trigger == 'PostConfirmation_ConfirmForgotPassword':
+        return event
+
+    glh = GLH(input_translator, handler, output_translator)
+    glh.handle(event, context)
 
     return event

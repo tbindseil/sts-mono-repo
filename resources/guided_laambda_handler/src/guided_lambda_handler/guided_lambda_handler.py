@@ -90,3 +90,10 @@ class GLH():
             session.close()
 
         return response_factory(response_code, response_body)
+
+
+# thoughts with fresh eyes
+# the main two problems this solves are:
+# 1) allow injecting session, instead of mocking 
+# 2) separate what could potentially be a large method into smaller methods, even though there is no branching
+#     2a) this makes more tests, but the tests are smaller

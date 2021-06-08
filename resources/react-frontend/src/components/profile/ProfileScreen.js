@@ -200,6 +200,9 @@ function ProfileBody(props) {
                             value={profile.lastName}
                             readOnly={!editting}/>
 
+                { // TODO somehow got weird dates when 1s were put in for registration
+                }
+
                         <FormTableRow
                             onChange={handleChange}
                             name={"school"}
