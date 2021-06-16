@@ -1,6 +1,5 @@
 import React from 'react';
 import MediaQuery from 'react-responsive'
-
 import stock_photo from '../../images/stock_photo.jpg';
 
 import {Header} from '../header/Header';
@@ -20,7 +19,6 @@ export const Home = () => (
             <HomeBody
                 pageBorderClass={"PageBorder"}
                 underlineClass={"HomeUnderline"}/>
-
         </MediaQuery>
 
         <MediaQuery maxWidth={765}>
@@ -49,7 +47,12 @@ function HomeBody(props) {
                     Enhancing education through student to student tutoring
                 </p>
 
+                <div className = "SignUpButton">
+                    <a href="/register"> Sign Up </a>
+                </div>
+                 
             </header>
+
         </>
     );
 }

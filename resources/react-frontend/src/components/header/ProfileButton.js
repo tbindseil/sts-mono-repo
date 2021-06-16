@@ -31,7 +31,6 @@ export const BigScreenProfileButton = () => {
 
         return (
             <>
-                <a className="NavBarItem" href="/anonymous-user">Sign Up</a>
                 <a className="NavBarItem" href="/login">Log In</a>
             </>
         );

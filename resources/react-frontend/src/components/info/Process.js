@@ -22,7 +22,7 @@ export const Process = () => (
             <header className="PageBorder">
 
                 <Title
-                    titleText={"Out Process"}
+                    titleText={"Our Process"}
                     underlineClass={"Underline"}/>
 
                 <section style={sideBy}>

@@ -37,8 +37,6 @@ export function Header() {
                         <a className="HamburgerItem" href="/">Home</a>
                         <a className="HamburgerItem" href="/about-us">About STS</a>
                         <a className="HamburgerItem" href="/process">Our Process</a>
-                        <a className="HamburgerItem" href="/get-involved">Become A Tutor</a>
-                        <a className="HamburgerItem" href="/request-a-tutor">Request A Tutor</a>
                         <a className="HamburgerItem" href="/contacts">Contact Us</a>
 
                         <SmallScreenProfileButton/>
@@ -52,8 +50,6 @@ export function Header() {
 
                 <BigScreenProfileButton/>
                 <a className="NavBarItem" href="/contacts">Contact Us</a>
-                <a className="NavBarItem" href="/request-a-tutor">Request A Tutor</a>
-                <a className="NavBarItem" href="/get-involved">Become A Tutor</a>
 
                 <div className="DropDown RightAlign">
                     <a className="NavBarItem DropBtn button" href="/about-us">About Us  <i className="arrow down"/>

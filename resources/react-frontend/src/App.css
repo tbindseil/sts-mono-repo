@@ -223,3 +223,40 @@ button {
 .ErrorMessage {
   color: red;
 }
+
+
+.SignUpButton a{
+  color: white;
+  font-family: Arial;
+  margin-top:7,5px;
+  margin-bottom: 7.5px;
+  margin-left:450px;
+  margin-right:450px;
+  padding-top: 15px;
+  padding-bottom:15px;
+  padding-left:25px;
+  padding-right:25px;
+  text-align:center;
+  font-Weight: bold;
+  font-variant: small-caps;
+  float: center;
+  border-radius: 20px;
+  background-color: #b4c7e7;
+  list-style-type: none;
+}
+
+.SignUpButton a:hover {
+  color: white;
+  background-color: #005D8c;
+  text-decoration: none;
+}
+
+.SignUpButton {
+
+  margin-top:50px;
+  margin-bottom: 7.5px;
+}
+
+
+
+
