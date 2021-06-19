@@ -18,6 +18,7 @@ export const BigScreenProfileButton = () => {
                 <a className="NavBarItem DropBtn button" href="/profile">Profile  <i className="arrow down"/>
                     <div className="DropDownContent ProfileDropDownContent">
                         <a className="NavBarDropDownItem" href="/profile">Profile</a>
+                        <a className="NavBarDropDownItem" href="/account">Account</a>
                         <a className="NavBarDropDownItem" href="/my-calendar">My Calendar</a>
                         <a className="NavBarDropDownItem" href="/change-password">Change Password</a>
                         <a className="NavBarDropDownItem" href="/logout">Logout</a>
@@ -68,6 +69,7 @@ export const SmallScreenProfileButton = () => {
                         <i onClick={profileOnClick} className="arrow down"/>
                     </div>
                 </section>
+                <a style={{display: extraProfileDisplay}} className="HamburgerItem" href="/account">Account</a>
                 <a style={{display: extraProfileDisplay}} className="HamburgerItem" href="/my-calendar">My Calendar</a>
                 <a style={{display: extraProfileDisplay}} className="HamburgerItem" href="/change-password">Change Password</a>
                 <a style={{display: extraProfileDisplay}} className="HamburgerItem" href="/logout">Logout</a>

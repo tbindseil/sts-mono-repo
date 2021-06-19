@@ -23,6 +23,7 @@ import {ConfirmPasswordResetScreen} from "./components/auth/ConfirmPasswordReset
 import {DeleteScreen} from "./components/auth/DeleteScreen";
 
 import {ProfileScreen} from "./components/profile/ProfileScreen";
+import {AccountScreen} from "./components/profile/AccountScreen";
 import {MyCalendarScreen} from "./components/calendar/MyCalendarScreen";
 import {CreateAvailabilityScreen} from "./components/calendar/CreateAvailabilityScreen";
 import {DeleteAvailabilityScreen} from "./components/calendar/DeleteAvailabilityScreen";
@@ -37,7 +38,6 @@ const App = () => {
       <Switch>
         <Route exact path="/" component={Home}/>
         <Route path="/home" component={Home}/>
-		<Route path="/home" component={Home}/>
         <Route path="/about-us" component={AboutUs}/>
         <Route path="/process" component= {Process}/>
         <Route path="/get-involved" component={GetInvolved}/>
@@ -55,6 +55,7 @@ const App = () => {
         <Route path={"/delete-account"} component={DeleteScreen}/>
 
         <Route path={"/profile"} component={ProfileScreen}/>
+        <Route path={"/account"} component={AccountScreen}/>
         <Route path={"/my-calendar"} component={MyCalendarScreen}/>
         <Route path={"/create-availability"} component={CreateAvailabilityScreen}/>
         <Route path={"/delete-availability"} component={DeleteAvailabilityScreen}/>

@@ -220,6 +220,27 @@ button {
   padding: 8px;
 }
 
+.InDepthFooter {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.InDepthFooterTitle {
+  align-self: center;
+}
+
+.InDepthFooterOptions {
+  align-self: flex-end;
+}
+
+.InDepthFooterOption {
+  display: inline;
+}
+
+.InDepthFooterLink {
+  color: white;
+}
+
 .ErrorMessage {
   color: red;
 }
