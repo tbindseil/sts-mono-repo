@@ -11,6 +11,12 @@ import {Title} from '../layout/Title';
 import {FormTableRow} from '../forms/TextInput'
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
 
+/**
+ * So, I dont think we should be able to edit parent name or parent email, which are the only
+ * things on the account page. So I'm commenting out the edit button but leaving the code
+ * in case I want to turn it on.
+ */
+
 export function AccountScreen() {
     return (
         <div className="TopLevelContainer">
@@ -64,12 +70,8 @@ function AccountBody(props) {
             .then(
                 (result) => {
                     const profile = {
-                        email: result.email,
-                        firstName: result.firstName,
-                        lastName: result.lastName,
-                        school: result.school,
-                        grade: result.grade,
-                        bio: result.bio,
+                        parentName: result.parentName,
+                        parentEmail: result.parentEmail
                     };
                     setProfile(profile);
                 },
@@ -78,12 +80,8 @@ function AccountBody(props) {
                 // exceptions from actual bugs in components.
                 (error) => {
                     setProfile({
-                        email: "",
-                        firstName: "",
-                        lastName: "",
-                        school: "",
-                        grade: "",
-                        bio: ""
+                        parentName: "",
+                        parentEmail: "" // TODO this isn't dry
                     });
                     setFailed(true);
                     setErrorMessage("Error getting profile");
@@ -94,12 +92,8 @@ function AccountBody(props) {
     ]);
 
     const [profile, setProfile] = useState({
-        email: "",
-        firstName: "",
-        lastName: "",
-        school: "",
-        grade: "",
-        bio: ""
+        parentName: "",
+        parentEmail: ""
     });
     useEffect(() => {
         getProfile();
@@ -114,6 +108,8 @@ function AccountBody(props) {
     const onSave = (profile) => {
         async function putProfile(url = '', token = '', profile = {}) {
             const tokenString = 'Bearer ' + token;
+            console.log("profile is");
+            console.log(profile);
             const response = await fetch(url, {
                 method: 'PUT',
                 mode: 'cors',
@@ -126,7 +122,6 @@ function AccountBody(props) {
             return response;
         }
 
-
         const url = baseUrl + user.username;
 
         putProfile(url, user.signInUserSession.idToken.jwtToken, profile)
@@ -135,12 +130,8 @@ function AccountBody(props) {
             })
             .catch(error => {
                 setProfile({
-                    email: "",
-                    firstName: "",
-                    lastName: "",
-                    school: "",
-                    grade: "",
-                    bio: ""
+                    parentName: "",
+                    parentEmail: ""
                 });
                 setFailed(true);
                 setErrorMessage("Error saving profile");
@@ -181,77 +172,43 @@ function AccountBody(props) {
                     <table className="ProfileTable">
                         <FormTableRow
                             onChange={handleChange}
-                            name={"email"}
-                            label={"Email:"}
-                            value={profile.email}
+                            name={"parentEmail"}
+                            label={"Parent Email:"}
+                            value={profile.parentEmail}
                             readOnly={true}/>
 
                         <FormTableRow
                             onChange={handleChange}
-                            name={"firstName"}
-                            label={"First Name:"}
-                            placeHolder={"<firstname>"}
-                            value={profile.firstName}
+                            name={"parentName"}
+                            label={"Parent Name:"}
+                            placeHolder={"<parent name>"}
+                            value={profile.parentName}
                             readOnly={!editting}/>
 
-                        <FormTableRow
-                            onChange={handleChange}
-                            name={"lastName"}
-                            label={"Last Name:"}
-                            placeHolder={"<lastname>"}
-                            value={profile.lastName}
-                            readOnly={!editting}/>
-
-                { // TODO somehow got weird dates when 1s were put in for registration
-                }
-
-                        <FormTableRow
-                            onChange={handleChange}
-                            name={"school"}
-                            label={"School:"}
-                            placeHolder={"Where do you study?"}
-                            value={profile.school}
-                            readOnly={!editting}/>
-
-                        <FormTableRow
-                            onChange={handleChange}
-                            name={"grade"}
-                            label={"Grade:"}
-                            placeHolder={"K-12? Junior in College? Young at Heart??"}
-                            value={profile.grade}
-                            readOnly={!editting}/>
-
-                        <FormTableRow
-                            onChange={handleChange}
-                            name={"bio"}
-                            label={"Bio:"}
-                            placeHolder={"Tell us a little about where you are in your scholastic journey.."}
-                            value={profile.bio}
-                            readOnly={!editting}/>
-
-                        { editting ?
-                            <tr>
-                                <td>
-                                    <button onClick={onCancel}>
-                                        Cancel
-                                    </button>
-                                </td>
-                                <td>
-                                    <button onClick={onFinish}>
-                                        Update Profile
-                                    </button>
-                                </td>
-                            </tr> :
-                            <tr>
-                                <td>
-                                    <button onClick={editProfileOnClickHandler}>
-                                        Edit
-                                    </button>
-                                </td>
-                                <td>
-                                </td>
-                            </tr>
-                        }
+        { // { editting ?
+                            // <tr>
+                                // <td>
+                                    // <button onClick={onCancel}>
+                                        // Cancel
+                                    // </button>
+                                // </td>
+                                // <td>
+                                    // <button onClick={onFinish}>
+                                        // Update Profile
+                                    // </button>
+                                // </td>
+                            // </tr> :
+                            // <tr>
+                                // <td>
+                                    // <button onClick={editProfileOnClickHandler}>
+                                        // Edit
+                                    // </button>
+                                // </td>
+                                // <td>
+                                // </td>
+                            // </tr>
+                        // }
+            }
 
                     </table>
 
