@@ -222,19 +222,28 @@ button {
 
 .InDepthFooter {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+  position: relative;
 }
 
 .InDepthFooterTitle {
-  align-self: center;
+  flex: 0 1 auto;
+  position: absolute;
+  left: 50%; /* ?? */
+  transform: translateX(-50%); /* ?? */
 }
 
 .InDepthFooterOptions {
-  align-self: flex-end;
+  flex: 0 1 auto;
+  margin-left: auto;
 }
 
 .InDepthFooterOption {
   display: inline;
+}
+
+.InDepthFooterOption a:hover {
+  color: black;
 }
 
 .InDepthFooterLink {
@@ -244,7 +253,6 @@ button {
 .ErrorMessage {
   color: red;
 }
-
 
 .SignUpButton a {
   color: white;

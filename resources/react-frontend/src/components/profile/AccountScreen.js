@@ -6,7 +6,7 @@ import {cloneDeep} from 'lodash';
 
 import './Profile.css';
 import {Header} from '../header/Header';
-import {InDepthBottom} from '../header/Bottom';
+import {InDepthBottom, InDepthBottomHamburger} from '../header/Bottom';
 import {Title} from '../layout/Title';
 import {FormTableRow} from '../forms/TextInput'
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
@@ -20,15 +20,17 @@ export function AccountScreen() {
                 <AccountBody
                     pageBorderClass={"PageBorder"}
                     underlineClass={"Underline"}/>
+                <InDepthBottom/>
             </MediaQuery>
 
             <MediaQuery maxWidth={765}>
                 <AccountBody
                     pageBorderClass={"PageBorder2"}
                     underlineClass={"Underline2"}/>
+
+                <InDepthBottomHamburger/>
             </MediaQuery>
 
-            <InDepthBottom/>
         </div>
     );
 };
