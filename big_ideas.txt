@@ -209,6 +209,36 @@ models
 ===========================================================================================================================================================
 
 
+calendar thoughts:
+Actually, just starting design for calendar, specifically, I'll include
+* 30 minute blocks
+* showing both individual calendar and multiperson calendar given class search request (just number of people for now)
+* * changing calendar entry (instead of just create or delete)
+
+
+30 minute blocks:
+    currently: an availability is a start and end time, subjects (free form text) and a tutor (id)
+    desired: start and end time that are on 30 minute boundaries, subjects that are from a list, and a tutor (id)
+    delta:
+    * send start and end times using new UI that only allows 30 minute boundary times (probably drop down)
+    * * check in lambda handler that the start and end times are on 30 minute boundaries
+    * choose one or more subjects from a list (hmm, in the db should this still be a free form string? could be comma separated, or could store with an entity relationship table)
+
+showing both individual calendar and multiperson calendar
+    currently: only url/my-calendar that shows a user their own availability. a day on the calendar is drawn as a button broken into divs alternating between grey (no avail) and red (avail). clicking grey will lead to create avail and clicking red will examine (and potentially delete) avail
+    desired: url/calendar with subject search, each day is made up of 24 30 minute blocks. A block will list the number of tutors available at that time. no clicking for now (that will be with requests)
+        url/my-calendar with 24 30 minute blocks. Each block is either blank or lists the subjects for that session. clicking blank will lead to create avail. clicking an avail will lead to edit or delete page (edit page with delete button).
+
+tasks
+    add subjects table
+    add subjects/avail many to many relationship
+    change create avail lambda
+        subject stuff and time boundary check
+    change create avail ui
+    change my-calendar
+    make calendar
+
+
 
 
 
