@@ -67,6 +67,7 @@ function ProfileBody(props) {
                         lastName: result.lastName,
                         school: result.school,
                         grade: result.grade,
+                        age: result.age,
                         bio: result.bio,
                     };
                     setProfile(profile);
@@ -81,6 +82,7 @@ function ProfileBody(props) {
                         lastName: "",
                         school: "",
                         grade: "",
+                        age: "",
                         bio: ""
                     });
                     setFailed(true);
@@ -97,6 +99,7 @@ function ProfileBody(props) {
         lastName: "",
         school: "",
         grade: "",
+        age: "",
         bio: ""
     });
     useEffect(() => {
@@ -138,6 +141,7 @@ function ProfileBody(props) {
                     lastName: "",
                     school: "",
                     grade: "",
+                    age: "",
                     bio: ""
                 });
                 setFailed(true);
@@ -217,6 +221,14 @@ function ProfileBody(props) {
                             label={"Grade:"}
                             placeHolder={"K-12? Junior in College? Young at Heart??"}
                             value={profile.grade}
+                            readOnly={!editting}/>
+
+                        <FormTableRow
+                            onChange={handleChange}
+                            name={"age"}
+                            label={"Age:"}
+                            placeHolder={"K-12? Junior in College? Young at Heart??"}
+                            value={profile.age}
                             readOnly={!editting}/>
 
                         <FormTableRow
