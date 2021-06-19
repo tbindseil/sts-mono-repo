@@ -11,10 +11,14 @@ export const Bottom = (props) => {
 export const InDepthBottom = (props) => {
     return (
         <div className="Footer InDepthFooter">
+            <div>
+                { // spacer
+                }
+            </div>
             <div className="InDepthFooterTitle">
                 <p>Students Teaching Students</p>
             </div>
-            <div className="InDepthFooterOptions">
+            <div>
                 <ul>
                     <li className="InDepthFooterOption">
                         <a className="InDepthFooterLink" href="/logout">Logout</a>

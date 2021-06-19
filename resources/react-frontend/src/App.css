@@ -222,7 +222,7 @@ button {
 
 .InDepthFooter {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
 }
 
 .InDepthFooterTitle {
@@ -246,7 +246,7 @@ button {
 }
 
 
-.SignUpButton a{
+.SignUpButton a {
   color: white;
   font-family: Arial;
   margin-top:7,5px;
@@ -273,11 +273,6 @@ button {
 }
 
 .SignUpButton {
-
   margin-top:50px;
   margin-bottom: 7.5px;
 }
-
-
-
-
