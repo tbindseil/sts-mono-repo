@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 
 import MediaQuery from 'react-responsive'
 
-import './Header.css';
 import {BigScreenProfileButton, SmallScreenProfileButton} from './ProfileButton';
 import logo from '../../images/logo-square(1).png';
 import burger from '../../images/burger.png';
