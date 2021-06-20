@@ -230,10 +230,17 @@ showing both individual calendar and multiperson calendar
         url/my-calendar with 24 30 minute blocks. Each block is either blank or lists the subjects for that session. clicking blank will lead to create avail. clicking an avail will lead to edit or delete page (edit page with delete button).
 
 tasks
-    add subjects table
-    add subjects/avail many to many relationship
+    ~~add subjects table~~ add hard coded subjects list - done
+        * do I have to do this? Why not just a free form string and have a hard coded list of options?
+            * I need to:
+                * add a subject to the list
+                    * add it to hard coded options
+                * remove a subject from the list
+                    * remove it from the list
+                    * find all avails with that subject, and (do something about it)
+    ~~add subjects/avail many to many relationship~~
     change create avail lambda
-        subject stuff and time boundary check
+        ~~subject stuff and~~ time boundary check
     change create avail ui
     change my-calendar
     make calendar

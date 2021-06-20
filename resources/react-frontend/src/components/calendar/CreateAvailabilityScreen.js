@@ -3,6 +3,9 @@ import React, {useEffect, useState} from 'react';
 import MediaQuery from 'react-responsive';
 import {useHistory} from 'react-router-dom';
 import moment from 'moment';
+import Multiselect from 'multiselect-react-dropdown';
+
+import subjects from '../../configs/subjects';
 
 import {Header} from '../header/Header';
 import {Bottom} from '../header/Bottom';
@@ -63,9 +66,9 @@ function CreateAvailabilityBody(props) {
         setDay(nextDay);
     }
 
-    const [subjects, setSubjects] = useState("");
+    const [subjectsState, setSubjectsState] = useState("");
     const handleChangeSubjects = (event) => {
-        setSubjects(event.target.value);
+        setSubjectsState(event.target.value);
     }
 
     const handleChangeStartTime = (event) => {
@@ -87,7 +90,7 @@ function CreateAvailabilityBody(props) {
 
     const postAvailability = async () => {
         const availability = {
-            subjects: subjects,
+            subjects: subjectsState,
             startTime: day,
             endTime: moment(day).add(duration, 'm').toDate(),
             tutor: user.username
@@ -125,6 +128,22 @@ function CreateAvailabilityBody(props) {
         });
     };
 
+    const onSelect = (selectedList, selectedItem) => {
+        console.log("onSelect");
+        console.log("selectedList is:");
+        console.log(selectedList);
+        console.log("selectedItem is:");
+        console.log(selectedItem);
+    };
+
+    const onRemove = (selectedList, selectedItem) => {
+        console.log("onRemove");
+        console.log("selectedList is:");
+        console.log(selectedList);
+        console.log("selectedItem is:");
+        console.log(selectedItem);
+    };
+
     return (
         <header className={props.pageBorderClass}>
             <Title
@@ -139,7 +158,24 @@ function CreateAvailabilityBody(props) {
                         </label>
                     </td>
                     <td>
-                        <input onChange={handleChangeSubjects} type="text" name="subjects" value={subjects}/>
+                        <Multiselect
+                            options={subjects.map((subject, index) => { return { name: subject, id: index}}) } // Options to display in the dropdown
+                            selectedValues={null}  // Preselected value to persist in dropdown
+                            onSelect={onSelect} // Function will trigger on select event
+                            onRemove={onRemove} // Function will trigger on remove event
+                            displayValue="name" // Property name to display in the dropdown options
+                            closeOnSelect={false}
+                        />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="subject">
+                            Subjects
+                        </label>
+                    </td>
+                    <td>
+                        <input onChange={handleChangeSubjects} type="text" name="subjects" value={subjectsState}/>
                     </td>
                 </tr>
                 <tr>

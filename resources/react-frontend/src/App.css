@@ -461,3 +461,7 @@ a { /* gotta override bootstrap here */
 .RightAlign {
   float: right;
 }
+
+.SubjectsMultiselect {
+  height: 36px;
+}

@@ -13,6 +13,7 @@
     "bootstrap": "^4.5.3",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
+    "multiselect-react-dropdown": "^2.0.1",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.0",
     "react-calendar": "^3.3.1",
