@@ -66,10 +66,7 @@ function CreateAvailabilityBody(props) {
         setDay(nextDay);
     }
 
-    const [subjectsState, setSubjectsState] = useState("");
-    const handleChangeSubjects = (event) => {
-        setSubjectsState(event.target.value);
-    }
+    const [selectedSubjects, setSelectedSubjects] = useState([]);
 
     const handleChangeStartTime = (event) => {
         const splitTime = event.target.value.split(":");
@@ -90,7 +87,7 @@ function CreateAvailabilityBody(props) {
 
     const postAvailability = async () => {
         const availability = {
-            subjects: subjectsState,
+            subjects: selectedSubjects.map(subject => subject.name).join(','),
             startTime: day,
             endTime: moment(day).add(duration, 'm').toDate(),
             tutor: user.username
@@ -128,20 +125,12 @@ function CreateAvailabilityBody(props) {
         });
     };
 
-    const onSelect = (selectedList, selectedItem) => {
-        console.log("onSelect");
-        console.log("selectedList is:");
-        console.log(selectedList);
-        console.log("selectedItem is:");
-        console.log(selectedItem);
+    const onSubjectSelect = (selectedList, selectedItem) => {
+        setSelectedSubjects(selectedList);
     };
 
-    const onRemove = (selectedList, selectedItem) => {
-        console.log("onRemove");
-        console.log("selectedList is:");
-        console.log(selectedList);
-        console.log("selectedItem is:");
-        console.log(selectedItem);
+    const onSubjectRemove = (selectedList, selectedItem) => {
+        setSelectedSubjects(selectedList);
     };
 
     return (
@@ -161,21 +150,11 @@ function CreateAvailabilityBody(props) {
                         <Multiselect
                             options={subjects.map((subject, index) => { return { name: subject, id: index}}) } // Options to display in the dropdown
                             selectedValues={null}  // Preselected value to persist in dropdown
-                            onSelect={onSelect} // Function will trigger on select event
-                            onRemove={onRemove} // Function will trigger on remove event
+                            onSelect={onSubjectSelect} // Function will trigger on select event
+                            onRemove={onSubjectRemove} // Function will trigger on remove event
                             displayValue="name" // Property name to display in the dropdown options
                             closeOnSelect={false}
                         />
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label for="subject">
-                            Subjects
-                        </label>
-                    </td>
-                    <td>
-                        <input onChange={handleChangeSubjects} type="text" name="subjects" value={subjectsState}/>
                     </td>
                 </tr>
                 <tr>
