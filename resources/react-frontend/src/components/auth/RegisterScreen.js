@@ -94,7 +94,9 @@ function RegisterBody(props) {
                 setGrade(value);
             }
         } else if (name === "age") {
-            setAge(value);
+            if ((value >= 1 && value <= 21) || value === "") {
+                setAge(value);
+            }
         } else if (name === "address") {
             setAddress(value);
         } else if (name === "bio") {
@@ -164,6 +166,85 @@ function RegisterBody(props) {
                     titleText={"Register"}
                     underlineClass={props.underlineClass}/>
 
+                <form
+                    className="Centered MaxWidth AuthForm"
+                    onChange={handleChange}>
+
+                    <br/> Please keep in mind while completing the form: <br/>
+               
+                    <br/> We ask parents or legal guardians to complete the form if the student is not in highschool. <br/>
+                   
+                    <br/> Before submitting the form, parents/legal guardians will be required to sign a wavier if you are under the age of 18. <br/>
+           
+                    <br/>Student Info<br/>
+                    
+
+                    <TextInput
+                        name={"firstName"}
+                        placeHolder={"First Name"}
+                        value={firstName}/>
+                    <br/>
+
+                    <TextInput
+                        name={"lastName"}
+                        placeHolder={"Last Name"}
+                        value={lastName}/>
+                    <br/>
+                 
+                    <TextInput
+                        name={"age"}
+                        placeHolder={"Age"}
+                        value={age}
+                        type={"number"}/>
+                    <br/>
+
+                    <TextInput
+                        name={"grade"}
+                        placeHolder={"Grade"}
+                        value={grade}
+                        type={"number"}/>
+                    <br/>
+
+                    <TextInput
+                        name={"school"}
+                        placeHolder={"School Name"}
+                        value={school}/>
+                    <br/>
+
+                    <TextInput
+                        name={"address"}
+                        placeHolder={"School Address"}
+                        value={address}/>
+                    <br/>
+
+                    <TextInput
+                        name={"email"}
+                        placeHolder={"Student Email"}
+                        value={email}/>
+                    <br/>
+
+                    <TextInput
+                        name={"bio"}
+                        placeHolder={"Bio"}
+                        value={bio}/>
+                    <br/>
+
+                    <br/>Parent Info<br/>
+                    <TextInput
+                        name={"parentEmail"}
+                        value={parentEmail}
+                        placeHolder={"Parent Email"}/>
+                    <br/>
+
+                    <TextInput
+                        name={"parentName"}
+                        value={parentName}
+                        placeHolder={"Parent Name"}/>
+                    <br/>
+                    <br/>
+
+                </form>
+
                 <div className="Centered MaxWidth">
                     <PasswordRequirements/>
 
@@ -197,71 +278,7 @@ function RegisterBody(props) {
                         type={"password"}/>
                     <br/>
 
-                    <br/>Parent Info<br/>
-                    <TextInput
-                        name={"parentEmail"}
-                        value={parentEmail}
-                        placeHolder={"Parent Email"}/>
-                    <br/>
-
-                    <TextInput
-                        name={"parentName"}
-                        value={parentName}
-                        placeHolder={"Parent Name"}/>
-                    <br/>
-
-                    <br/>Profile Info<br/>
-                    <TextInput
-                        name={"email"}
-                        placeHolder={"Email"}
-                        value={email}/>
-                    <br/>
-
-                    <TextInput
-                        name={"firstName"}
-                        placeHolder={"First Name"}
-                        value={firstName}/>
-                    <br/>
-
-                    <TextInput
-                        name={"lastName"}
-                        placeHolder={"Last Name"}
-                        value={lastName}/>
-                    <br/>
-
-                    <TextInput
-                        name={"school"}
-                        placeHolder={"School"}
-                        value={school}/>
-                    <br/>
-
-                    <TextInput
-                        name={"grade"}
-                        placeHolder={"Grade"}
-                        value={grade}
-                        type={"number"}/>
-                    <br/>
-
-                    <TextInput
-                        name={"age"}
-                        placeHolder={"Age"}
-                        value={age}
-                        type={"number"}/>
-                    <br/>
-
-                    <TextInput
-                        name={"address"}
-                        placeHolder={"Address"}
-                        value={address}/>
-                    <br/>
-
-                    <TextInput
-                        name={"bio"}
-                        placeHolder={"Bio"}
-                        value={bio}/>
-                    <br/>
-
-                    <LoadingFormButton
+                        <LoadingFormButton
                         loading={loading}
                         onClick={onFinish}
                         value={"Register"}/>
