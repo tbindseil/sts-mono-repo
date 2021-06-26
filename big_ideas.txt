@@ -241,6 +241,7 @@ tasks
     ~~add subjects/avail many to many relationship~~
     change create avail lambda
         ~~subject stuff and~~ time boundary check
+        make sure avails don't overlap and make sure not in the past
     change create avail ui
     change my-calendar
     make calendar

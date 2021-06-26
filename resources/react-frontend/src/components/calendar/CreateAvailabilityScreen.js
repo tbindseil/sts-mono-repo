@@ -3,7 +3,9 @@ import React, {useEffect, useState} from 'react';
 import MediaQuery from 'react-responsive';
 import {useHistory} from 'react-router-dom';
 import moment from 'moment';
+
 import Multiselect from 'multiselect-react-dropdown';
+import Select from "react-dropdown-select";
 
 import subjects from '../../configs/subjects';
 
@@ -55,7 +57,17 @@ function CreateAvailabilityBody(props) {
 
     // default to 6pm
     const at6pm = moment(selectedDate).hours(0).minutes(0).seconds(0).milliseconds(0).add(18, "hours").toDate();
-    const [day, setDay] = useState(at6pm);
+
+    // time stuff
+    const snapTo30Min = (initial) => {
+        if (initial.minute() < 30) {
+            return 0;
+        } else {
+            return 30;
+        }
+    }
+
+    const [day, setDay] = useState(at6pm); // TODO day is really start moment
     const handleChangeDay = (event) => {
         const dayMoment = moment(day);
         const currStartHour = dayMoment.hours();
@@ -64,12 +76,17 @@ function CreateAvailabilityBody(props) {
         const nextDay = moment(event.target.value).add(currStartHour, "hours").add(currStartMinute, "minutes").toDate();
 
         setDay(nextDay);
+
+        // TODO if date in past selected, set to today
+        // if date today, check time
+        // if date after today, no worries
     }
 
-    const [selectedSubjects, setSelectedSubjects] = useState([]);
-
+    const [startTime, setStartTime] = useState('10:00');
     const handleChangeStartTime = (event) => {
-        const splitTime = event.target.value.split(":");
+        console.log('handleChangeStartTime');
+        console.log(event);
+        /*const splitTime = event.target.value.split(":");
         const hours = splitTime[0];
         const minutes = splitTime[1];
 
@@ -77,19 +94,22 @@ function CreateAvailabilityBody(props) {
         const startOfDay = moment(day).hours(0).minutes(0).seconds(0).milliseconds(0);
 
         // add new start time's hours and minutes
-        setDay(moment(startOfDay).add(hours, "hours").add(minutes, "minutes").toDate());
+        setDay(moment(startOfDay).add(hours, "hours").add(minutes, "minutes").toDate());*/
     }
 
-    const [duration, setDuration] = useState(15);
-    const handleChangeDuration = (event) => {
-        setDuration(event.target.value);
+    const [endTime, setEndTime] = useState('10:30');
+    const handleChangeEndTime = (event) => {
+        console.log("handleChangeEndTime");
+        console.log(event);
     }
 
     const postAvailability = async () => {
+        const startTime = moment(day);
+        const endTime = moment();
         const availability = {
             subjects: selectedSubjects.map(subject => subject.name).join(','),
-            startTime: day,
-            endTime: moment(day).add(duration, 'm').toDate(),
+            startTime: startTime,
+            endTime: endTime,
             tutor: user.username
         };
 
@@ -125,12 +145,49 @@ function CreateAvailabilityBody(props) {
         });
     };
 
+    const [selectedSubjects, setSelectedSubjects] = useState([]);
+
     const onSubjectSelect = (selectedList, selectedItem) => {
         setSelectedSubjects(selectedList);
     };
 
     const onSubjectRemove = (selectedList, selectedItem) => {
         setSelectedSubjects(selectedList);
+    };
+
+    const makeStartTimeOptions = () => {
+        let isToday = moment(day).isSame(new Date(), "day");
+
+        let initial = moment(day);
+        if (isToday) {
+            const snappedMinute = snapTo30Min(initial);
+            initial.set('minute',  snappedMinute);
+        } else {
+            initial.set('hour', 0);
+            initial.set('minute', 0);
+        }
+
+        let options = [];
+        let index = 0;
+        let current = moment(initial);
+        while (current.day() === initial.day()) {
+            const hour = current.hour() % 12 === 0 ? 12 : current.hour() % 12;
+            const minutes = current.minute() === 0 ? '00' : '30';
+            const amOrPm = current.hour() >= 12 ? 'PM' : 'AM';
+            options.push({
+                label: `${hour}:${minutes} ${amOrPm}`,
+                id: index
+            });
+
+            current.add(30, 'minutes');
+            ++index;
+        }
+
+        return options;
+    };
+
+    const makeEndTimeOptions = () => {
+
     };
 
     return (
@@ -164,7 +221,12 @@ function CreateAvailabilityBody(props) {
                         </label>
                     </td>
                     <td>
-                        <input onChange={handleChangeDay} type="date" name="day" value={moment(day).format("YYYY-MM-DD")}/>
+                        <input
+                            onChange={handleChangeDay}
+                            type="date"
+                            name="day"
+                            value={moment(day).format("YYYY-MM-DD")}
+                        />
                     </td>
                 </tr>
                 <tr>
@@ -174,17 +236,25 @@ function CreateAvailabilityBody(props) {
                         </label>
                     </td>
                     <td>
-                        <input onChange={handleChangeStartTime} type="time" name="startTime" value={moment(day).format("HH:mm")}/>
+                        <Select
+                            options={makeStartTimeOptions()}
+                            onChange={handleChangeStartTime}
+                            multi={false}
+                        />
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <label for="durationMinutes">
-                            Duration (in Minutes):
+                        <label for="endTime">
+                            End Time:
                         </label>
                     </td>
                     <td>
-                        <input onChange={handleChangeDuration} type="text" name="durationMinutes" value={duration}/>
+                        <Select
+                            options={makeEndTimeOptions()}
+                            onChange={handleChangeEndTime}
+                            multi={false}
+                        />
                     </td>
                 </tr>
                 <tr>
