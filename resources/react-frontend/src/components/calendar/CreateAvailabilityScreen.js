@@ -55,9 +55,6 @@ function CreateAvailabilityBody(props) {
         history, setUser
     ]);
 
-    // default to 6pm
-    const at6pm = moment(selectedDate).hours(0).minutes(0).seconds(0).milliseconds(0).add(18, "hours").toDate();
-
     // time stuff
     const snapDownTo30Min = (initial) => {
         if (initial.minute() < 30) {
@@ -81,19 +78,9 @@ function CreateAvailabilityBody(props) {
         }
         setDay(asMoment.toDate());
 
-        // if date today, check time - time isn't tracked here, its done via start and end time
-        // and they cascade....
         checkStartTime();
     }
 
-    // TODO when setting start and end times I need to somehow set drop down accordingly,
-    // will probably require a decorator
-
-    // so, I'm stumped on what type the start/end times should be
-    // if start time is moment, I have to deal with dates...
-    // what does it look like coming from dropdown?
-    //
-    // decision, start time is moment, but only uses
     const [startTime, setStartTime] = useState(moment().set('minute', snapDownTo30Min(moment())));
     const handleChangeStartTime = (selected) => {
         const timeString = selected[0].label;
@@ -127,7 +114,7 @@ function CreateAvailabilityBody(props) {
         }
     };
 
-    const [endTime, setEndTime] = useState('10:30');
+    const [endTime, setEndTime] = useState(moment().set('minute', snapDownTo30Min(moment())).add('minute', 30));
     const handleChangeEndTime = (selected) => {
         const timeString = selected[0].label;
         const splitTime = timeString.split(":");
@@ -144,6 +131,15 @@ function CreateAvailabilityBody(props) {
     };
 
     const checkEndTime = () => {
+        console.log("checkEndTime");
+        console.log("endTime is:");
+        console.log(endTime);
+        console.log("startTime is:");
+        console.log(startTime);
+        //
+        // TJTAG
+        // seems like start time is not being updated in by the time this is called
+        //
         // make sure end time is after start time, if now, set to next available time slot
         if (endTime.hours() < startTime.hours()
             || (endTime.hours() === startTime.hours && endTime.minutes() < startTime.minutes())) {
@@ -151,6 +147,8 @@ function CreateAvailabilityBody(props) {
             let newEndTime = moment(startTime);
             newEndTime.add('minutes', 30);
             setEndTime(newEndTime);
+            console.log("newEndtime is:");
+            console.log(newEndTime);
         }
     };
 
@@ -207,7 +205,7 @@ function CreateAvailabilityBody(props) {
     };
 
     const makeStartTimeOptions = () => {
-        // TODO can I use this in set day?
+        // console.log can I use this in set day?
         // probably, if isToday or asMoment > rightNow
         const isToday = moment(day).isSame(new Date(), "day");
 
@@ -264,6 +262,25 @@ function CreateAvailabilityBody(props) {
         return options;
     };
 
+    const getStartTimeValue = () => {
+        const hour = startTime.hour() % 12 === 0 ? 12 : startTime.hour() % 12;
+        const minutes = startTime.minute() === 0 ? '00' : '30';
+        const amOrPm = startTime.hour() >= 12 ? 'PM' : 'AM';
+        return [{
+            label: `${hour}:${minutes} ${amOrPm}`
+        }];
+    }
+
+    const getEndTimeValue = () => {
+        console.log("getEndTimeValue");
+        const hour = endTime.hour() % 12 === 0 ? 12 : endTime.hour() % 12;
+        const minutes = endTime.minute() === 0 ? '00' : '30';
+        const amOrPm = endTime.hour() >= 12 ? 'PM' : 'AM';
+        return [{
+            label: `${hour}:${minutes} ${amOrPm}`
+        }];
+    }
+
     return (
         <header className={props.pageBorderClass}>
             <Title
@@ -312,6 +329,7 @@ function CreateAvailabilityBody(props) {
                     <td>
                         <Select
                             options={makeStartTimeOptions()}
+                            values={getStartTimeValue()}
                             onChange={handleChangeStartTime}
                             multi={false}
                         />
@@ -326,6 +344,7 @@ function CreateAvailabilityBody(props) {
                     <td>
                         <Select
                             options={makeEndTimeOptions()}
+                            values={getEndTimeValue()}
                             onChange={handleChangeEndTime}
                             multi={false}
                         />
