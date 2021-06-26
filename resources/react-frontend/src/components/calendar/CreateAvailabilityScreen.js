@@ -59,7 +59,7 @@ function CreateAvailabilityBody(props) {
     const at6pm = moment(selectedDate).hours(0).minutes(0).seconds(0).milliseconds(0).add(18, "hours").toDate();
 
     // time stuff
-    const snapTo30Min = (initial) => {
+    const snapDownTo30Min = (initial) => {
         if (initial.minute() < 30) {
             return 0;
         } else {
@@ -67,41 +67,92 @@ function CreateAvailabilityBody(props) {
         }
     }
 
-    const [day, setDay] = useState(at6pm); // TODO day is really start moment
+    const [day, setDay] = useState(moment().toDate());
     const handleChangeDay = (event) => {
-        const dayMoment = moment(day);
-        const currStartHour = dayMoment.hours();
-        const currStartMinute = dayMoment.minutes();
+        // if date in past selected, set to today
+        const rightNow = moment();
+        const asMoment = moment(event.target.value);
+        if (asMoment.year() < rightNow.year()
+            || (asMoment.year() === rightNow.year() && asMoment.month() < rightNow.month())
+            || (asMoment.year() === rightNow.year() && asMoment.month() === rightNow.month() && asMoment.date() < rightNow.date())) {
+            asMoment.set('year', rightNow.year());
+            asMoment.set('month', rightNow.month());
+            asMoment.set('date', rightNow.date());
+        }
+        setDay(asMoment.toDate());
 
-        const nextDay = moment(event.target.value).add(currStartHour, "hours").add(currStartMinute, "minutes").toDate();
-
-        setDay(nextDay);
-
-        // TODO if date in past selected, set to today
-        // if date today, check time
-        // if date after today, no worries
+        // if date today, check time - time isn't tracked here, its done via start and end time
+        // and they cascade....
+        checkStartTime();
     }
 
-    const [startTime, setStartTime] = useState('10:00');
-    const handleChangeStartTime = (event) => {
-        console.log('handleChangeStartTime');
-        console.log(event);
-        /*const splitTime = event.target.value.split(":");
-        const hours = splitTime[0];
-        const minutes = splitTime[1];
+    // TODO when setting start and end times I need to somehow set drop down accordingly,
+    // will probably require a decorator
 
-        // zero day's minutes
-        const startOfDay = moment(day).hours(0).minutes(0).seconds(0).milliseconds(0);
+    // so, I'm stumped on what type the start/end times should be
+    // if start time is moment, I have to deal with dates...
+    // what does it look like coming from dropdown?
+    //
+    // decision, start time is moment, but only uses
+    const [startTime, setStartTime] = useState(moment().set('minute', snapDownTo30Min(moment())));
+    const handleChangeStartTime = (selected) => {
+        const timeString = selected[0].label;
+        const splitTime = timeString.split(":");
+        const splitSplitTime = splitTime[1].split(" ");
+        const minutes = splitSplitTime[0];
+        const amOrPm = splitSplitTime[1];
+        const hours = amOrPm === 'PM' ? splitTime[0] + 12 : splitTime[0];
 
-        // add new start time's hours and minutes
-        setDay(moment(startOfDay).add(hours, "hours").add(minutes, "minutes").toDate());*/
-    }
+        const asMoment = moment();
+        asMoment.set('minutes', minutes);
+        asMoment.set('hours', hours);
+
+        setStartTime(asMoment);
+
+        checkEndTime();
+    };
+
+    const checkStartTime = () => {
+        const rightNow = moment();
+        const isToday = moment(day).isSame(rightNow, "day");
+        if (isToday) {
+            const snapped = snapDownTo30Min(rightNow);
+
+            if (startTime.hour() < rightNow.hour()
+                || (startTime.hour() === rightNow.hour() && startTime.minute() < snapped)) {
+                const newStartTime = moment(startTime).set('hour', rightNow.hour()).set('minute', snapped);
+                setStartTime(newStartTime);
+                checkEndTime();
+            }
+        }
+    };
 
     const [endTime, setEndTime] = useState('10:30');
-    const handleChangeEndTime = (event) => {
-        console.log("handleChangeEndTime");
-        console.log(event);
-    }
+    const handleChangeEndTime = (selected) => {
+        const timeString = selected[0].label;
+        const splitTime = timeString.split(":");
+        const splitSplitTime = splitTime[1].split(" ");
+        const minutes = splitSplitTime[0];
+        const amOrPm = splitSplitTime[1];
+        const hours = amOrPm === 'PM' ? splitTime[0] + 12 : splitTime[0];
+
+        const asMoment = moment();
+        asMoment.set('minutes', minutes);
+        asMoment.set('hours', hours);
+
+        setEndTime(asMoment);
+    };
+
+    const checkEndTime = () => {
+        // make sure end time is after start time, if now, set to next available time slot
+        if (endTime.hours() < startTime.hours()
+            || (endTime.hours() === startTime.hours && endTime.minutes() < startTime.minutes())) {
+            // set endtime to startTime, then add 30 minutes
+            let newEndTime = moment(startTime);
+            newEndTime.add('minutes', 30);
+            setEndTime(newEndTime);
+        }
+    };
 
     const postAvailability = async () => {
         const startTime = moment(day);
@@ -156,11 +207,13 @@ function CreateAvailabilityBody(props) {
     };
 
     const makeStartTimeOptions = () => {
-        let isToday = moment(day).isSame(new Date(), "day");
+        // TODO can I use this in set day?
+        // probably, if isToday or asMoment > rightNow
+        const isToday = moment(day).isSame(new Date(), "day");
 
         let initial = moment(day);
         if (isToday) {
-            const snappedMinute = snapTo30Min(initial);
+            const snappedMinute = snapDownTo30Min(initial);
             initial.set('minute',  snappedMinute);
         } else {
             initial.set('hour', 0);
@@ -187,7 +240,28 @@ function CreateAvailabilityBody(props) {
     };
 
     const makeEndTimeOptions = () => {
+        // based off start time,
+        // start with next one after start Time and generate up to 12 AM
+        const initial = moment(startTime);
+        let current = moment(startTime);
+        current.add('minute', 30);
 
+        let index = 0;
+        let options = []
+        while (current.day() === initial.day()) {
+            const hour = current.hour() % 12 === 0 ? 12 : current.hour() % 12;
+            const minutes = current.minute() === 0 ? '00' : '30';
+            const amOrPm = current.hour() >= 12 ? 'PM' : 'AM';
+            options.push({
+                label: `${hour}:${minutes} ${amOrPm}`,
+                id: index
+            });
+
+            current.add(30, 'minutes');
+            ++index;
+        }
+
+        return options;
     };
 
     return (
