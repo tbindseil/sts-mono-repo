@@ -4,8 +4,7 @@ import MediaQuery from 'react-responsive';
 import {useHistory} from 'react-router-dom';
 import moment from 'moment';
 
-import Multiselect from 'multiselect-react-dropdown';
-import Select from "react-dropdown-select";
+import Multiselect from 'multiselect-react-dropdown'; // TODO should this just be a drop down also?
 import {Dropdown} from 'semantic-ui-react';
 
 import subjects from '../../configs/subjects';
@@ -84,25 +83,6 @@ function CreateAvailabilityBody(props) {
 
     const [startTime, setStartTime] = useState(moment().set('minute', snapDownTo30Min(moment())));
     const handleChangeStartTime = (event, data) => {
-        /*console.log('start handleChangeStartTime');
-        console.log('data is:');
-        console.log(data);
-        // let newStartTime = moment();
-        // newStartTime.set(data, 'LT');
-        let newStartTime = moment(data, 'h:mm a');
-        console.log('newStartTime is:');
-        console.log(newStartTime);
-        console.log("newStartTime.hour() is");
-        console.log(newStartTime.hour());
-        console.log("newStartTime.minutes() is");
-        console.log(newStartTime.minutes());
-        let rightNow = moment();
-        rightNow.set(newStartTime.hour(), 'hour');
-        rightNow.set(newStartTime.minute(), 'minute');
-        console.log("rightNow is:");
-        console.log(rightNow);
-        setStartTime(rightNow);
-        console.log('end handleChangeStartTime');*/
         const timeString = data.value;
         const splitTime = timeString.split(":");
         const splitSplitTime = splitTime[1].split(" ");
@@ -113,55 +93,26 @@ function CreateAvailabilityBody(props) {
         hours = amOrPm === 'PM' ? hours + 12 : hours;
 
         const asMoment = moment();
-        console.log("minutes is:");
-        console.log(minutes);
-        console.log('hours is:');
-        console.log(hours);
         asMoment.set('minutes', minutes);
         asMoment.set('hours', hours);
 
         setStartTime(asMoment);
-
-        // checkEndTime();
     };
 
     useEffect(() => {
-        // console.log("day is:");
-        // console.log(day);
-
         const rightNow = moment();
         const isToday = moment(day).isSame(rightNow, "day");
         if (isToday) {
-            // console.log("is today");
             const snapped = snapDownTo30Min(rightNow);
 
             if (startTime.hour() < rightNow.hour()
                 || (startTime.hour() === rightNow.hour() && startTime.minute() < snapped)) {
-                // console.log("next if");
                 const newStartTime = moment(startTime).set('hour', rightNow.hour()).set('minute', snapped);
-                // console.log("newStartTime is:");
-                // console.log(newStartTime);
                 setStartTime(newStartTime);
-                // checkEndTime();
             }
         }
 
     }, [day, startTime]);
-
-    const checkStartTime = () => {
-        const rightNow = moment();
-        const isToday = moment(day).isSame(rightNow, "day");
-        if (isToday) {
-            const snapped = snapDownTo30Min(rightNow);
-
-            if (startTime.hour() < rightNow.hour()
-                || (startTime.hour() === rightNow.hour() && startTime.minute() < snapped)) {
-                const newStartTime = moment(startTime).set('hour', rightNow.hour()).set('minute', snapped);
-                setStartTime(newStartTime);
-                // checkEndTime();
-            }
-        }
-    };
 
     const [endTime, setEndTime] = useState(moment().set('minute', snapDownTo30Min(moment())).add('minute', 30));
     const handleChangeEndTime = (event, data) => {
@@ -180,43 +131,15 @@ function CreateAvailabilityBody(props) {
     };
 
     useEffect(() => {
-        // console.log("day is:");
-        // console.log(day);
-
         if (endTime.hours() < startTime.hours()
             || (endTime.hours() === startTime.hours && endTime.minutes() < startTime.minutes())) {
-            // set endtime to startTime, then add 30 minutes
             let newEndTime = moment(startTime);
             newEndTime.add('minutes', 30);
             setEndTime(newEndTime);
-            // console.log("newEndtime is:");
-            // console.log(newEndTime);
         }
 
     }, [startTime, endTime]);
 
-
-    const checkEndTime = () => {
-        // console.log("checkEndTime");
-        // console.log("endTime is:");
-        // console.log(endTime);
-        // console.log("startTime is:");
-        // console.log(startTime);
-        //
-        // TJTAG
-        // seems like start time is not being updated in by the time this is called
-        //
-        // make sure end time is after start time, if now, set to next available time slot
-        if (endTime.hours() < startTime.hours()
-            || (endTime.hours() === startTime.hours && endTime.minutes() < startTime.minutes())) {
-            // set endtime to startTime, then add 30 minutes
-            let newEndTime = moment(startTime);
-            newEndTime.add('minutes', 30);
-            setEndTime(newEndTime);
-            // console.log("newEndtime is:");
-            // console.log(newEndTime);
-        }
-    };
 
     const postAvailability = async () => {
         const startTime = moment(day);
@@ -271,8 +194,6 @@ function CreateAvailabilityBody(props) {
     };
 
     const makeStartTimeOptions = () => {
-        // console.log can I use this in set day?
-        // probably, if isToday or asMoment > rightNow
         const isToday = moment(day).isSame(new Date(), "day");
 
         let initial = moment(day);
@@ -292,7 +213,6 @@ function CreateAvailabilityBody(props) {
             const minutes = current.minute() === 0 ? '00' : '30';
             const amOrPm = current.hour() >= 12 ? 'PM' : 'AM';
             options.push({
-                label: `${hour}:${minutes} ${amOrPm}`,
                 key: `${hour}:${minutes} ${amOrPm}`,
                 text: `${hour}:${minutes} ${amOrPm}`,
                 value: `${hour}:${minutes} ${amOrPm}`,
@@ -313,50 +233,20 @@ function CreateAvailabilityBody(props) {
         let current = moment(startTime);
         current.add('minute', 30);
 
-        let index = 0;
         let options = []
         while (current.day() === initial.day()) {
-            const hour = current.hour() % 12 === 0 ? 12 : current.hour() % 12;
-            const minutes = current.minute() === 0 ? '00' : '30';
-            const amOrPm = current.hour() >= 12 ? 'PM' : 'AM';
+            const timeStr = current.format("LT");
             options.push({
-                label: `${hour}:${minutes} ${amOrPm}`,
-                key: `${hour}:${minutes} ${amOrPm}`,
-                text: `${hour}:${minutes} ${amOrPm}`,
-                value: `${hour}:${minutes} ${amOrPm}`,
-                id: index
+                key: timeStr,
+                text: timeStr,
+                value: timeStr,
             });
 
             current.add(30, 'minutes');
-            ++index;
         }
 
         return options;
     };
-
-    const getStartTimeValue = () => {
-        // TODO this could easily just be a formatting of the moment
-        console.log('start getStartTimeValue');
-        console.log("startTime is:");
-        console.log(startTime);
-        const hour = startTime.hour() % 12 === 0 ? 12 : startTime.hour() % 12;
-        const minutes = startTime.minute() === 0 ? '00' : '30';
-        const amOrPm = startTime.hour() >= 12 ? 'PM' : 'AM';
-        console.log("returnign is:");
-        console.log(`${hour}:${minutes} ${amOrPm}`);
-        console.log('end getStartTimeValue');
-        return `${hour}:${minutes} ${amOrPm}`;
-    }
-
-    const getEndTimeValue = () => {
-        // console.log("getEndTimeValue");
-        const hour = endTime.hour() % 12 === 0 ? 12 : endTime.hour() % 12;
-        const minutes = endTime.minute() === 0 ? '00' : '30';
-        const amOrPm = endTime.hour() >= 12 ? 'PM' : 'AM';
-        return [{
-            label: `${hour}:${minutes} ${amOrPm}`
-        }];
-    }
 
     return (
         <header className={props.pageBorderClass}>
@@ -406,7 +296,7 @@ function CreateAvailabilityBody(props) {
                     <td>
                         <Dropdown
                             options={makeStartTimeOptions()}
-                            value={console.log('start time is:') || console.log(startTime) || console.log(startTime.format('LT')) || startTime.format('LT')}
+                            value={startTime.format('LT')}
                             onChange={handleChangeStartTime}
                             fluid
                             selection
