@@ -6,6 +6,7 @@ import moment from 'moment';
 
 import Multiselect from 'multiselect-react-dropdown';
 import Select from "react-dropdown-select";
+import {Dropdown} from 'semantic-ui-react';
 
 import subjects from '../../configs/subjects';
 
@@ -82,8 +83,12 @@ function CreateAvailabilityBody(props) {
     }
 
     const [startTime, setStartTime] = useState(moment().set('minute', snapDownTo30Min(moment())));
-    const handleChangeStartTime = (selected) => {
-        const timeString = selected[0].label;
+    const handleChangeStartTime = (selected, data) => {
+        console.log("selected is:");
+        console.log(selected);
+        console.log('data is');
+        console.log(data);
+        const timeString = data.value;
         const splitTime = timeString.split(":");
         const splitSplitTime = splitTime[1].split(" ");
         const minutes = splitSplitTime[0];
@@ -250,6 +255,9 @@ function CreateAvailabilityBody(props) {
             const amOrPm = current.hour() >= 12 ? 'PM' : 'AM';
             options.push({
                 label: `${hour}:${minutes} ${amOrPm}`,
+                key: `${hour}:${minutes} ${amOrPm}`,
+                text: `${hour}:${minutes} ${amOrPm}`,
+                value: `${hour}:${minutes} ${amOrPm}`,
                 id: index
             });
 
@@ -286,6 +294,7 @@ function CreateAvailabilityBody(props) {
     };
 
     const getStartTimeValue = () => {
+        // TODO this could easily just be a formatting of the moment
         console.log('getStartTimeValue');
         console.log("startTime is:");
         console.log(startTime);
@@ -294,9 +303,12 @@ function CreateAvailabilityBody(props) {
         const amOrPm = startTime.hour() >= 12 ? 'PM' : 'AM';
         console.log("label is:");
         console.log(`${hour}:${minutes} ${amOrPm}`);
-        return [{
-            label: `${hour}:${minutes} ${amOrPm}`
-        }];
+        return {
+            label: `${hour}:${minutes} ${amOrPm}`,
+            key: `${hour}:${minutes} ${amOrPm}`,
+            text: `${hour}:${minutes} ${amOrPm}`,
+            value: `${hour}:${minutes} ${amOrPm}`
+        };
     }
 
     const getEndTimeValue = () => {
@@ -307,6 +319,37 @@ function CreateAvailabilityBody(props) {
         return [{
             label: `${hour}:${minutes} ${amOrPm}`
         }];
+    }
+
+    const options = [
+        {
+            label: 'Option1',
+            key: 'Option1',
+            text: 'Option1',
+            value: 'Option1',
+        },
+        {
+            label: 'Option2',
+            key: 'Option2',
+            text: 'Option2',
+            value: 'Option2',
+        },
+        {
+            label: 'Option3',
+            key: 'Option3',
+            text: 'Option3',
+            value: 'Option3',
+        },
+    ];
+    const [selectedOption, setSelectedOption] = useState({label: 'Option1', key: 'Option1', text: 'Option1', value: 'Option1'});
+    const onClickOption1 = () => {
+        setSelectedOption({label: 'Option1', key: 'Option1', text: 'Option1', value: 'Option1'});
+    }
+    const onClickOption2 = () => {
+        setSelectedOption({label: 'Option2', key: 'Option2', text: 'Option2', value: 'Option2'});
+    }
+    const onClickOption3 = () => {
+        setSelectedOption({label: 'Option3', key: 'Option3', text: 'Option3', value: 'Option3'});
     }
 
     return (
@@ -355,10 +398,12 @@ function CreateAvailabilityBody(props) {
                         </label>
                     </td>
                     <td>
-                        <Select
+                        <Dropdown
                             options={makeStartTimeOptions()}
-                            values={getStartTimeValue()}
+                            value={getStartTimeValue()}
                             onChange={handleChangeStartTime}
+                            fluid
+                            selection
                             multi={false}
                         />
                     </td>
@@ -391,6 +436,21 @@ function CreateAvailabilityBody(props) {
                     </td>
                 </tr>
             </table>
+
+        { console.log("selectedOption is:") || 
+            console.log(selectedOption)
+        }
+            <Dropdown
+                options={options}
+                value={selectedOption.text}
+                onChange={(event, data) => {setSelectedOption({label: data.value, key: data.value, text: data.value, value: data.value});}}
+                fluid
+                selection
+                multi={false}
+            />
+            <button onClick={onClickOption1}>Option 1</button>
+            <button onClick={onClickOption2}>Option 2</button>
+            <button onClick={onClickOption3}>Option 3</button>
 
         </header>
     );

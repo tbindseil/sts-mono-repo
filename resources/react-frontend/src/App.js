@@ -1,5 +1,7 @@
 import React from 'react';
 import './App.css';
+import 'semantic-ui-css/semantic.min.css'
+
 import {Switch, Route} from 'react-router-dom';
 
 import Amplify from '@aws-amplify/core'
