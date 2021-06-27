@@ -78,7 +78,7 @@ function CreateAvailabilityBody(props) {
         }
         setDay(asMoment.toDate());
 
-        checkStartTime();
+        // checkStartTime();
     }
 
     const [startTime, setStartTime] = useState(moment().set('minute', snapDownTo30Min(moment())));
@@ -98,6 +98,29 @@ function CreateAvailabilityBody(props) {
 
         checkEndTime();
     };
+
+    useEffect(() => {
+        console.log("day is:");
+        console.log(day);
+
+        const rightNow = moment();
+        const isToday = moment(day).isSame(rightNow, "day");
+        if (isToday) {
+            console.log("is today");
+            const snapped = snapDownTo30Min(rightNow);
+
+            if (startTime.hour() < rightNow.hour()
+                || (startTime.hour() === rightNow.hour() && startTime.minute() < snapped)) {
+                console.log("next if");
+                const newStartTime = moment(startTime).set('hour', rightNow.hour()).set('minute', snapped);
+                console.log("newStartTime is:");
+                console.log(newStartTime);
+                setStartTime(newStartTime);
+                // checkEndTime();
+            }
+        }
+
+    }, [day, startTime]);
 
     const checkStartTime = () => {
         const rightNow = moment();
@@ -131,11 +154,11 @@ function CreateAvailabilityBody(props) {
     };
 
     const checkEndTime = () => {
-        console.log("checkEndTime");
-        console.log("endTime is:");
-        console.log(endTime);
-        console.log("startTime is:");
-        console.log(startTime);
+        // console.log("checkEndTime");
+        // console.log("endTime is:");
+        // console.log(endTime);
+        // console.log("startTime is:");
+        // console.log(startTime);
         //
         // TJTAG
         // seems like start time is not being updated in by the time this is called
@@ -147,8 +170,8 @@ function CreateAvailabilityBody(props) {
             let newEndTime = moment(startTime);
             newEndTime.add('minutes', 30);
             setEndTime(newEndTime);
-            console.log("newEndtime is:");
-            console.log(newEndTime);
+            // console.log("newEndtime is:");
+            // console.log(newEndTime);
         }
     };
 
@@ -263,16 +286,21 @@ function CreateAvailabilityBody(props) {
     };
 
     const getStartTimeValue = () => {
+        console.log('getStartTimeValue');
+        console.log("startTime is:");
+        console.log(startTime);
         const hour = startTime.hour() % 12 === 0 ? 12 : startTime.hour() % 12;
         const minutes = startTime.minute() === 0 ? '00' : '30';
         const amOrPm = startTime.hour() >= 12 ? 'PM' : 'AM';
+        console.log("label is:");
+        console.log(`${hour}:${minutes} ${amOrPm}`);
         return [{
             label: `${hour}:${minutes} ${amOrPm}`
         }];
     }
 
     const getEndTimeValue = () => {
-        console.log("getEndTimeValue");
+        // console.log("getEndTimeValue");
         const hour = endTime.hour() % 12 === 0 ? 12 : endTime.hour() % 12;
         const minutes = endTime.minute() === 0 ? '00' : '30';
         const amOrPm = endTime.hour() >= 12 ? 'PM' : 'AM';
@@ -296,11 +324,11 @@ function CreateAvailabilityBody(props) {
                     </td>
                     <td>
                         <Multiselect
-                            options={subjects.map((subject, index) => { return { name: subject, id: index}}) } // Options to display in the dropdown
-                            selectedValues={null}  // Preselected value to persist in dropdown
-                            onSelect={onSubjectSelect} // Function will trigger on select event
-                            onRemove={onSubjectRemove} // Function will trigger on remove event
-                            displayValue="name" // Property name to display in the dropdown options
+                            options={subjects.map((subject, index) => { return { name: subject, id: index}}) }
+                            selectedValues={null} 
+                            onSelect={onSubjectSelect}
+                            onRemove={onSubjectRemove}
+                            displayValue="name"
                             closeOnSelect={false}
                         />
                     </td>
