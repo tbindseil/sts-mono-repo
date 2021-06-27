@@ -158,14 +158,14 @@ function CreateAvailabilityBody(props) {
                 || (startTime.hour() === rightNow.hour() && startTime.minute() < snapped)) {
                 const newStartTime = moment(startTime).set('hour', rightNow.hour()).set('minute', snapped);
                 setStartTime(newStartTime);
-                checkEndTime();
+                // checkEndTime();
             }
         }
     };
 
     const [endTime, setEndTime] = useState(moment().set('minute', snapDownTo30Min(moment())).add('minute', 30));
-    const handleChangeEndTime = (selected) => {
-        const timeString = selected[0].label;
+    const handleChangeEndTime = (event, data) => {
+        const timeString = data.value;
         const splitTime = timeString.split(":");
         const splitSplitTime = splitTime[1].split(" ");
         const minutes = splitSplitTime[0];
@@ -178,6 +178,23 @@ function CreateAvailabilityBody(props) {
 
         setEndTime(asMoment);
     };
+
+    useEffect(() => {
+        // console.log("day is:");
+        // console.log(day);
+
+        if (endTime.hours() < startTime.hours()
+            || (endTime.hours() === startTime.hours && endTime.minutes() < startTime.minutes())) {
+            // set endtime to startTime, then add 30 minutes
+            let newEndTime = moment(startTime);
+            newEndTime.add('minutes', 30);
+            setEndTime(newEndTime);
+            // console.log("newEndtime is:");
+            // console.log(newEndTime);
+        }
+
+    }, [startTime, endTime]);
+
 
     const checkEndTime = () => {
         // console.log("checkEndTime");
@@ -304,6 +321,9 @@ function CreateAvailabilityBody(props) {
             const amOrPm = current.hour() >= 12 ? 'PM' : 'AM';
             options.push({
                 label: `${hour}:${minutes} ${amOrPm}`,
+                key: `${hour}:${minutes} ${amOrPm}`,
+                text: `${hour}:${minutes} ${amOrPm}`,
+                value: `${hour}:${minutes} ${amOrPm}`,
                 id: index
             });
 
@@ -401,10 +421,12 @@ function CreateAvailabilityBody(props) {
                         </label>
                     </td>
                     <td>
-                        <Select
+                        <Dropdown
                             options={makeEndTimeOptions()}
-                            values={getEndTimeValue()}
+                            value={endTime.format('LT')}
                             onChange={handleChangeEndTime}
+                            fluid
+                            selection
                             multi={false}
                         />
                     </td>
