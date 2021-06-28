@@ -139,12 +139,20 @@ function CreateAvailabilityBody(props) {
     }, [startTime, endTime]);
 
     const postAvailability = async () => {
-        const startTime = moment(day);
-        const endTime = moment();
+        const availStart = moment(day).set('hour', startTime.hours()).set('minute', startTime.minutes()).toDate();
+        const availEndMoment = moment(day).set('hour', endTime.hours()).set('minute', endTime.minutes());
+
+        // gotta deal with 12AM...
+        if (endTime.hours() === 0 && endTime.minutes() === 0) {
+            availEndMoment.add('day', 1);
+        }
+
+        const availEnd = availEndMoment.toDate();
+
         const availability = {
             subjects: selectedSubjects.map(subject => subject.name).join(','),
-            startTime: startTime,
-            endTime: endTime,
+            startTime: availStart,
+            endTime: availEnd,
             tutor: user.username
         };
 
