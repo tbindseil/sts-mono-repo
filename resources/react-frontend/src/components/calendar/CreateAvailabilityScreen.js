@@ -77,29 +77,16 @@ function CreateAvailabilityBody(props) {
             asMoment.set('date', rightNow.date());
         }
         setDay(asMoment.toDate());
-
-        // checkStartTime();
     }
 
     const [startTime, setStartTime] = useState(moment().set('minute', snapDownTo30Min(moment())));
     const handleChangeStartTime = (event, data) => {
-        const timeString = data.value;
-        const splitTime = timeString.split(":");
-        const splitSplitTime = splitTime[1].split(" ");
-        const minutes = splitSplitTime[0];
-        const amOrPm = splitSplitTime[1];
-        let hours = splitTime[0];
-        hours = hours % 12;
-        hours = amOrPm === 'PM' ? hours + 12 : hours;
-
-        const asMoment = moment();
-        asMoment.set('minutes', minutes);
-        asMoment.set('hours', hours);
-
+        const asMoment = momentFromLTString(data.value);
         setStartTime(asMoment);
     };
 
     useEffect(() => {
+        // if today, make sure that the start time is current 30 min block
         const rightNow = moment();
         const isToday = moment(day).isSame(rightNow, "day");
         if (isToday) {
@@ -115,11 +102,17 @@ function CreateAvailabilityBody(props) {
 
     const [endTime, setEndTime] = useState(moment().set('minute', snapDownTo30Min(moment())).add('minute', 30));
     const handleChangeEndTime = (event, data) => {
-        const timeString = data.value;
+        const asMoment = momentFromLTString(data.value);
+        setEndTime(asMoment);
+    };
+
+    // how is this not in the library? timeString = HH:mm AM/PM
+    const momentFromLTString = (timeString) => {
         const splitTime = timeString.split(":");
         const splitSplitTime = splitTime[1].split(" ");
         const minutes = parseInt(splitSplitTime[0]);
         const amOrPm = splitSplitTime[1];
+        // hour 12 is weird..
         const modulatedHours = parseInt(splitTime[0]) % 12;
         const hours = amOrPm === 'PM' ? modulatedHours + 12 : modulatedHours;
 
@@ -127,8 +120,8 @@ function CreateAvailabilityBody(props) {
         asMoment.set('minute', minutes);
         asMoment.set('hour', hours);
 
-        setEndTime(asMoment);
-    };
+        return asMoment;
+    }
 
     useEffect(() => {
         // 12 AM is tomorrow, and that's the latest end possible, no need to move it back
@@ -136,6 +129,7 @@ function CreateAvailabilityBody(props) {
             return;
         }
 
+        // set endTime to next slot if start time is now equal or ahead of it
         if (endTime.hours() < startTime.hours()
             || (endTime.hours() === startTime.hours() && endTime.minutes() <= startTime.minutes())) {
             let newEndTime = moment(startTime);
@@ -143,7 +137,6 @@ function CreateAvailabilityBody(props) {
             setEndTime(newEndTime);
         }
     }, [startTime, endTime]);
-
 
     const postAvailability = async () => {
         const startTime = moment(day);
@@ -198,6 +191,8 @@ function CreateAvailabilityBody(props) {
     };
 
     const makeStartTimeOptions = () => {
+        // based off day
+        // if today, current 30 min block start time, if after today, all times
         const isToday = moment(day).isSame(new Date(), "day");
 
         let initial = moment(day);
@@ -209,36 +204,18 @@ function CreateAvailabilityBody(props) {
             initial.set('minute', 0);
         }
 
-        let options = [];
-        let index = 0;
-        let current = moment(initial);
-        while (current.day() === initial.day()) {
-            const hour = current.hour() % 12 === 0 ? 12 : current.hour() % 12;
-            const minutes = current.minute() === 0 ? '00' : '30';
-            const amOrPm = current.hour() >= 12 ? 'PM' : 'AM';
-            options.push({
-                key: `${hour}:${minutes} ${amOrPm}`,
-                text: `${hour}:${minutes} ${amOrPm}`,
-                value: `${hour}:${minutes} ${amOrPm}`,
-                id: index
-            });
-
-            current.add(30, 'minutes');
-            ++index;
-        }
-
-        return options;
+        const end = moment(initial).set('hour', 23).set('minute', 59);
+        return enumerate30MinOptions(initial, end);
     };
 
     const makeEndTimeOptions = () => {
         // based off start time,
         // start with next one after start Time and generate up to 12 AM
-        const initial = moment(startTime);
-        let current = moment(startTime);
-        current.add('minute', 30);
+        let initial = moment(startTime);
+        initial.add('minute', 30);
 
-        const end = moment(initial).startOf('day').add(1, 'day').add(29, 'minute');
-        return enumerate30MinOptions(current, end);
+        const end = moment(startTime).startOf('day').add(1, 'day').add(29, 'minute');
+        return enumerate30MinOptions(initial, end);
     };
 
     const enumerate30MinOptions = (start, end) => {
