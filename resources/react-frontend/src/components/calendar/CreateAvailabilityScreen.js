@@ -111,7 +111,6 @@ function CreateAvailabilityBody(props) {
                 setStartTime(newStartTime);
             }
         }
-
     }, [day, startTime]);
 
     const [endTime, setEndTime] = useState(moment().set('minute', snapDownTo30Min(moment())).add('minute', 30));
@@ -119,25 +118,30 @@ function CreateAvailabilityBody(props) {
         const timeString = data.value;
         const splitTime = timeString.split(":");
         const splitSplitTime = splitTime[1].split(" ");
-        const minutes = splitSplitTime[0];
+        const minutes = parseInt(splitSplitTime[0]);
         const amOrPm = splitSplitTime[1];
-        const hours = amOrPm === 'PM' ? splitTime[0] + 12 : splitTime[0];
+        const modulatedHours = parseInt(splitTime[0]) % 12;
+        const hours = amOrPm === 'PM' ? modulatedHours + 12 : modulatedHours;
 
         const asMoment = moment();
-        asMoment.set('minutes', minutes);
-        asMoment.set('hours', hours);
+        asMoment.set('minute', minutes);
+        asMoment.set('hour', hours);
 
         setEndTime(asMoment);
     };
 
     useEffect(() => {
+        // 12 AM is tomorrow, and that's the latest end possible, no need to move it back
+        if (endTime.hours() === 0 && endTime.minutes() === 0) {
+            return;
+        }
+
         if (endTime.hours() < startTime.hours()
-            || (endTime.hours() === startTime.hours && endTime.minutes() < startTime.minutes())) {
+            || (endTime.hours() === startTime.hours() && endTime.minutes() <= startTime.minutes())) {
             let newEndTime = moment(startTime);
             newEndTime.add('minutes', 30);
             setEndTime(newEndTime);
         }
-
     }, [startTime, endTime]);
 
 
@@ -233,8 +237,14 @@ function CreateAvailabilityBody(props) {
         let current = moment(startTime);
         current.add('minute', 30);
 
-        let options = []
-        while (current.day() === initial.day()) {
+        const end = moment(initial).startOf('day').add(1, 'day').add(29, 'minute');
+        return enumerate30MinOptions(current, end);
+    };
+
+    const enumerate30MinOptions = (start, end) => {
+        let current = moment(start);
+        let options = [];
+        while (current < end) {
             const timeStr = current.format("LT");
             options.push({
                 key: timeStr,
