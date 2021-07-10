@@ -46,7 +46,6 @@ def post_input_translator(event, context):
     return json_to_model(event["body"], Availability)
 
 
-# TODO make sure there are no overlapping availabilties
 def post_handler(input, session, get_claims):
     posted_availability = input
 
@@ -54,6 +53,12 @@ def post_handler(input, session, get_claims):
     cognito_id = claims["cognito:username"]
 
     user = session.query(User).filter(User.cognitoId==cognito_id).one()
+
+    for avail in user.availabilities:
+        if ((avail.startTime < posted_availability.endTime and avail.startTime >= posted_availability.startTime) or
+                (avail.endTime <= posted_availability.endTime and avail.endTime > posted_availability.startTime) or
+                (avail.startTime <= posted_availability.startTime and avail.endTime >= posted_availability.endTime)):
+            raise Exception('Posted availability overlaps with existing availability')
 
     user.availabilities.append(posted_availability)
     session.add(user)
