@@ -166,17 +166,36 @@ function CreateAvailabilityBody(props) {
             },
             body: JSON.stringify(availability)
         });
+        console.log("response is:");
+        console.log(response);
+        // how do i get message out of response
+        console.log("response.text is:");
+        console.log(await response.text());
+        // console.log("response.text is:");
+        // console.log(await response.text());
         return response;
     }
 
     const onFinish = async () => {
-        await postAvailability();
-        history.push({
-            pathname: "/my-calendar",
-            state: {
-                selectedDate: selectedDate
-            }
-        });
+        postAvailability()
+            .then(data => {
+                history.push({
+                    pathname: "/my-calendar",
+                    state: {
+                        selectedDate: selectedDate
+                    }
+                });
+            })
+            .catch(err => {
+                // setFailed(true);
+                // var message = "Error Logging In";
+                // if (err.message) {
+                    // message += ": " + err.message;
+                // }
+                // setErrorMessage(message);
+                console.log("err is:");
+                console.log(err);
+            });
     };
 
     const onCancel = () => {

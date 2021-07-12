@@ -240,12 +240,12 @@ tasks
                     * find all avails with that subject, and (do something about it)
     ~~add subjects/avail many to many relationship~~
     change create avail lambda
-        ~~subject stuff and~~ time boundary check - done
-        make sure avails don't overlap and make sure not in the past
+        ~~subject stuff and~~ time boundary check
+        make sure avails don't overlap and make sure not in the past - done
     change create avail ui
         * subject drop down - done
         * 30 min blocks - done
-        * show error when creating overlapping avail
+        * show error when creating overlapping avail - curr
     change my-calendar
     make calendar
 
