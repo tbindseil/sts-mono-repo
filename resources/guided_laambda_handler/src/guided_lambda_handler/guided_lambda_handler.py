@@ -75,7 +75,11 @@ class GLH():
             session.commit()
         except InputException as e:
             response_code = 400
-            response_body = "bad input"
+            exception_str = str(e)
+            if not exception_str:
+                response_body = "bad input"
+            else:
+                response_body = exception_str
             session.rollback()
         except AuthException as e:
             response_code = 401
@@ -84,7 +88,11 @@ class GLH():
         except Exception as e:
             logging.exception('exception handling http request, e is:' + str(e))
             response_code = 500
-            response_body = "service error"
+            exception_str = str(e)
+            if not exception_str:
+                response_body = "service error"
+            else:
+                response_body = exception_str
             session.rollback()
         finally:
             session.close()

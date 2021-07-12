@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, patch
 import json
 
 from sts_db_utils import sts_db_utils
-from src.guided_lambda_handler.guided_lambda_handler import AuthException, get_claims_from_event, GLH, response_factory, success_response_output, invalid_http_method_factory
+from src.guided_lambda_handler.guided_lambda_handler import AuthException, InputException, get_claims_from_event, GLH, response_factory, success_response_output, invalid_http_method_factory
 
 
 # TODO probably need some place to put test helpers
@@ -45,6 +45,22 @@ class TestGLH(unittest.TestCase):
         self.mock_translate_input.assert_called_with(event, context)
         self.mock_on_handle.assert_called_with(input, Any(), Any())
         self.mock_translate_output.assert_called_with(handled)
+
+        self.assertEqual(actual_response, expected_response)
+
+    def test_handler_returns_400_on_input_exception(self, mock_get_database_engine, mock_session_maker):
+        self.mock_on_handle.side_effect = InputException
+
+        actual_response = self.glh.handle('event', 'context')
+        expected_response = response_factory(400, 'bad input')
+
+        self.assertEqual(actual_response, expected_response)
+
+    def test_handler_returns_400_on_input_exception_and_uses_exception_string_as_response_body(self, mock_get_database_engine, mock_session_maker):
+        self.mock_on_handle.side_effect = InputException('exception_str')
+
+        actual_response = self.glh.handle('event', 'context')
+        expected_response = response_factory(400, 'exception_str')
 
         self.assertEqual(actual_response, expected_response)
 
