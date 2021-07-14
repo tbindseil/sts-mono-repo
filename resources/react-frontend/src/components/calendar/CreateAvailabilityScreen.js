@@ -205,6 +205,8 @@ function CreateAvailabilityBody(props) {
                 // setErrorMessage(message);
                 console.log("err is:");
                 console.log(err);
+                setFailed(true);
+                setErrorMessage(err);
             });
     };
 
@@ -271,6 +273,9 @@ function CreateAvailabilityBody(props) {
 
         return options;
     };
+
+    const [failed, setFailed] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     return (
         <header className={props.pageBorderClass}>
@@ -358,6 +363,12 @@ function CreateAvailabilityBody(props) {
                     </td>
                 </tr>
             </table>
+
+            <div className="Centered MaxWidth">
+                { failed &&
+                    <p className="ErrorMessage">{errorMessage}</p>
+                }
+            </div>
 
         </header>
     );
