@@ -138,6 +138,9 @@ function CreateAvailabilityBody(props) {
         }
     }, [startTime, endTime]);
 
+    // so what is actually happening?
+    // first, create avail to post
+    // then, make post call
     const postAvailability = async () => {
         const availStart = moment(day).set('hour', startTime.hours()).set('minute', startTime.minutes()).toDate();
         const availEndMoment = moment(day).set('hour', endTime.hours()).set('minute', endTime.minutes());
@@ -168,17 +171,24 @@ function CreateAvailabilityBody(props) {
         });
         console.log("response is:");
         console.log(response);
+        if (!response.ok) {
+            console.log("about to throw");
+            throw (await response.text());
+        }
         // how do i get message out of response
         console.log("response.text is:");
-        console.log(await response.text());
+        let ret = await response.text();
         // console.log("response.text is:");
         // console.log(await response.text());
-        return response;
+        // return reject(ret);
+        return ret;
     }
 
     const onFinish = async () => {
         postAvailability()
             .then(data => {
+                console.log("data is:");
+                console.log(data);
                 history.push({
                     pathname: "/my-calendar",
                     state: {
