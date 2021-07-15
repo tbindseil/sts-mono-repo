@@ -46,6 +46,10 @@ function CreateAvailabilityBody(props) {
 
     const stateProps = props.location.state;
     const selectedDate = stateProps ? (stateProps.selectedDate ? stateProps.selectedDate : new Date()) : new Date();
+    // if (stateProps && stateProps.selectedDate) {
+        // is date after today?
+    // }
+    // if date is greater than today, use date, else use today
 
     const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
 
@@ -65,7 +69,7 @@ function CreateAvailabilityBody(props) {
         }
     }
 
-    const [day, setDay] = useState(moment().toDate());
+    const [day, setDay] = useState(moment().set('second', 0).toDate());
     const handleChangeDay = (event) => {
         // if date in past selected, set to today
         const rightNow = moment();
