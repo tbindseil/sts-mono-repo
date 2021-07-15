@@ -40,16 +40,17 @@ export function CreateAvailabilityScreen(props) {
     );
 }
 
-// TODO start on selected date
 function CreateAvailabilityBody(props) {
     const history = useHistory();
 
     const stateProps = props.location.state;
-    const selectedDate = stateProps ? (stateProps.selectedDate ? stateProps.selectedDate : new Date()) : new Date();
-    // if (stateProps && stateProps.selectedDate) {
-        // is date after today?
-    // }
-    // if date is greater than today, use date, else use today
+    const initialSelectedDate = stateProps ? (stateProps.selectedDate ? stateProps.selectedDate : new Date()) : new Date();
+    let selectedDate = moment(initialSelectedDate).toDate();
+    const tomorrow = moment().add('day', 1);
+    const isBeforeTomorrow = moment(selectedDate).isBefore(tomorrow, "day");
+    if (isBeforeTomorrow) {
+        selectedDate = new Date();
+    }
 
     const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
 
@@ -69,7 +70,7 @@ function CreateAvailabilityBody(props) {
         }
     }
 
-    const [day, setDay] = useState(moment().set('second', 0).toDate());
+    const [day, setDay] = useState(moment(selectedDate).set('second', 0).toDate());
     const handleChangeDay = (event) => {
         // if date in past selected, set to today
         const rightNow = moment();
@@ -190,7 +191,7 @@ function CreateAvailabilityBody(props) {
                 history.push({
                     pathname: "/my-calendar",
                     state: {
-                        selectedDate: selectedDate
+                        selectedDate: initialSelectedDate
                     }
                 });
             })
@@ -204,7 +205,7 @@ function CreateAvailabilityBody(props) {
         history.push({
             pathname: "/my-calendar",
             state: {
-                selectedDate: selectedDate
+                selectedDate: initialSelectedDate
             }
         });
     };
