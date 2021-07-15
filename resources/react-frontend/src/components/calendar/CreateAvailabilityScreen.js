@@ -169,26 +169,14 @@ function CreateAvailabilityBody(props) {
             },
             body: JSON.stringify(availability)
         });
-        console.log("response is:");
-        console.log(response);
         if (!response.ok) {
-            console.log("about to throw");
             throw (await response.text());
         }
-        // how do i get message out of response
-        console.log("response.text is:");
-        let ret = await response.text();
-        // console.log("response.text is:");
-        // console.log(await response.text());
-        // return reject(ret);
-        return ret;
     }
 
     const onFinish = async () => {
         postAvailability()
-            .then(data => {
-                console.log("data is:");
-                console.log(data);
+            .then(() => {
                 history.push({
                     pathname: "/my-calendar",
                     state: {
@@ -197,14 +185,6 @@ function CreateAvailabilityBody(props) {
                 });
             })
             .catch(err => {
-                // setFailed(true);
-                // var message = "Error Logging In";
-                // if (err.message) {
-                    // message += ": " + err.message;
-                // }
-                // setErrorMessage(message);
-                console.log("err is:");
-                console.log(err);
                 setFailed(true);
                 setErrorMessage(err);
             });
