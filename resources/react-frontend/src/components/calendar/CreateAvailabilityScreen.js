@@ -40,6 +40,7 @@ export function CreateAvailabilityScreen(props) {
     );
 }
 
+// TODO start on selected date
 function CreateAvailabilityBody(props) {
     const history = useHistory();
 
@@ -142,6 +143,11 @@ function CreateAvailabilityBody(props) {
     // first, create avail to post
     // then, make post call
     const postAvailability = async () => {
+        if (selectedSubjects.length === 0) {
+            throw new Error('Must select at least one subject');
+        }
+
+
         const availStart = moment(day).set('hour', startTime.hours()).set('minute', startTime.minutes()).toDate();
         const availEndMoment = moment(day).set('hour', endTime.hours()).set('minute', endTime.minutes());
 
@@ -170,7 +176,7 @@ function CreateAvailabilityBody(props) {
             body: JSON.stringify(availability)
         });
         if (!response.ok) {
-            throw (await response.text());
+            throw (new Error(await response.text()));
         }
     }
 
@@ -186,7 +192,7 @@ function CreateAvailabilityBody(props) {
             })
             .catch(err => {
                 setFailed(true);
-                setErrorMessage(err);
+                setErrorMessage(`${err}`);
             });
     };
 
