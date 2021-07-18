@@ -8,7 +8,7 @@ import dateutil.parser
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from guided_lambda_handler.guided_lambda_handler import AuthException
+from guided_lambda_handler.guided_lambda_handler import AuthException, InputException
 
 from models import Base
 from models.user import User
@@ -48,9 +48,9 @@ class TestLambdaFunction(unittest.TestCase):
 
     def test_get_input_translator(self):
         event = {"queryStringParameters": {
-                        "username": "this_is_the_cognito_id", # TJTAG
+                        "username": "this_is_the_cognito_id",
                         "startTime": "2021-07-11T06:00:00.000Z",
-                        "endTime":"2021-07-18T05:59:59.999Z"
+                        "endTime": "2021-07-18T05:59:59.999Z"
                     }
                 }
 
@@ -60,28 +60,75 @@ class TestLambdaFunction(unittest.TestCase):
         input = lambda_function.get_input_translator(event, "context")
         self.assertEqual(input, ("this_is_the_cognito_id", expected_start_time, expected_end_time))
 
-    # def test_get_input_translator_throws_in(self):
+    def test_get_input_translator_throws_input_exception_when_start_time_not_datetime(self):
+        event = {"queryStringParameters": {
+                        "username": "this_is_the_cognito_id",
+                        "startTime": "not_date_time",
+                        "endTime": "2021-07-18T05:59:59.999Z"
+                    }
+                }
+
+        with self.assertRaises(InputException) as e:
+            lambda_function.get_input_translator(event, "context")
+
+
+    def test_get_input_translator_throws_input_exception_when_end_time_not_datetime(self):
+        event = {"queryStringParameters": {
+                        "username": "this_is_the_cognito_id",
+                        "startTime": "2021-07-18T05:59:59.999Z",
+                        "endTime": "not_date_time"
+                    }
+                }
+
+        with self.assertRaises(InputException) as e:
+            lambda_function.get_input_translator(event, "context")
+
+
+    def test_get_input_translator_throws_input_excpetion_when_start_time_after_end_time(self):
+        event = {"queryStringParameters": {
+                        "username": "this_is_the_cognito_id", # TJTAG
+                        "startTime": "2021-07-18T05:59:59.999Z",
+                        "endTime": "2021-07-11T06:00:00.000Z"
+                    }
+                }
+
+        with self.assertRaises(InputException) as e:
+            lambda_function.get_input_translator(event, "context")
 
 
     def test_get_retrieves_availabilities(self):
         avail1 = self.build_default_availability()
         avail2 = self.build_default_availability()
+        avail_out_of_range = self.build_default_availability()
         avail2.startTime += timedelta(days=1)
         avail2.endTime += timedelta(days=1)
+        avail_out_of_range.startTime += timedelta(days=8)
+        avail_out_of_range.endTime += timedelta(days=8)
 
-        expected_availabilities = [avail1, avail2]
+        all_availabilities = [avail1, avail2, avail_out_of_range]
+        expected_availabilities = {
+                avail1.startTime: avail1,
+                avail2.startTime: avail2
+                }
 
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
-        for avail in expected_availabilities:
+        for avail in all_availabilities:
             user.availabilities.append(avail)
         self.session.add(user)
         self.session.commit()
 
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
 
-        raw_output = lambda_function.get_handler(self.cognito_id, self.session, self.get_claims)
+        start_time_query = datetime(year=2020, month=1, day=14, hour=13)
+        end_time_query = datetime(year=2020, month=1, day=16, hour=14)
+        raw_output = lambda_function.get_handler((self.cognito_id, start_time_query, end_time_query), self.session, self.get_claims)
 
-        self.assertEqual(raw_output, user.availabilities)
+        for avail in raw_output:
+            expected_avail = expected_availabilities[avail.startTime]
+            self.assertAvailEquals(expected_avail, avail)
+            del expected_availabilities[avail.startTime]
+
+        self.assertEqual(len(expected_availabilities), 0)
 
     def test_get_output_translator(self):
         avail1 = self.build_default_availability()

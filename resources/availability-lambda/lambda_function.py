@@ -2,6 +2,7 @@ import json
 import jsondatetime # is importing both this and json gonna ge messed up?
 
 from datetime import datetime
+from sqlalchemy import and_
 from guided_lambda_handler.guided_lambda_handler import AuthException, InputException, GLH, success_response_output, invalid_http_method_factory
 from guided_lambda_handler.translators import json_to_model
 from models.user import User
@@ -22,7 +23,7 @@ def get_input_translator(event, context):
 
 
 def get_handler(input, session, get_claims):
-    cognito_id, queryStartTime, queryEndTime = input
+    cognito_id, query_start_time, query_end_time = input
 
     claims = get_claims()
     claimed_cognito_id = claims["cognito:username"]
@@ -32,7 +33,7 @@ def get_handler(input, session, get_claims):
     if claimed_cognito_id != cognito_id:
         raise AuthException
 
-    return session.query(Availabilities).filter(Availability.tutor==cognito_id).filter(and_(Availability.startTime>=queryStartTime, Availability.startTime<=queryEndTime))
+    return session.query(Availability).filter(Availability.tutor==cognito_id).filter(and_(Availability.startTime>=query_start_time, Availability.startTime<=query_end_time))
 
 
 def get_output_translator(raw_output):
