@@ -46,13 +46,9 @@ class TestLambdaFunction(unittest.TestCase):
         self.get_claims = MagicMock()
         self.get_claims.return_value = claims
 
+
     def test_get_input_translator(self):
-        event = {"queryStringParameters": {
-                        "username": "this_is_the_cognito_id",
-                        "startTime": "2021-07-11T06:00:00.000Z",
-                        "endTime": "2021-07-18T05:59:59.999Z"
-                    }
-                }
+        event = {"queryStringParameters": {'getAvailInput': '{"username":"this_is_the_cognito_id","startTime":"2021-07-11T06:00:00.000Z","endTime":"2021-07-18T05:59:59.999Z"}'}}
 
         expected_start_time = dateutil.parser.parse("2021-07-11T06:00:00.000Z", ignoretz=True)
         expected_end_time = dateutil.parser.parse("2021-07-18T05:59:59.999Z", ignoretz=True)
@@ -61,37 +57,19 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertEqual(input, ("this_is_the_cognito_id", expected_start_time, expected_end_time))
 
     def test_get_input_translator_throws_input_exception_when_start_time_not_datetime(self):
-        event = {"queryStringParameters": {
-                        "username": "this_is_the_cognito_id",
-                        "startTime": "not_date_time",
-                        "endTime": "2021-07-18T05:59:59.999Z"
-                    }
-                }
-
+        event = {"queryStringParameters": {'getAvailInput': '{"username":"this_is_the_cognito_id","startTime":"not_date_time","endTime":"2021-07-18T05:59:59.999Z"}'}}
         with self.assertRaises(InputException) as e:
             lambda_function.get_input_translator(event, "context")
 
 
     def test_get_input_translator_throws_input_exception_when_end_time_not_datetime(self):
-        event = {"queryStringParameters": {
-                        "username": "this_is_the_cognito_id",
-                        "startTime": "2021-07-18T05:59:59.999Z",
-                        "endTime": "not_date_time"
-                    }
-                }
-
+        event = {"queryStringParameters": {'getAvailInput': '{"username":"this_is_the_cognito_id","startTime":"2021-07-18T05:59:59.999Z","endTime":"not_date_time"}'}}
         with self.assertRaises(InputException) as e:
             lambda_function.get_input_translator(event, "context")
 
 
     def test_get_input_translator_throws_input_excpetion_when_start_time_after_end_time(self):
-        event = {"queryStringParameters": {
-                        "username": "this_is_the_cognito_id", # TJTAG
-                        "startTime": "2021-07-18T05:59:59.999Z",
-                        "endTime": "2021-07-11T06:00:00.000Z"
-                    }
-                }
-
+        event = {"queryStringParameters": {'getAvailInput': '{"username":"this_is_the_cognito_id","startTime":"2021-07-18T05:59:59.999Z","endTime":"2021-07-11T06:00:00.000Z"}'}}
         with self.assertRaises(InputException) as e:
             lambda_function.get_input_translator(event, "context")
 

@@ -2,6 +2,7 @@ import json
 import jsondatetime # is importing both this and json gonna ge messed up?
 
 from datetime import datetime
+import dateutil.parser
 from sqlalchemy import and_
 from guided_lambda_handler.guided_lambda_handler import AuthException, InputException, GLH, success_response_output, invalid_http_method_factory
 from guided_lambda_handler.translators import json_to_model
@@ -10,15 +11,33 @@ from models.availability import Availability
 
 
 def get_input_translator(event, context):
-    qsp_map = jsondatetime.loads(json.dumps(event['queryStringParameters']))
+    print('start of input translator')
+    qsp_map = jsondatetime.loads(event['queryStringParameters']['getAvailInput'])
+    #try:
+        #qsp_map = {
+            #'username': event['queryStringParameters']['username'],
+            #'startTime': dateutil.parser.parse(event['queryStringParameters']['startTime'], ignoretz=True),
+            # 'endTime': dateutil.parser.parse(event['queryStringParameters']['endTime'], ignoretz=True)
+                #}
+    #except:
+        #raise InputException('startTime and endTime must be dates')
 
+    print('after jsondatetime.loads')
+    print('qsp map is:')
+    print(qsp_map)
     if (not isinstance(qsp_map['startTime'], datetime)
             or not isinstance(qsp_map['endTime'], datetime)):
         raise InputException('startTime and endTime must be dates')
 
+    print('both are dates')
     if qsp_map['startTime'] >= qsp_map['endTime']:
         raise InputException('startTime must be before endTime')
 
+    print('both are dates')
+    print('input translator returning:')
+    print(qsp_map['username'])
+    print(qsp_map['startTime'])
+    print(qsp_map['endTime'])
     return qsp_map['username'], qsp_map['startTime'], qsp_map['endTime']
 
 
@@ -42,6 +61,7 @@ def get_output_translator(raw_output):
     # PODO ?? looks like i don't always do it and never(?) test it?
 
     response = {}
+    print('output translator returning:')
     for avail in availabilities:
         response[avail.id] = {
             'subjects': avail.subjects,
@@ -49,6 +69,7 @@ def get_output_translator(raw_output):
             'endTime': avail.endTime.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
             'tutor': avail.tutor,
         }
+        print(response[avail.id])
 
     return 200, json.dumps(response)
 

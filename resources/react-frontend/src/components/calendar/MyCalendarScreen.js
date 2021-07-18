@@ -81,9 +81,15 @@ function MyCalendarBody(props) {
 
 
         const url = new URL(baseUrl)
-        url.searchParams.append('username', user.username);
-        url.searchParams.append('startTime', startTime);
-        url.searchParams.append('endTime', endTime);
+        const getAvailInput = {
+            username: user.username,
+            startTime: startTime,
+            endTime: endTime
+        };
+        url.searchParams.append('getAvailInput', JSON.stringify(getAvailInput));
+        // url.searchParams.append('username', user.username);
+        // url.searchParams.append('startTime', JSON.stringify(startTime));
+        // url.searchParams.append('endTime', JSON.stringify(endTime));
         const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
         fetch(url, {
                 method: 'GET',
