@@ -9,6 +9,7 @@ import {Dropdown} from 'semantic-ui-react';
 
 import subjects from '../../configs/subjects';
 
+import {LoadingFormButton} from '../forms/FormButton';
 import {Header} from '../header/Header';
 import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
@@ -186,6 +187,7 @@ function CreateAvailabilityBody(props) {
     }
 
     const onFinish = async () => {
+        setLoading(true);
         postAvailability()
             .then(() => {
                 history.push({
@@ -196,6 +198,7 @@ function CreateAvailabilityBody(props) {
                 });
             })
             .catch(err => {
+                setLoading(false);
                 setFailed(true);
                 setErrorMessage(`${err}`);
             });
@@ -267,6 +270,8 @@ function CreateAvailabilityBody(props) {
 
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+
+    const [loading, setLoading] = useState(false);
 
     return (
         <header className={props.pageBorderClass}>
@@ -348,9 +353,10 @@ function CreateAvailabilityBody(props) {
                         </button>
                     </td>
                     <td>
-                        <button onClick={onFinish}>
-                            Create Availability
-                        </button>
+                        <LoadingFormButton
+                            loading={loading}
+                            onClick={onFinish}
+                            value={"Create Availability"}/>
                     </td>
                 </tr>
             </table>
