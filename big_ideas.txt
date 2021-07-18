@@ -242,6 +242,7 @@ tasks
     change create avail lambda
         ~~subject stuff and~~ time boundary check - nawww
         make sure avails don't overlap and make sure not in the past - done
+        make get avail take in time range - done
     change create avail ui
         * subject drop down - done
         * 30 min blocks - done

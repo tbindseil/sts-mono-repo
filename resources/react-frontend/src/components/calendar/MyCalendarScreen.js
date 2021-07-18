@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import MediaQuery from 'react-responsive';
 import {useHistory} from 'react-router-dom';
 
@@ -52,7 +52,7 @@ function MyCalendarBody(props) {
 
     // based off stateProps.selectedDate
     const stateProps = props.location.state;
-    const selectedDate = stateProps ? (stateProps.selectedDate ? stateProps.selectedDate : new Date()) : new Date();
+    const selectedDate = useMemo(() => { return stateProps ? (stateProps.selectedDate ? stateProps.selectedDate : new Date()) : new Date() }, [stateProps]);
 
     const [availabilities, setAvailabilities] = useState([]);
     const getAvailabilities = useCallback(
@@ -62,19 +62,9 @@ function MyCalendarBody(props) {
             }
 
             // startTime and endTime are 12:00:00 am of sunday morning and 11:59:59 of saturday night for week of selectedDate
+            // could be improved by only getting for 1 day for small screen
             const startTime = moment(selectedDate).startOf('week').toDate();
             const endTime = moment(selectedDate).endOf('week').toDate();
-
-            const obbb = {
-                startTime: startTime,
-                endTime:endTime
-            };
-
-            console.log("JSON.stringify(obbb) is");
-            console.log(JSON.stringify(obbb));
-
-
-
             const url = new URL(baseUrl)
             const getAvailInput = {
                 username: user.username,
@@ -82,9 +72,7 @@ function MyCalendarBody(props) {
                 endTime: endTime
             };
             url.searchParams.append('getAvailInput', JSON.stringify(getAvailInput));
-            // url.searchParams.append('username', user.username);
-            // url.searchParams.append('startTime', JSON.stringify(startTime));
-            // url.searchParams.append('endTime', JSON.stringify(endTime));
+
             const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
             fetch(url, {
                 method: 'GET',
