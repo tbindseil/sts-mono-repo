@@ -240,7 +240,7 @@ tasks
                     * find all avails with that subject, and (do something about it)
     ~~add subjects/avail many to many relationship~~
     change create avail lambda
-        ~~subject stuff and~~ time boundary check
+        ~~subject stuff and~~ time boundary check - nawww
         make sure avails don't overlap and make sure not in the past - done
     change create avail ui
         * subject drop down - done

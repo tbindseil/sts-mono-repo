@@ -56,14 +56,34 @@ function MyCalendarBody(props) {
         user
     ]);
 
+    // based off stateProps.selectedDate
+    const stateProps = props.location.state;
+    const selectedDate = stateProps ? (stateProps.selectedDate ? stateProps.selectedDate : new Date()) : new Date();
+
     const [availabilities, setAvailabilities] = useState([]);
     const getAvailabilities = (user) => {
         if (!user) {
             return;
         }
 
+        // startTime and endTime are 12:00:00 am of sunday morning and 11:59:59 of saturday night for week of selectedDate
+        const startTime = moment(selectedDate).startOf('week').toDate();
+        const endTime = moment(selectedDate).endOf('week').toDate();
+
+        const obbb = {
+            startTime: startTime,
+            endTime:endTime
+        };
+
+        console.log("JSON.stringify(obbb) is");
+        console.log(JSON.stringify(obbb));
+
+
+
         const url = new URL(baseUrl)
         url.searchParams.append('username', user.username);
+        url.searchParams.append('startTime', startTime);
+        url.searchParams.append('endTime', endTime);
         const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
         fetch(url, {
                 method: 'GET',
@@ -110,10 +130,6 @@ function MyCalendarBody(props) {
 
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
-
-    // based off stateProps.selectedDate
-    const stateProps = props.location.state;
-    const selectedDate = stateProps ? (stateProps.selectedDate ? stateProps.selectedDate : new Date()) : new Date();
 
     // get day's week day number,
     const weekDayNumber = moment(selectedDate).day();

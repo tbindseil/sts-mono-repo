@@ -3,6 +3,8 @@ from unittest.mock import MagicMock
 from datetime import datetime, timedelta
 import json
 
+import dateutil.parser
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -45,9 +47,21 @@ class TestLambdaFunction(unittest.TestCase):
         self.get_claims.return_value = claims
 
     def test_get_input_translator(self):
-        event = {"queryStringParameters": {"username": "this_is_the_cognito_id"}}
+        event = {"queryStringParameters": {
+                        "username": "this_is_the_cognito_id", # TJTAG
+                        "startTime": "2021-07-11T06:00:00.000Z",
+                        "endTime":"2021-07-18T05:59:59.999Z"
+                    }
+                }
+
+        expected_start_time = dateutil.parser.parse("2021-07-11T06:00:00.000Z", ignoretz=True)
+        expected_end_time = dateutil.parser.parse("2021-07-18T05:59:59.999Z", ignoretz=True)
+
         input = lambda_function.get_input_translator(event, "context")
-        self.assertEqual(input, "this_is_the_cognito_id")
+        self.assertEqual(input, ("this_is_the_cognito_id", expected_start_time, expected_end_time))
+
+    # def test_get_input_translator_throws_in(self):
+
 
     def test_get_retrieves_availabilities(self):
         avail1 = self.build_default_availability()

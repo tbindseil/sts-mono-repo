@@ -153,7 +153,6 @@ function CreateAvailabilityBody(props) {
             throw new Error('Must select at least one subject');
         }
 
-
         const availStart = moment(day).set('hour', startTime.hours()).set('minute', startTime.minutes()).toDate();
         const availEndMoment = moment(day).set('hour', endTime.hours()).set('minute', endTime.minutes());
 

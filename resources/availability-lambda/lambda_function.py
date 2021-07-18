@@ -1,28 +1,38 @@
 import json
+import jsondatetime # is importing both this and json gonna ge messed up?
 
-from guided_lambda_handler.guided_lambda_handler import AuthException, GLH, success_response_output, invalid_http_method_factory
+from datetime import datetime
+from guided_lambda_handler.guided_lambda_handler import AuthException, InputException, GLH, success_response_output, invalid_http_method_factory
 from guided_lambda_handler.translators import json_to_model
 from models.user import User
 from models.availability import Availability
 
 
 def get_input_translator(event, context):
-    return event['queryStringParameters']['username']
+    qsp_map = jsondatetime.loads(json.dumps(event['queryStringParameters']))
+
+    if (not isinstance(qsp_map['startTime'], datetime)
+            or not isinstance(qsp_map['endTime'], datetime)):
+        raise InputException('startTime and endTime must be dates')
+
+    if qsp_map['startTime'] >= qsp_map['endTime']:
+        raise InputException('startTime must be before endTime')
+
+    return qsp_map['username'], qsp_map['startTime'], qsp_map['endTime']
 
 
-# TODO accept date range
 def get_handler(input, session, get_claims):
-    cognito_id = input
+    cognito_id, queryStartTime, queryEndTime = input
 
     claims = get_claims()
     claimed_cognito_id = claims["cognito:username"]
 
-    # PODO
+    # PODO, ultimately, this will ultimately need to be potentially a more complex thing,
+    #     soon when users start searching for each other's availability
     if claimed_cognito_id != cognito_id:
         raise AuthException
 
-    user = session.query(User).filter(User.cognitoId==cognito_id).one()
-    return user.availabilities
+    return session.query(Availabilities).filter(Availability.tutor==cognito_id).filter(and_(Availability.startTime>=queryStartTime, Availability.startTime<=queryEndTime))
 
 
 def get_output_translator(raw_output):
