@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import MediaQuery from 'react-responsive';
 import {useHistory} from 'react-router-dom';
 
@@ -50,48 +50,43 @@ function MyCalendarBody(props) {
         history, setUser
     ]);
 
-    useEffect(() => {
-        getAvailabilities(user);
-    }, [
-        user
-    ]);
-
     // based off stateProps.selectedDate
     const stateProps = props.location.state;
     const selectedDate = stateProps ? (stateProps.selectedDate ? stateProps.selectedDate : new Date()) : new Date();
 
     const [availabilities, setAvailabilities] = useState([]);
-    const getAvailabilities = (user) => {
-        if (!user) {
-            return;
-        }
+    const getAvailabilities = useCallback(
+        (user) => {
+            if (!user) {
+                return;
+            }
 
-        // startTime and endTime are 12:00:00 am of sunday morning and 11:59:59 of saturday night for week of selectedDate
-        const startTime = moment(selectedDate).startOf('week').toDate();
-        const endTime = moment(selectedDate).endOf('week').toDate();
+            // startTime and endTime are 12:00:00 am of sunday morning and 11:59:59 of saturday night for week of selectedDate
+            const startTime = moment(selectedDate).startOf('week').toDate();
+            const endTime = moment(selectedDate).endOf('week').toDate();
 
-        const obbb = {
-            startTime: startTime,
-            endTime:endTime
-        };
+            const obbb = {
+                startTime: startTime,
+                endTime:endTime
+            };
 
-        console.log("JSON.stringify(obbb) is");
-        console.log(JSON.stringify(obbb));
+            console.log("JSON.stringify(obbb) is");
+            console.log(JSON.stringify(obbb));
 
 
 
-        const url = new URL(baseUrl)
-        const getAvailInput = {
-            username: user.username,
-            startTime: startTime,
-            endTime: endTime
-        };
-        url.searchParams.append('getAvailInput', JSON.stringify(getAvailInput));
-        // url.searchParams.append('username', user.username);
-        // url.searchParams.append('startTime', JSON.stringify(startTime));
-        // url.searchParams.append('endTime', JSON.stringify(endTime));
-        const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
-        fetch(url, {
+            const url = new URL(baseUrl)
+            const getAvailInput = {
+                username: user.username,
+                startTime: startTime,
+                endTime: endTime
+            };
+            url.searchParams.append('getAvailInput', JSON.stringify(getAvailInput));
+            // url.searchParams.append('username', user.username);
+            // url.searchParams.append('startTime', JSON.stringify(startTime));
+            // url.searchParams.append('endTime', JSON.stringify(endTime));
+            const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
+            fetch(url, {
                 method: 'GET',
                 mode: 'cors',
                 headers: {
@@ -99,40 +94,48 @@ function MyCalendarBody(props) {
                     'Authorization': tokenString
                 },
             })
-            .then(res => res.json())
-            .then((result) => {
-                const availabilitiesWithDates = []
-                for (const [id, avail] of Object.entries(result)) {
-                    availabilitiesWithDates.push({
-                        endTime: moment.utc(avail.endTime).local().toDate(),
-                        startTime: moment.utc(avail.startTime).local().toDate(),
-                        subjects: avail.subjects,
-                        tutor: avail.tutor,
-                        id: id
-                    });
-                }
-                setAvailabilities(availabilitiesWithDates);
-            },
-            // Note: it's important to handle errors here
-            // instead of a catch() block so that we don't swallow
-            // exceptions from actual bugs in components.
-            (error) => {
-                setFailed(true);
-                var message = "1Error getting availabilties";
-                if (error.message) {
-                    message += ": " + error.message;
-                }
-                setErrorMessage(message);
-            })
-            .catch(err => {
-                setFailed(true);
-                var message = "2Error getting availabilties";
-                if (err.message) {
-                    message += ": " + err.message;
-                }
-                setErrorMessage(message);
-            });
-    };
+                .then(res => res.json())
+                .then((result) => {
+                    const availabilitiesWithDates = []
+                    for (const [id, avail] of Object.entries(result)) {
+                        availabilitiesWithDates.push({
+                            endTime: moment.utc(avail.endTime).local().toDate(),
+                            startTime: moment.utc(avail.startTime).local().toDate(),
+                            subjects: avail.subjects,
+                            tutor: avail.tutor,
+                            id: id
+                        });
+                    }
+                    setAvailabilities(availabilitiesWithDates);
+                },
+                    // Note: it's important to handle errors here
+                    // instead of a catch() block so that we don't swallow
+                    // exceptions from actual bugs in components.
+                    (error) => {
+                        setFailed(true);
+                        var message = "1Error getting availabilties";
+                        if (error.message) {
+                            message += ": " + error.message;
+                        }
+                        setErrorMessage(message);
+                    })
+                .catch(err => {
+                    setFailed(true);
+                    var message = "2Error getting availabilties";
+                    if (err.message) {
+                        message += ": " + err.message;
+                    }
+                    setErrorMessage(message);
+                });
+        },
+        [selectedDate]
+    );
+
+    useEffect(() => {
+        getAvailabilities(user);
+    }, [
+        user, getAvailabilities
+    ]);
 
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
