@@ -20,6 +20,7 @@ export const BigScreenProfileButton = () => {
                         <a className="NavBarDropDownItem" href="/profile">Profile</a>
                         <a className="NavBarDropDownItem" href="/account">Account</a>
                         <a className="NavBarDropDownItem" href="/my-calendar">My Calendar</a>
+                        <a className="NavBarDropDownItem" href="/calendar">Calendar</a>
                     </div>
                 </a>
             </div>
@@ -68,6 +69,7 @@ export const SmallScreenProfileButton = () => {
                 </section>
                 <a style={{display: extraProfileDisplay}} className="HamburgerItem" href="/account">Account</a>
                 <a style={{display: extraProfileDisplay}} className="HamburgerItem" href="/my-calendar">My Calendar</a>
+                <a style={{display: extraProfileDisplay}} className="HamburgerItem" href="/calendar">Calendar</a>
             </>
         );
 

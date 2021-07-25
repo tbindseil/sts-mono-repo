@@ -9,16 +9,16 @@ import {Header} from '../header/Header';
 import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
-import {MyCalendarDayContent} from './MyCalendarDayContent';
+import {CalendarDayContent} from './CalendarDayContent';
 
 // using a two layered "MediaQueryWrapper" here
-export function MyCalendarScreen(props) {
+export function CalendarScreen(props) {
     return (
         <div>
             <Header/>
 
             <MediaQuery minWidth={765}>
-                <MyCalendarBody
+                <CalendarBody
                     location={props.location}
                     pageBorderClass={"PageBorderCalendar"}
                     underlineClass={"Underline"}
@@ -26,7 +26,7 @@ export function MyCalendarScreen(props) {
             </MediaQuery>
 
             <MediaQuery maxWidth={765}>
-                <MyCalendarBody
+                <CalendarBody
                     location={props.location}
                     pageBorderClass={"PageBorder2"}
                     underlineClass={"Underline2"}
@@ -38,7 +38,7 @@ export function MyCalendarScreen(props) {
     );
 }
 
-function MyCalendarBody(props) {
+function CalendarBody(props) {
     const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
 
     const history = useHistory();
@@ -54,6 +54,8 @@ function MyCalendarBody(props) {
     const stateProps = props.location.state;
     const selectedDate = useMemo(() => { return stateProps ? (stateProps.selectedDate ? stateProps.selectedDate : new Date()) : new Date() }, [stateProps]);
 
+    const [selectedSubject, setSelectedSubject] = useState('');
+
     const [availabilities, setAvailabilities] = useState([]);
     const getAvailabilities = useCallback(
         (user) => {
@@ -67,7 +69,7 @@ function MyCalendarBody(props) {
             const endTime = moment(selectedDate).endOf('week').toDate();
             const url = new URL(baseUrl)
             const getAvailInput = {
-                username: user.username,
+                subject: selectedSubject,
                 startTime: startTime,
                 endTime: endTime
             };
@@ -107,7 +109,7 @@ function MyCalendarBody(props) {
                         }
                         setErrorMessage(message);
                     })
-                .catch(err => {
+                .catch(err => { // TODO this code is wet as fuck
                     setFailed(true);
                     var message = "2Error getting availabilties";
                     if (err.message) {
@@ -116,7 +118,7 @@ function MyCalendarBody(props) {
                     setErrorMessage(message);
                 });
         },
-        [selectedDate]
+        [selectedDate, selectedSubject]
     );
 
     useEffect(() => {
@@ -134,7 +136,7 @@ function MyCalendarBody(props) {
     // find previous sunday if day is not sunday
     var currDay = moment(selectedDate).subtract(weekDayNumber, "days").toDate();
 
-    // make a MyCalendarDayContent for each day of week
+    // make a CalendarDayContent for each day of week
     const calendarDays = [];
     const calendarHeaders = [];
     for (var i = 0; i < 7; i++) {
@@ -144,9 +146,10 @@ function MyCalendarBody(props) {
             </th>
         );
 
+        // TJTAG this is where things are gonna diverge
         calendarDays.push(
             <td className="CalendarDayBody">
-                <MyCalendarDayContent
+                <CalendarDayContent
                     key={currDay.toString()}
                     date={currDay}
                     availabilities={availabilities}/>

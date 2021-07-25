@@ -251,6 +251,45 @@ tasks
     make calendar
 
 
+    so.. my calendar vs calendar
+    should they be two different components??
+        differences:
+            query
+                need to request based off time and subjects (calendar) instead of time and user (my calendar)
+            display
+                need to show number of potential tutors (calendar) instead of subjects (my calendar)
+                when avail is selected, need to show list of tutors (calendar) vs delete avail (my calendar)
+                when non-avail is selected, need to do nothing (calendar) vs show create avail screen (my calendar)
+
+    so what does that look like?
+    1) two pages/urls. The overall shape of calendar and fact that it contains days and days contain calendar time objects is the same. But, the calendar time objects are different (two sets, one for calendar and one for my calendar). Lastly, the queries are different. This will be interesting to see how the query code is duplicated and potentially refactored
+        notes during investigation:
+            even calendar day is different
+            also, its easier to draw the calendar with 24 time slots
+            for (avail_count_index = 0 and start = 12:00am and end = 12:30am; start < 11:59pm; start += 30min, end += 30min, ++avail_count_index) {
+                for avail in avails:
+                    if avail.start >= start && avail.start <= end or avail.end >= start && avail.end <= end or avail.start <= start && avail.end >= end # equals are gonna be messed up
+                        avails[start][avail.id] = avail
+            }
+
+            for (avail_count in avail_counts) {
+                if (avail_count > 0) {
+                    button(
+                }
+            }
+
+
+
+    how hard would it be to have 24 different time slots?
+    well, its a hell of a lot easier than counting in the old way
+
+    thoughts during creatino of calendar:
+        will require receiving subjects and not user id in avail lambda
+        can extract error handler
+        can extract query
+
+
+
 
 
 

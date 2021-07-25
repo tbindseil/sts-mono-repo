@@ -30,91 +30,55 @@ export function CalendarDayContent(props) {
             return avail1.startTime - avail2.startTime
         });
 
-    var timeSlices = [];
+    // ok, so i have a situation where the I'll be looping over all avails
+    // this is in order to see how many matches per time slot
+    // each time slot should hold an array to a list of avail ids
+    // so for each time slot's window,
+    // if the avail matches,
+    // add its id to the list associated with the time slot
+    let timeSlots = [];
+    for (let startTime = moment(startOfDay), endTime = startTime.add("minute", 30), timeSlotIndex = 0;
+         startTime.isBefore(endOfDay);
+         startTime.add('minute', 30), endTime.add('minute', 30), ++timeSlotIndex) {
 
-    var lastEndDate = startOfDay;
+        timeSlots[timeSlotIndex] = [];
 
-    for (var i = 0; i < relevantAvailabilities.length; ++i) {
-        const currAvail = relevantAvailabilities[i];
-        if (currAvail.startTime > lastEndDate) {
-            timeSlices.push({
-                height: getPixels(lastEndDate, currAvail.startTime, minutesPerPixel),
-                availability: null
-            });
+        for (let i = 0; i < relevantAvailabilities.length; ++i) {
+            const currAvail = relevantAvailabilities[i];
+            const currStart = moment(currAvail.startTime);
+            const currEnd = moment(currAvail.endTime);
+            // TODO isBefore or equal to?
+            if ((currStart.isBefore(startTime) && currEnd.isAfter(endTime)) ||
+                (currStart.isAfter(startTime) && currStart.isBefore(endTime)) ||
+                (currEnd.isAfter(startTime) && currEnd.isBefore(endTime))) {
+                timeSlots[timeSlotIndex].append(currAvail.id);
+            }
         }
 
-        timeSlices.push({
-            height: getPixels(currAvail.startTime, currAvail.endTime, minutesPerPixel),
-            availability: currAvail
-        });
-
-        lastEndDate = currAvail.endTime;
     }
 
-    // fill in any remaining part of the day
-    if (lastEndDate < endOfDay) {
-        timeSlices.push({
-            height: getPixels(lastEndDate, endOfDay, minutesPerPixel),
-            availability: null
-        });
-    }
-
-    const onClickDay = (value) => {
-        history.push({
-            pathname: "/create-availability",
-            state: {
-                selectedDate: value
-            }
-        });
-    }
-
-    const onClickDeleteAvailability = (availability) => {
-        history.push({
-            pathname: "/delete-availability",
-            state: {
-                availability: availability
-            }
-        });
+    const onClickTimeSlot = (event) => {
+        // TODO how to index into time slots here?
+        console.log("TODO how to index into time slots here?");
+        console.log("event is:");
+        console.log(event);
     }
 
     return (
-        <button style={totalHeightStyle}>
-            { timeSlices.map(timeSlice => {
-                    const style = {
-                        height: timeSlice.height,
-                        width: "100%"
-                    };
-
-                    if (timeSlice.availability) {
+        <>
+            <table>
+                {
+                    timeSlots.forEach((timeSlot, index) => {
                         return (
-                            <div
-                                key={timeSlice.key}
-                                className="Availability-button"
-                                style={style}
-                                onClick={() => {
-                                    onClickDeleteAvailability(timeSlice.availability);
-                                }}>
-                                { timeSlice.height > 22 ? timeSlice.availability.subjects : "" }
-                            </div>
+                            <tr>
+                                <button key={index} onClick={onClickTimeSlot} data={JSON.stringify(timeSlot)}>
+                                    `${timeSlot.length} availabilities`
+                                </button>
+                            </tr>
                         );
-                    } else {
-                        return (
-                            <div
-                                key={timeSlice.key}
-                                style={style}
-                                onClick={() => {
-                                    onClickDay(props.date)
-                                }}>
-                                { timeSlice.height > 22 ? "open" : "" }
-                            </div>
-                        );
-                    }
-                })
-            }
-        </button>
+                    })
+                }
+            </table>
+        </>
     );
-}
-
-function getPixels(startDate, endDate, minutesPerPixel) {
-    return (endDate - startDate) / 1000 / 60 / minutesPerPixel;
 }
