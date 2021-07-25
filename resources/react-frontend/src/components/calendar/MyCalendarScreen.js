@@ -50,7 +50,6 @@ function MyCalendarBody(props) {
         history, setUser
     ]);
 
-    // based off stateProps.selectedDate
     const stateProps = props.location.state;
     const selectedDate = useMemo(() => { return stateProps ? (stateProps.selectedDate ? stateProps.selectedDate : new Date()) : new Date() }, [stateProps]);
 

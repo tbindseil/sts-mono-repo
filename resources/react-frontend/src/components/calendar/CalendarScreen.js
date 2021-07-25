@@ -55,6 +55,10 @@ function CalendarBody(props) {
     const stateProps = props.location.state;
     const selectedDate = useMemo(() => { return stateProps ? (stateProps.selectedDate ? stateProps.selectedDate : new Date()) : new Date() }, [stateProps]);
 
+    // TJTAG TODO this will ultimately be a drop down at the top of screen,
+    // shouldn't be too difficult and may be even better done before the api work in order to know exactly how to do that
+    const [selectedSubject, setSelectedSubject] = useState('');
+
     const [availabilities, setAvailabilities] = useState([]);
     const getAvailabilities = useCallback(
         (user) => {
@@ -68,7 +72,7 @@ function CalendarBody(props) {
             const endTime = moment(selectedDate).endOf('week').toDate();
             const url = new URL(baseUrl)
             const getAvailInput = {
-                username: user.username,
+                subject: selectedSubject,
                 startTime: startTime,
                 endTime: endTime
             };
@@ -108,7 +112,7 @@ function CalendarBody(props) {
                         }
                         setErrorMessage(message);
                     })
-                .catch(err => {
+                .catch(err => { // TODO this code is wet as fuck
                     setFailed(true);
                     var message = "2Error getting availabilties";
                     if (err.message) {
@@ -117,7 +121,7 @@ function CalendarBody(props) {
                     setErrorMessage(message);
                 });
         },
-        [selectedDate]
+        [selectedDate, selectedSubject]
     );
 
     useEffect(() => {
@@ -153,6 +157,7 @@ function CalendarBody(props) {
             </th>
         );
 
+        // TJTAG this is where things are gonna diverge
         calendarDays.push(
             <td className="CalendarDayBody">
                 <CalendarDayContent
