@@ -6,16 +6,6 @@ import moment from 'moment';
 import './Calendar.css';
 
 
-// TODO dynamic based off stuff
-const minutesPerPixel = 2;
-const pixelsInADay = 24 * (60 / minutesPerPixel);
-const totalHeightStyle = {
-    "height": pixelsInADay,
-    "width": "100%",
-    "paddingLeft": 0,
-    "paddingRight": 0
-}
-
 export function CalendarDayContent(props) {
     const history = useHistory();
 
@@ -72,6 +62,11 @@ export function CalendarDayContent(props) {
         );
     })
 
+    // instead of having a table on each day, which is surrounded by the overarching calendar table ,
+    // could it be that this is several more rows for the given col?
+    // that will be hard because I think that it has to have all cols for a row before going ot the next, but not 100% sure on this
+    //
+    // but now it seems like having them all in one table would help with the time axis thing
     return (
         <>
             <table>

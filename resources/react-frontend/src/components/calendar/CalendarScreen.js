@@ -10,6 +10,7 @@ import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
 import {CalendarDayContent} from './CalendarDayContent';
+import {TimeAxis} from './TimeAxis';
 
 // using a two layered "MediaQueryWrapper" here
 export function CalendarScreen(props) {
@@ -136,7 +137,15 @@ function CalendarBody(props) {
 
     // make a CalendarDayContent for each day of week
     const calendarDays = [];
+    calendarDays.push(
+        <TimeAxis/>
+    );
     const calendarHeaders = [];
+    calendarHeaders.push( // TODO pretty hacky...
+        <th className="CalnedarDayHeader">
+            Time
+        </th>
+    );
     for (var i = 0; i < 7; i++) {
         calendarHeaders.push(
             <th className="CalendarDayHeader">
@@ -197,7 +206,8 @@ function CalendarBody(props) {
                         {calendarHeaders}
                     </MediaQuery>
                     <MediaQuery maxWidth={765}>
-                        {calendarHeaders[weekDayNumber]}
+                        {calendarHeaders[0]}
+                        {calendarHeaders[weekDayNumber + 1]}
                     </MediaQuery>
                 </tr>
                 <tr>
@@ -205,7 +215,8 @@ function CalendarBody(props) {
                         {calendarDays}
                     </MediaQuery>
                     <MediaQuery maxWidth={765}>
-                        {calendarDays[weekDayNumber]}
+                        {calendarDays[0]}
+                        {calendarDays[weekDayNumber + 1]}
                     </MediaQuery>
                 </tr>
             </table>
