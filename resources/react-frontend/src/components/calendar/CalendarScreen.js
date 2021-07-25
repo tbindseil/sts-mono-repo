@@ -72,6 +72,7 @@ function CalendarBody(props) {
             const endTime = moment(selectedDate).endOf('week').toDate();
             const url = new URL(baseUrl)
             const getAvailInput = {
+                username: "*",
                 subject: selectedSubject,
                 startTime: startTime,
                 endTime: endTime

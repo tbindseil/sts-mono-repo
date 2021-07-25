@@ -67,6 +67,7 @@ function MyCalendarBody(props) {
             const url = new URL(baseUrl)
             const getAvailInput = {
                 username: user.username,
+                subject: "*",
                 startTime: startTime,
                 endTime: endTime
             };

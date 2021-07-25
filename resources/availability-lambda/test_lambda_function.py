@@ -39,6 +39,23 @@ class TestLambdaFunction(unittest.TestCase):
                 bio = "user.bio",
         )
 
+        # need another user with an avail
+        self.another_cognito_id = "another_cognito_id"
+        another_test_user = User(
+                email="another_email",
+                cognitoId=self.another_cognito_id,
+                parentName = "another_user.parentName",
+                parentEmail = "another_user.parentEmail",
+                firstName = "another_user.firstName",
+                lastName = "another_user.lastName",
+                school = "another_user.school",
+                grade = "another_user.grade",
+                age = "another_user.age",
+                address = "another_user.address",
+                bio = "another_user.bio",
+        )
+
+        self.session.add(another_test_user)
         self.session.add(test_user)
         self.session.commit()
 
@@ -48,33 +65,30 @@ class TestLambdaFunction(unittest.TestCase):
 
 
     def test_get_input_translator(self):
-        event = {"queryStringParameters": {'getAvailInput': '{"username":"this_is_the_cognito_id","startTime":"2021-07-11T06:00:00.000Z","endTime":"2021-07-18T05:59:59.999Z"}'}}
+        event = {"queryStringParameters": {'getAvailInput': '{"username":"this_is_the_cognito_id","subject":"math","startTime":"2021-07-11T06:00:00.000Z","endTime":"2021-07-18T05:59:59.999Z"}'}}
 
         expected_start_time = dateutil.parser.parse("2021-07-11T06:00:00.000Z", ignoretz=True)
         expected_end_time = dateutil.parser.parse("2021-07-18T05:59:59.999Z", ignoretz=True)
 
         input = lambda_function.get_input_translator(event, "context")
-        self.assertEqual(input, ("this_is_the_cognito_id", expected_start_time, expected_end_time))
+        self.assertEqual(input, ("this_is_the_cognito_id", "math", expected_start_time, expected_end_time))
 
     def test_get_input_translator_throws_input_exception_when_start_time_not_datetime(self):
-        event = {"queryStringParameters": {'getAvailInput': '{"username":"this_is_the_cognito_id","startTime":"not_date_time","endTime":"2021-07-18T05:59:59.999Z"}'}}
+        event = {"queryStringParameters": {'getAvailInput': '{"username":"this_is_the_cognito_id","subject":"math","startTime":"not_date_time","endTime":"2021-07-18T05:59:59.999Z"}'}}
         with self.assertRaises(InputException) as e:
             lambda_function.get_input_translator(event, "context")
-
 
     def test_get_input_translator_throws_input_exception_when_end_time_not_datetime(self):
-        event = {"queryStringParameters": {'getAvailInput': '{"username":"this_is_the_cognito_id","startTime":"2021-07-18T05:59:59.999Z","endTime":"not_date_time"}'}}
+        event = {"queryStringParameters": {'getAvailInput': '{"username":"this_is_the_cognito_id","subject":"math","startTime":"2021-07-18T05:59:59.999Z","endTime":"not_date_time"}'}}
         with self.assertRaises(InputException) as e:
             lambda_function.get_input_translator(event, "context")
-
 
     def test_get_input_translator_throws_input_excpetion_when_start_time_after_end_time(self):
-        event = {"queryStringParameters": {'getAvailInput': '{"username":"this_is_the_cognito_id","startTime":"2021-07-18T05:59:59.999Z","endTime":"2021-07-11T06:00:00.000Z"}'}}
+        event = {"queryStringParameters": {'getAvailInput': '{"username":"this_is_the_cognito_id","subject":"math","startTime":"2021-07-18T05:59:59.999Z","endTime":"2021-07-11T06:00:00.000Z"}'}}
         with self.assertRaises(InputException) as e:
             lambda_function.get_input_translator(event, "context")
 
-
-    def test_get_retrieves_availabilities(self):
+    def est_get_always_filters_based_off_time_range(self):
         avail1 = self.build_default_availability()
         avail2 = self.build_default_availability()
         avail_out_of_range = self.build_default_availability()
@@ -95,11 +109,88 @@ class TestLambdaFunction(unittest.TestCase):
         self.session.add(user)
         self.session.commit()
 
+        start_time_query = datetime(year=2020, month=1, day=14, hour=13)
+        end_time_query = datetime(year=2020, month=1, day=16, hour=14)
+        raw_output = lambda_function.get_handler(("*", "*", start_time_query, end_time_query), self.session, self.get_claims)
+
+        for avail in raw_output:
+            expected_avail = expected_availabilities[avail.startTime]
+            self.assertAvailEquals(expected_avail, avail)
+            del expected_availabilities[avail.startTime]
+
+        self.assertEqual(len(expected_availabilities), 0)
+
+    def est_get_conditionally_filters_username(self):
+        avail1 = self.build_default_availability()
+        avail2 = self.build_default_availability()
+        avail2.startTime += timedelta(days=1)
+        avail2.endTime += timedelta(days=1)
+        expected_availabilities = {
+                avail1.startTime: avail1,
+                avail2.startTime: avail2
+                }
+
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
+        for avail in expected_availabilities.values():
+            user.availabilities.append(avail)
+        self.session.add(user)
+        self.session.commit()
+
+        avail_different_username = self.build_default_availability()
+        avail_different_username.tutor = self.another_cognito_id
+        another_test_user = self.session.query(User).filter(User.cognitoId==self.another_cognito_id).one()
+        another_test_user.availabilities.append(avail_different_username)
+        self.session.add(another_test_user)
+        self.session.commit()
 
         start_time_query = datetime(year=2020, month=1, day=14, hour=13)
         end_time_query = datetime(year=2020, month=1, day=16, hour=14)
-        raw_output = lambda_function.get_handler((self.cognito_id, start_time_query, end_time_query), self.session, self.get_claims)
+        raw_output = lambda_function.get_handler((self.cognito_id, "*", start_time_query, end_time_query), self.session, self.get_claims)
+
+        for avail in raw_output:
+            expected_avail = expected_availabilities[avail.startTime]
+            self.assertAvailEquals(expected_avail, avail)
+            del expected_availabilities[avail.startTime]
+
+        self.assertEqual(len(expected_availabilities), 0)
+
+    def test_get_conditionally_filters_subject(self):
+        avail_user1_right_subject = self.build_default_availability()
+        avail_user1_wrong_subject = self.build_default_availability()
+        avail_user1_wrong_subject.startTime += timedelta(days=1)
+        avail_user1_wrong_subject.endTime += timedelta(days=1)
+        avail_user1_wrong_subject.subjects = 'math'
+
+        avail_user2_right_subject = self.build_default_availability()
+        avail_user2_right_subject.startTime += timedelta(days=2)
+        avail_user2_right_subject.endTime += timedelta(days=2)
+        avail_user2_right_subject.tutur = self.another_cognito_id
+        avail_user2_wrong_subject = self.build_default_availability()
+        avail_user2_wrong_subject.startTime += timedelta(days=3)
+        avail_user2_wrong_subject.endTime += timedelta(days=3)
+        avail_user2_wrong_subject.tutur = self.another_cognito_id
+        avail_user2_wrong_subject.subjects = "science"
+
+        user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
+        user.availabilities.append(avail_user1_right_subject)
+        user.availabilities.append(avail_user1_wrong_subject)
+        self.session.add(user)
+        self.session.commit()
+
+        another_test_user = self.session.query(User).filter(User.cognitoId==self.another_cognito_id).one()
+        another_test_user.availabilities.append(avail_user2_right_subject)
+        another_test_user.availabilities.append(avail_user2_wrong_subject)
+        self.session.add(another_test_user)
+        self.session.commit()
+
+        expected_availabilities = {
+                avail_user1_right_subject.startTime: avail_user1_right_subject,
+                avail_user2_right_subject.startTime: avail_user2_right_subject
+                }
+
+        start_time_query = datetime(year=2020, month=1, day=14, hour=13)
+        end_time_query = datetime(year=2020, month=1, day=22, hour=14)
+        raw_output = lambda_function.get_handler(("*", "subjects", start_time_query, end_time_query), self.session, self.get_claims)
 
         for avail in raw_output:
             expected_avail = expected_availabilities[avail.startTime]
@@ -224,7 +315,9 @@ class TestLambdaFunction(unittest.TestCase):
 
     def tearDown(self):
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
+        another_test_user =  self.session.query(User).filter(User.cognitoId==self.another_cognito_id).one()
         self.session.delete(user)
+        self.session.delete(another_test_user)
         self.session.commit()
 
     def build_default_availability(self):

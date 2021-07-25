@@ -20,21 +20,27 @@ def get_input_translator(event, context):
     if qsp_map['startTime'] >= qsp_map['endTime']:
         raise InputException('startTime must be before endTime')
 
-    return qsp_map['username'], qsp_map['startTime'], qsp_map['endTime']
+    return qsp_map['username'], qsp_map['subject'], qsp_map['startTime'], qsp_map['endTime']
 
 
 def get_handler(input, session, get_claims):
-    cognito_id, query_start_time, query_end_time = input
+    cognito_id, subject, query_start_time, query_end_time = input
 
-    claims = get_claims()
-    claimed_cognito_id = claims["cognito:username"]
+    # claims = get_claims()
+    # claimed_cognito_id = claims["cognito:username"]
 
     # PODO, ultimately, this will ultimately need to be potentially a more complex thing,
     #     soon when users start searching for each other's availability
-    if claimed_cognito_id != cognito_id:
-        raise AuthException
+    # if claimed_cognito_id != cognito_id:
+        # raise AuthException
 
-    return session.query(Availability).filter(Availability.tutor==cognito_id).filter(and_(Availability.startTime>=query_start_time, Availability.startTime<=query_end_time))
+    query = session.query(Availability).filter(and_(Availability.startTime>=query_start_time, Availability.startTime<=query_end_time))
+    if cognito_id != "*":
+        query = query.filter(Availability.tutor==cognito_id)
+    if subject != "*":
+        query = query.filter(Availability.subjects.like("%"+subject+"%"))
+
+    return query
 
 
 def get_output_translator(raw_output):
