@@ -54,8 +54,6 @@ function CalendarBody(props) {
     const stateProps = props.location.state;
     const selectedDate = useMemo(() => { return stateProps ? (stateProps.selectedDate ? stateProps.selectedDate : new Date()) : new Date() }, [stateProps]);
 
-    const [selectedSubject, setSelectedSubject] = useState('');
-
     const [availabilities, setAvailabilities] = useState([]);
     const getAvailabilities = useCallback(
         (user) => {
@@ -69,7 +67,7 @@ function CalendarBody(props) {
             const endTime = moment(selectedDate).endOf('week').toDate();
             const url = new URL(baseUrl)
             const getAvailInput = {
-                subject: selectedSubject,
+                username: user.username,
                 startTime: startTime,
                 endTime: endTime
             };
@@ -109,7 +107,7 @@ function CalendarBody(props) {
                         }
                         setErrorMessage(message);
                     })
-                .catch(err => { // TODO this code is wet as fuck
+                .catch(err => {
                     setFailed(true);
                     var message = "2Error getting availabilties";
                     if (err.message) {
@@ -118,7 +116,7 @@ function CalendarBody(props) {
                     setErrorMessage(message);
                 });
         },
-        [selectedDate, selectedSubject]
+        [selectedDate]
     );
 
     useEffect(() => {
@@ -146,7 +144,6 @@ function CalendarBody(props) {
             </th>
         );
 
-        // TJTAG this is where things are gonna diverge
         calendarDays.push(
             <td className="CalendarDayBody">
                 <CalendarDayContent
@@ -172,7 +169,7 @@ function CalendarBody(props) {
     return (
         <header className={props.pageBorderClass}>
             <Title
-                titleText="My Calendar Screen"
+                titleText="Calendar Screen"
                 underlineClass={props.underlineClass}/>
 
             { failed &&

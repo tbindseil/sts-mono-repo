@@ -37,11 +37,11 @@ export function CalendarDayContent(props) {
     // if the avail matches,
     // add its id to the list associated with the time slot
     let timeSlots = [];
-    for (let startTime = moment(startOfDay), endTime = startTime.add("minute", 30), timeSlotIndex = 0;
+    for (let startTime = moment(startOfDay), endTime = moment(startTime).add("minute", 30), timeSlotIndex = 0;
          startTime.isBefore(endOfDay);
          startTime.add('minute', 30), endTime.add('minute', 30), ++timeSlotIndex) {
 
-        timeSlots[timeSlotIndex] = [];
+        timeSlots.push([]);
 
         for (let i = 0; i < relevantAvailabilities.length; ++i) {
             const currAvail = relevantAvailabilities[i];
@@ -51,33 +51,31 @@ export function CalendarDayContent(props) {
             if ((currStart.isBefore(startTime) && currEnd.isAfter(endTime)) ||
                 (currStart.isAfter(startTime) && currStart.isBefore(endTime)) ||
                 (currEnd.isAfter(startTime) && currEnd.isBefore(endTime))) {
-                timeSlots[timeSlotIndex].append(currAvail.id);
+                timeSlots[timeSlotIndex].push(currAvail.id);
             }
         }
 
     }
 
     const onClickTimeSlot = (event) => {
-        // TODO how to index into time slots here?
-        console.log("TODO how to index into time slots here?");
         console.log("event is:");
         console.log(event);
     }
 
+    const timeSlotTableRows = timeSlots.map((timeSlot, index) => {
+        return (
+            <tr>
+                <button key={index} onClick={onClickTimeSlot} value={JSON.stringify(timeSlot)}>
+                    {`${timeSlot.length} availabilities`}
+                </button>
+            </tr>
+        );
+    })
+
     return (
         <>
             <table>
-                {
-                    timeSlots.forEach((timeSlot, index) => {
-                        return (
-                            <tr>
-                                <button key={index} onClick={onClickTimeSlot} data={JSON.stringify(timeSlot)}>
-                                    `${timeSlot.length} availabilities`
-                                </button>
-                            </tr>
-                        );
-                    })
-                }
+                {timeSlotTableRows}
             </table>
         </>
     );
