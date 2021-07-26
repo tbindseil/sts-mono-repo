@@ -153,7 +153,7 @@ function MyCalendarBody(props) {
             </td>
         );
 
-        currDay = moment(currDay).add(1, "days").toDate(); 
+        currDay = moment(currDay).add(1, "days").toDate();
     }
 
     // looks like defaults don't refresh when navigating to the same page

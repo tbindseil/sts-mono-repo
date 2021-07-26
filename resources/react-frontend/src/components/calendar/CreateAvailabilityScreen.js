@@ -288,7 +288,7 @@ function CreateAvailabilityBody(props) {
                     <td>
                         <Multiselect
                             options={subjects.map((subject, index) => { return { name: subject, id: index}}) }
-                            selectedValues={null} 
+                            selectedValues={null}
                             onSelect={onSubjectSelect}
                             onRemove={onSubjectRemove}
                             displayValue="name"

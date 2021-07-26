@@ -4,7 +4,10 @@ import {useHistory} from 'react-router-dom';
 
 import moment from 'moment';
 
+import {Dropdown} from 'semantic-ui-react';
+
 import './Calendar.css';
+import subjects from '../../configs/subjects';
 import {Header} from '../header/Header';
 import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
@@ -55,7 +58,7 @@ function CalendarBody(props) {
     const stateProps = props.location.state;
     const selectedDate = useMemo(() => { return stateProps ? (stateProps.selectedDate ? stateProps.selectedDate : new Date()) : new Date() }, [stateProps]);
 
-    // TJTAG TODO this will ultimately be a drop down at the top of screen,
+    // TJTAG this will ultimately be a drop down at the top of screen,
     // shouldn't be too difficult and may be even better done before the api work in order to know exactly how to do that
     const [selectedSubject, setSelectedSubject] = useState('');
 
@@ -168,7 +171,7 @@ function CalendarBody(props) {
             </td>
         );
 
-        currDay = moment(currDay).add(1, "days").toDate(); 
+        currDay = moment(currDay).add(1, "days").toDate();
     }
 
     // looks like defaults don't refresh when navigating to the same page
@@ -179,6 +182,16 @@ function CalendarBody(props) {
 
     const onClickJumpToDate = () => {
         goToDate(history, moment(jumpToDate).toDate());
+    };
+
+    const makeSelectSubjectsOptions = () => {
+        return subjects.map((subject, index) => { return { key: subject, text: subject, value: subject}});
+    };
+
+    const handleChangeSelectedSubject = (event, data) => {
+        setSelectedSubject(data.value);
+
+        getAvailabilities(user)
     };
 
     return (
@@ -199,6 +212,18 @@ function CalendarBody(props) {
                 <SmallScreenNavigationTable
                     selectedDate={selectedDate}/>
             </MediaQuery>
+
+            <div>
+                <label>Select a Subject:</label>
+                <Dropdown
+                    options={makeSelectSubjectsOptions()}
+                    value={selectedSubject}
+                    onChange={handleChangeSelectedSubject}
+                    fluid
+                    selection
+                    multi={false}
+                />
+            </div>
 
             <div className={props.datePickerClass}>
                 <label for="jumpToDate">Jump to Date:</label>
