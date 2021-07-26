@@ -11,8 +11,6 @@ export function TimeAxis(props) {
     let currStartTime = moment(startOfDay);
     while (currStartTime.isBefore(endOfDay)) {
         const key = currStartTime.format("h:mm");
-        console.log("key is:");
-        console.log(key);
         timeSlotTableRows.push(
             (
                 <tr>
