@@ -170,11 +170,11 @@ function RegisterBody(props) {
                     className="Centered MaxWidth AuthForm"
                     onChange={handleChange}>
 
-                    <br/> Please keep in mind while completing the form: <br/>
+                    Please keep in mind the following while completing the form: <br/>
                
-                    <br/> We ask parents or legal guardians to complete the form if the student is not in highschool. <br/>
+                    We ask parents or legal guardians to complete the form if the student is not in highschool. <br/>
                    
-                    <br/> Before submitting the form, parents/legal guardians will be required to sign a wavier if you are under the age of 18. <br/>
+                    Before submitting the form, parents/legal guardians will be required to sign a wavier if you are under the age of 18. <br/>
            
                     <br/>Student Info<br/>
                     
@@ -245,19 +245,19 @@ function RegisterBody(props) {
 
                 </form>
 
-                <div className="Centered MaxWidth">
-                    <PasswordRequirements/>
-
-                    { failed &&
-                        <p className="ErrorMessage">{errorMessage}</p>
-                    }
-                </div>
-
                 <form
                     className="Centered MaxWidth AuthForm"
                     onChange={handleChange}>
 
                     <br/>Login Info<br/>
+
+                    <div className="Centered MaxWidth">
+                    <PasswordRequirements/>
+
+                    { failed &&
+                        <p className="ErrorMessage">{errorMessage}</p>
+                    }
+                    </div>
                     <TextInput
                         name={"username"}
                         value={username}
