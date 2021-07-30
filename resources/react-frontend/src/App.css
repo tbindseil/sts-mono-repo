@@ -465,3 +465,15 @@ a { /* gotta override bootstrap here */
 .SubjectsMultiselect {
   height: 36px;
 }
+
+.Calendar {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(49, 1fr);
+    place-items: center; /* default is stretch, try both to see which is better */
+    place-content: space-evenly;
+};
+
+.TimeSlot {
+    grid-area: auto;
+};
