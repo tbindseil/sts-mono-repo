@@ -588,4 +588,5 @@ a { /* gotta override bootstrap here */
     position: absolute;
     top: 50%;
     transform: translate(0, -25%);
+    white-space: nowrap;
 }

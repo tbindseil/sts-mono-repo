@@ -246,15 +246,6 @@ function MyCalendarBody(props) {
     }
 
 
-    /*let timeSlots = []
-    for (let i = 0; i < 2 * 24 * 7; ++i) {
-        timeSlots.push(
-             <div className="TimeSlot FillGridCell">
-                 <button>{`${i} times available`}</button>
-             </div>
-        );
-    }*/
-
     return (
         <header className={props.pageBorderClass}>
             <Title
@@ -284,6 +275,7 @@ function MyCalendarBody(props) {
 
             <Calendar
                 timeSlots={timeSlots}
+                selectedDate={selectedDate}
             />
 
             <div className="BelowCalendar">

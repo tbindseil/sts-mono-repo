@@ -17,33 +17,31 @@ export function Calendar(props) {
 
     const timeSlots = timeLegend.concat(props.timeSlots);
 
+    let weekDayHeaders = [];
+    weekDayHeaders.push(
+        <div className="Time FillGridCell TopRowWeekDayCenterVertically">
+            <p>Time</p>
+        </div>
+    );
+    const startOfWeek = moment(props.selectedDate).startOf('week');
+    const endOfWeek = moment(props.selectedDate).endOf('week');
+    let curr = moment(startOfWeek);
+    while (curr.isBefore(endOfWeek)) {
+        const clazzName = `${curr.format("dddd")} FillGridCell TopRowWeekDayCenterVertically`;
+        weekDayHeaders.push(
+            <div className={clazzName}>
+                <p>{curr.format("dddd, MMM D")}</p>
+            </div>
+        );
+
+        curr.add(1, 'day');
+    }
+
+    // TODO looks good but sunday is wrapping...
     return (
         <>
             <div className="Calendar">
-                <div className="Time FillGridCell TopRowWeekDayCenterVertically">
-                    <p>Time</p>
-                </div>
-                <div className="Sunday FillGridCell TopRowWeekDayCenterVertically">
-                    <p>Sunday</p>
-                </div>
-                <div className="Monday FillGridCell TopRowWeekDayCenterVertically">
-                    <p>Monday</p>
-                </div>
-                <div className="Tuesday FillGridCell TopRowWeekDayCenterVertically">
-                    <p>Tuesday</p>
-                </div>
-                <div className="Wednesday FillGridCell TopRowWeekDayCenterVertically">
-                    <p>Wednesday</p>
-                </div>
-                <div className="Thursday FillGridCell TopRowWeekDayCenterVertically">
-                    <p>Thursday</p>
-                </div>
-                <div className="Friday FillGridCell TopRowWeekDayCenterVertically">
-                    <p>Friday</p>
-                </div>
-                <div className="Saturday FillGridCell TopRowWeekDayCenterVertically">
-                    <p>Saturday</p>
-                </div>
+                {weekDayHeaders}
 
                 {timeSlots}
             </div>
