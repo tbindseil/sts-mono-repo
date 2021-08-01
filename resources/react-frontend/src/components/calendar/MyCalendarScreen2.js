@@ -10,6 +10,7 @@ import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
 import {MyCalendarDayContent} from './MyCalendarDayContent';
+import {Calendar} from './Calendar';
 
 // using a two layered "MediaQueryWrapper" here
 export function MyCalendarScreen2(props) {
@@ -168,6 +169,15 @@ function MyCalendarBody(props) {
         goToDate(history, moment(jumpToDate).toDate());
     };
 
+    let timeSlots = []
+    for (let i = 0; i < 2 * 24 * 7; ++i) {
+        timeSlots.push(
+             <div className="TimeSlot FillGridCell">
+                 <button>{`${i} times available`}</button>
+             </div>
+        );
+    }
+
     return (
         <header className={props.pageBorderClass}>
             <Title
@@ -193,24 +203,11 @@ function MyCalendarBody(props) {
                 <button onClick={onClickJumpToDate}>Go</button>
             </div>
 
-            <table className="CalendarTable">
-                <tr>
-                    <MediaQuery minWidth={765}>
-                        {calendarHeaders}
-                    </MediaQuery>
-                    <MediaQuery maxWidth={765}>
-                        {calendarHeaders[weekDayNumber]}
-                    </MediaQuery>
-                </tr>
-                <tr>
-                    <MediaQuery minWidth={765}>
-                        {calendarDays}
-                    </MediaQuery>
-                    <MediaQuery maxWidth={765}>
-                        {calendarDays[weekDayNumber]}
-                    </MediaQuery>
-                </tr>
-            </table>
+            <br/>
+
+            <Calendar
+                timeSlots={timeSlots}
+            />
 
             <div className="BelowCalendar">
                 <p>

@@ -9,7 +9,7 @@ export function Calendar(props) {
         const key = startTime.format("h:mm");
         timeLegend.push(
             <div key={key} className="TimeSlot">
-                <button>{key}</button>
+                <p>{key}</p>
             </div>
         );
         startTime.add('minute', 30);
@@ -20,28 +20,28 @@ export function Calendar(props) {
     return (
         <>
             <div className="Calendar">
-                <div className="Time">
+                <div className="Time FillGridCell TopRowWeekDayCenterVertically">
                     <p>Time</p>
                 </div>
-                <div className="Sunday">
+                <div className="Sunday FillGridCell TopRowWeekDayCenterVertically">
                     <p>Sunday</p>
                 </div>
-                <div className="Monday">
+                <div className="Monday FillGridCell TopRowWeekDayCenterVertically">
                     <p>Monday</p>
                 </div>
-                <div className="Tuesday">
+                <div className="Tuesday FillGridCell TopRowWeekDayCenterVertically">
                     <p>Tuesday</p>
                 </div>
-                <div className="Wednesday">
+                <div className="Wednesday FillGridCell TopRowWeekDayCenterVertically">
                     <p>Wednesday</p>
                 </div>
-                <div className="Thursday">
+                <div className="Thursday FillGridCell TopRowWeekDayCenterVertically">
                     <p>Thursday</p>
                 </div>
-                <div className="Friday">
+                <div className="Friday FillGridCell TopRowWeekDayCenterVertically">
                     <p>Friday</p>
                 </div>
-                <div className="Saturday">
+                <div className="Saturday FillGridCell TopRowWeekDayCenterVertically">
                     <p>Saturday</p>
                 </div>
 
