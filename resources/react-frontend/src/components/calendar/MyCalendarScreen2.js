@@ -169,14 +169,91 @@ function MyCalendarBody(props) {
         goToDate(history, moment(jumpToDate).toDate());
     };
 
-    let timeSlots = []
+
+
+
+    const onClickCreateAvailability = (value) => {
+        history.push({
+            pathname: "/create-availability",
+            state: {
+                selectedDate: value
+            }
+        });
+    }
+
+    const onClickDeleteAvailability = (availability) => {
+        history.push({
+            pathname: "/delete-availability",
+            state: {
+                availability: availability
+            }
+        });
+    }
+
+
+    // visitor pattern?
+    // walk the 2*24*7 30 minute blocks
+    //    * I'm on my calendar *
+    // for each block, find if it has an avail
+    // since this is my calendar,
+    // there will be only one avail
+    let timeSlots = [];
+    let startOfBlock = moment(selectedDate).startOf('week');
+    const endOfCalendar = moment(selectedDate).endOf('week');
+    while (startOfBlock.isBefore(endOfCalendar)) { // this happens a lot...
+        const endOfBlock = moment(startOfBlock).add('minute', 30);
+
+        // I have availabilities as state...
+
+        // could be optimised such that we keep a reference to the oldest avail,
+        // easier on my calendar because we are garaunteed to have no overlap
+
+        let found = false;
+        let subjects = "";
+        let foundAvail = null;
+        availabilities.forEach(a => {
+            const startMoment = moment(a.startTime);
+            const endMoment = moment(a.endTime);
+            if ((startMoment.isBefore(startOfBlock) && endMoment.isAfter(endOfBlock))
+                || (startMoment.isAfter(startOfBlock) && startMoment.isBefore(endOfBlock))
+                || (endMoment.isAfter(startOfBlock) && endMoment.isBefore(endOfBlock))) {
+                found = true;
+                subjects = a.subjects;
+                foundAvail = a;
+            }
+        });
+
+        timeSlots.push(
+            found ?
+                <div className="timeslot FillGridCell">
+                    <button onClick={() => {
+                        onClickDeleteAvailability(foundAvail);
+                    }}>
+                        {subjects}
+                    </button>
+                </div>
+            :
+                <div className="timeslot FillGridCell">
+                    <button onClick={() => {
+                        onClickCreateAvailability(startOfBlock.toDate());
+                    }}>
+                        Open
+                    </button>
+                </div>
+        );
+
+        startOfBlock.add('minute', 30);
+    }
+
+
+    /*let timeSlots = []
     for (let i = 0; i < 2 * 24 * 7; ++i) {
         timeSlots.push(
              <div className="TimeSlot FillGridCell">
                  <button>{`${i} times available`}</button>
              </div>
         );
-    }
+    }*/
 
     return (
         <header className={props.pageBorderClass}>

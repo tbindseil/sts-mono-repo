@@ -338,3 +338,9 @@ Time to try it with a grid
 
 
 
+ok, so i have a calendar grid going, now I need to make the factories that take in start/end time and avails and produce the buttons
+then I chop down the old code and solidify
+then I can try to chop down the api code (maybe)
+
+
+
