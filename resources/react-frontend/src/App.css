@@ -470,10 +470,93 @@ a { /* gotta override bootstrap here */
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     grid-template-rows: repeat(49, 1fr);
+    grid-auto-flow: column;
     place-items: center; /* default is stretch, try both to see which is better */
     place-content: space-evenly;
-};
+    grid-template-areas:
+        "Time Sunday Monday Tuesday Wednesday Thursday Friday Saturday"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None"
+        "None None None None None None None None";
+}
+
+.Time {
+    grid-area: Time;
+}
+
+.Sunday {
+    grid-area: Sunday;
+}
+
+.Monday {
+    grid-area: Monday;
+}
+
+.Tuesday {
+    grid-area: Tuesday;
+}
+
+.Wednesday {
+    grid-area: Wednesday;
+}
+
+.Thursday {
+    grid-area: Thursday;
+}
+
+.Friday {
+    grid-area: Friday;
+}
+
+.Saturday {
+    grid-area: Saturday;
+}
 
 .TimeSlot {
     grid-area: auto;
-};
+}

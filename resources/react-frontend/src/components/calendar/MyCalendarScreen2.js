@@ -4,25 +4,23 @@ import {useHistory} from 'react-router-dom';
 
 import moment from 'moment';
 
-import {Dropdown} from 'semantic-ui-react';
-
 import './Calendar.css';
-import subjects from '../../configs/subjects';
 import {Header} from '../header/Header';
 import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
-import {CalendarDayContent} from './CalendarDayContent';
-import {TimeAxis} from './TimeAxis';
+import {MyCalendarDayContent} from './MyCalendarDayContent';
 
 // using a two layered "MediaQueryWrapper" here
-export function CalendarScreen(props) {
+export function MyCalendarScreen2(props) {
     return (
         <div>
             <Header/>
 
             <MediaQuery minWidth={765}>
-                <CalendarBody
+                { // TODO the different classes for this stuff could be handled by a registry?
+                }
+                <MyCalendarBody
                     location={props.location}
                     pageBorderClass={"PageBorderCalendar"}
                     underlineClass={"Underline"}
@@ -30,7 +28,7 @@ export function CalendarScreen(props) {
             </MediaQuery>
 
             <MediaQuery maxWidth={765}>
-                <CalendarBody
+                <MyCalendarBody
                     location={props.location}
                     pageBorderClass={"PageBorder2"}
                     underlineClass={"Underline2"}
@@ -42,7 +40,7 @@ export function CalendarScreen(props) {
     );
 }
 
-function CalendarBody(props) {
+function MyCalendarBody(props) {
     const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
 
     const history = useHistory();
@@ -54,13 +52,8 @@ function CalendarBody(props) {
         history, setUser
     ]);
 
-    // based off stateProps.selectedDate
     const stateProps = props.location.state;
     const selectedDate = useMemo(() => { return stateProps ? (stateProps.selectedDate ? stateProps.selectedDate : new Date()) : new Date() }, [stateProps]);
-
-    // TJTAG this will ultimately be a drop down at the top of screen,
-    // shouldn't be too difficult and may be even better done before the api work in order to know exactly how to do that
-    const [selectedSubject, setSelectedSubject] = useState('');
 
     const [availabilities, setAvailabilities] = useState([]);
     const getAvailabilities = useCallback(
@@ -75,8 +68,8 @@ function CalendarBody(props) {
             const endTime = moment(selectedDate).endOf('week').toDate();
             const url = new URL(baseUrl)
             const getAvailInput = {
-                username: "*",
-                subject: selectedSubject,
+                username: user.username,
+                subject: "*",
                 startTime: startTime,
                 endTime: endTime
             };
@@ -116,7 +109,7 @@ function CalendarBody(props) {
                         }
                         setErrorMessage(message);
                     })
-                .catch(err => { // TODO this code is wet as fuck
+                .catch(err => {
                     setFailed(true);
                     var message = "2Error getting availabilties";
                     if (err.message) {
@@ -125,7 +118,7 @@ function CalendarBody(props) {
                     setErrorMessage(message);
                 });
         },
-        [selectedDate, selectedSubject]
+        [selectedDate]
     );
 
     useEffect(() => {
@@ -143,17 +136,9 @@ function CalendarBody(props) {
     // find previous sunday if day is not sunday
     var currDay = moment(selectedDate).subtract(weekDayNumber, "days").toDate();
 
-    // make a CalendarDayContent for each day of week
+    // make a MyCalendarDayContent for each day of week
     const calendarDays = [];
-    calendarDays.push(
-        <TimeAxis/>
-    );
     const calendarHeaders = [];
-    calendarHeaders.push( // TODO pretty hacky...
-        <th className="CalnedarDayHeader">
-            Time
-        </th>
-    );
     for (var i = 0; i < 7; i++) {
         calendarHeaders.push(
             <th className="CalendarDayHeader">
@@ -161,10 +146,9 @@ function CalendarBody(props) {
             </th>
         );
 
-        // TJTAG this is where things are gonna diverge
         calendarDays.push(
             <td className="CalendarDayBody">
-                <CalendarDayContent
+                <MyCalendarDayContent
                     key={currDay.toString()}
                     date={currDay}
                     availabilities={availabilities}/>
@@ -184,20 +168,10 @@ function CalendarBody(props) {
         goToDate(history, moment(jumpToDate).toDate());
     };
 
-    const makeSelectSubjectsOptions = () => {
-        return subjects.map((subject, index) => { return { key: subject, text: subject, value: subject}});
-    };
-
-    const handleChangeSelectedSubject = (event, data) => {
-        setSelectedSubject(data.value);
-
-        getAvailabilities(user)
-    };
-
     return (
         <header className={props.pageBorderClass}>
             <Title
-                titleText="Calendar Screen"
+                titleText="My Calendar Screen"
                 underlineClass={props.underlineClass}/>
 
             { failed &&
@@ -213,18 +187,6 @@ function CalendarBody(props) {
                     selectedDate={selectedDate}/>
             </MediaQuery>
 
-            <div>
-                <label>Select a Subject:</label>
-                <Dropdown
-                    options={makeSelectSubjectsOptions()}
-                    value={selectedSubject}
-                    onChange={handleChangeSelectedSubject}
-                    fluid
-                    selection
-                    multi={false}
-                />
-            </div>
-
             <div className={props.datePickerClass}>
                 <label for="jumpToDate">Jump to Date:</label>
                 <input onChange={handleChangeJumpToDate} type="date" name="jumpToDate" value={moment(jumpToDate).format("YYYY-MM-DD")}/>
@@ -237,8 +199,7 @@ function CalendarBody(props) {
                         {calendarHeaders}
                     </MediaQuery>
                     <MediaQuery maxWidth={765}>
-                        {calendarHeaders[0]}
-                        {calendarHeaders[weekDayNumber + 1]}
+                        {calendarHeaders[weekDayNumber]}
                     </MediaQuery>
                 </tr>
                 <tr>
@@ -246,8 +207,7 @@ function CalendarBody(props) {
                         {calendarDays}
                     </MediaQuery>
                     <MediaQuery maxWidth={765}>
-                        {calendarDays[0]}
-                        {calendarDays[weekDayNumber + 1]}
+                        {calendarDays[weekDayNumber]}
                     </MediaQuery>
                 </tr>
             </table>
@@ -344,28 +304,3 @@ function goToDate(history, date) {
     });
 }
 
-// given a row and column (?)
-// this factory can be a property of the calendar
-// my calendar provides makeMyCalendarTimeSlot and
-// calendar provides makeCalendarTimeSlot
-//
-// given: list of availablities (sorted?) and start and end time
-// provide a CalendarTimeSlot, which in all reality is just a div
-// and a button
-//
-// after more thinking, maybe the calendar is more important to extract
-// then the time slot, since time slot is after all pretty easy and the
-// the differences are screen related, so i'll have to provide a bunch of
-// shit ot it if it were reused.
-//
-// now, is the calendar extractable?
-// provide a list of timeslots, already configured with onclicks and text
-// boom, done
-function makeCalendarTimeSlot() {
-    return (
-        <div className="TimeSlot">
-            <button/>
-        </div>
-    );
-
-}
