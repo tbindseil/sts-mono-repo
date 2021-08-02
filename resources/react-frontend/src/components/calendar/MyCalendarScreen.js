@@ -9,7 +9,8 @@ import {Header} from '../header/Header';
 import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
-import {MyCalendarDayContent} from './MyCalendarDayContent';
+import {Calendar} from './Calendar';
+import {BigScreenNavigationTable, SmallScreenNavigationTable, goToDate} from './NavigationTable';
 
 // using a two layered "MediaQueryWrapper" here
 export function MyCalendarScreen(props) {
@@ -18,6 +19,8 @@ export function MyCalendarScreen(props) {
             <Header/>
 
             <MediaQuery minWidth={765}>
+                { // TODO the different classes for this stuff could be handled by a registry?
+                }
                 <MyCalendarBody
                     location={props.location}
                     pageBorderClass={"PageBorderCalendar"}
@@ -128,34 +131,6 @@ function MyCalendarBody(props) {
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
-    // get day's week day number,
-    const weekDayNumber = moment(selectedDate).day();
-
-    // find previous sunday if day is not sunday
-    var currDay = moment(selectedDate).subtract(weekDayNumber, "days").toDate();
-
-    // make a MyCalendarDayContent for each day of week
-    const calendarDays = [];
-    const calendarHeaders = [];
-    for (var i = 0; i < 7; i++) {
-        calendarHeaders.push(
-            <th className="CalendarDayHeader">
-                {moment(currDay).format("dddd, MMM D")}
-            </th>
-        );
-
-        calendarDays.push(
-            <td className="CalendarDayBody">
-                <MyCalendarDayContent
-                    key={currDay.toString()}
-                    date={currDay}
-                    availabilities={availabilities}/>
-            </td>
-        );
-
-        currDay = moment(currDay).add(1, "days").toDate();
-    }
-
     // looks like defaults don't refresh when navigating to the same page
     const [jumpToDate, setJumpToDate] = useState(selectedDate);
     const handleChangeJumpToDate = (event) => {
@@ -163,8 +138,70 @@ function MyCalendarBody(props) {
     };
 
     const onClickJumpToDate = () => {
-        goToDate(history, moment(jumpToDate).toDate());
+        goToDate(history, moment(jumpToDate).toDate(), "/my-calendar");
     };
+
+    const onClickCreateAvailability = (value) => {
+        history.push({
+            pathname: "/create-availability",
+            state: {
+                selectedDate: value
+            }
+        });
+    }
+
+    const onClickDeleteAvailability = (availability) => {
+        history.push({
+            pathname: "/delete-availability",
+            state: {
+                availability: availability
+            }
+        });
+    }
+
+    // visitor pattern? build all time slots
+    // this is probably also best done as a callback that triggers whenever avails or selectedDate changes
+    let timeSlots = [];
+    let startOfBlock = moment(selectedDate).startOf('week');
+    const endOfCalendar = moment(selectedDate).endOf('week');
+    while (startOfBlock.isBefore(endOfCalendar)) { // this happens a lot...
+        const endOfBlock = moment(startOfBlock).add('minute', 30);
+
+        // could be optimised such that we keep a reference to the oldest avail,
+        // easier on my calendar because we are garaunteed to have no overlap
+
+        let foundAvail = null;
+        availabilities.forEach(a => {
+            const startMoment = moment(a.startTime);
+            const endMoment = moment(a.endTime);
+            if ((startMoment.isBefore(startOfBlock) && endMoment.isAfter(endOfBlock))
+                || (startMoment.isAfter(startOfBlock) && startMoment.isBefore(endOfBlock))
+                || (endMoment.isAfter(startOfBlock) && endMoment.isBefore(endOfBlock))) {
+                foundAvail = a;
+            }
+        });
+
+        timeSlots.push(
+            foundAvail !== null ?
+                <div className="timeslot FillGridCell">
+                    <button onClick={() => {
+                        onClickDeleteAvailability(foundAvail);
+                    }}>
+                        {foundAvail.subjects}
+                    </button>
+                </div>
+            :
+                <div className="timeslot FillGridCell">
+                    <button onClick={() => {
+                        onClickCreateAvailability(startOfBlock.toDate());
+                    }}>
+                        Open
+                    </button>
+                </div>
+        );
+
+        startOfBlock.add('minute', 30);
+    }
 
     return (
         <header className={props.pageBorderClass}>
@@ -178,11 +215,13 @@ function MyCalendarBody(props) {
 
             <MediaQuery minWidth={765}>
                 <BigScreenNavigationTable
-                    selectedDate={selectedDate}/>
+                    selectedDate={selectedDate}
+                    pathName="/my-calendar"/>
             </MediaQuery>
             <MediaQuery maxWidth={765}>
                 <SmallScreenNavigationTable
-                    selectedDate={selectedDate}/>
+                    selectedDate={selectedDate}
+                    pathName="/my-calendar"/>
             </MediaQuery>
 
             <div className={props.datePickerClass}>
@@ -191,24 +230,12 @@ function MyCalendarBody(props) {
                 <button onClick={onClickJumpToDate}>Go</button>
             </div>
 
-            <table className="CalendarTable">
-                <tr>
-                    <MediaQuery minWidth={765}>
-                        {calendarHeaders}
-                    </MediaQuery>
-                    <MediaQuery maxWidth={765}>
-                        {calendarHeaders[weekDayNumber]}
-                    </MediaQuery>
-                </tr>
-                <tr>
-                    <MediaQuery minWidth={765}>
-                        {calendarDays}
-                    </MediaQuery>
-                    <MediaQuery maxWidth={765}>
-                        {calendarDays[weekDayNumber]}
-                    </MediaQuery>
-                </tr>
-            </table>
+            <br/>
+
+            <Calendar
+                timeSlots={timeSlots}
+                selectedDate={selectedDate}
+            />
 
             <div className="BelowCalendar">
                 <p>
@@ -221,83 +248,4 @@ function MyCalendarBody(props) {
 
         </header>
     );
-}
-
-function BigScreenNavigationTable(props) {
-    const history = useHistory();
-    const selectedDate = props.selectedDate;
-
-    const onClickPreviousWeek = () => {
-        goToDate(history, moment(selectedDate).subtract(7, "days").toDate());
-    };
-
-    const onClickCurrentWeek = () => {
-        goToDate(history, moment().toDate());
-    };
-
-    const onClickNextWeek = () => {
-        goToDate(history, moment(selectedDate).add(7, "days").toDate());
-    };
-
-    return (
-        <table className="BigScreenNavigationTable">
-            <tr>
-                <td>
-                    <button onClick={onClickPreviousWeek}>
-                        Previous Week
-                    </button>
-                    <button onClick={onClickCurrentWeek}>
-                        Current Week
-                    </button>
-                    <button onClick={onClickNextWeek}>
-                        Next Week
-                    </button>
-                </td>
-            </tr>
-        </table>
-    );
-}
-
-function SmallScreenNavigationTable(props) {
-    const history = useHistory();
-    const selectedDate = props.selectedDate;
-
-    const onClickPreviousDay = () => {
-        goToDate(history, moment(selectedDate).subtract(1, "days").toDate());
-    };
-
-    const onClickCurrentDay = () => {
-        goToDate(history, moment().toDate());
-    };
-
-    const onClickNextDay = () => {
-        goToDate(history, moment(selectedDate).add(1, "days").toDate());
-    };
-
-    return (
-        <table className="SmallScreenNavigationTable">
-            <tr>
-                <td>
-                    <button onClick={onClickPreviousDay}>
-                        Previous Day
-                    </button>
-                    <button onClick={onClickCurrentDay}>
-                        Today
-                    </button>
-                    <button onClick={onClickNextDay}>
-                        Next Day
-                    </button>
-                </td>
-            </tr>
-        </table>
-    );
-}
-
-function goToDate(history, date) {
-    history.push({
-        pathname: "/my-calendar",
-        state: {
-            selectedDate: date
-        }
-    });
 }

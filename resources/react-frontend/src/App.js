@@ -27,11 +27,7 @@ import {DeleteScreen} from "./components/auth/DeleteScreen";
 import {ProfileScreen} from "./components/profile/ProfileScreen";
 import {AccountScreen} from "./components/profile/AccountScreen";
 import {CalendarScreen} from "./components/calendar/CalendarScreen";
-
-import {FlexCalendar} from "./components/calendar/FlexCalendar";
-
 import {MyCalendarScreen} from "./components/calendar/MyCalendarScreen";
-import {MyCalendarScreen2} from "./components/calendar/MyCalendarScreen2";
 import {CreateAvailabilityScreen} from "./components/calendar/CreateAvailabilityScreen";
 import {DeleteAvailabilityScreen} from "./components/calendar/DeleteAvailabilityScreen";
 
@@ -63,8 +59,8 @@ const App = () => {
 
         <Route path={"/profile"} component={ProfileScreen}/>
         <Route path={"/account"} component={AccountScreen}/>
-        <Route path={"/calendar"} component={FlexCalendar}/>
-        <Route path={"/my-calendar"} component={MyCalendarScreen2}/>
+        <Route path={"/calendar"} component={CalendarScreen}/>
+        <Route path={"/my-calendar"} component={MyCalendarScreen}/>
         <Route path={"/create-availability"} component={CreateAvailabilityScreen}/>
         <Route path={"/delete-availability"} component={DeleteAvailabilityScreen}/>
 
