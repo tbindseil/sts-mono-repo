@@ -6,7 +6,7 @@ export function Calendar(props) {
     let startTime = moment().startOf('day');
     const endOfDay = moment().endOf('day');
     while (startTime.isBefore(endOfDay)) {
-        const key = startTime.format("h:mm");
+        const key = startTime.format("LT");
         timeLegend.push(
             <div key={key} className="TimeSlot">
                 <p>{key}</p>
@@ -37,7 +37,6 @@ export function Calendar(props) {
         curr.add(1, 'day');
     }
 
-    // TODO looks good but sunday is wrapping...
     return (
         <>
             <div className="Calendar">

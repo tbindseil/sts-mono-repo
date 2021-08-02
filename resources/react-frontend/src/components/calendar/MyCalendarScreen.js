@@ -142,6 +142,8 @@ function MyCalendarBody(props) {
     };
 
     const onClickCreateAvailability = (value) => {
+        console.log("onclick create avail, value is:");
+        console.log(value);
         history.push({
             pathname: "/create-availability",
             state: {
@@ -181,6 +183,7 @@ function MyCalendarBody(props) {
             }
         });
 
+        const selectedDate = moment(startOfBlock).toDate();
         timeSlots.push(
             foundAvail !== null ?
                 <div className="timeslot FillGridCell">
@@ -193,7 +196,7 @@ function MyCalendarBody(props) {
             :
                 <div className="timeslot FillGridCell">
                     <button onClick={() => {
-                        onClickCreateAvailability(startOfBlock.toDate());
+                        onClickCreateAvailability(selectedDate);
                     }}>
                         Open
                     </button>
