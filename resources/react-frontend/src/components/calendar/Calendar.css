@@ -26,21 +26,6 @@
   justify-content: center;
 }
 
-.CalendarTable {
-  width: 100%;
-}
-
-.CalendarDayHeader {
-  text-align: center;
-  width: 14.28574%; /* 1/7 */
-  border: solid black;
-  border-width: 2px 2px 2px 0;
-}
-
-.CalendarDayBody {
-  border: solid black 2px;
-}
-
 table.AvailabilityForm {
   margin-left: auto;
   margin-right: auto;

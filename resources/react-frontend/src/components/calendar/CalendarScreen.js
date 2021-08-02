@@ -12,8 +12,7 @@ import {Header} from '../header/Header';
 import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
-import {CalendarDayContent} from './CalendarDayContent';
-import {TimeAxis} from './TimeAxis';
+import {Calendar} from './Calendar';
 import {BigScreenNavigationTable, SmallScreenNavigationTable, goToDate} from './NavigationTable';
 
 // using a two layered "MediaQueryWrapper" here
@@ -138,43 +137,6 @@ function CalendarBody(props) {
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
-    // get day's week day number,
-    const weekDayNumber = moment(selectedDate).day();
-
-    // find previous sunday if day is not sunday
-    var currDay = moment(selectedDate).subtract(weekDayNumber, "days").toDate();
-
-    // make a CalendarDayContent for each day of week
-    const calendarDays = [];
-    calendarDays.push(
-        <TimeAxis/>
-    );
-    const calendarHeaders = [];
-    calendarHeaders.push( // TODO pretty hacky...
-        <th className="CalnedarDayHeader">
-            Time
-        </th>
-    );
-    for (var i = 0; i < 7; i++) {
-        calendarHeaders.push(
-            <th className="CalendarDayHeader">
-                {moment(currDay).format("dddd, MMM D")}
-            </th>
-        );
-
-        // TJTAG this is where things are gonna diverge
-        calendarDays.push(
-            <td className="CalendarDayBody">
-                <CalendarDayContent
-                    key={currDay.toString()}
-                    date={currDay}
-                    availabilities={availabilities}/>
-            </td>
-        );
-
-        currDay = moment(currDay).add(1, "days").toDate();
-    }
-
     // looks like defaults don't refresh when navigating to the same page
     const [jumpToDate, setJumpToDate] = useState(selectedDate);
     const handleChangeJumpToDate = (event) => {
@@ -195,25 +157,6 @@ function CalendarBody(props) {
         getAvailabilities(user)
     };
 
-
-    const onClickCreateAvailability = (value) => {
-        history.push({
-            pathname: "/create-availability",
-            state: {
-                selectedDate: value
-            }
-        });
-    }
-
-    const onClickDeleteAvailability = (availability) => {
-        history.push({
-            pathname: "/delete-availability",
-            state: {
-                availability: availability
-            }
-        });
-    }
-
     // visitor pattern? build all time slots
     // this is probably also best done as a callback that triggers whenever avails or selectedDate changes
     let timeSlots = [];
@@ -222,37 +165,31 @@ function CalendarBody(props) {
     while (startOfBlock.isBefore(endOfCalendar)) { // this happens a lot...
         const endOfBlock = moment(startOfBlock).add('minute', 30);
 
-        // could be optimised such that we keep a reference to the oldest avail,
-        // easier on my calendar because we are garaunteed to have no overlap
+        let currentAvailabilities = [];
 
-        let foundAvail = null;
+        // could be optimised such that once an avail's end is before this loop's start, it gets ignored somehow
+
+        // instead of just one, we potentially have several
         availabilities.forEach(a => {
             const startMoment = moment(a.startTime);
             const endMoment = moment(a.endTime);
             if ((startMoment.isBefore(startOfBlock) && endMoment.isAfter(endOfBlock))
                 || (startMoment.isAfter(startOfBlock) && startMoment.isBefore(endOfBlock))
                 || (endMoment.isAfter(startOfBlock) && endMoment.isBefore(endOfBlock))) {
-                foundAvail = a;
+                currentAvailabilities.push(a);
             }
         });
 
+        // seems like this needs to happen in two steps
         timeSlots.push(
-            foundAvail !== null ?
-                <div className="timeslot FillGridCell">
-                    <button onClick={() => {
-                        onClickDeleteAvailability(foundAvail);
-                    }}>
-                        {foundAvail.subjects}
-                    </button>
-                </div>
-            :
-                <div className="timeslot FillGridCell">
-                    <button onClick={() => {
-                        onClickCreateAvailability(startOfBlock.toDate());
-                    }}>
-                        Open
-                    </button>
-                </div>
+            <div className="timeSlot FillGridCell">
+                <button onClick={() => {
+                    console.log("TODO");
+                    console.log(`${currentAvailabilities.length} tutors available`)
+                }}>
+                    {`${currentAvailabilities.length} tutors available`}
+                </button>
+            </div>
         );
 
         startOfBlock.add('minute', 30);
@@ -297,26 +234,10 @@ function CalendarBody(props) {
                 <button onClick={onClickJumpToDate}>Go</button>
             </div>
 
-            <table className="CalendarTable">
-                <tr>
-                    <MediaQuery minWidth={765}>
-                        {calendarHeaders}
-                    </MediaQuery>
-                    <MediaQuery maxWidth={765}>
-                        {calendarHeaders[0]}
-                        {calendarHeaders[weekDayNumber + 1]}
-                    </MediaQuery>
-                </tr>
-                <tr>
-                    <MediaQuery minWidth={765}>
-                        {calendarDays}
-                    </MediaQuery>
-                    <MediaQuery maxWidth={765}>
-                        {calendarDays[0]}
-                        {calendarDays[weekDayNumber + 1]}
-                    </MediaQuery>
-                </tr>
-            </table>
+            <Calendar
+                timeSlots={timeSlots}
+                selectedDate={selectedDate}
+            />
 
             <div className="BelowCalendar">
                 <p>
