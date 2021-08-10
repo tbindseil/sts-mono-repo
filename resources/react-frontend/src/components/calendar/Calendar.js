@@ -1,4 +1,5 @@
 import React from 'react';
+import MediaQuery from 'react-responsive';
 import moment from 'moment';
 
 export function Calendar(props) {
@@ -37,14 +38,29 @@ export function Calendar(props) {
         curr.add(1, 'day');
     }
 
+    const smallScreenHeaders = [weekDayHeaders[0], weekDayHeaders[moment(props.selectedDate).day()]]
+    const smallScreenTimeSlots = timeSlots.filter(function(timeSlot, index) { return index < 96});
+
+    // TODO deal with small screens here..
     return (
         <>
-            <div className="Calendar">
-                {weekDayHeaders}
 
-                {timeSlots}
-            </div>
+            <MediaQuery minWidth={765}>
+                <div className="Calendar">
+                    {weekDayHeaders}
+
+                    {timeSlots}
+                </div>
+            </MediaQuery>
+
+            <MediaQuery maxWidth={765}>
+                <div className="CalendarSmallScreen">
+                    {smallScreenHeaders}
+
+                    {smallScreenTimeSlots}
+                </div>
+            </MediaQuery>
+
         </>
     );
 }
-

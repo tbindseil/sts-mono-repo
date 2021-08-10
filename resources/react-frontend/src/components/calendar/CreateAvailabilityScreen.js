@@ -46,8 +46,6 @@ function CreateAvailabilityBody(props) {
 
     const stateProps = props.location.state;
     const initialSelectedDate = stateProps ? (stateProps.selectedDate ? stateProps.selectedDate : new Date()) : new Date();
-    console.log("on init, initialSelectedDate is:");
-    console.log(initialSelectedDate);
     let selectedDate = moment(initialSelectedDate).toDate();
     const tomorrow = moment().add('day', 1);
     const isBeforeTomorrow = moment(selectedDate).isBefore(tomorrow, "day");
@@ -206,8 +204,6 @@ function CreateAvailabilityBody(props) {
     };
 
     const onCancel = () => {
-        console.log("initialSelectedDate is:");
-        console.log(initialSelectedDate);
         history.push({
             pathname: "/my-calendar",
             state: {

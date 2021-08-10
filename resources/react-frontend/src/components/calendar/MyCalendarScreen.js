@@ -142,8 +142,6 @@ function MyCalendarBody(props) {
     };
 
     const onClickCreateAvailability = (value) => {
-        console.log("onclick create avail, value is:");
-        console.log(value);
         history.push({
             pathname: "/create-availability",
             state: {
