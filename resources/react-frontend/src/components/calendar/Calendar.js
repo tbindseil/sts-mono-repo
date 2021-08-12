@@ -1,5 +1,5 @@
 import React from 'react';
-import MediaQuery, {useMediaQuery} from 'react-responsive';
+import MediaQuery from 'react-responsive';
 import moment from 'moment';
 
 export function Calendar(props) {
@@ -53,15 +53,13 @@ export function Calendar(props) {
     }
 
     const dayOffset = moment(props.selectedDate).day();
-    const smallScreenHeaders = [smallScreenWeekDayHeaders[0], smallScreenWeekDayHeaders[moment(props.selectedDate).day()]]
+    const smallScreenHeaders = [smallScreenWeekDayHeaders[0], smallScreenWeekDayHeaders[moment(props.selectedDate).day() + 1]]
     const smallScreenTimeSlots = timeSlots.filter(function(timeSlot, index) {
         const start = (dayOffset + 1) * 48;
         const end = (dayOffset + 2) * 48;
         return ((index < 48) || (index >= start && index < end));
     });
-    // the above gets the whole week, we need the day..
 
-    // TODO deal with small screens here..
     return (
         <>
 
