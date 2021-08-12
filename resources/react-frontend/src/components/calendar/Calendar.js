@@ -1,5 +1,5 @@
 import React from 'react';
-import MediaQuery from 'react-responsive';
+import MediaQuery, {useMediaQuery} from 'react-responsive';
 import moment from 'moment';
 
 export function Calendar(props) {
@@ -18,8 +18,14 @@ export function Calendar(props) {
 
     const timeSlots = timeLegend.concat(props.timeSlots);
 
-    let weekDayHeaders = [];
-    weekDayHeaders.push(
+    let bigScreenWeekDayHeaders = [];
+    let smallScreenWeekDayHeaders = [];
+    bigScreenWeekDayHeaders.push(
+        <div className="Time FillGridCell TopRowWeekDayCenterVertically">
+            <p>Time</p>
+        </div>
+    );
+    smallScreenWeekDayHeaders.push(
         <div className="Time FillGridCell TopRowWeekDayCenterVertically">
             <p>Time</p>
         </div>
@@ -27,10 +33,18 @@ export function Calendar(props) {
     const startOfWeek = moment(props.selectedDate).startOf('week');
     const endOfWeek = moment(props.selectedDate).endOf('week');
     let curr = moment(startOfWeek);
+
     while (curr.isBefore(endOfWeek)) {
-        const clazzName = `${curr.format("dddd")} FillGridCell TopRowWeekDayCenterVertically`;
-        weekDayHeaders.push(
-            <div className={clazzName}>
+        const bigScreenClazzName = `${curr.format("dddd")} FillGridCell TopRowWeekDayCenterVertically`;
+        const smallScreenClazzName = 'SmallScreenWeekDayHeader FillGridCell TopRowWeekDayCenterVertically';
+        bigScreenWeekDayHeaders.push(
+            <div className={bigScreenClazzName}>
+                <p>{curr.format("dddd, MMM D")}</p>
+            </div>
+        );
+
+        smallScreenWeekDayHeaders.push(
+            <div className={smallScreenClazzName}>
                 <p>{curr.format("dddd, MMM D")}</p>
             </div>
         );
@@ -38,8 +52,14 @@ export function Calendar(props) {
         curr.add(1, 'day');
     }
 
-    const smallScreenHeaders = [weekDayHeaders[0], weekDayHeaders[moment(props.selectedDate).day()]]
-    const smallScreenTimeSlots = timeSlots.filter(function(timeSlot, index) { return index < 96});
+    const dayOffset = moment(props.selectedDate).day();
+    const smallScreenHeaders = [smallScreenWeekDayHeaders[0], smallScreenWeekDayHeaders[moment(props.selectedDate).day()]]
+    const smallScreenTimeSlots = timeSlots.filter(function(timeSlot, index) {
+        const start = (dayOffset + 1) * 48;
+        const end = (dayOffset + 2) * 48;
+        return ((index < 48) || (index >= start && index < end));
+    });
+    // the above gets the whole week, we need the day..
 
     // TODO deal with small screens here..
     return (
@@ -47,14 +67,14 @@ export function Calendar(props) {
 
             <MediaQuery minWidth={765}>
                 <div className="Calendar">
-                    {weekDayHeaders}
+                    {bigScreenWeekDayHeaders}
 
                     {timeSlots}
                 </div>
             </MediaQuery>
 
             <MediaQuery maxWidth={765}>
-                <div className="CalendarSmallScreen">
+                <div className="SmallScreenCalendar">
                     {smallScreenHeaders}
 
                     {smallScreenTimeSlots}

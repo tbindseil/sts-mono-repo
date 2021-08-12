@@ -535,7 +535,7 @@ a { /* gotta override bootstrap here */
     place-items: center; /* default is stretch, try both to see which is better */
     place-content: space-evenly;
     grid-template-areas:
-        "Time Sunday Monday Tuesday Wednesday Thursday Friday Saturday" /* here goes nothing */
+        "Time SmallScreenWeekDayHeader"/* here goes nothing */
         "None None"
         "None None"
         "None None"
@@ -616,6 +616,10 @@ a { /* gotta override bootstrap here */
 
 .Saturday {
     grid-area: Saturday;
+}
+
+.SmallScreenWeekDayHeader {
+    grid-area: SmallScreenWeekDayHeader;
 }
 
 .TimeSlot {
