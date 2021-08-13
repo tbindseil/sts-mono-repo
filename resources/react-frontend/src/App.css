@@ -654,3 +654,8 @@ a { /* gotta override bootstrap here */
     transform: translate(0, -25%);
     white-space: nowrap;
 }
+
+.SubjectSelect {
+    display: inline;
+    vertical-align: top;
+}

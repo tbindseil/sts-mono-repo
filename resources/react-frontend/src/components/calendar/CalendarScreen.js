@@ -58,8 +58,7 @@ function CalendarBody(props) {
     const stateProps = props.location.state;
     const selectedDate = useMemo(() => { return stateProps ? (stateProps.selectedDate ? stateProps.selectedDate : new Date()) : new Date() }, [stateProps]);
 
-    // TJTAG this will ultimately be a drop down at the top of screen,
-    // shouldn't be too difficult and may be even better done before the api work in order to know exactly how to do that
+    // it starts showing anything, is that even a problem?
     const [selectedSubject, setSelectedSubject] = useState('');
 
     const [availabilities, setAvailabilities] = useState([]);
@@ -153,8 +152,6 @@ function CalendarBody(props) {
 
     const handleChangeSelectedSubject = (event, data) => {
         setSelectedSubject(data.value);
-
-        getAvailabilities(user)
     };
 
     // visitor pattern? build all time slots
@@ -216,14 +213,14 @@ function CalendarBody(props) {
                     pathname="/calendar"/>
             </MediaQuery>
 
-            <div>
+            <div className="SubjectSelect">
                 <label>Select a Subject:</label>
                 <Dropdown
                     options={makeSelectSubjectsOptions()}
                     value={selectedSubject}
                     onChange={handleChangeSelectedSubject}
-                    fluid
                     selection
+                    inline
                     multi={false}
                 />
             </div>

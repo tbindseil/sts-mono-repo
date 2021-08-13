@@ -88,7 +88,7 @@ class TestLambdaFunction(unittest.TestCase):
         with self.assertRaises(InputException) as e:
             lambda_function.get_input_translator(event, "context")
 
-    def est_get_always_filters_based_off_time_range(self):
+    def test_get_always_filters_based_off_time_range(self):
         avail1 = self.build_default_availability()
         avail2 = self.build_default_availability()
         avail_out_of_range = self.build_default_availability()
@@ -120,7 +120,7 @@ class TestLambdaFunction(unittest.TestCase):
 
         self.assertEqual(len(expected_availabilities), 0)
 
-    def est_get_conditionally_filters_username(self):
+    def test_get_conditionally_filters_username(self):
         avail1 = self.build_default_availability()
         avail2 = self.build_default_availability()
         avail2.startTime += timedelta(days=1)
