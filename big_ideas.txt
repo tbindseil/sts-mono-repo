@@ -339,8 +339,42 @@ Time to try it with a grid
 
 
 ok, so i have a calendar grid going, now I need to make the factories that take in start/end time and avails and produce the buttons
-then I chop down the old code and solidify
-then I can try to chop down the api code (maybe)
+then I chop down the old code and solidify - done
+then I can try to chop down the api code (maybe) - uhhhhhhh this sounds hard and will show no progress, gonna probs move on to showing select avail screen
 
+
+==================================================================================================================================================================
+Selected avail screen
+
+summary:
+When a time slot with > 0 avails is selected from calendar screen, move to a new screen (url is /select-availability?startTime=<startTime>&subject=<>)
+
+the new screen shows all availabilities with overlapping the indicated time slot and with the indicated subject
+
+each availability is a row that has basic info about the tutor as well as a request button
+
+the request button has 4 statuses: can request, request send, request accepted, request denied
+    this requires availability to have an additional field , ooo or maybe a whole 'nother table! something like a requests table
+        requests table:
+            from user:
+            to availability:
+            open, accepted, denied, or pending?:
+
+    in addition to the new table it will also take some logic to show/not show avails that are accepted for someone else, etc etc...
+        specifically,
+            * need to show status per avail on "my calendar"
+            * need to show only open or pending on "calendar"
+                ** this requires sending requesting user in case they are "denied", see weird problem #2
+
+
+
+when a user selects request on an open avail, it sends a notification to the tutor and updates status
+
+when a tutor accepts/denies a request, it sends a notification to the requester
+    * should probably show accepted tutoring session on user's calendar
+
+weird problem #1, can a request be pending by multiple people? if so, what happens when one is accepted? basically I would say that the rest get notified that the tutor has accepted another individual
+
+weird problem #2, need to send requester with get avail calls in case denied. The best reason to have deny is for tutor to not get spammed. Could this be accomplished by having the user be able to block other users?
 
 
