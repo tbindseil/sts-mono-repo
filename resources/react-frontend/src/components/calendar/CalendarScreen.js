@@ -159,6 +159,7 @@ function CalendarBody(props) {
     let timeSlots = [];
     let startOfBlock = moment(selectedDate).startOf('week');
     const endOfCalendar = moment(selectedDate).endOf('week');
+    const arrOfFuncs = [];
     while (startOfBlock.isBefore(endOfCalendar)) { // this happens a lot...
         const endOfBlock = moment(startOfBlock).add('minute', 30);
 
@@ -177,12 +178,26 @@ function CalendarBody(props) {
             }
         });
 
+        const startOfBlockSnapShot = moment(startOfBlock).toDate();
+
+        const onClickWithStartTime = function(subject, startTime) {
+            history.push({
+                pathname: "/select-availability",
+                state: {
+                    startTime: startTime,
+                    subject: subject
+                }
+            })
+        };
+        arrOfFuncs.push(onClickWithStartTime);
+
         // seems like this needs to happen in two steps
         timeSlots.push(
             <div className="timeSlot FillGridCell">
-                <button onClick={() => {
-                    console.log("TODO");
-                    console.log(`${currentAvailabilities.length} tutors available`)
+
+                <button data={startOfBlockSnapShot} onClick={(event) => {
+                    const startTime = event.target.getAttribute("data");
+                    return onClickWithStartTime(selectedSubject, startTime);
                 }}>
                     {`${currentAvailabilities.length} tutors available`}
                 </button>

@@ -29,6 +29,7 @@ import {AccountScreen} from "./components/profile/AccountScreen";
 import {CalendarScreen} from "./components/calendar/CalendarScreen";
 import {MyCalendarScreen} from "./components/calendar/MyCalendarScreen";
 import {CreateAvailabilityScreen} from "./components/calendar/CreateAvailabilityScreen";
+import {SelectAvailabilityScreen} from './components/calendar/SelectAvailabilityScreen';
 import {DeleteAvailabilityScreen} from "./components/calendar/DeleteAvailabilityScreen";
 
 
@@ -62,6 +63,7 @@ const App = () => {
         <Route path={"/calendar"} component={CalendarScreen}/>
         <Route path={"/my-calendar"} component={MyCalendarScreen}/>
         <Route path={"/create-availability"} component={CreateAvailabilityScreen}/>
+        <Route path={"/select-availability"} component={SelectAvailabilityScreen}/>
         <Route path={"/delete-availability"} component={DeleteAvailabilityScreen}/>
 
       </Switch>

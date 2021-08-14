@@ -348,6 +348,7 @@ Selected avail screen
 
 summary:
 When a time slot with > 0 avails is selected from calendar screen, move to a new screen (url is /select-availability?startTime=<startTime>&subject=<>)
+    Ok, seems like url paramters are weird with react router. also, I've already done this with selected date, so I will just do it htat way (state or somethign)
 
 the new screen shows all availabilities with overlapping the indicated time slot and with the indicated subject
 
