@@ -1,5 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 
+import moment from 'moment';
 import MediaQuery from 'react-responsive';
 import {useHistory} from 'react-router-dom';
 
@@ -45,9 +46,6 @@ function CreateAvailabilityBody(props) {
     // if there are no state props, we in trouble..
     const startTime = stateProps.startTime;
     const subject = stateProps.subject;
-    console.log("start Time and subject are:");
-    console.log(startTime);
-    console.log(subject);
 
     const [user, setUser] = useState(undefined)
     useEffect(() => {
@@ -56,10 +54,93 @@ function CreateAvailabilityBody(props) {
         history, setUser
     ]);
 
+    const [availabilities, setAvailabilities] = useState([]);
+
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
     const [loading, setLoading] = useState(false);
+
+    const getAvailabilities = useCallback(
+        (user) => {
+            if (!user) {
+                return;
+            }
+
+            // startTime and endTime are 12:00:00 am of sunday morning and 11:59:59 of saturday night for week of selectedDate
+            // could be improved by only getting for 1 day for small screen
+            const requestStartTime = moment(startTime).toDate();
+            const requestEndTime = moment(startTime).add('minute', 30).toDate();
+            const url = new URL(baseUrl)
+            const getAvailInput = {
+                username: "*",
+                subject: subject,
+                startTime: requestStartTime,
+                endTime: requestEndTime
+            };
+            console.log('getAvailInput is:');
+            console.log(JSON.stringify(getAvailInput));
+            // TODO obvi below,
+            // but also need to show time slot
+            // all the more reason to make it searchable here too
+            const newGetAvailInput =
+
+                {"username":"*","subject":"","startTime":"2021-08-08T06:00:00.000Z","endTime":"2021-08-15T05:59:59.999Z"};
+
+
+            url.searchParams.append('getAvailInput', JSON.stringify(getAvailInput));
+
+            const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
+            fetch(url, {
+                method: 'GET',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': tokenString
+                },
+            })
+                .then(res => res.json())
+                .then((result) => {
+                    const availabilitiesWithDates = []
+                    for (const [id, avail] of Object.entries(result)) {
+                        availabilitiesWithDates.push({
+                            endTime: moment.utc(avail.endTime).local().toDate(),
+                            startTime: moment.utc(avail.startTime).local().toDate(),
+                            subjects: avail.subjects,
+                            tutor: avail.tutor,
+                            id: id
+                        });
+                    }
+                    setAvailabilities(availabilitiesWithDates);
+                },
+                    // Note: it's important to handle errors here
+                    // instead of a catch() block so that we don't swallow
+                    // exceptions from actual bugs in components.
+                    (error) => {
+                        setFailed(true);
+                        var message = "1Error getting availabilties";
+                        if (error.message) {
+                            message += ": " + error.message;
+                        }
+                        setErrorMessage(message);
+                    })
+                .catch(err => { // TODO this code is wet as fuck
+                    setFailed(true);
+                    var message = "2Error getting availabilties";
+                    if (err.message) {
+                        message += ": " + err.message;
+                    }
+                    setErrorMessage(message);
+                });
+        },
+        [startTime, subject]
+    );
+
+    useEffect(() => {
+        getAvailabilities(user);
+    }, [
+        user, getAvailabilities
+    ]);
 
     const onCancel = () => {
         history.push({
@@ -70,6 +151,12 @@ function CreateAvailabilityBody(props) {
         });
     };
 
+
+    // now show availabilities
+    // for each avail, we want to show
+    // start | end | tutor | subjects | status | button
+
+
     return (
         <header className={props.pageBorderClass}>
             <Title
@@ -77,46 +164,57 @@ function CreateAvailabilityBody(props) {
                 underlineClass={props.underlineClass}/>
 
             <table className="AvailabilityForm">
+
                 <tr>
-                    <td>
-                        <label for="subject">
-                            Subjects
-                        </label>
-                    </td>
-                    <td>
-                        paragraph
-                    </td>
+                    <th>
+                        Start
+                    </th>
+                    <th>
+                        End
+                    </th>
+                    <th>
+                        Tutor
+                    </th>
+                    <th>
+                        Subjects
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                    <th>
+                        Button
+                    </th>
                 </tr>
-                <tr>
-                    <td>
-                        <label for="day">
-                            Day:
-                        </label>
-                    </td>
-                    <td>
-                        paragraph
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label for="startTime">
-                            Start Time:
-                        </label>
-                    </td>
-                    <td>
-                        paragraph
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label for="endTime">
-                            End Time:
-                        </label>
-                    </td>
-                    <td>
-                        paragraph
-                    </td>
-                </tr>
+
+                {
+                    availabilities.map(avail => {
+                        return (
+                            <tr>
+                                <td>
+                                    {moment(avail.startTime).format("LT")}
+                                </td>
+                                <td>
+                                    {moment(avail.endTime).format("LT")}
+                                </td>
+                                <td>
+                                    {avail.tutor}
+                                </td>
+                                <td>
+                                    {avail.subjects}
+                                </td>
+                                <td>
+                                    Status - TODO
+                                </td>
+                                <td>
+                                    <button>
+                                        TODO
+                                    </button>
+                                </td>
+                            </tr>
+                        );
+                    })
+                }
+
                 <tr>
                     <td>
                         <button onClick={onCancel}>
