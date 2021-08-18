@@ -2,6 +2,7 @@ from datetime import datetime
 
 from . import Base
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
 
 
 # Note from the future,

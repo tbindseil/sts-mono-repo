@@ -10,7 +10,7 @@ class AvailabilityRequest(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     fromUser = Column(String(255), ForeignKey('users.cognitoId'), nullable=False)
-    forAvailability = Column(Integer, ForeignKey('availabiltiy.id'), nullable=False)
+    forAvailability = Column(Integer, ForeignKey('availability.id'), nullable=False)
     status = Column(String(31), nullable=False)
 
     def __init__(self, subjects, from_user, for_availability):
