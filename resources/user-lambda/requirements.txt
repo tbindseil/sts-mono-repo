@@ -7,7 +7,7 @@ chardet==4.0.0
 colorama==0.4.3
 docutils==0.15.2
 ecdsa==0.14.1
-guided-lambda-handler-tj==0.0.16
+guided-lambda-handler-tj==0.0.20
 idna==2.10
 jmespath==0.10.0
 pyasn1==0.4.8
@@ -20,7 +20,7 @@ s3transfer==0.3.3
 six==1.15.0
 SQLAlchemy==1.3.22
 sts-db-utils-tj==0.0.7
-sts-json-datetime==0.0.7
+sts-json-datetime==0.0.8
 sts-models-tj==0.0.44
 sts-validate-authentication-aws-cognito-tj==0.0.8
 urllib3==1.26.2

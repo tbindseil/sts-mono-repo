@@ -393,3 +393,9 @@ weird problem #1, can a request be pending by multiple people? if so, what happe
 weird problem #2, need to send requester with get avail calls in case denied. The best reason to have deny is for tutor to not get spammed. Could this be accomplished by having the user be able to block other users?
     one thing that could make this not a problem (cause even with denied users I realized that I have to send the requestor to check if they are banned) is that the requestor is sent in the token
         honestly, I probably need the block list, but that could be made unneccasry if the class functionality is utilized
+
+
+
+====================================================================================================================================================================
+Next time I do a model change, I need to write a script to update all packages, that was tooooo much man
+====================================================================================================================================================================

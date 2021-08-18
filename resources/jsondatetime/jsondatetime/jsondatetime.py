@@ -18,6 +18,8 @@ class DatetimeJSONEncoder(json.JSONEncoder):
         else:
             return json.JSONEncoder.default(obj)
 
+json._default_encoder = DatetimeJSONEncoder
+
 
 def dumps(obj, skipkeys=False, ensure_ascii=True, check_circular=True,
           allow_nan=True, cls=None, indent=None, separators=None,

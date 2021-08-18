@@ -65,13 +65,11 @@ class TestLambdaFunction(unittest.TestCase):
 
 
     def test_get_input_translator(self):
-        event = {"queryStringParameters": {'getAvailInput': '{"username":"this_is_the_cognito_id","subject":"math","startTime":"2021-07-11T06:00:00.000Z","endTime":"2021-07-18T05:59:59.999Z"}'}}
-
-        expected_start_time = dateutil.parser.parse("2021-07-11T06:00:00.000Z", ignoretz=True)
-        expected_end_time = dateutil.parser.parse("2021-07-18T05:59:59.999Z", ignoretz=True)
+        event = {"queryStringParameters": {'getAvailRequestInput': '{"availabilty_id":"this_is_the_availability_id","fromUser":"this_is_the_from_user","forUser":"this_is_the_for_user"}'}}
 
         input = lambda_function.get_input_translator(event, "context")
-        self.assertEqual(input, ("this_is_the_cognito_id", "math", expected_start_time, expected_end_time))
+        self.assertEqual(input, ("this_is_the_availability_id", "this_is_the_from_user", "this_is_the_for_user"))
+        # when should the above throw?
 
     def test_get_input_translator_throws_input_exception_when_start_time_not_datetime(self):
         event = {"queryStringParameters": {'getAvailInput': '{"username":"this_is_the_cognito_id","subject":"math","startTime":"not_date_time","endTime":"2021-07-18T05:59:59.999Z"}'}}
