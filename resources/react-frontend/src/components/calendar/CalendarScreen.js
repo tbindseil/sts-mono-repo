@@ -79,8 +79,6 @@ function CalendarBody(props) {
                 startTime: startTime,
                 endTime: endTime
             };
-            console.log('getAvailInput is:');
-            console.log(JSON.stringify(getAvailInput));
             url.searchParams.append('getAvailInput', JSON.stringify(getAvailInput));
 
             const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;

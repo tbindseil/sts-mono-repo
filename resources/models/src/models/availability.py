@@ -26,6 +26,8 @@ class Availability(Base):
     endTime = Column(DateTime, nullable=False)
     tutor = Column(String(255), ForeignKey('users.cognitoId'), nullable=False)
 
+    requests = relationship("AvailabilityRequest", cascade="all, delete, delete-orphan")
+
     def __init__(self, subjects, startTime, endTime, tutor):
         self.subjects = subjects
         self.startTime = startTime

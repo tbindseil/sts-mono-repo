@@ -78,15 +78,8 @@ function CreateAvailabilityBody(props) {
                 startTime: requestStartTime,
                 endTime: requestEndTime
             };
-            console.log('getAvailInput is:');
-            console.log(JSON.stringify(getAvailInput));
-            // TODO obvi below,
-            // but also need to show time slot
-            // all the more reason to make it searchable here too
-            const newGetAvailInput =
 
-                {"username":"*","subject":"","startTime":"2021-08-08T06:00:00.000Z","endTime":"2021-08-15T05:59:59.999Z"};
-
+            // TODO need to show time slot, all the more reason to make it searchable here too
 
             url.searchParams.append('getAvailInput', JSON.stringify(getAvailInput));
 

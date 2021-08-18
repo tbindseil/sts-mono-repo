@@ -347,19 +347,27 @@ then I can try to chop down the api code (maybe) - uhhhhhhh this sounds hard and
 Selected avail screen
 
 summary:
-When a time slot with > 0 avails is selected from calendar screen, move to a new screen (url is /select-availability?startTime=<startTime>&subject=<>)
-    Ok, seems like url paramters are weird with react router. also, I've already done this with selected date, so I will just do it htat way (state or somethign)
+When a time slot with > 0 avails is selected from calendar screen, move to a new screen (url is /select-availability?startTime=<startTime>&subject=<>) - done
+        So, since the select avail page will also be parameterized, no need to not jump when 0 avails - done
+    Ok, seems like url paramters are weird with react router. also, I've already done this with selected date, so I will just do it htat way (state or somethign) - done
 
-the new screen shows all availabilities with overlapping the indicated time slot and with the indicated subject
+the new screen shows all availabilities with overlapping the indicated time slot and with the indicated subject - done
 
-each availability is a row that has basic info about the tutor as well as a request button
+each availability is a row that has basic info about the tutor as well as a request button - done
+    (note that I am leaving this as just tutor username, and showing first or last name would result in some more queries to get user by username)
 
 the request button has 4 statuses: can request, request send, request accepted, request denied
-    this requires availability to have an additional field , ooo or maybe a whole 'nother table! something like a requests table
+    this requires availability to have an additional field , oooh or maybe a whole 'nother table! something like a requests table - done
         requests table:
             from user:
             to availability:
-            open, accepted, denied, or pending?:
+            open, accepted, denied, or pending?: but, that status is actually a computation of all requests pointing to it, so avail needs a list a requests
+                                                                    but, users have a list of requests.. not one but two! one for incoming one for outgoing
+                                                                    holy shit
+    Ok, what is the table like? each avail has one status? idk, I think its more like each user has many requests, and each request has one avail - yeah
+        this is the alembic part i guess
+
+    ^^ I guess that means we need an availability_request lambda too
 
     in addition to the new table it will also take some logic to show/not show avails that are accepted for someone else, etc etc...
         specifically,
@@ -377,5 +385,5 @@ when a tutor accepts/denies a request, it sends a notification to the requester
 weird problem #1, can a request be pending by multiple people? if so, what happens when one is accepted? basically I would say that the rest get notified that the tutor has accepted another individual
 
 weird problem #2, need to send requester with get avail calls in case denied. The best reason to have deny is for tutor to not get spammed. Could this be accomplished by having the user be able to block other users?
-
-
+    one thing that could make this not a problem (cause even with denied users I realized that I have to send the requestor to check if they are banned) is that the requestor is sent in the token
+        honestly, I probably need the block list, but that could be made unneccasry if the class functionality is utilized

@@ -34,10 +34,6 @@ def get_handler(input, session, get_claims):
     # if claimed_cognito_id != cognito_id:
         # raise AuthException
 
-    print("query_start_time is:")
-    print(query_start_time)
-    print("query_end_time is:")
-    print(query_end_time)
     query = session.query(Availability).filter(or_(
             (and_(Availability.startTime>=query_start_time, Availability.startTime<query_end_time)),
             (and_(Availability.endTime>query_start_time, Availability.endTime<=query_end_time)),
@@ -45,23 +41,6 @@ def get_handler(input, session, get_claims):
             ))
 
     all_query = session.query(Availability)
-    print("printing all query results")
-    for avail in all_query:
-        print("avail is:")
-        print(avail.startTime)
-        print(avail.endTime)
-        print(avail.subjects)
-        print(avail.tutor)
-    print("done printing all query results")
-
-    # query = session.query(Availability).filter(
-            # ((Availability.startTime>=query_start_time) & (Availability.startTime<query_end_time)) |
-            # ((Availability.endTime>query_start_time) & (Availability.endTime<=query_end_time)) |
-            # ((Availability.startTime<=query_start_time) & (Availability.endTime>=query_end_time)))
-
-    print("printing query is:")
-    print(query)
-    print("done printing query")
 
     if cognito_id != "*":
         query = query.filter(Availability.tutor==cognito_id)

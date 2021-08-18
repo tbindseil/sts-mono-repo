@@ -32,6 +32,9 @@ class User(Base):
 
     availabilities = relationship("Availability", cascade="all, delete, delete-orphan")
 
+    requestsSent = relationship("AvailabilityRequest", cascade="all, delete, delete-orphan")
+    requestsReceived = relationship("AvailabilityRequest", cascade="all, delete, delete-orphan")
+
     def __init__(self, parentName, parentEmail, email, cognitoId, firstName, lastName, school, grade, age, address, bio=""):
         self.parentName = parentName
         self.parentEmail = parentEmail
