@@ -13,6 +13,7 @@ class AvailabilityRequest(Base):
     forAvailability = Column(Integer, ForeignKey('availability.id'), nullable=False)
     status = Column(String(31), nullable=False)
 
+    # TODO TODO TODO dude c'mon man!
     def __init__(self, subjects, from_user, for_availability):
         self.fromUser = from_user
         self.forAvailability = for_availability

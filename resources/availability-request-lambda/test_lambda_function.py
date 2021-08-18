@@ -69,22 +69,42 @@ class TestLambdaFunction(unittest.TestCase):
 
         input = lambda_function.get_input_translator(event, "context")
         self.assertEqual(input, ("this_is_the_availability_id", "this_is_the_from_user", "this_is_the_for_user"))
-        # when should the above throw?
 
-    def test_get_input_translator_throws_input_exception_when_start_time_not_datetime(self):
-        event = {"queryStringParameters": {'getAvailInput': '{"username":"this_is_the_cognito_id","subject":"math","startTime":"not_date_time","endTime":"2021-07-18T05:59:59.999Z"}'}}
-        with self.assertRaises(InputException) as e:
-            lambda_function.get_input_translator(event, "context")
+    # when should this throw?
+    # def test_get_input_translator_throws_input_exception_when_all_three_are_none(self): - naw, i think this will return nothing anyways(?)
+    # when they aren't ids? - naw, also won't return anything
 
-    def test_get_input_translator_throws_input_exception_when_end_time_not_datetime(self):
-        event = {"queryStringParameters": {'getAvailInput': '{"username":"this_is_the_cognito_id","subject":"math","startTime":"2021-07-18T05:59:59.999Z","endTime":"not_date_time"}'}}
-        with self.assertRaises(InputException) as e:
-            lambda_function.get_input_translator(event, "context")
+    test test_get_returns_all_avail_requests_by_avail_id(self):
+        print("TODO")
 
-    def test_get_input_translator_throws_input_excpetion_when_start_time_after_end_time(self):
-        event = {"queryStringParameters": {'getAvailInput': '{"username":"this_is_the_cognito_id","subject":"math","startTime":"2021-07-18T05:59:59.999Z","endTime":"2021-07-11T06:00:00.000Z"}'}}
-        with self.assertRaises(InputException) as e:
-            lambda_function.get_input_translator(event, "context")
+        avail1 = self.build_default_availability()
+        avail2 = self.build_default_availability()
+        avail2.startTime += timedelta(days=1) # probably could be a builder, take argument of shift(time_delta)
+        avail2.endTime += timedelta(days=1)
+        print("wtf is avail1 id before being commited")
+        print("irrelevant, but")
+        print(avail1.id)
+
+        self.session.add(avail1)
+        self.session.add(avail2)
+        self.session.commit()
+
+        avail_req1 = self.build_default_availability_request(avail1)
+        avail_req2 = self.build_default_availability_request(avail2)
+
+        avail1.requests.append(avail_req1)
+        avail2.requests.append(avail_req2)
+
+        raw_output = lambda_function.get_handler((avail1.id, "", ""), self.session, self.get_claims)
+
+        assertAvailRequestEquals(avail_req1, raw_output.one())
+
+
+    test test_get_returns_all_avail_requests_by_from_user(self):
+        print("TODO")
+
+    test test_get_returns_all_avail_requests_by_for_user(self):
+        print("TODO")
 
     def test_get_always_filters_based_off_time_range(self):
         avail1 = self.build_default_availability()
@@ -323,9 +343,18 @@ class TestLambdaFunction(unittest.TestCase):
         avail_end = datetime(year=2020, month=1, day=15, hour=14)
         return Availability("subjects", avail_start, avail_end, self.cognito_id)
 
+    # TODO is it necessary to add the avail id here? I think not since/if it gets added to the avail
+    def build_default_availability_request(self, avail):
+        return AvailabilityRequest("subjects", self.cognito_id, avail.id)
+
     def assertAvailEquals(self, expected_avail, actual_avail):
         self.assertEqual(expected_avail.subjects, actual_avail.subjects)
         self.assertEqual(expected_avail.startTime, actual_avail.startTime)
         self.assertEqual(expected_avail.endTime, actual_avail.endTime)
         self.assertEqual(expected_avail.tutor, actual_avail.tutor)
 
+    def assertAvailRequestEquals(self, expected_avail_request, actual_avail_request):
+        self.assertEqual(expected_avail_request.id, actual_avail_request.id)
+        self.assertEqual(expected_avail_request.fromUser, actual_avail_request.fromUser)
+        self.assertEqual(expected_avail_request.forUser, actual_avail_request.forUser)
+        self.assertEqual(expected_avail_request.status, actual_avail_request.status)
