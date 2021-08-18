@@ -37,8 +37,8 @@ export function SelectAvailabilityScreen(props) {
 
 // TODO cool idea, allow start time and subject to be selectable here
 function CreateAvailabilityBody(props) {
-    const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
-
+    // const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
+    const baseUrl = 'https://04c0w1j888.execute-api.us-west-2.amazonaws.com/prod/';
     const history = useHistory();
 
     const stateProps = props.location.state;

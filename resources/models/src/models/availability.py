@@ -4,6 +4,10 @@ from . import Base
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
+# AvailabilityRequest class is used, so we must define it here or else it has to be definied by clients of the used class,
+# and they don't necessarily know that they need to do this
+from .availability_request import AvailabilityRequest
+
 
 # Note from the future,
 # avail start time and end time should be 30 minute boundary
