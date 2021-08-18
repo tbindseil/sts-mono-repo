@@ -365,9 +365,15 @@ the request button has 4 statuses: can request, request send, request accepted, 
                                                                     but, users have a list of requests.. not one but two! one for incoming one for outgoing
                                                                     holy shit
     Ok, what is the table like? each avail has one status? idk, I think its more like each user has many requests, and each request has one avail - yeah
-        this is the alembic part i guess
+        this is the alembic part i guess - done
 
     ^^ I guess that means we need an availability_request lambda too
+        post availrequest, given user.cognito_id, avail id
+        get availrequest, given avail id
+        get availrequest, given from user id
+        get availrequest, given for user id
+        put availrequest, given availrequest id and status, (the rest are immutable)
+        delete availrequest, given availrequest id (from user must match the requestor)
 
     in addition to the new table it will also take some logic to show/not show avails that are accepted for someone else, etc etc...
         specifically,
