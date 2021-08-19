@@ -8,7 +8,7 @@ LONG_DESCRIPTION = open('README.rst').read()
 
 setup(
     name='sts-json-datetime',
-    version='0.0.8',
+    version='0.0.9',
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
     author='TJ Bindseil',

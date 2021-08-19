@@ -1,6 +1,6 @@
 Metadata-Version: 1.1
 Name: sts-json-datetime
-Version: 0.0.8
+Version: 0.0.9
 Summary: Allows for proper decoding of datetime values contained in JSON streams
 Home-page: https://github.com/tbindseil/sts-mono-repo
 Author: TJ Bindseil

@@ -18,7 +18,11 @@ class DatetimeJSONEncoder(json.JSONEncoder):
         else:
             return json.JSONEncoder.default(obj)
 
-json._default_encoder = DatetimeJSONEncoder
+# I guess this thing only works when its not default? I think I only call load with it in that case
+# but when I call dump with it (ie call dump when the line below is uncommented) i get the dreaded
+# TypeError: encode() missing 1 required positional argument: 'o'
+
+# json._default_encoder = DatetimeJSONEncoder
 
 
 def dumps(obj, skipkeys=False, ensure_ascii=True, check_circular=True,
