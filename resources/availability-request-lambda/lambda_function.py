@@ -41,23 +41,18 @@ def get_handler(input, session, get_claims):
 
     return raw_output
 
-# 
-# 
-# def get_output_translator(raw_output):
-    # availabilities = raw_output
-# 
-    # # PODO ?? looks like i don't always do it and never(?) test it?
-# 
-    # response = {}
-    # for avail in availabilities:
-        # response[avail.id] = {
-            # 'subjects': avail.subjects,
-            # 'startTime': avail.startTime.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
-            # 'endTime': avail.endTime.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
-            # 'tutor': avail.tutor,
-        # }
-# 
-    # return 200, json.dumps(response)
+def get_output_translator(raw_output):
+    availabily_requests = raw_output
+
+    response = {}
+    for avail_req in availabily_requests:
+        response[avail_req.id] = {
+            'fromUser': avail_req.fromUser,
+            'forAvailability': avail_req.forAvailability,
+            'status': avail_req.status
+        }
+
+    return 200, json.dumps(response)
 # 
 # 
 # def post_input_translator(event, context):
