@@ -40,8 +40,6 @@ def get_handler(input, session, get_claims):
             (and_(Availability.startTime<=query_start_time, Availability.endTime>=query_end_time))
             ))
 
-    all_query = session.query(Availability)
-
     if cognito_id != "*":
         query = query.filter(Availability.tutor==cognito_id)
     if subject != "*":

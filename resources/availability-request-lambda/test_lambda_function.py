@@ -13,6 +13,7 @@ from guided_lambda_handler.guided_lambda_handler import AuthException, InputExce
 from models import Base
 from models.user import User
 from models.availability import Availability
+from models.availability_request import AvailabilityRequest
 
 import lambda_function
 
@@ -66,23 +67,16 @@ class TestLambdaFunction(unittest.TestCase):
 
 
     def test_get_input_translator(self):
-        event = {"queryStringParameters": {'getAvailRequestInput': '{"forAvailability":"this_is_the_availability_id","fromUser":"this_is_the_from_user"}'}}
+        event = {"queryStringParameters": {'getAvailRequestInput': '{"forAvailability":"this_is_the_availability_id","fromUser":"this_is_the_from_user","forUser":"this_is_the_for_user"}'}}
 
         input = lambda_function.get_input_translator(event, "context")
-        self.assertEqual(input, ("this_is_the_availability_id", "this_is_the_from_user"))
+        self.assertEqual(input, ("this_is_the_availability_id", "this_is_the_from_user", "this_is_the_for_user"))
 
-    # when should this throw?
-    # def test_get_input_translator_throws_input_exception_when_all_three_are_none(self): - naw, i think this will return nothing anyways(?)
-    # when they aren't ids? - naw, also won't return anything
-
-    def est_get_returns_all_avail_requests_by_avail_id(self):
+    def test_get_returns_all_avail_requests_by_avail_id(self):
         avail1 = self.build_default_availability()
         avail2 = self.build_default_availability()
         avail2.startTime += timedelta(days=1) # probably could be a builder, take argument of shift(time_delta)
         avail2.endTime += timedelta(days=1)
-        print("wtf is avail1 id before being commited")
-        print("irrelevant, but")
-        print(avail1.id)
         self.session.add(avail1)
         self.session.add(avail2)
         self.session.commit()
@@ -97,9 +91,10 @@ class TestLambdaFunction(unittest.TestCase):
 
         raw_output = lambda_function.get_handler((avail1.id, "", ""), self.session, self.get_claims)
 
-        assertAvailRequestEquals(avail_req1, raw_output.one())
+        self.assertAvailRequestEquals(avail_req1, raw_output[0])
+        self.assertEqual(len(raw_output), 1)
 
-    def est_get_returns_all_avail_requests_by_from_user(self):
+    def test_get_returns_all_avail_requests_by_from_user(self):
         avail = self.build_default_availability()
         self.session.add(avail)
         self.session.commit()
@@ -113,9 +108,10 @@ class TestLambdaFunction(unittest.TestCase):
 
         raw_output = lambda_function.get_handler(("", self.cognito_id, ""), self.session, self.get_claims)
 
-        assertAvailRequestEquals(avail_req1, raw_output.one())
+        self.assertAvailRequestEquals(avail_req1, raw_output[0])
+        self.assertEqual(len(raw_output), 1)
 
-    def est_get_returns_all_avail_requests_by_for_user(self):
+    def test_get_returns_all_avail_requests_by_for_user(self):
         avail1 = self.build_default_availability()
         avail2 = self.build_default_availability()
         avail2.startTime += timedelta(days=1)
@@ -135,7 +131,8 @@ class TestLambdaFunction(unittest.TestCase):
 
         raw_output = lambda_function.get_handler(("", "", self.cognito_id), self.session, self.get_claims)
 
-        assertAvailRequestEquals(avail_req1, raw_output.one())
+        self.assertAvailRequestEquals(avail_req1, raw_output[0])
+        self.assertEqual(len(raw_output), 1)
 
     def est_get_output_translator(self):
         avail = self.build_default_availability()
@@ -264,17 +261,17 @@ class TestLambdaFunction(unittest.TestCase):
         # self.assertEqual(200, actual_code)
         # self.assertEqual("success", actual_response)
 # 
-    # def tearDown(self):
-        # user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
-        # another_test_user =  self.session.query(User).filter(User.cognitoId==self.another_cognito_id).one()
-        # self.session.delete(user)
-        # self.session.delete(another_test_user)
-        # self.session.commit()
+    def tearDown(self):
+        user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
+        another_test_user =  self.session.query(User).filter(User.cognitoId==self.another_cognito_id).one()
+        self.session.delete(user)
+        self.session.delete(another_test_user)
+        self.session.commit()
 # 
-    # def build_default_availability(self):
-        # avail_start = datetime(year=2020, month=1, day=15, hour=13)
-        # avail_end = datetime(year=2020, month=1, day=15, hour=14)
-        # return Availability("subjects", avail_start, avail_end, self.cognito_id)
+    def build_default_availability(self):
+        avail_start = datetime(year=2020, month=1, day=15, hour=13)
+        avail_end = datetime(year=2020, month=1, day=15, hour=14)
+        return Availability("subjects", avail_start, avail_end, self.cognito_id)
 # 
     # # TODO is it necessary to add the avail id here? I think not since/if it gets added to the avail
     # def build_default_availability_request(self, avail):
@@ -286,8 +283,8 @@ class TestLambdaFunction(unittest.TestCase):
         # self.assertEqual(expected_avail.endTime, actual_avail.endTime)
         # self.assertEqual(expected_avail.tutor, actual_avail.tutor)
 # 
-    # def assertAvailRequestEquals(self, expected_avail_request, actual_avail_request):
-        # self.assertEqual(expected_avail_request.id, actual_avail_request.id)
-        # self.assertEqual(expected_avail_request.fromUser, actual_avail_request.fromUser)
-        # self.assertEqual(expected_avail_request.forUser, actual_avail_request.forUser)
-        # self.assertEqual(expected_avail_request.status, actual_avail_request.status)
+    def assertAvailRequestEquals(self, expected_avail_request, actual_avail_request):
+        self.assertEqual(expected_avail_request.id, actual_avail_request.id)
+        self.assertEqual(expected_avail_request.fromUser, actual_avail_request.fromUser)
+        self.assertEqual(expected_avail_request.forAvailability, actual_avail_request.forAvailability)
+        self.assertEqual(expected_avail_request.status, actual_avail_request.status)

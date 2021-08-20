@@ -8,39 +8,39 @@ from guided_lambda_handler.guided_lambda_handler import AuthException, InputExce
 from guided_lambda_handler.translators import json_to_model
 from models.user import User
 from models.availability import Availability
-
+from models.availability import AvailabilityRequest
 
 def get_input_translator(event, context):
     qsp_map = jsondatetime.loads(event['queryStringParameters']['getAvailRequestInput'])
 
-    return qsp_map['forAvailability'], qsp_map['fromUser']
+    return qsp_map['forAvailability'], qsp_map['fromUser'], qsp_map['forUser']
 
 
-# def get_handler(input, session, get_claims):
-    # cognito_id, subject, query_start_time, query_end_time = input
-# 
-    # # claims = get_claims()
-    # # claimed_cognito_id = claims["cognito:username"]
-# 
-    # # PODO, ultimately, this will ultimately need to be potentially a more complex thing,
-    # #     soon when users start searching for each other's availability
-    # # if claimed_cognito_id != cognito_id:
-        # # raise AuthException
-# 
-    # query = session.query(Availability).filter(or_(
-            # (and_(Availability.startTime>=query_start_time, Availability.startTime<query_end_time)),
-            # (and_(Availability.endTime>query_start_time, Availability.endTime<=query_end_time)),
-            # (and_(Availability.startTime<=query_start_time, Availability.endTime>=query_end_time))
-            # ))
-# 
-    # all_query = session.query(Availability)
-# 
-    # if cognito_id != "*":
-        # query = query.filter(Availability.tutor==cognito_id)
-    # if subject != "*":
-        # query = query.filter(Availability.subjects.like("%"+subject+"%"))
-# 
-    # return query
+# TODO pagination
+def get_handler(input, session, get_claims):
+    for_availability, from_user, for_user_id = input
+
+    for_avail_query = session.query(AvailabilityRequest).filter(AvailabilityRequest.forAvailability==for_availability)
+    from_user_query = session.query(AvailabilityRequest).filter(AvailabilityRequest.fromUser==from_user)
+
+    for_user_requests = []
+    try:
+        for_user = session.query(User).filter(User.cognitoId==for_user_id).one()
+        for_user_avails = for_user.availabilities
+        for avail in for_user_avails:
+            for_user_requests.extend(avail.requests)
+    except Exception as e:
+        pass
+
+    raw_output = []
+    for request in for_avail_query:
+        raw_output.append(request)
+    for request in from_user_query:
+        raw_output.append(request)
+    raw_output.extend(for_user_requests)
+
+    return raw_output
+
 # 
 # 
 # def get_output_translator(raw_output):
