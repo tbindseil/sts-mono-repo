@@ -18,3 +18,4 @@ class AvailabilityRequest(Base):
         self.fromUser = from_user
         self.forAvailability = for_availability
         self.status = "REQUESTED" # possibilities are REQUESTED, ACCEPTED, DENIED, CANCELED
+        # is it best to have the logic layer handler the default status

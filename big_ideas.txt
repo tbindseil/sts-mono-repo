@@ -369,9 +369,13 @@ the request button has 4 statuses: can request, request send, request accepted, 
 
     ^^ I guess that means we need an availability_request lambda too
         post availrequest, given user.cognito_id, avail id
+            test
         get availrequest, given avail id
+            test - done
         get availrequest, given from user id
+            test - done
         get availrequest, given for user id
+            test - done
         put availrequest, given availrequest id and status, (the rest are immutable)
         delete availrequest, given availrequest id (from user must match the requestor)
 
