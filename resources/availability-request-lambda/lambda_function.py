@@ -90,33 +90,37 @@ def put_handler(input, session, get_claims):
     return avail_req_to_update
 
 def put_output_translator(raw_output):
-    print("TODO")
+    updated_avail_req = raw_output
+    response = {}
+    response[updated_avail_req.id] = {
+        'fromUser': updated_avail_req.fromUser,
+        'forAvailability': updated_avail_req.forAvailability,
+        'status': updated_avail_req.status
+    }
 
-# 
-# 
-# def delete_input_translator(event, context):
-    # return event['path'].split('/')[-1]
-# 
-# 
-# def delete_handler(input, session, get_claims):
-    # availability_id_to_delete = input
-# 
-    # claims = get_claims()
-    # cognito_id = claims["cognito:username"]
-    # avail_to_delete = session.query(Availability).filter(Availability.id==availability_id_to_delete).one()
-# 
-    # if cognito_id != avail_to_delete.tutor:
-        # raise AuthException('can only delete own availability')
-# 
-    # session.delete(avail_to_delete)
-# 
-    # return "success"
-# 
-# 
-# def delete_output_translator(raw_output):
-    # return success_response_output()
-# 
-# 
+    return 200, json.dumps(response)
+
+def delete_input_translator(event, context):
+    return event['path'].split('/')[-1]
+
+def delete_handler(input, session, get_claims):
+    availability_req_id_to_delete = input
+
+    claims = get_claims()
+    cognito_id = claims["cognito:username"]
+    avail_req_to_delete = session.query(AvailabilityRequest).filter(AvailabilityRequest.id==availability_req_id_to_delete).one()
+
+    if cognito_id != avail_req_to_delete.fromUser:
+        raise AuthException('can only delete own availability')
+
+    session.delete(avail_req_to_delete)
+
+    return "success"
+
+def delete_output_translator(raw_output):
+    return success_response_output()
+
+
 def lambda_handler(event, context):
     """
     for get, use identity in auth token, and query for all availabilities for the claimed user

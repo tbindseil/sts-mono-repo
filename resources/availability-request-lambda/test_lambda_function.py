@@ -200,7 +200,7 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertAvailRequestEquals(expected_avail_req, resulting_avail_req)
         self.assertEqual(len(requesting_user.requestsSent), 1)
 
-    def est_post_output_translator(self):
+    def test_post_output_translator(self):
         raw_output = "raw_output"
         actual_code, actual_response = lambda_function.post_output_translator(raw_output)
         self.assertEqual(actual_code, 200)
@@ -235,78 +235,68 @@ class TestLambdaFunction(unittest.TestCase):
         updated_avail_req = self.session.query(AvailabilityRequest).filter(AvailabilityRequest.id==avail_req.id).one()
         self.assertEqual(updated_avail_req.status, new_status)
 
+    def test_put_output_translator(self):
+        avail_req = AvailabilityRequest(self.cognito_id, 1)
+        avail_req.id = 42
 
+        output = lambda_function.put_output_translator(avail_req)
+        self.assertEqual(output, (200, '{"42": {"fromUser": "cognito_id", "forAvailability": 1, "status": "REQUESTED"}}'))
 
-    # def test_delete_input_translator(self):
-        # event = {'path': "url/id/for/avail/to/delete/is/1"}
-        # input = lambda_function.delete_input_translator(event, "context")
-        # self.assertEqual(input, '1')
-        # 
-    # def test_delete_removes_availability(self):
-        # avail = self.build_default_availability()
-# 
-        # user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
-        # user.availabilities.append(avail)
-        # self.session.add(user)
-        # self.session.commit()
-# 
-        # user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
-        # self.assertEqual(1, len(user.availabilities))
-# 
-        # raw_output = lambda_function.delete_handler('1', self.session, self.get_claims)
-# 
-        # # gotta commit since that is what the glh does
-        # self.session.commit()
-# 
-        # user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
-# 
-        # self.assertEqual(0, len(user.availabilities))
-# 
-    # def test_delete_throws_auth_exception_when_tutor_does_not_match_id_from_token(self):
-        # claims = {"cognito:username": "NOT_TEST_USER_COGNITO_ID"}
-        # self.get_claims.return_value = claims
-# 
-        # avail = self.build_default_availability()
-# 
-        # user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
-        # user.availabilities.append(avail)
-        # self.session.add(user)
-        # self.session.commit()
-# 
-        # user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
-        # self.assertEqual(1, len(user.availabilities))
-# 
-        # with self.assertRaises(AuthException) as e:
-            # raw_output = lambda_function.delete_handler('1', self.session, self.get_claims)
-# 
-    # def test_delete_output_translator(self):
-        # raw_output = 199, "not_raw_output"
-        # actual_code, actual_response = lambda_function.delete_output_translator(raw_output)
-        # self.assertEqual(200, actual_code)
-        # self.assertEqual("success", actual_response)
-# 
+    def test_delete_input_translator(self):
+        event = {'path': "url/id/for/avail_req/to/delete/is/42"}
+        input = lambda_function.delete_input_translator(event, "context")
+        self.assertEqual(input, '42')
+
+    def test_delete_removes_availability_request(self):
+        avail = self.build_default_availability()
+        self.session.add(avail)
+        self.session.commit()
+        avail_req = AvailabilityRequest(self.cognito_id, avail.id)
+        avail.requests.append(avail_req)
+        self.session.add(avail)
+        self.session.commit()
+
+        avail_request = self.session.query(AvailabilityRequest).filter(AvailabilityRequest.id==avail_req.id).one()
+
+        raw_output = lambda_function.delete_handler(avail_req.id, self.session, self.get_claims)
+        self.session.commit()
+
+        avail_req_count = self.session.query(AvailabilityRequest).count()
+        self.assertEqual(avail_req_count, 0)
+
+    def test_delete_throws_when_from_user_is_not_requester(self):
+        avail = self.build_default_availability()
+        self.session.add(avail)
+        self.session.commit()
+        avail_req = AvailabilityRequest(self.another_cognito_id, avail.id)
+        avail.requests.append(avail_req)
+        self.session.add(avail)
+        self.session.commit()
+
+        avail_request = self.session.query(AvailabilityRequest).filter(AvailabilityRequest.id==avail_req.id).one()
+
+        with self.assertRaises(AuthException) as e:
+            raw_output = lambda_function.delete_handler('1', self.session, self.get_claims)
+        self.assertEqual(str(e.exception), 'can only delete own availability')
+
+    def test_delete_output_translator(self):
+        raw_output = 199, "not_raw_output"
+        actual_code, actual_response = lambda_function.delete_output_translator(raw_output)
+        self.assertEqual(200, actual_code)
+        self.assertEqual("success", actual_response)
+
     def tearDown(self):
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
         another_test_user =  self.session.query(User).filter(User.cognitoId==self.another_cognito_id).one()
         self.session.delete(user)
         self.session.delete(another_test_user)
         self.session.commit()
-# 
+
     def build_default_availability(self):
         avail_start = datetime(year=2020, month=1, day=15, hour=13)
         avail_end = datetime(year=2020, month=1, day=15, hour=14)
         return Availability("subjects", avail_start, avail_end, self.cognito_id)
-# 
-    # # TODO is it necessary to add the avail id here? I think not since/if it gets added to the avail
-    # def build_default_availability_request(self, avail):
-        # return AvailabilityRequest("subjects", self.cognito_id, avail.id)
-# 
-    # def assertAvailEquals(self, expected_avail, actual_avail):
-        # self.assertEqual(expected_avail.subjects, actual_avail.subjects)
-        # self.assertEqual(expected_avail.startTime, actual_avail.startTime)
-        # self.assertEqual(expected_avail.endTime, actual_avail.endTime)
-        # self.assertEqual(expected_avail.tutor, actual_avail.tutor)
-# 
+
     def assertAvailRequestEquals(self, expected_avail_request, actual_avail_request):
         self.assertEqual(expected_avail_request.id, actual_avail_request.id)
         self.assertEqual(expected_avail_request.fromUser, actual_avail_request.fromUser)
