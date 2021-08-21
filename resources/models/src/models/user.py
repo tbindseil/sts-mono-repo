@@ -33,7 +33,7 @@ class User(Base):
     availabilities = relationship("Availability", cascade="all, delete, delete-orphan")
 
     requestsSent = relationship("AvailabilityRequest", cascade="all, delete, delete-orphan")
-    requestsReceived = relationship("AvailabilityRequest", cascade="all, delete, delete-orphan") # ooo this could be bad
+    # deprecateddd requestsReceived = relationship("AvailabilityRequest", cascade="all, delete, delete-orphan") # ooo this could be bad
 
     def __init__(self, parentName, parentEmail, email, cognitoId, firstName, lastName, school, grade, age, address, bio=""):
         self.parentName = parentName

@@ -57,27 +57,20 @@ def get_output_translator(raw_output):
 
 def post_input_translator(event, context):
     return json_to_model(event["body"], AvailabilityRequest)
-# 
-# 
-# def post_handler(input, session, get_claims):
-    # posted_availability = input
-# 
-    # claims = get_claims()
-    # cognito_id = claims["cognito:username"]
-# 
-    # user = session.query(User).filter(User.cognitoId==cognito_id).one()
-# 
-    # for avail in user.availabilities:
-        # if ((avail.startTime < posted_availability.endTime and avail.startTime >= posted_availability.startTime) or
-                # (avail.endTime <= posted_availability.endTime and avail.endTime > posted_availability.startTime) or
-                # (avail.startTime <= posted_availability.startTime and avail.endTime >= posted_availability.endTime)):
-            # raise Exception('Posted availability overlaps with existing availability')
-# 
-    # user.availabilities.append(posted_availability)
-    # session.add(user)
-# 
-    # return "success"
-# 
+
+
+def post_handler(input, session, get_claims):
+    posted_availability_request = input
+
+    existing_request = session.query(AvailabilityRequest).filter(AvailabilityRequest.forAvailability==posted_availability_request.forAvailability).filter(AvailabilityRequest.fromUser==posted_availability_request.fromUser).count() > 0
+
+    if not existing_request:
+        forAvailability = session.query(Availability).filter(Availability.id==posted_availability_request.forAvailability).one()
+        forAvailability.requests.append(posted_availability_request)
+        session.add(forAvailability)
+
+    return "success"
+
 # def post_output_translator(raw_output):
     # return 200, json.dumps(raw_output)
 # 

@@ -66,13 +66,13 @@ class TestLambdaFunction(unittest.TestCase):
         self.get_claims.return_value = claims
 
 
-    def test_get_input_translator(self):
+    def est_get_input_translator(self):
         event = {"queryStringParameters": {'getAvailRequestInput': '{"forAvailability":"this_is_the_availability_id","fromUser":"this_is_the_from_user","forUser":"this_is_the_for_user"}'}}
 
         input = lambda_function.get_input_translator(event, "context")
         self.assertEqual(input, ("this_is_the_availability_id", "this_is_the_from_user", "this_is_the_for_user"))
 
-    def test_get_returns_all_avail_requests_by_avail_id(self):
+    def est_get_returns_all_avail_requests_by_avail_id(self):
         avail1 = self.build_default_availability()
         avail2 = self.build_default_availability()
         avail2.startTime += timedelta(days=1) # probably could be a builder, take argument of shift(time_delta)
@@ -94,7 +94,7 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertAvailRequestEquals(avail_req1, raw_output[0])
         self.assertEqual(len(raw_output), 1)
 
-    def test_get_returns_all_avail_requests_by_from_user(self):
+    def est_get_returns_all_avail_requests_by_from_user(self):
         avail = self.build_default_availability()
         self.session.add(avail)
         self.session.commit()
@@ -111,7 +111,7 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertAvailRequestEquals(avail_req1, raw_output[0])
         self.assertEqual(len(raw_output), 1)
 
-    def test_get_returns_all_avail_requests_by_for_user(self):
+    def est_get_returns_all_avail_requests_by_for_user(self):
         avail1 = self.build_default_availability()
         avail2 = self.build_default_availability()
         avail2.startTime += timedelta(days=1)
@@ -134,7 +134,7 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertAvailRequestEquals(avail_req1, raw_output[0])
         self.assertEqual(len(raw_output), 1)
 
-    def test_get_output_translator(self):
+    def est_get_output_translator(self):
         avail = self.build_default_availability()
         self.session.add(avail)
         self.session.commit()
@@ -152,7 +152,7 @@ class TestLambdaFunction(unittest.TestCase):
 
         self.assertEqual(output, expected_output)
 
-    def test_post_input_translator(self):
+    def est_post_input_translator(self):
         avail = self.build_default_availability()
         expected_avail_req = AvailabilityRequest(self.another_cognito_id, avail.id)
         event = {"body": json.dumps({
@@ -164,19 +164,41 @@ class TestLambdaFunction(unittest.TestCase):
 
         self.assertAvailRequestEquals(expected_avail_req, input)
 
-    def est_post_adds_availability_request(self):
+    def test_post_adds_availability_request(self):
         avail = self.build_default_availability()
         self.session.add(avail)
         self.session.commit()
-        expected_avail_req = AvailabilityRequest(self.cognito_id, avail.id)
+        expected_avail_req = AvailabilityRequest(self.another_cognito_id, avail.id)
 
         raw_output = lambda_function.post_handler(expected_avail_req, self.session, self.get_claims)
+        self.session.commit()
 
-        user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
-        resulting_avail_req = user.requstsSent[0]
-        assertAvailRequestEquals(expected_avail_req, resulting_avail_req)
-        self.assertEqual(len(user.requstsSent), 1)
+        requesting_user = self.session.query(User).filter(User.cognitoId==self.another_cognito_id).one()
+        resulting_avail_req = requesting_user.requestsSent[0]
+        self.assertAvailRequestEquals(expected_avail_req, resulting_avail_req)
+        self.assertEqual(len(requesting_user.requestsSent), 1)
 
+    def test_post_does_not_add_when_from_user_already_has_request(self):
+        avail = self.build_default_availability()
+        self.session.add(avail)
+        self.session.commit()
+        expected_avail_req = AvailabilityRequest(self.another_cognito_id, avail.id)
+        avail.requests.append(expected_avail_req)
+        self.session.add(avail)
+        self.session.commit()
+
+        avail_requests = self.session.query(Availability).filter(Availability.id==avail.id).one().requests
+        self.assertEqual(len(avail_requests), 1)
+
+        another_avail_req = AvailabilityRequest(self.another_cognito_id, avail.id)
+
+        raw_output = lambda_function.post_handler(another_avail_req, self.session, self.get_claims)
+        self.session.commit()
+
+        requesting_user = self.session.query(User).filter(User.cognitoId==self.another_cognito_id).one()
+        resulting_avail_req = requesting_user.requestsSent[0]
+        self.assertAvailRequestEquals(expected_avail_req, resulting_avail_req)
+        self.assertEqual(len(requesting_user.requestsSent), 1)
 
 
 
