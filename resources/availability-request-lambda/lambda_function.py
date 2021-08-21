@@ -73,6 +73,25 @@ def post_handler(input, session, get_claims):
 
 def post_output_translator(raw_output):
     return 200, json.dumps(raw_output)
+
+def put_input_translator(event, context):
+    body_map = json.loads(event['body'])
+
+    return body_map['id'], body_map['status']
+
+def put_handler(input, session, get_claims):
+    # TODO limit new status and throw if invalid
+    avail_req_id, new_status = input
+
+    avail_req_to_update = session.query(AvailabilityRequest).filter(AvailabilityRequest.id==avail_req_id).one()
+    avail_req_to_update.status = new_status
+    session.add(avail_req_to_update)
+
+    return avail_req_to_update
+
+def put_output_translator(raw_output):
+    print("TODO")
+
 # 
 # 
 # def delete_input_translator(event, context):

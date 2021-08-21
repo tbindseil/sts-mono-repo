@@ -66,13 +66,13 @@ class TestLambdaFunction(unittest.TestCase):
         self.get_claims.return_value = claims
 
 
-    def est_get_input_translator(self):
+    def test_get_input_translator(self):
         event = {"queryStringParameters": {'getAvailRequestInput': '{"forAvailability":"this_is_the_availability_id","fromUser":"this_is_the_from_user","forUser":"this_is_the_for_user"}'}}
 
         input = lambda_function.get_input_translator(event, "context")
         self.assertEqual(input, ("this_is_the_availability_id", "this_is_the_from_user", "this_is_the_for_user"))
 
-    def est_get_returns_all_avail_requests_by_avail_id(self):
+    def test_get_returns_all_avail_requests_by_avail_id(self):
         avail1 = self.build_default_availability()
         avail2 = self.build_default_availability()
         avail2.startTime += timedelta(days=1) # probably could be a builder, take argument of shift(time_delta)
@@ -94,7 +94,7 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertAvailRequestEquals(avail_req1, raw_output[0])
         self.assertEqual(len(raw_output), 1)
 
-    def est_get_returns_all_avail_requests_by_from_user(self):
+    def test_get_returns_all_avail_requests_by_from_user(self):
         avail = self.build_default_availability()
         self.session.add(avail)
         self.session.commit()
@@ -111,7 +111,7 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertAvailRequestEquals(avail_req1, raw_output[0])
         self.assertEqual(len(raw_output), 1)
 
-    def est_get_returns_all_avail_requests_by_for_user(self):
+    def test_get_returns_all_avail_requests_by_for_user(self):
         avail1 = self.build_default_availability()
         avail2 = self.build_default_availability()
         avail2.startTime += timedelta(days=1)
@@ -134,7 +134,7 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertAvailRequestEquals(avail_req1, raw_output[0])
         self.assertEqual(len(raw_output), 1)
 
-    def est_get_output_translator(self):
+    def test_get_output_translator(self):
         avail = self.build_default_availability()
         self.session.add(avail)
         self.session.commit()
@@ -152,7 +152,7 @@ class TestLambdaFunction(unittest.TestCase):
 
         self.assertEqual(output, expected_output)
 
-    def est_post_input_translator(self):
+    def test_post_input_translator(self):
         avail = self.build_default_availability()
         expected_avail_req = AvailabilityRequest(self.another_cognito_id, avail.id)
         event = {"body": json.dumps({
@@ -200,15 +200,43 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertAvailRequestEquals(expected_avail_req, resulting_avail_req)
         self.assertEqual(len(requesting_user.requestsSent), 1)
 
-
-
-
-    def test_post_output_translator(self):
+    def est_post_output_translator(self):
         raw_output = "raw_output"
         actual_code, actual_response = lambda_function.post_output_translator(raw_output)
         self.assertEqual(actual_code, 200)
         self.assertEqual(actual_response, json.dumps(raw_output))
-# 
+
+    def test_put_input_translator(self):
+        event = {"body": json.dumps({
+            "id": 'id',
+            "status": 'status'
+        })}
+
+        input = lambda_function.put_input_translator(event, "context")
+
+        self.assertEqual(('id', 'status'), input)
+
+    def test_put_handler_updates_status(self):
+        avail = self.build_default_availability()
+        self.session.add(avail)
+        self.session.commit()
+        avail_req = AvailabilityRequest(self.another_cognito_id, avail.id)
+        avail.requests.append(avail_req)
+        self.session.add(avail)
+        self.session.commit()
+
+        new_status = "UPDATEDDDDDDD"
+
+        self.assertNotEqual(avail_req.status, new_status)
+
+        raw_output = lambda_function.put_handler((avail_req.id, new_status), self.session, self.get_claims)
+        self.session.commit()
+
+        updated_avail_req = self.session.query(AvailabilityRequest).filter(AvailabilityRequest.id==avail_req.id).one()
+        self.assertEqual(updated_avail_req.status, new_status)
+
+
+
     # def test_delete_input_translator(self):
         # event = {'path': "url/id/for/avail/to/delete/is/1"}
         # input = lambda_function.delete_input_translator(event, "context")
