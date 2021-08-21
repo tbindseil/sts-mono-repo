@@ -37,8 +37,8 @@ export function SelectAvailabilityScreen(props) {
 
 // TODO cool idea, allow start time and subject to be selectable here
 function CreateAvailabilityBody(props) {
-    // const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
-    const baseUrl = 'https://04c0w1j888.execute-api.us-west-2.amazonaws.com/prod/';
+    const availabilityLambdaUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
+    // const availabilityRequestLambdaUrl = 'https://04c0w1j888.execute-api.us-west-2.amazonaws.com/prod/';
     const history = useHistory();
 
     const stateProps = props.location.state;
@@ -71,7 +71,7 @@ function CreateAvailabilityBody(props) {
             // could be improved by only getting for 1 day for small screen
             const requestStartTime = moment(startTime).toDate();
             const requestEndTime = moment(startTime).add('minute', 30).toDate();
-            const url = new URL(baseUrl)
+            const url = new URL(availabilityLambdaUrl)
             const getAvailInput = {
                 username: "*",
                 subject: subject,

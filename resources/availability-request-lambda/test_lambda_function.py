@@ -209,12 +209,22 @@ class TestLambdaFunction(unittest.TestCase):
     def test_put_input_translator(self):
         event = {"body": json.dumps({
             "id": 'id',
-            "status": 'status'
+            "status": 'DENIED'
         })}
 
         input = lambda_function.put_input_translator(event, "context")
 
-        self.assertEqual(('id', 'status'), input)
+        self.assertEqual(('id', 'DENIED'), input)
+
+    def test_put_input_translator_throws_for_invalid_status(self):
+        event = {"body": json.dumps({
+            "id": 'id',
+            "status": 'INVALID_STATUS'
+        })}
+
+        with self.assertRaises(InputException) as e:
+            input = lambda_function.put_input_translator(event, "context")
+        self.assertEqual(str(e.exception), 'Invalid status, options are REQUESTED, ACCEPTED, DENIED, CANCELED')
 
     def test_put_handler_updates_status(self):
         avail = self.build_default_availability()
@@ -225,7 +235,7 @@ class TestLambdaFunction(unittest.TestCase):
         self.session.add(avail)
         self.session.commit()
 
-        new_status = "UPDATEDDDDDDD"
+        new_status = "ACCEPTED"
 
         self.assertNotEqual(avail_req.status, new_status)
 

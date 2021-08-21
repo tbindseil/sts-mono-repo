@@ -16,7 +16,7 @@ def get_input_translator(event, context):
     return qsp_map['forAvailability'], qsp_map['fromUser'], qsp_map['forUser']
 
 
-# TODO pagination
+# TODO pagination - this could potentially be needed in avail lambda too
 def get_handler(input, session, get_claims):
     for_availability, from_user, for_user_id = input
 
@@ -76,6 +76,10 @@ def post_output_translator(raw_output):
 
 def put_input_translator(event, context):
     body_map = json.loads(event['body'])
+
+    valid_statuses = ['REQUESTED', 'ACCEPTED', 'DENIED', 'CANCELED']
+    if body_map['status'] not in valid_statuses:
+        raise InputException('Invalid status, options are REQUESTED, ACCEPTED, DENIED, CANCELED')
 
     return body_map['id'], body_map['status']
 
