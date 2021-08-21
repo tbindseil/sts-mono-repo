@@ -71,8 +71,8 @@ def post_handler(input, session, get_claims):
 
     return "success"
 
-# def post_output_translator(raw_output):
-    # return 200, json.dumps(raw_output)
+def post_output_translator(raw_output):
+    return 200, json.dumps(raw_output)
 # 
 # 
 # def delete_input_translator(event, context):

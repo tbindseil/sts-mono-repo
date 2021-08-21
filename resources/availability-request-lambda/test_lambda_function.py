@@ -203,37 +203,11 @@ class TestLambdaFunction(unittest.TestCase):
 
 
 
-    # def test_post_adds_availability(self):
-        # avail = self.build_default_availability()
-# 
-        # user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
-        # self.assertEqual(0, len(user.availabilities))
-# 
-        # raw_output = lambda_function.post_handler(avail, self.session, self.get_claims)
-# 
-        # user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
-        # self.assertEqual(1, len(user.availabilities))
-# 
-        # actual_avail = user.availabilities[0]
-        # self.assertAvailEquals(avail, actual_avail)
-# 
-    # def test_post_checks_for_overlap_with_existing_availabilities(self):
-        # avail = self.build_default_availability()
-# 
-        # user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
-        # user.availabilities.append(avail)
-        # self.session.add(user)
-        # self.session.commit()
-# 
-        # with self.assertRaises(Exception) as e:
-            # raw_output = lambda_function.post_handler(avail, self.session, self.get_claims)
-        # self.assertEqual(str(e.exception), 'Posted availability overlaps with existing availability')
-# 
-    # def test_post_output_translator(self):
-        # raw_output = "raw_output"
-        # actual_code, actual_response = lambda_function.post_output_translator(raw_output)
-        # self.assertEqual(actual_code, 200)
-        # self.assertEqual(actual_response, json.dumps(raw_output))
+    def test_post_output_translator(self):
+        raw_output = "raw_output"
+        actual_code, actual_response = lambda_function.post_output_translator(raw_output)
+        self.assertEqual(actual_code, 200)
+        self.assertEqual(actual_response, json.dumps(raw_output))
 # 
     # def test_delete_input_translator(self):
         # event = {'path': "url/id/for/avail/to/delete/is/1"}
