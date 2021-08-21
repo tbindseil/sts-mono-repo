@@ -367,7 +367,7 @@ the request button has 4 statuses: can request, request send, request accepted, 
     Ok, what is the table like? each avail has one status? idk, I think its more like each user has many requests, and each request has one avail - yeah
         this is the alembic part i guess - done
 
-    ^^ I guess that means we need an availability_request lambda too
+    ^^ I guess that means we need an availability_request lambda too - done
         post availrequest, given user.cognito_id, avail id
             test - done
         get availrequest, given avail id
@@ -388,6 +388,7 @@ the request button has 4 statuses: can request, request send, request accepted, 
                 ** this requires sending requesting user in case they are "denied", see weird problem #2
 
 
+PAGINATION!!!!!
 
 when a user selects request on an open avail, it sends a notification to the tutor and updates status
 
