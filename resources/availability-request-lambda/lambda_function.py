@@ -53,10 +53,10 @@ def get_output_translator(raw_output):
         }
 
     return 200, json.dumps(response)
-# 
-# 
-# def post_input_translator(event, context):
-    # return json_to_model(event["body"], Availability)
+
+
+def post_input_translator(event, context):
+    return json_to_model(event["body"], AvailabilityRequest)
 # 
 # 
 # def post_handler(input, session, get_claims):

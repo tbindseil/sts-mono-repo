@@ -81,8 +81,8 @@ class TestLambdaFunction(unittest.TestCase):
         self.session.add(avail2)
         self.session.commit()
 
-        avail_req1 = AvailabilityRequest("subjects", self.cognito_id, avail1.id)
-        avail_req2 = AvailabilityRequest("subjects", self.cognito_id, avail2.id)
+        avail_req1 = AvailabilityRequest(self.cognito_id, avail1.id)
+        avail_req2 = AvailabilityRequest(self.cognito_id, avail2.id)
         avail1.requests.append(avail_req1)
         avail2.requests.append(avail_req2)
         self.session.add(avail1)
@@ -99,8 +99,8 @@ class TestLambdaFunction(unittest.TestCase):
         self.session.add(avail)
         self.session.commit()
 
-        avail_req1 = AvailabilityRequest("subjects", self.cognito_id, avail.id)
-        avail_req2 = AvailabilityRequest("subjects", self.another_cognito_id, avail.id)
+        avail_req1 = AvailabilityRequest(self.cognito_id, avail.id)
+        avail_req2 = AvailabilityRequest(self.another_cognito_id, avail.id)
         avail.requests.append(avail_req1)
         avail.requests.append(avail_req2)
         self.session.add(avail)
@@ -121,8 +121,8 @@ class TestLambdaFunction(unittest.TestCase):
         self.session.add(avail2)
         self.session.commit()
 
-        avail_req1 = AvailabilityRequest("subjects", self.cognito_id, avail1.id)
-        avail_req2 = AvailabilityRequest("subjects", self.cognito_id, avail2.id)
+        avail_req1 = AvailabilityRequest(self.cognito_id, avail1.id)
+        avail_req2 = AvailabilityRequest(self.cognito_id, avail2.id)
         avail1.requests.append(avail_req1)
         avail2.requests.append(avail_req2)
         self.session.add(avail1)
@@ -139,8 +139,8 @@ class TestLambdaFunction(unittest.TestCase):
         self.session.add(avail)
         self.session.commit()
 
-        avail_req1 = AvailabilityRequest("subjects", self.cognito_id, avail.id)
-        avail_req2 = AvailabilityRequest("subjects", self.another_cognito_id, avail.id)
+        avail_req1 = AvailabilityRequest(self.cognito_id, avail.id)
+        avail_req2 = AvailabilityRequest(self.another_cognito_id, avail.id)
         avail.requests.append(avail_req1)
         avail.requests.append(avail_req2)
         self.session.add(avail) # which do i need to do? as in do i also need to dd avail_req1 and two
@@ -152,23 +152,23 @@ class TestLambdaFunction(unittest.TestCase):
 
         self.assertEqual(output, expected_output)
 
-    def est_post_input_translator(self):
+    def test_post_input_translator(self):
         avail = self.build_default_availability()
-        avail_req = AvailabilityRequest("subjects", self.another_cognito_id, avail.id)
+        expected_avail_req = AvailabilityRequest(self.another_cognito_id, avail.id)
         event = {"body": json.dumps({
-            "cognito_id": avail_req.fromUser,
-            "forAvailability": avail_req.forAvailability
+            "forAvailability": expected_avail_req.forAvailability,
+            "fromUser": expected_avail_req.fromUser
         })}
 
         input = lambda_function.post_input_translator(event, "context")
 
-        self.assertAvailEquals(avail_req, input)
+        self.assertAvailRequestEquals(expected_avail_req, input)
 
     def est_post_adds_availability_request(self):
         avail = self.build_default_availability()
         self.session.add(avail)
         self.session.commit()
-        expected_avail_req = AvailabilityRequest("subjects", self.cognito_id, avail.id)
+        expected_avail_req = AvailabilityRequest(self.cognito_id, avail.id)
 
         raw_output = lambda_function.post_handler(expected_avail_req, self.session, self.get_claims)
 
