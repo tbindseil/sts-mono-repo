@@ -125,6 +125,28 @@ def delete_output_translator(raw_output):
     return success_response_output()
 
 
+def get_status_input_translator(event, context):
+    return event['path'].split('/')[-1]
+
+def get_status_handler(input, session, get_claims):
+    availability_req_id_to_get_status = input
+
+    # TODO TJTAG this and tests
+    avail_req_to_delete = session.query(AvailabilityRequest).filter(AvailabilityRequest.id==availability_req_id_to_delete).one()
+    session.delete(avail_req_to_delete)
+
+    status = "deneid"
+
+    return status
+
+def get_status_output_translator(raw_output):
+    return 200, json.dumps({'status': raw_output})
+
+
+
+# random thoughts for future tj
+# all the glh really does is handle commit of session and handle exceptions
+# exceptions could certainly be done by a composition pattern
 def lambda_handler(event, context):
     """
     for get, use identity in auth token, and query for all availabilities for the claimed user
@@ -135,6 +157,13 @@ def lambda_handler(event, context):
 
     print("event is:")
     print(event)
+
+    # wow does this break the plan..
+    # does it though?
+    path = event["path"]
+    if "/status/" in path:
+        get_status_glh = GLH(get_status_input_translator, get_status_handler, get_status_output_translator)
+        return get_status_glh.handle(event, context)
 
     if event["httpMethod"] == "GET":
         get_glh = GLH(get_input_translator, get_handler, get_output_translator)

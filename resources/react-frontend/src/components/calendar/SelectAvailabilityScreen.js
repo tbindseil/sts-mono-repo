@@ -96,11 +96,12 @@ function CreateAvailabilityBody(props) {
                     const availabilitiesWithDates = []
                     for (const [id, avail] of Object.entries(result)) {
                         availabilitiesWithDates.push({
-                            endTime: moment.utc(avail.endTime).local().toDate(),
-                            startTime: moment.utc(avail.startTime).local().toDate(),
-                            subjects: avail.subjects,
-                            tutor: avail.tutor,
-                            id: id
+                            id: {
+                                endTime: moment.utc(avail.endTime).local().toDate(),
+                                startTime: moment.utc(avail.startTime).local().toDate(),
+                                subjects: avail.subjects,
+                                tutor: avail.tutor,
+                            }
                         });
 
                         const availRequestsUrl = new URL(availabilityRequestLambdaUrl)
@@ -151,6 +152,16 @@ function CreateAvailabilityBody(props) {
                         // send a request to get requests given this avails id
                         // save the request (a promise i think?) to a list
 
+                        // honestly, (this is probably written somewhere else)
+                        // I think its not needed to know things about every request
+                        // and the only requests we need to know about are the requests from the user
+                        // we need to know about these requests in order to know if the user can send a request or cancel or see pending?
+                        //
+                        // and this is dependent upon the status of the request relative to the user
+                        // all the more reason to offload this to the backend (which is why I think its probably already written)
+                        //
+                        // What I don't know, is why its better offloaded to backend?
+                        // and I don't really care
                     }
                     setAvailabilities(availabilitiesWithDates);
 
@@ -173,7 +184,36 @@ function CreateAvailabilityBody(props) {
                     //          REQUESTED => request from user, not accepted or denied
                     //          DENIED => request from user, denied by tutor
                     //          ACCEPTED => request from user, accepted by tutor
+                    //          CLOSED => no request from user, but one accepted from another user
+                    //          
+                    //     and these avail statuses are relavent to the user
 
+                    // current hangup:
+                    // when we fetch all requests, we could find some that will ultimately evaluate to CLOSED
+                    // so in order to deal with that,
+                    // show all with loading arrow circle thing
+                    // as a request comes back, replace loading arrow circle thing with status
+                    // unless it is closed, in which case have it disappear, or move to bottom of list in special closed section
+                    //
+                    // this also applies to calendar
+                    // unless api the calendar calls has a join command and checks for request with accepted
+
+                    // what is the heart of this problem?
+                    // 1) users need to see if a particular availability exists (? do they? or do they need to request and we tell them?? IDFK?)
+                    // 2) users need to request a particular availability
+                    //
+                    // I actually think souping up get avails sql query could work pretty well so that it only gets stuff calced to have non closed
+                    //
+                    // ok so last question then,
+                    // why does it require a souped up command and not just keep 
+                    //
+                    //
+                    // sorry another question came up.. why not just show the denied ones?
+                    // thats fine except for the count. the count sucks because i think i want to show possible
+                    //
+                    // so why not include denied in the count?
+                    // whats the easiest?
+                    // show denied
                 },
                     // Note: it's important to handle errors here
                     // instead of a catch() block so that we don't swallow

@@ -56,8 +56,17 @@ export class AvailabilityLambdaService extends Construct {
             timeout: Duration.seconds(29)
         });
 
+        const availabilityStatus = api.root.addResource("status");
+        const getAvailabilityStatus = availabilityStatus.addResource("{availability-id}");
+
+        // Remove a specific availability from the db with: DELETE /{availability-id}
+        const getAvailabilityStatusIntegration = new LambdaIntegration(handler, {
+            timeout: Duration.seconds(29)
+        });
+
         api.root.addMethod("GET", getAvailabilitiesIntegration); // GET /
         api.root.addMethod("POST", postAvailabilityIntegration); // POST /
         availability.addMethod("DELETE", deleteAvailabilityIntegration); // DELETE /{availability-id}
+        getAvailabilityStatus.addMethod("GET", getAvailabilityStatusIntegration); // GET /status/{availability-id}
     }
 }
