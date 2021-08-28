@@ -13,6 +13,7 @@ from guided_lambda_handler.guided_lambda_handler import AuthException, InputExce
 from models import Base
 from models.user import User
 from models.availability import Availability
+from models.availability_request import AvailabilityRequest
 
 import lambda_function
 
@@ -318,7 +319,88 @@ class TestLambdaFunction(unittest.TestCase):
         input = lambda_function.get_status_input_translator(event, "context")
         self.assertEqual(input, '1')
 
+    def test_get_status_handler_returns_CLOSED_when_another_users_request_has_been_accepted(self):
+        avail = self.build_default_availability()
+        self.session.add(avail)
+        self.session.commit()
 
+        avail_request_from_requestor = AvailabilityRequest(self.cognito_id, avail.id)
+        avail_request_not_from_requestor = AvailabilityRequest(self.another_cognito_id, avail.id)
+        avail_request_not_from_requestor.status = 'ACCEPTED'
+        self.session.add(avail_request_from_requestor)
+        self.session.add(avail_request_not_from_requestor)
+        self.session.commit()
+
+        expected_status = 'CLOSED'
+        returned_status = lambda_function.get_status_handler('1', self.session, self.get_claims)
+
+        self.assertEqual(expected_status, returned_status)
+
+    def test_get_status_handler_returns_ACCEPTED_when_requesting_users_request_has_been_accepted(self):
+        avail = self.build_default_availability()
+        self.session.add(avail)
+        self.session.commit()
+
+        avail_request_from_requestor = AvailabilityRequest(self.cognito_id, avail.id)
+        avail_request_from_requestor.status = 'ACCEPTED'
+        self.session.add(avail_request_from_requestor)
+        self.session.commit()
+
+        expected_status = 'ACCEPTED'
+        returned_status = lambda_function.get_status_handler('1', self.session, self.get_claims)
+
+        self.assertEqual(expected_status, returned_status)
+
+    def test_get_status_handler_returns_REQUESTED_when_requesting_users_request_has_been_requested(self):
+        avail = self.build_default_availability()
+        self.session.add(avail)
+        self.session.commit()
+
+        avail_request_from_requestor = AvailabilityRequest(self.cognito_id, avail.id)
+        avail_request_from_requestor.status = 'REQUESTED'
+        self.session.add(avail_request_from_requestor)
+        self.session.commit()
+
+        expected_status = 'REQUESTED'
+        returned_status = lambda_function.get_status_handler('1', self.session, self.get_claims)
+
+        self.assertEqual(expected_status, returned_status)
+
+    def test_get_status_handler_returns_DENIED_when_requesting_users_request_has_been_denied(self):
+        avail = self.build_default_availability()
+        self.session.add(avail)
+        self.session.commit()
+
+        avail_request_from_requestor = AvailabilityRequest(self.cognito_id, avail.id)
+        avail_request_from_requestor.status = 'DENIED'
+        self.session.add(avail_request_from_requestor)
+        self.session.commit()
+
+        expected_status = 'DENIED'
+        returned_status = lambda_function.get_status_handler('1', self.session, self.get_claims)
+
+        self.assertEqual(expected_status, returned_status)
+
+    def test_get_status_handler_returns_open_when_no_requests_from_requesting_user(self):
+        avail = self.build_default_availability()
+        self.session.add(avail)
+        self.session.commit()
+
+        avail_request_not_from_requestor = AvailabilityRequest(self.another_cognito_id, avail.id)
+        avail_request_not_from_requestor.status = 'DENIED'
+        self.session.add(avail_request_not_from_requestor)
+        self.session.commit()
+
+        expected_status = 'OPEN'
+        returned_status = lambda_function.get_status_handler('1', self.session, self.get_claims)
+
+        self.assertEqual(expected_status, returned_status)
+
+    def test_get_status_output_translator(self):
+        raw_output = "STATUS"
+        actual_code, actual_response = lambda_function.get_status_output_translator(raw_output)
+        self.assertEqual(200, actual_code)
+        self.assertEqual(json.dumps({'status': raw_output}), actual_response)
 
     def tearDown(self):
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()

@@ -8,6 +8,7 @@ from guided_lambda_handler.guided_lambda_handler import AuthException, InputExce
 from guided_lambda_handler.translators import json_to_model
 from models.user import User
 from models.availability import Availability
+from models.availability_request import AvailabilityRequest
 
 
 def get_input_translator(event, context):
