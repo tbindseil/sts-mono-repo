@@ -125,25 +125,6 @@ def delete_output_translator(raw_output):
     return success_response_output()
 
 
-def get_status_input_translator(event, context):
-    return event['path'].split('/')[-1]
-
-def get_status_handler(input, session, get_claims):
-    availability_req_id_to_get_status = input
-
-    # TODO TJTAG this and tests
-    avail_req_to_delete = session.query(AvailabilityRequest).filter(AvailabilityRequest.id==availability_req_id_to_delete).one()
-    session.delete(avail_req_to_delete)
-
-    status = "deneid"
-
-    return status
-
-def get_status_output_translator(raw_output):
-    return 200, json.dumps({'status': raw_output})
-
-
-
 # random thoughts for future tj
 # all the glh really does is handle commit of session and handle exceptions
 # exceptions could certainly be done by a composition pattern

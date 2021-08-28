@@ -269,7 +269,7 @@ class TestLambdaFunction(unittest.TestCase):
         event = {'path': "url/id/for/avail/to/delete/is/1"}
         input = lambda_function.delete_input_translator(event, "context")
         self.assertEqual(input, '1')
-        
+
     def test_delete_removes_availability(self):
         avail = self.build_default_availability()
 
@@ -312,6 +312,13 @@ class TestLambdaFunction(unittest.TestCase):
         actual_code, actual_response = lambda_function.delete_output_translator(raw_output)
         self.assertEqual(200, actual_code)
         self.assertEqual("success", actual_response)
+
+    def test_get_status_input_translator(self):
+        event = {'path': "url/id/for/avail/to/get/status/is/1"}
+        input = lambda_function.get_status_input_translator(event, "context")
+        self.assertEqual(input, '1')
+
+
 
     def tearDown(self):
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()

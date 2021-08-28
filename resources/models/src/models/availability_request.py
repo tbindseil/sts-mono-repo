@@ -18,3 +18,4 @@ class AvailabilityRequest(Base):
         self.forAvailability = forAvailability
         self.status = "REQUESTED" # possibilities are REQUESTED, ACCEPTED, DENIED, CANCELED
         # is it best to have the logic layer handler the default status
+        # TODO enum for possibilities

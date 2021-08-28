@@ -114,6 +114,39 @@ def delete_handler(input, session, get_claims):
 def delete_output_translator(raw_output):
     return success_response_output()
 
+def get_status_input_translator(event, context):
+    return event['path'].split('/')[-1]
+
+def get_status_handler(input, session, get_claims):
+    availability_req_id_to_get_status = input
+
+    claims = get_claims()
+    cognito_id = claims["cognito:username"]
+
+    other_user_accepted_request_query = session.query(AvailabilityRequest).filter(AvailabilityRequest.fromUser!=cognito_id).filter(AvailabilityRequest.status=='ACCEPTED')
+    if other_user_accepted_request_query.count() > 0:
+        return 'CLOSED'
+
+    user_request_query = session.query(AvailabilityRequest).filter(AvailabilityRequest.fromUser==cognito_id).filter(AvailabilityRequest.status!="DENID")
+    user_has_requested = user_request_query.count() > 0
+
+    if user_has_requested:
+        user_request = user_request_query.one()
+
+        if user_request.status == 'ACCEPTED':
+            return 'ACCEPTED'
+
+        if user_request.status == 'REQUESTED':
+            return 'REQUESTED'
+
+        if user_request.status == 'DENIED':
+            return 'DENIED'
+    else:
+        return 'OPEN'
+
+def get_status_output_translator(raw_output):
+    return 200, json.dumps({'status': raw_output})
+
 
 def lambda_handler(event, context):
     """
@@ -125,6 +158,13 @@ def lambda_handler(event, context):
 
     print("event is:")
     print(event)
+
+    # wow does this break the plan..
+    # does it though?
+    path = event["path"]
+    if "/status/" in path:
+        get_status_glh = GLH(get_status_input_translator, get_status_handler, get_status_output_translator)
+        return get_status_glh.handle(event, context)
 
     if event["httpMethod"] == "GET":
         get_glh = GLH(get_input_translator, get_handler, get_output_translator)
