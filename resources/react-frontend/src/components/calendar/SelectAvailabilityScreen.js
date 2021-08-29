@@ -145,22 +145,22 @@ function CreateAvailabilityBody(props) {
                         'Authorization': tokenString
                     },
                 })
-                    .then(res => {
-                        console.log("res is:");
+                    .then(res => res.json())
+                        /*console.log("res is:");
                         console.log(res);
                         return {
                             'id': res.url.split('/').pop(),
                             'json': res.json()
                         }
-                    })
+                    })*/
                     .then((result) => {
                         console.log("result is:");
                         console.log(result);
-                        // console.log("can i bind the id?"); no..
+                        const id = result.id;
+                        const status = result.status;
 
-                        // potentials,
-                        // 1) work harder to bind
-                        // 2) find id in url somehow - done
+                        availabilities.get(id)['status'] = status;
+                        // uhhh
                     },
                         // Note: it's important to handle errors here
                         // instead of a catch() block so that we don't swallow
@@ -253,7 +253,7 @@ function CreateAvailabilityBody(props) {
                                     {availEntry[1].subjects}
                                 </td>
                                 <td>
-                                    Status - TODO
+                                    {availEntry[1].status ? availEntry[1].status : 'loading'}
                                 </td>
                                 <td>
                                     <button>
