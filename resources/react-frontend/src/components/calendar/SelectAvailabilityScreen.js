@@ -128,13 +128,11 @@ function CreateAvailabilityBody(props) {
         [startTime, subject]
     );
 
-    /*const getStatuses = useCallback(
+    const getStatuses = useCallback(
         (availabilities) => {
             if (!user) {
                 return;
             }
-
-            console.log("getStatuses");
 
             availabilities.forEach(avail => {
                 const url = `${availabilityLambdaUrl}/status/${avail.id}`;
@@ -147,10 +145,22 @@ function CreateAvailabilityBody(props) {
                         'Authorization': tokenString
                     },
                 })
-                    .then(res => res.json())
+                    .then(res => {
+                        console.log("res is:");
+                        console.log(res);
+                        return {
+                            'id': res.url.split('/').pop(),
+                            'json': res.json()
+                        }
+                    })
                     .then((result) => {
+                        console.log("result is:");
+                        console.log(result);
                         // console.log("can i bind the id?"); no..
 
+                        // potentials,
+                        // 1) work harder to bind
+                        // 2) find id in url somehow - done
                     },
                         // Note: it's important to handle errors here
                         // instead of a catch() block so that we don't swallow
@@ -174,7 +184,7 @@ function CreateAvailabilityBody(props) {
             });
         },
         [user]
-    );*/
+    );
 
     useEffect(() => {
         getAvailabilities(user);
@@ -182,11 +192,11 @@ function CreateAvailabilityBody(props) {
         user, getAvailabilities
     ]);
 
-    /*useEffect(() => {
+    useEffect(() => {
         getStatuses(availabilities);
     }, [
         availabilities, getStatuses
-    ]);*/
+    ]);
 
     const onCancel = () => {
         history.push({

@@ -124,29 +124,30 @@ def get_status_handler(input, session, get_claims):
     claims = get_claims()
     cognito_id = claims["cognito:username"]
 
-    other_user_accepted_request_query = session.query(AvailabilityRequest).filter(AvailabilityRequest.fromUser!=cognito_id).filter(AvailabilityRequest.status=='ACCEPTED')
+    other_user_accepted_request_query = session.query(AvailabilityRequest).filter(AvailabilityRequest.forAvailability==availability_req_id_to_get_status).filter(AvailabilityRequest.fromUser!=cognito_id).filter(AvailabilityRequest.status=='ACCEPTED')
     if other_user_accepted_request_query.count() > 0:
-        return 'CLOSED'
+        return availability_req_id_to_get_status, 'CLOSED'
 
-    user_request_query = session.query(AvailabilityRequest).filter(AvailabilityRequest.fromUser==cognito_id).filter(AvailabilityRequest.status!="DENID")
+    user_request_query = session.query(AvailabilityRequest).filter(AvailabilityRequest.forAvailability==availability_req_id_to_get_status).filter(AvailabilityRequest.fromUser==cognito_id).filter(AvailabilityRequest.status!="DENID")
     user_has_requested = user_request_query.count() > 0
 
     if user_has_requested:
         user_request = user_request_query.one()
 
         if user_request.status == 'ACCEPTED':
-            return 'ACCEPTED'
+            return availability_req_id_to_get_status, 'ACCEPTED'
 
         if user_request.status == 'REQUESTED':
-            return 'REQUESTED'
+            return availability_req_id_to_get_status, 'REQUESTED'
 
         if user_request.status == 'DENIED':
-            return 'DENIED'
+            return availability_req_id_to_get_status, 'DENIED'
     else:
-        return 'OPEN'
+        return availability_req_id_to_get_status, 'OPEN'
 
 def get_status_output_translator(raw_output):
-    return 200, json.dumps({'status': raw_output})
+    id, status = raw_output
+    return 200, json.dumps({'status': status, 'id': id})
 
 
 def lambda_handler(event, context):
