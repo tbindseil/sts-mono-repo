@@ -54,7 +54,8 @@ function CreateAvailabilityBody(props) {
         history, setUser
     ]);
 
-    const [availabilities, setAvailabilities] = useState([]);
+    const [availabilities, setAvailabilities] = useState(new Map());
+    const [statuses, setStatuses] = useState(new Set());
 
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -146,13 +147,6 @@ function CreateAvailabilityBody(props) {
                     },
                 })
                     .then(res => res.json())
-                        /*console.log("res is:");
-                        console.log(res);
-                        return {
-                            'id': res.url.split('/').pop(),
-                            'json': res.json()
-                        }
-                    })*/
                     .then((result) => {
                         console.log("result is:");
                         console.log(result);
@@ -160,7 +154,12 @@ function CreateAvailabilityBody(props) {
                         const status = result.status;
 
                         availabilities.get(id)['status'] = status;
-                        // uhhh
+                        // uhhh - gonna use two maps
+                        // options
+                        // 1) set a trick var to trigger a refresh
+                        // 2) somehow reset the availabilities var without triggering this
+                        //      which basically means put this inside that, for each, trigger a fetch call
+                        //          but this doesn't take into account individual loadability of the statuses
                     },
                         // Note: it's important to handle errors here
                         // instead of a catch() block so that we don't swallow
@@ -253,7 +252,15 @@ function CreateAvailabilityBody(props) {
                                     {availEntry[1].subjects}
                                 </td>
                                 <td>
-                                    {availEntry[1].status ? availEntry[1].status : 'loading'}
+                                    {
+                                        // this is kinda fucked up
+                                        // there is weird and hard to guarantee conditions between statuses set and availabilities map
+                                        // need to figure how to manually trigger a refresh or do it better
+                                        statuses.has(availEntry[1].id) ?
+                                            availEntry[1].status
+                                        :
+                                            'loading'
+                                    }
                                 </td>
                                 <td>
                                     <button>
