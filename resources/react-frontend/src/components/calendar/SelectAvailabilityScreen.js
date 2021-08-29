@@ -105,6 +105,64 @@ function CreateAvailabilityBody(props) {
                         });
                     }
                     setAvailabilities(availabilitiesWithDates);
+
+                    // now i think i want to kick off one fetch per avail
+                    // at the end of each fetch, call setAvailabilities to trigger render
+                    /* availabilitiesWithDates.forEach(avail => {
+                        const url = `${availabilityLambdaUrl}/status/${avail.id}`;
+                        const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
+                        fetch(url, {
+                            method: 'GET',
+                            mode: 'cors',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': tokenString
+                            },
+                        })
+                            .then(res => res.json())
+                            .then((result) => {
+                                // console.log("result is:");
+                                // console.log(result);
+                                const id = result.id;
+                                const status = result.status;
+
+
+                                // console.log("status is:");
+                                // console.log(status);
+                                // console.log("availabilities is:");
+                                // console.log(availabilities);
+                                availabilities.get(id)['status'] = status;
+                                setAvailabilities(availabilitiesWithDates);
+
+                                // uhhh - gonna use two maps
+                                // options
+                                // 1) set a trick var to trigger a refresh
+                                // 2) somehow reset the availabilities var without triggering this
+                                //      which basically means put this inside that, for each, trigger a fetch call
+                                //          but this doesn't take into account individual loadability of the statuses
+                            },
+                                // Note: it's important to handle errors here
+                                // instead of a catch() block so that we don't swallow
+                                // exceptions from actual bugs in components.
+                                (error) => {
+                                    setFailed(true);
+                                    var message = "1Error getting availability status";
+                                    if (error.message) {
+                                        message += ": " + error.message;
+                                    }
+                                    setErrorMessage(message);
+                                })
+                            .catch(err => { // TODO this code is wet as fuck
+                                setFailed(true);
+                                var message = "2Error getting availability status";
+                                // console.log("HEREREREREER");
+                                if (err.message) {
+                                    message += ": " + err.message;
+                                }
+                                setErrorMessage(message);
+                            });
+
+                    });*/
                 },
                     // Note: it's important to handle errors here
                     // instead of a catch() block so that we don't swallow
@@ -253,13 +311,15 @@ function CreateAvailabilityBody(props) {
                                 </td>
                                 <td>
                                     {
+                                        console.log("rendeirng...") ||
                                         // this is kinda fucked up
                                         // there is weird and hard to guarantee conditions between statuses set and availabilities map
                                         // need to figure how to manually trigger a refresh or do it better
-                                        statuses.has(availEntry[1].id) ?
+                                            (availEntry[1].status
+                                        ?
                                             availEntry[1].status
                                         :
-                                            'loading'
+                                            'loading')
                                     }
                                 </td>
                                 <td>
