@@ -214,9 +214,24 @@ function CreateAvailabilityBody(props) {
 
                         // availabilities.get(id)['status'] = status;
                         fetchedStatuses.set(id, status);
+
                         console.log("fetchedStatuses is:");
                         console.log(fetchedStatuses);
-                        setStatuses(fetchedStatuses); // TODO do i need both?
+
+                        // so, I am suspicious that the same pointer val will not trigger a render
+                        // in order to suss that out, i will deep copy the map and then setStatuses with the deep copy
+                        // dont worry, javascript is thread safe by default: https://www.mountainproject.com/route/105757333/south-prow
+                        const newFetchedStatuses = new Map(fetchedStatuses);
+                        // so it worked! nice!
+                        // now there are two things to go back through and fix immediately
+                        // 1) somehow statuses are fetched like a dozen times
+                        //      a) how many times?
+                        // 2) why tf do i have to make a new map?
+                        //      a) could just use an object
+                        //      b) could just do this too! https://azimi.io/es6-map-with-react-usestate-9175cd7b409b
+                        //      gonna do b
+
+                        setStatuses(newFetchedStatuses); // TODO do i need both?
                         // uhhh - gonna use two maps
                         // options
                         // 1) set a trick var to trigger a refresh
@@ -328,7 +343,7 @@ function CreateAvailabilityBody(props) {
                                         console.log("before") ||
                                         console.log((statuses.get(availEntry[0])
                                         ?
-                                            statuses.get(availEntry[0]).status
+                                            statuses.get(availEntry[0])
                                         :
                                             'loading')) ||
                                         console.log("after") || 
@@ -337,7 +352,7 @@ function CreateAvailabilityBody(props) {
                                         // need to figure how to manually trigger a refresh or do it better
                                             (statuses.get(availEntry[0])
                                         ?
-                                            statuses.get(availEntry[0]).status
+                                            statuses.get(availEntry[0])
                                         :
                                             'loading')
                                     }
