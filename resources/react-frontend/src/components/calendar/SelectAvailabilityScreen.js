@@ -55,7 +55,7 @@ function CreateAvailabilityBody(props) {
     ]);
 
     const [availabilities, setAvailabilities] = useState(new Map());
-    const [statuses, setStatuses] = useState(new Set());
+    const [statuses, setStatuses] = useState(new Map());
 
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -96,8 +96,8 @@ function CreateAvailabilityBody(props) {
                 .then((result) => {
                     const availabilitiesWithDates = new Map();
                     for (const [id, avail] of Object.entries(result)) {
-                        availabilitiesWithDates.set(id, {
-                            id: id,
+                        availabilitiesWithDates.set(id.toString(), {
+                            id: id.toString(),
                             endTime: moment.utc(avail.endTime).local().toDate(),
                             startTime: moment.utc(avail.startTime).local().toDate(),
                             subjects: avail.subjects,
@@ -193,6 +193,7 @@ function CreateAvailabilityBody(props) {
                 return;
             }
 
+            const fetchedStatuses = new Map();
             availabilities.forEach(avail => {
                 const url = `${availabilityLambdaUrl}/status/${avail.id}`;
                 const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
@@ -211,7 +212,11 @@ function CreateAvailabilityBody(props) {
                         const id = result.id;
                         const status = result.status;
 
-                        availabilities.get(id)['status'] = status;
+                        // availabilities.get(id)['status'] = status;
+                        fetchedStatuses.set(id, status);
+                        console.log("fetchedStatuses is:");
+                        console.log(fetchedStatuses);
+                        setStatuses(fetchedStatuses); // TODO do i need both?
                         // uhhh - gonna use two maps
                         // options
                         // 1) set a trick var to trigger a refresh
@@ -239,6 +244,7 @@ function CreateAvailabilityBody(props) {
                         setErrorMessage(message);
                     });
             });
+            setStatuses(fetchedStatuses);
         },
         [user]
     );
@@ -311,13 +317,27 @@ function CreateAvailabilityBody(props) {
                                 </td>
                                 <td>
                                     {
-                                        console.log("rendeirng...") ||
+                                        console.log("rendeirng... and statuses and availEntry are:") ||
+                                        console.log(statuses) ||
+                                        console.log(availEntry) ||
+                                        console.log("statuses[\"132\"] is:") ||
+                                        console.log(statuses.get("132")) || 
+                                        // the above definitely printed OPEN with what i would think would be the same code
+                                        console.log("statuses[132] is:") ||
+                                        console.log(statuses.get(132)) || 
+                                        console.log("before") ||
+                                        console.log((statuses.get(availEntry[0])
+                                        ?
+                                            statuses.get(availEntry[0]).status
+                                        :
+                                            'loading')) ||
+                                        console.log("after") || 
                                         // this is kinda fucked up
                                         // there is weird and hard to guarantee conditions between statuses set and availabilities map
                                         // need to figure how to manually trigger a refresh or do it better
-                                            (availEntry[1].status
+                                            (statuses.get(availEntry[0])
                                         ?
-                                            availEntry[1].status
+                                            statuses.get(availEntry[0]).status
                                         :
                                             'loading')
                                     }
