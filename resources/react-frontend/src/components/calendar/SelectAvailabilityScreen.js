@@ -48,6 +48,8 @@ export function SelectAvailabilityScreen(props) {
 // rerender situation. Ultimately, I like my mysterious compiler thing and
 // opted to satisfy it by moving this outside the component function instead
 // of removing the dependency thing and getting the warning.
+//
+// except its still fucked because getStatuses now depends on statuses, which it updates..
 const updateStatus = (id, status, statuses, setStatuses) => {
     statuses.set(id, status);
     const newStatuses = new Map(statuses);
@@ -115,8 +117,8 @@ function CreateAvailabilityBody(props) {
                 .then((result) => {
                     const availabilitiesWithDates = new Map();
                     for (const [id, avail] of Object.entries(result)) {
-                        availabilitiesWithDates.set(id.toString(), {
-                            id: id.toString(),
+                        availabilitiesWithDates.set(id, {
+                            id: id,
                             endTime: moment.utc(avail.endTime).local().toDate(),
                             startTime: moment.utc(avail.startTime).local().toDate(),
                             subjects: avail.subjects,
@@ -291,7 +293,8 @@ function CreateAvailabilityBody(props) {
 
         let text;
         let onClickHandler;
-        switch(availability.status) {
+        const status = statuses.get(availability.id);
+        switch(status) {
             case "OPEN":
                 text = "Request";
                 onClickHandler = onSendRequest;
