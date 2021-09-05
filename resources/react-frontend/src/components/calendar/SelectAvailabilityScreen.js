@@ -35,6 +35,25 @@ export function SelectAvailabilityScreen(props) {
     );
 }
 
+// Note, this has to be outside the below react component function
+// because it is a dependency in some of the other callback.
+// This means, that every render would make a new 'updateStatus' object
+// and that would trigger a perpetual rerender situation.
+// The typical mitigation for this situation is to wrap the function in a
+// 'useCallback' hook, but that isn't possible here without my mysterious
+// IDE settings yelling at me to include statuses and setStatuses as dependencies.
+// This also triggers a perpetual rerender situation, and pushing those
+// dependencies down further (ie calling update status with those as args)
+// makes the callee have to depend on them, which also causes a perpetual
+// rerender situation. Ultimately, I like my mysterious compiler thing and
+// opted to satisfy it by moving this outside the component function instead
+// of removing the dependency thing and getting the warning.
+const updateStatus = (id, status, statuses, setStatuses) => {
+    statuses.set(id, status);
+    const newStatuses = new Map(statuses);
+    setStatuses(newStatuses);
+}
+
 // TODO cool idea, allow start time and subject to be selectable here
 function CreateAvailabilityBody(props) {
     const availabilityLambdaUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
@@ -56,20 +75,6 @@ function CreateAvailabilityBody(props) {
 
     const [availabilities, setAvailabilities] = useState(new Map());
     const [statuses, setStatuses] = useState(new Map());
-
-    const updateStatus = useCallback(
-        (id, status, currentStatuses) => {
-            currentStatuses.set(id, status);
-            const newFetchedStatuses = new Map(currentStatuses);
-            setStatuses(newFetchedStatuses);
-        },
-        []
-    );
-
-
-
-
-
 
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -165,7 +170,7 @@ function CreateAvailabilityBody(props) {
                         const id = result.id;
                         const status = result.status;
 
-                        updateStatus(id, status, currentStatuses);
+                        updateStatus(id, status, statuses, setStatuses);
                     },
                         // Note: it's important to handle errors here
                         // instead of a catch() block so that we don't swallow
@@ -188,7 +193,7 @@ function CreateAvailabilityBody(props) {
                     });
             });
         },
-        [user, updateStatus]
+        [user]
     );
 
     useEffect(() => {
@@ -200,7 +205,7 @@ function CreateAvailabilityBody(props) {
     useEffect(() => {
         getStatuses(availabilities, statuses);
     }, [
-        availabilities, getStatuses, statuses
+        availabilities, getStatuses
     ]);
 
     const onCancel = () => {
@@ -239,7 +244,7 @@ function CreateAvailabilityBody(props) {
                 console.log(result);
                 // there should only be one..
                 for (const [id, avail] of Object.entries(result)) {
-                    updateStatus(id, avail.status, statuses);
+                    updateStatus(id, avail.status, statuses, setStatuses);
                 }
             },
                 // Note: it's important to handle errors here
@@ -308,8 +313,6 @@ function CreateAvailabilityBody(props) {
                 break;
         }
 
-        console.log("availability.id is;");
-        console.log(availability.id);
         return (
             <button onClick={onClickHandler} availabilityId={availability.id}>
                 {text}
