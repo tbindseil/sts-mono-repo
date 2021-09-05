@@ -35,27 +35,6 @@ export function SelectAvailabilityScreen(props) {
     );
 }
 
-// Note, this has to be outside the below react component function
-// because it is a dependency in some of the other callback.
-// This means, that every render would make a new 'updateStatus' object
-// and that would trigger a perpetual rerender situation.
-// The typical mitigation for this situation is to wrap the function in a
-// 'useCallback' hook, but that isn't possible here without my mysterious
-// IDE settings yelling at me to include statuses and setStatuses as dependencies.
-// This also triggers a perpetual rerender situation, and pushing those
-// dependencies down further (ie calling update status with those as args)
-// makes the callee have to depend on them, which also causes a perpetual
-// rerender situation. Ultimately, I like my mysterious compiler thing and
-// opted to satisfy it by moving this outside the component function instead
-// of removing the dependency thing and getting the warning.
-//
-// except its still fucked because getStatuses now depends on statuses, which it updates..
-const updateStatus = (id, status, statuses, setStatuses) => {
-    statuses.set(id, status);
-    const newStatuses = new Map(statuses);
-    setStatuses(newStatuses);
-}
-
 // TODO cool idea, allow start time and subject to be selectable here
 function CreateAvailabilityBody(props) {
     const availabilityLambdaUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
@@ -77,6 +56,20 @@ function CreateAvailabilityBody(props) {
 
     const [availabilities, setAvailabilities] = useState(new Map());
     const [statuses, setStatuses] = useState(new Map());
+    const updateStatus2 = useCallback(
+        (id, status) => {
+            const currStatus = statuses.get(id);
+            if (currStatus === status) {
+                // base case
+                return;
+            }
+            statuses.set(id, status);
+            const newStatuses = new Map(statuses);
+            setStatuses(newStatuses);
+        },
+        [statuses]
+    );
+
 
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -151,7 +144,8 @@ function CreateAvailabilityBody(props) {
     );
 
     const getStatuses = useCallback(
-        (availabilities, currentStatuses) => {
+        (availabilities) => {
+            console.log("infinite?");
             if (!user) {
                 return;
             }
@@ -172,7 +166,7 @@ function CreateAvailabilityBody(props) {
                         const id = result.id;
                         const status = result.status;
 
-                        updateStatus(id, status, statuses, setStatuses);
+                        updateStatus2(id, status);
                     },
                         // Note: it's important to handle errors here
                         // instead of a catch() block so that we don't swallow
@@ -195,7 +189,7 @@ function CreateAvailabilityBody(props) {
                     });
             });
         },
-        [user]
+        [user, updateStatus2]
     );
 
     useEffect(() => {
@@ -205,7 +199,7 @@ function CreateAvailabilityBody(props) {
     ]);
 
     useEffect(() => {
-        getStatuses(availabilities, statuses);
+        getStatuses(availabilities);
     }, [
         availabilities, getStatuses
     ]);
@@ -239,7 +233,7 @@ function CreateAvailabilityBody(props) {
                 console.log(result);
                 // there should only be one..
                 for (const [id, avail] of Object.entries(result)) {
-                    updateStatus(id, avail.status, statuses, setStatuses);
+                    updateStatus2(id, avail.status);
                 }
             },
                 // Note: it's important to handle errors here
