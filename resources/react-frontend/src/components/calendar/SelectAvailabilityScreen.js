@@ -217,14 +217,7 @@ function CreateAvailabilityBody(props) {
         });
     };
 
-    const onSendRequest = (event) => {
-        // get avail id
-        const availId = event.target.getAttribute("data");
-        const status = 'REQUESTED';
-
-        // TODO how to deal with loading for button here?
-
-        // send request
+    const updateRequestStatus = (availId, newStatus) => {
         const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
         fetch(availabilityRequestLambdaUrl, {
             method: 'PUT',
@@ -235,7 +228,7 @@ function CreateAvailabilityBody(props) {
             },
             body: JSON.stringify({
                 id: availId,
-                status: status
+                status: newStatus
             })
         })
             .then(res => res.json())
@@ -252,7 +245,7 @@ function CreateAvailabilityBody(props) {
                 // exceptions from actual bugs in components.
                 (error) => {
                     setFailed(true);
-                    var message = "1Error sending request";
+                    var message = "1Error updating request status";
                     if (error.message) {
                         message += ": " + error.message;
                     }
@@ -260,7 +253,7 @@ function CreateAvailabilityBody(props) {
                 })
             .catch(err => { // TODO this code is wet as fuck
                 setFailed(true);
-                var message = "2Error sending request";
+                var message = "2Error updating request status";
                 if (err.message) {
                     message += ": " + err.message;
                 }
@@ -268,8 +261,18 @@ function CreateAvailabilityBody(props) {
             });
     };
 
-    const onCancelRequest = (event) => {
+    const onSendRequest = (event) => {
+        const availId = event.target.getAttribute("data");
+        const status = 'REQUESTED';
 
+        updateRequestStatus(availId, status);
+    };
+
+    const onCancelRequest = (event) => {
+        const availId = event.target.getAttribute("data");
+        const status = 'CANCELED';
+
+        updateRequestStatus(availId, status);
     };
 
     const makeRequestAvailabilityButton = (availability) => {
