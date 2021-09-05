@@ -57,6 +57,20 @@ function CreateAvailabilityBody(props) {
     const [availabilities, setAvailabilities] = useState(new Map());
     const [statuses, setStatuses] = useState(new Map());
 
+    const updateStatus = useCallback(
+        (id, status, currentStatuses) => {
+            currentStatuses.set(id, status);
+            const newFetchedStatuses = new Map(currentStatuses);
+            setStatuses(newFetchedStatuses);
+        },
+        []
+    );
+
+
+
+
+
+
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -130,12 +144,11 @@ function CreateAvailabilityBody(props) {
     );
 
     const getStatuses = useCallback(
-        (availabilities) => {
+        (availabilities, currentStatuses) => {
             if (!user) {
                 return;
             }
 
-            const fetchedStatuses = new Map();
             availabilities.forEach(avail => {
                 const url = `${availabilityLambdaUrl}/status/${avail.id}`;
                 const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
@@ -152,9 +165,7 @@ function CreateAvailabilityBody(props) {
                         const id = result.id;
                         const status = result.status;
 
-                        fetchedStatuses.set(id, status);
-                        const newFetchedStatuses = new Map(fetchedStatuses);
-                        setStatuses(newFetchedStatuses);
+                        updateStatus(id, status, currentStatuses);
                     },
                         // Note: it's important to handle errors here
                         // instead of a catch() block so that we don't swallow
@@ -177,7 +188,7 @@ function CreateAvailabilityBody(props) {
                     });
             });
         },
-        [user]
+        [user, updateStatus]
     );
 
     useEffect(() => {
@@ -187,9 +198,9 @@ function CreateAvailabilityBody(props) {
     ]);
 
     useEffect(() => {
-        getStatuses(availabilities);
+        getStatuses(availabilities, statuses);
     }, [
-        availabilities, getStatuses
+        availabilities, getStatuses, statuses
     ]);
 
     const onCancel = () => {
@@ -199,6 +210,111 @@ function CreateAvailabilityBody(props) {
                 selectedDate: startTime
             }
         });
+    };
+
+    const onSendRequest = (event) => {
+        // get avail id
+        const availId = event.target.getAttribute("data");
+        const status = 'REQUESTED';
+
+        // TODO how to deal with loading for button here?
+
+        // send request
+        const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
+        fetch(availabilityRequestLambdaUrl, {
+            method: 'PUT',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': tokenString
+            },
+            body: JSON.stringify({
+                id: availId,
+                status: status
+            })
+        })
+            .then(res => res.json())
+            .then((result) => {
+                console.log("sendRequest result is:");
+                console.log(result);
+                // there should only be one..
+                for (const [id, avail] of Object.entries(result)) {
+                    updateStatus(id, avail.status, statuses);
+                }
+            },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    setFailed(true);
+                    var message = "1Error sending request";
+                    if (error.message) {
+                        message += ": " + error.message;
+                    }
+                    setErrorMessage(message);
+                })
+            .catch(err => { // TODO this code is wet as fuck
+                setFailed(true);
+                var message = "2Error sending request";
+                if (err.message) {
+                    message += ": " + err.message;
+                }
+                setErrorMessage(message);
+            });
+    };
+
+    const onCancelRequest = (event) => {
+
+    };
+
+    const makeRequestAvailabilityButton = (availability) => {
+        // possible avail statuses :
+        // OPEN
+        // REQEUSTED
+        // CLOSED
+        // ACCEPTED
+        // DENIED
+
+        // more TODO
+        // does UI need to know if user has already sent a request that woudl conflict?
+        // naw, backend babyy
+        // and just say, can't make another request when you have an overlapping accepted request
+        // this might need a state diagram tho
+
+        let text;
+        let onClickHandler;
+        switch(availability.status) {
+            case "OPEN":
+                text = "Request";
+                onClickHandler = onSendRequest;
+                break;
+            case "REQUESTED":
+            case "ACCEPTED":
+                text = "Cancel";
+                onClickHandler = onCancelRequest;
+                break;
+            case "DENIED":
+                text = "Not Requestable";
+                onClickHandler = () => {};
+                break;
+            default:
+                // TODO
+                // so this is kinda fucked
+                // and is basically what I was ranting about when starting this whole piece of work
+                // and the solution I have is to not show the avails until their statuses are calced
+                // then just not showing the ones that are CLOSED (requested and accepted for another tutor
+                text = "Not Requestable";
+                onClickHandler = () => {};
+                break;
+        }
+
+        console.log("availability.id is;");
+        console.log(availability.id);
+        return (
+            <button onClick={onClickHandler} availabilityId={availability.id}>
+                {text}
+            </button>
+        );
     };
 
     return (
@@ -232,6 +348,7 @@ function CreateAvailabilityBody(props) {
 
                 {
                     Array.from(availabilities.entries()).map(availEntry => {
+                        const status = statuses.get(availEntry[0]);
                         return (
                             <tr>
                                 <td>
@@ -248,17 +365,17 @@ function CreateAvailabilityBody(props) {
                                 </td>
                                 <td>
                                     {
-                                            (statuses.get(availEntry[0])
+                                            (status
                                         ?
-                                            statuses.get(availEntry[0])
+                                            status
                                         :
                                             'loading')
                                     }
                                 </td>
                                 <td>
-                                    <button>
-                                        TODO
-                                    </button>
+                                    {
+                                        makeRequestAvailabilityButton(availEntry[1])
+                                    }
                                 </td>
                             </tr>
                         );

@@ -384,16 +384,18 @@ the request button has 4 statuses: can request, request send, request accepted, 
     in addition to the new table it will also take some logic to show/not show avails that are accepted for someone else, etc etc...
         specifically,
             * need to show status per avail on "my calendar"
-                * cdk add resource - 
+                ** cdk add resource ?
+                ** not doing for now
             * need to show only open or pending on "calendar"
                 ** this requires sending requesting user in case they are "denied", see weird problem #2
+                ** not doing for now
 
 
 PAGINATION!!!!!
 
 denied requests in count??
 
-when a user selects request on an open avail, it sends a notification to the tutor and updates status
+when a user selects request on an open avail, it sends a notification to the tutor and updates status - TJTAG
 
 when a tutor accepts/denies a request, it sends a notification to the requester
     * should probably show accepted tutoring session on user's calendar
