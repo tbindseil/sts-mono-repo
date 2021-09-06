@@ -128,7 +128,7 @@ def get_status_handler(input, session, get_claims):
     if other_user_accepted_request_query.count() > 0:
         return availability_req_id_to_get_status, 'CLOSED'
 
-    user_request_query = session.query(AvailabilityRequest).filter(AvailabilityRequest.forAvailability==availability_req_id_to_get_status).filter(AvailabilityRequest.fromUser==cognito_id).filter(AvailabilityRequest.status!="DENID")
+    user_request_query = session.query(AvailabilityRequest).filter(AvailabilityRequest.forAvailability==availability_req_id_to_get_status).filter(AvailabilityRequest.fromUser==cognito_id).filter(AvailabilityRequest.status!="CANCELED")
     user_has_requested = user_request_query.count() > 0
 
     if user_has_requested:
@@ -142,8 +142,8 @@ def get_status_handler(input, session, get_claims):
 
         if user_request.status == 'DENIED':
             return availability_req_id_to_get_status, 'DENIED'
-    else:
-        return availability_req_id_to_get_status, 'OPEN'
+
+    return availability_req_id_to_get_status, 'OPEN'
 
 def get_status_output_translator(raw_output):
     id, status = raw_output

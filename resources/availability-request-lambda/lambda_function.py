@@ -63,7 +63,7 @@ def post_input_translator(event, context):
 def post_handler(input, session, get_claims):
     posted_availability_request = input
 
-    existing_request = session.query(AvailabilityRequest).filter(AvailabilityRequest.forAvailability==posted_availability_request.forAvailability).filter(AvailabilityRequest.fromUser==posted_availability_request.fromUser).count() > 0
+    existing_request = session.query(AvailabilityRequest).filter(AvailabilityRequest.forAvailability==posted_availability_request.forAvailability).filter(AvailabilityRequest.fromUser==posted_availability_request.fromUser).filter(AvailabilityRequest.status!='CANCELED').count() > 0
 
     if not existing_request:
         forAvailability = session.query(Availability).filter(Availability.id==posted_availability_request.forAvailability).one()
@@ -83,13 +83,12 @@ def put_input_translator(event, context):
     if body_map['status'] not in valid_statuses:
         raise InputException('Invalid status, options are REQUESTED, ACCEPTED, DENIED, CANCELED')
 
-    return body_map['id'], body_map['status']
+    return body_map['forAvailability'], body_map['fromUser'], body_map['status']
 
 def put_handler(input, session, get_claims):
-    # TODO limit new status and throw if invalid
-    avail_req_id, new_status = input
+    for_availability, from_user, new_status = input
 
-    avail_req_to_update = session.query(AvailabilityRequest).filter(AvailabilityRequest.id==avail_req_id).one()
+    avail_req_to_update = session.query(AvailabilityRequest).filter(AvailabilityRequest.forAvailability==for_availability).filter(AvailabilityRequest.fromUser==from_user).filter(AvailabilityRequest.status!='CANCELED').one()
     avail_req_to_update.status = new_status
     session.add(avail_req_to_update)
 

@@ -381,7 +381,7 @@ class TestLambdaFunction(unittest.TestCase):
 
         self.assertEqual(expected_status, returned_status)
 
-    def test_get_status_handler_returns_open_when_no_requests_from_requesting_user(self):
+    def test_get_status_handler_returns_OPEN_when_no_requests_from_requesting_user(self):
         avail = self.build_default_availability()
         self.session.add(avail)
         self.session.commit()
@@ -389,6 +389,28 @@ class TestLambdaFunction(unittest.TestCase):
         avail_request_not_from_requestor = AvailabilityRequest(self.another_cognito_id, avail.id)
         avail_request_not_from_requestor.status = 'DENIED'
         self.session.add(avail_request_not_from_requestor)
+        self.session.commit()
+
+        expected_status = str(avail.id), 'OPEN'
+        returned_status = lambda_function.get_status_handler('1', self.session, self.get_claims)
+
+        self.assertEqual(expected_status, returned_status)
+
+    def test_get_status_handler_returns_OPEN_when_all_requests_from_requesting_user_are_cancelled(self):
+        avail = self.build_default_availability()
+        self.session.add(avail)
+        self.session.commit()
+
+        avail_request_not_from_requestor = AvailabilityRequest(self.another_cognito_id, avail.id)
+        avail_request_not_from_requestor.status = 'DENIED'
+        avail.requests.append(avail_request_not_from_requestor)
+        self.session.add(avail)
+        self.session.commit()
+
+        canceled_avail_request_from_requestor = AvailabilityRequest(self.cognito_id, avail.id)
+        canceled_avail_request_from_requestor.status = 'CANCELED'
+        avail.requests.append(canceled_avail_request_from_requestor)
+        self.session.add(avail)
         self.session.commit()
 
         expected_status = str(avail.id), 'OPEN'

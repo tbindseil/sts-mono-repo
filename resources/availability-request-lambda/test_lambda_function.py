@@ -200,6 +200,29 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertAvailRequestEquals(expected_avail_req, resulting_avail_req)
         self.assertEqual(len(requesting_user.requestsSent), 1)
 
+    def test_post_does_add_when_from_user_already_has_canceled_requests(self):
+        avail = self.build_default_availability()
+        self.session.add(avail)
+        self.session.commit()
+        canceled_avail_req = AvailabilityRequest(self.another_cognito_id, avail.id)
+        canceled_avail_req.status = 'CANCELED'
+        avail.requests.append(canceled_avail_req)
+        self.session.add(avail)
+        self.session.commit()
+
+        avail_requests = self.session.query(Availability).filter(Availability.id==avail.id).one().requests
+        self.assertEqual(len(avail_requests), 1)
+
+        another_avail_req = AvailabilityRequest(self.another_cognito_id, avail.id)
+
+        raw_output = lambda_function.post_handler(another_avail_req, self.session, self.get_claims)
+        self.session.commit()
+
+        requesting_user = self.session.query(User).filter(User.cognitoId==self.another_cognito_id).one()
+        resulting_avail_req = requesting_user.requestsSent[1]
+        self.assertAvailRequestEquals(another_avail_req, resulting_avail_req)
+        self.assertEqual(len(requesting_user.requestsSent), 2)
+
     def test_post_output_translator(self):
         raw_output = "raw_output"
         actual_code, actual_response = lambda_function.post_output_translator(raw_output)
@@ -208,17 +231,19 @@ class TestLambdaFunction(unittest.TestCase):
 
     def test_put_input_translator(self):
         event = {"body": json.dumps({
-            "id": 'id',
+            "forAvailability": "forAvailability",
+            "fromUser": "fromUser",
             "status": 'DENIED'
         })}
 
         input = lambda_function.put_input_translator(event, "context")
 
-        self.assertEqual(('id', 'DENIED'), input)
+        self.assertEqual(('forAvailability', 'fromUser', 'DENIED'), input)
 
     def test_put_input_translator_throws_for_invalid_status(self):
         event = {"body": json.dumps({
-            "id": 'id',
+            "forAvailability": "forAvailability",
+            "fromUser": "fromUser",
             "status": 'INVALID_STATUS'
         })}
 
@@ -239,7 +264,7 @@ class TestLambdaFunction(unittest.TestCase):
 
         self.assertNotEqual(avail_req.status, new_status)
 
-        raw_output = lambda_function.put_handler((avail_req.id, new_status), self.session, self.get_claims)
+        raw_output = lambda_function.put_handler((avail.id, self.another_cognito_id, new_status), self.session, self.get_claims)
         self.session.commit()
 
         updated_avail_req = self.session.query(AvailabilityRequest).filter(AvailabilityRequest.id==avail_req.id).one()

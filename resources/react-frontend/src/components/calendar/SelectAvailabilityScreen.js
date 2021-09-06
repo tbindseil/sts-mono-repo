@@ -56,7 +56,7 @@ function CreateAvailabilityBody(props) {
 
     const [availabilities, setAvailabilities] = useState(new Map());
     const [statuses, setStatuses] = useState(new Map());
-    const updateStatus2 = useCallback(
+    const updateStatus = useCallback(
         (id, status) => {
             const currStatus = statuses.get(id);
             if (currStatus === status) {
@@ -167,7 +167,7 @@ function CreateAvailabilityBody(props) {
                         const id = result.id;
                         const status = result.status;
 
-                        updateStatus2(id, status);
+                        updateStatus(id, status);
                     },
                         // Note: it's important to handle errors here
                         // instead of a catch() block so that we don't swallow
@@ -190,7 +190,7 @@ function CreateAvailabilityBody(props) {
                     });
             });
         },
-        [user, updateStatus2]
+        [user, updateStatus]
     );
 
     useEffect(() => {
@@ -268,16 +268,14 @@ function CreateAvailabilityBody(props) {
                 'Authorization': tokenString
             },
             body: JSON.stringify({
-                id: availId,
+                forAvailability: availId,
+                fromUser: user.username,
                 status: newStatus
             })
         })
             .then(res => res.json())
             .then((result) => {
-                // there should only be one..
-                for (const [id, avail] of Object.entries(result)) {
-                    updateStatus2(id, avail.status);
-                }
+                getStatuses(availabilities);
             },
                 // Note: it's important to handle errors here
                 // instead of a catch() block so that we don't swallow
