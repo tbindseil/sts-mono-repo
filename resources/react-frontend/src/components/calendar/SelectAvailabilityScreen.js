@@ -76,6 +76,8 @@ function CreateAvailabilityBody(props) {
 
     const [loading, setLoading] = useState(false);
 
+    // TODO need to ignore own users availabilities
+    // maybe I also need to consider that the user shouldn't be able to make requests while they have availabilities
     const getAvailabilities = useCallback(
         (user) => {
             if (!user) {
@@ -145,7 +147,6 @@ function CreateAvailabilityBody(props) {
 
     const getStatuses = useCallback(
         (availabilities) => {
-            console.log("infinite?");
             if (!user) {
                 return;
             }
@@ -213,9 +214,53 @@ function CreateAvailabilityBody(props) {
         });
     };
 
-    const updateRequestStatus = (availId, newStatus) => {
+    const postRequestStatus = (availId) => {
+        // This is sort of a mistake, the id doesn't need to be appended to the url except I accidentaly made it like that in the cdk
+
         const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
         fetch(availabilityRequestLambdaUrl, {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': tokenString
+            },
+            body: JSON.stringify({
+                forAvailability: availId,
+                fromUser: user.username
+            })
+        })
+            .then(res => res.json())
+            .then((result) => {
+                getStatuses(availabilities);
+            },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    setFailed(true);
+                    var message = "1Error updating request status";
+                    if (error.message) {
+                        message += ": " + error.message;
+                    }
+                    setErrorMessage(message);
+                })
+            .catch(err => { // TODO this code is wet as fuck
+                setFailed(true);
+                var message = "2Error updating request status";
+                if (err.message) {
+                    message += ": " + err.message;
+                }
+                setErrorMessage(message);
+            });
+    };
+
+    const updateRequestStatus = (availId, newStatus) => {
+        // This is sort of a mistake, the id doesn't need to be appended to the url except I accidentaly made it like that in the cdk
+        const url = availabilityRequestLambdaUrl + "/" + availId;
+
+        const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
+        fetch(url, {
             method: 'PUT',
             mode: 'cors',
             headers: {
@@ -229,8 +274,6 @@ function CreateAvailabilityBody(props) {
         })
             .then(res => res.json())
             .then((result) => {
-                console.log("sendRequest result is:");
-                console.log(result);
                 // there should only be one..
                 for (const [id, avail] of Object.entries(result)) {
                     updateStatus2(id, avail.status);
@@ -259,9 +302,8 @@ function CreateAvailabilityBody(props) {
 
     const onSendRequest = (event) => {
         const availId = event.target.getAttribute("data");
-        const status = 'REQUESTED';
 
-        updateRequestStatus(availId, status);
+        postRequestStatus(availId);
     };
 
     const onCancelRequest = (event) => {
@@ -314,7 +356,7 @@ function CreateAvailabilityBody(props) {
         }
 
         return (
-            <button onClick={onClickHandler} availabilityId={availability.id}>
+            <button onClick={onClickHandler} data={availability.id}>
                 {text}
             </button>
         );

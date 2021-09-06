@@ -394,11 +394,25 @@ the request button has 4 statuses: can request, request send, request accepted, 
 PAGINATION!!!!!
 
 denied requests in count??
+own user's avails in count?
+can i make a request for a time htat i am available?
 
 when a user selects request on an open avail, it sends a notification to the tutor and updates status - TJTAG
+    * user can select and cancel request
+    * tutor receives notification of request received
 
-when a tutor accepts/denies a request, it sends a notification to the requester
-    * should probably show accepted tutoring session on user's calendar
+avail requests need show up on profile
+    * requests sent
+    * requests received
+
+tutor can accept or deny requests
+    * from notificaiton
+    * from profile
+
+user receives notification upon request being accepted or denied
+    * upon accept, contact info is exchanged to both
+        * same email to both ?
+    * should probably show accepted tutoring session on both users' calendar
 
 weird problem #1, can a request be pending by multiple people? if so, what happens when one is accepted? basically I would say that the rest get notified that the tutor has accepted another individual
 

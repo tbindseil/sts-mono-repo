@@ -10,6 +10,7 @@ from models.user import User
 from models.availability import Availability
 from models.availability import AvailabilityRequest
 
+
 def get_input_translator(event, context):
     qsp_map = jsondatetime.loads(event['queryStringParameters']['getAvailRequestInput'])
 
@@ -56,8 +57,8 @@ def get_output_translator(raw_output):
 
 
 def post_input_translator(event, context):
-    return json_to_model(event["body"], AvailabilityRequest)
-
+    body_dict = json.loads(event["body"])
+    return AvailabilityRequest(body_dict["fromUser"], body_dict["forAvailability"])
 
 def post_handler(input, session, get_claims):
     posted_availability_request = input
@@ -73,6 +74,7 @@ def post_handler(input, session, get_claims):
 
 def post_output_translator(raw_output):
     return 200, json.dumps(raw_output)
+
 
 def put_input_translator(event, context):
     body_map = json.loads(event['body'])
@@ -103,6 +105,7 @@ def put_output_translator(raw_output):
     }
 
     return 200, json.dumps(response)
+
 
 def delete_input_translator(event, context):
     return event['path'].split('/')[-1]
@@ -152,9 +155,12 @@ def lambda_handler(event, context):
     elif event["httpMethod"] == "POST":
         post_glh = GLH(post_input_translator, post_handler, post_output_translator)
         return post_glh.handle(event, context)
+    elif event["httpMethod"] == "PUT":
+        put_glh = GLH(put_input_translator, put_handler, put_output_translator)
+        return put_glh.handle(event, context)
     elif event["httpMethod"] == "DELETE":
         delete_glh = GLH(delete_input_translator, delete_handler, delete_output_translator)
         return delete_glh.handle(event, context)
     else:
-        valid_http_methods = ["GET", "POST", "DELETE"]
+        valid_http_methods = ["GET", "POST", "PUT", "DELETE"]
         return invalid_http_method_factory(valid_http_methods)
