@@ -10,6 +10,9 @@ from models.user import User
 from models.availability import Availability
 from models.availability import AvailabilityRequest
 
+import boto3
+from botocore.exceptions import ClientError
+
 
 def get_input_translator(event, context):
     qsp_map = jsondatetime.loads(event['queryStringParameters']['getAvailRequestInput'])
@@ -68,7 +71,69 @@ def post_handler(input, session, get_claims):
     if not existing_request:
         forAvailability = session.query(Availability).filter(Availability.id==posted_availability_request.forAvailability).one()
         forAvailability.requests.append(posted_availability_request)
-        session.add(forAvailability)
+        session.add(forAvailability) # should add happen after the send_email call?
+
+        tutor = session.query(User).filter(User.cognitoId==forAvailability.tutor).one()
+        recipients = [tutor.parentEmail]
+        if tutor.email:
+            recipients.append(confirmed_user.email)
+
+        # TODO the below needs to be librarified
+        # lets just do it rn
+
+        # send notification to tutor about request
+        CHARSET = "UTF-8"
+        BODY_TEXT = ("Someone has requested your availability!\r\n"
+                     "You can accept, deny, or ignore this request.\r\n"
+                     "Visit studentsts.org/profile to accept or deny."
+                    )
+
+        SUBJECT = "Someone Requested Your Availability"
+        SENDER = "Sender Name <tjbindseil@gmail.com>" # TODO when librarifying, make this noreply@studentsts.org
+        BODY_HTML = """<html>
+        <head></head>
+        <body>
+        <h1>Someone has requested your availability!</h1>
+        <p>You can accept, deny, or ignore this request.</p>
+        <br/>
+        <p>Visit <a href='https://studentsts.org/profile'>Profile Page</a> to accept or deny</p>
+        </body>
+        </html>
+                    """
+
+        client = boto3.client('ses', region_name='us-west-2')
+
+        try:
+            #Provide the contents of the email.
+            response = client.send_email(
+                Destination={
+                    'ToAddresses': recipients,
+                },
+                Message={
+                    'Body': {
+                        'Html': {
+                            'Charset': CHARSET,
+                            'Data': BODY_HTML,
+                        },
+                        'Text': {
+                            'Charset': CHARSET,
+                            'Data': BODY_TEXT,
+                        },
+                    },
+                    'Subject': {
+                        'Charset': CHARSET,
+                        'Data': SUBJECT,
+                    },
+                },
+                Source=SENDER,
+                # If you are not using a configuration set, comment or delete the
+                # following line
+                # ConfigurationSetName=CONFIGURATION_SET,
+            )
+        # Display an error if something goes wrong.
+        except ClientError as e:
+            print(e.response['Error']['Message'])
+            raise e
 
     return "success"
 

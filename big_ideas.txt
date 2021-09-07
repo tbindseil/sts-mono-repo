@@ -398,7 +398,7 @@ own user's avails in count?
 can i make a request for a time htat i am available?
 
 when a user selects request on an open avail, it sends a notification to the tutor and updates status - TJTAG
-    * user can select and cancel request
+    * user can select and cancel request - done
     * tutor receives notification of request received
 
 avail requests need show up on profile
