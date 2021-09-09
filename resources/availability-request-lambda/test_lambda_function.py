@@ -14,8 +14,19 @@ from models import Base
 from models.user import User
 from models.availability import Availability
 from models.availability_request import AvailabilityRequest
+from notifications import notifications
+# from notifications.notifications import send_notification
 
 import lambda_function
+
+
+# TODO probably need some place to put test helpers
+def Any():
+    class Any():
+        def __eq__(self, other):
+            return True
+    return Any()
+
 
 class TestLambdaFunction(unittest.TestCase):
     engine = create_engine('sqlite:///:memory:') # note tear down not needed since this is in memory
@@ -165,6 +176,7 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertAvailRequestEquals(expected_avail_req, input)
 
     def test_post_adds_availability_request(self):
+        notifications.send_notification = MagicMock()
         avail = self.build_default_availability()
         self.session.add(avail)
         self.session.commit()
@@ -179,6 +191,7 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertEqual(len(requesting_user.requestsSent), 1)
 
     def test_post_does_not_add_when_from_user_already_has_request(self):
+        notifications.send_notification = MagicMock()
         avail = self.build_default_availability()
         self.session.add(avail)
         self.session.commit()
@@ -201,6 +214,7 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertEqual(len(requesting_user.requestsSent), 1)
 
     def test_post_does_add_when_from_user_already_has_canceled_requests(self):
+        notifications.send_notification = MagicMock()
         avail = self.build_default_availability()
         self.session.add(avail)
         self.session.commit()
@@ -222,6 +236,21 @@ class TestLambdaFunction(unittest.TestCase):
         resulting_avail_req = requesting_user.requestsSent[1]
         self.assertAvailRequestEquals(another_avail_req, resulting_avail_req)
         self.assertEqual(len(requesting_user.requestsSent), 2)
+
+    def test_post_handler_sends_notification_to_tutor(self):
+        mock_send_notification = MagicMock()
+        notifications.send_notification = mock_send_notification
+
+        avail = self.build_default_availability()
+        self.session.add(avail)
+        self.session.commit()
+        expected_avail_req = AvailabilityRequest(self.another_cognito_id, avail.id)
+
+        raw_output = lambda_function.post_handler(expected_avail_req, self.session, self.get_claims)
+        self.session.commit()
+
+        expected_recipients = ["user.parentEmail", "email"]
+        mock_send_notification.assert_called_once_with(expected_recipients, Any(), Any(), Any())
 
     def test_post_output_translator(self):
         raw_output = "raw_output"

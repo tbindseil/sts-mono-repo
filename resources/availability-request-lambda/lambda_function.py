@@ -9,6 +9,7 @@ from guided_lambda_handler.translators import json_to_model
 from models.user import User
 from models.availability import Availability
 from models.availability import AvailabilityRequest
+from notifications import notifications
 
 import boto3
 from botocore.exceptions import ClientError
@@ -76,21 +77,16 @@ def post_handler(input, session, get_claims):
         tutor = session.query(User).filter(User.cognitoId==forAvailability.tutor).one()
         recipients = [tutor.parentEmail]
         if tutor.email:
-            recipients.append(confirmed_user.email)
-
-        # TODO the below needs to be librarified
-        # lets just do it rn
+            recipients.append(tutor.email)
 
         # send notification to tutor about request
-        CHARSET = "UTF-8"
-        BODY_TEXT = ("Someone has requested your availability!\r\n"
+        body_text = ("Someone has requested your availability!\r\n"
                      "You can accept, deny, or ignore this request.\r\n"
                      "Visit studentsts.org/profile to accept or deny."
                     )
 
-        SUBJECT = "Someone Requested Your Availability"
-        SENDER = "Sender Name <tjbindseil@gmail.com>" # TODO when librarifying, make this noreply@studentsts.org
-        BODY_HTML = """<html>
+        subject = "Someone Requested Your Availability"
+        body_html = """<html>
         <head></head>
         <body>
         <h1>Someone has requested your availability!</h1>
@@ -103,37 +99,7 @@ def post_handler(input, session, get_claims):
 
         client = boto3.client('ses', region_name='us-west-2')
 
-        try:
-            #Provide the contents of the email.
-            response = client.send_email(
-                Destination={
-                    'ToAddresses': recipients,
-                },
-                Message={
-                    'Body': {
-                        'Html': {
-                            'Charset': CHARSET,
-                            'Data': BODY_HTML,
-                        },
-                        'Text': {
-                            'Charset': CHARSET,
-                            'Data': BODY_TEXT,
-                        },
-                    },
-                    'Subject': {
-                        'Charset': CHARSET,
-                        'Data': SUBJECT,
-                    },
-                },
-                Source=SENDER,
-                # If you are not using a configuration set, comment or delete the
-                # following line
-                # ConfigurationSetName=CONFIGURATION_SET,
-            )
-        # Display an error if something goes wrong.
-        except ClientError as e:
-            print(e.response['Error']['Message'])
-            raise e
+        response = notifications.send_notification(recipients, body_html, body_text, subject)
 
     return "success"
 
