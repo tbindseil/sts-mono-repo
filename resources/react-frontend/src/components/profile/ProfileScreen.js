@@ -38,6 +38,7 @@ function ProfileBody(props) {
 
     // TODO dry access this from cfn exports somehow, and keep it dry, its in delete now
     const baseUrl = 'https://oercmchy3l.execute-api.us-west-2.amazonaws.com/prod/';
+    const availabilityRequestsBaseUrl = 'https://04c0w1j888.execute-api.us-west-2.amazonaws.com/prod/';
 
     const [editting, setEditting] = useState(false);
 
@@ -89,6 +90,70 @@ function ProfileBody(props) {
                     setErrorMessage("Error getting profile");
                 }
             );
+
+        // get avail requests sent
+        const availRequestSentUrl = new URL(availabilityRequestsBaseUrl);
+        const getAvailRequestsInput = {
+            forUser: "",
+            forAvailability: 0,
+            fromUser: user.username
+        };
+        availRequestSentUrl.searchParams.append('getAvailRequestInput', JSON.stringify(getAvailRequestsInput));
+        const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
+        fetch(availRequestSentUrl, {
+                method: 'GET',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': tokenString
+                },
+            })
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    console.log("requests sent result is:");
+                    console.log(result);
+                },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    setFailed(true);
+                    setErrorMessage("Error getting requests sent");
+                }
+            );
+
+        // get avail requests recieved
+        const availRequestReceivedUrl = new URL(availabilityRequestsBaseUrl);
+        const getAvailRequestsReceivedInput = {
+            forUser: user.username,
+            forAvailability: 0,
+            fromUser: ""
+        };
+        availRequestReceivedUrl.searchParams.append('getAvailRequestInput', JSON.stringify(getAvailRequestsReceivedInput));
+        fetch(availRequestReceivedUrl, {
+                method: 'GET',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': tokenString
+                },
+            })
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    console.log("requests received result is:");
+                    console.log(result);
+                },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    setFailed(true);
+                    setErrorMessage("Error getting requests received");
+                }
+            );
+
     }, [
         user
     ]);
