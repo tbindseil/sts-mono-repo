@@ -102,8 +102,12 @@ class TestLambdaFunction(unittest.TestCase):
 
         raw_output = lambda_function.get_handler((avail1.id, "", ""), self.session, self.get_claims)
 
-        self.assertAvailRequestEquals(avail_req1, raw_output[0])
-        self.assertEqual(len(raw_output), 1)
+        requests, avails = raw_output
+
+        self.assertAvailRequestEquals(avail_req1, requests[0])
+        self.assertEqual(len(requests), 1)
+        self.assertAvailEquals(avail1, avails[avail1.id])
+        self.assertEqual(len(avails), 1)
 
     def test_get_returns_all_avail_requests_by_from_user(self):
         avail = self.build_default_availability()
@@ -119,8 +123,12 @@ class TestLambdaFunction(unittest.TestCase):
 
         raw_output = lambda_function.get_handler(("", self.cognito_id, ""), self.session, self.get_claims)
 
-        self.assertAvailRequestEquals(avail_req1, raw_output[0])
-        self.assertEqual(len(raw_output), 1)
+        requests, avails = raw_output
+
+        self.assertAvailRequestEquals(avail_req1, requests[0])
+        self.assertEqual(len(requests), 1)
+        self.assertAvailEquals(avail, avails[avail.id])
+        self.assertEqual(len(avails), 1)
 
     def test_get_returns_all_avail_requests_by_for_user(self):
         avail1 = self.build_default_availability()
@@ -142,8 +150,12 @@ class TestLambdaFunction(unittest.TestCase):
 
         raw_output = lambda_function.get_handler(("", "", self.cognito_id), self.session, self.get_claims)
 
-        self.assertAvailRequestEquals(avail_req1, raw_output[0])
-        self.assertEqual(len(raw_output), 1)
+        requests, avails = raw_output
+
+        self.assertAvailRequestEquals(avail_req1, requests[0])
+        self.assertEqual(len(requests), 1)
+        self.assertAvailEquals(avail1, avails[avail1.id])
+        self.assertEqual(len(avails), 1)
 
     def test_get_output_translator(self):
         avail = self.build_default_availability()
@@ -159,7 +171,7 @@ class TestLambdaFunction(unittest.TestCase):
 
         raw_output = lambda_function.get_handler((avail.id, "", ""), self.session, self.get_claims)
         output = lambda_function.get_output_translator(raw_output)
-        expected_output = 200, '{"1": {"fromUser": "' + self.cognito_id + '", "forAvailability": ' + str(avail.id) + ', "status": "REQUESTED"}, "2": {"fromUser": "' + self.another_cognito_id + '", "forAvailability": ' + str(avail.id) + ', "status": "REQUESTED"}}'
+        expected_output = 200, '{"1": {"fromUser": "' + self.cognito_id + '", "forAvailability": ' + str(avail.id) + ', "status": "REQUESTED", "startTime": "' + avail.startTime.strftime('%Y-%m-%dT%H:%M:%S.%fZ') + '", "subject": "' + avail.subjects + '"}, "2": {"fromUser": "' + self.another_cognito_id + '", "forAvailability": ' + str(avail.id) + ', "status": "REQUESTED", "startTime": "' + avail.startTime.strftime('%Y-%m-%dT%H:%M:%S.%fZ') + '", "subject": "' + avail.subjects + '"}}'
 
         self.assertEqual(output, expected_output)
 
@@ -366,3 +378,9 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertEqual(expected_avail_request.fromUser, actual_avail_request.fromUser)
         self.assertEqual(expected_avail_request.forAvailability, actual_avail_request.forAvailability)
         self.assertEqual(expected_avail_request.status, actual_avail_request.status)
+
+    def assertAvailEquals(self, expected_avail, actual_avail):
+        self.assertEqual(expected_avail.subjects, actual_avail.subjects)
+        self.assertEqual(expected_avail.startTime, actual_avail.startTime)
+        self.assertEqual(expected_avail.endTime, actual_avail.endTime)
+        self.assertEqual(expected_avail.tutor, actual_avail.tutor)

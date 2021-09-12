@@ -44,17 +44,25 @@ def get_handler(input, session, get_claims):
         raw_output.append(request)
     raw_output.extend(for_user_requests)
 
-    return raw_output
+    # I want deets on avails
+    avails = {}
+    for request in raw_output:
+        forAvail = session.query(Availability).filter(Availability.id==request.forAvailability).one()
+        avails[forAvail.id] = forAvail
+
+    return raw_output, avails
 
 def get_output_translator(raw_output):
-    availabily_requests = raw_output
+    availabily_requests, avails = raw_output
 
     response = {}
     for avail_req in availabily_requests:
         response[avail_req.id] = {
             'fromUser': avail_req.fromUser,
             'forAvailability': avail_req.forAvailability,
-            'status': avail_req.status
+            'status': avail_req.status,
+            'startTime': avails[avail_req.forAvailability].startTime.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+            'subject': avails[avail_req.forAvailability].subjects
         }
 
     return 200, json.dumps(response)
@@ -171,13 +179,6 @@ def lambda_handler(event, context):
 
     print("event is:")
     print(event)
-
-    # wow does this break the plan..
-    # does it though?
-    path = event["path"]
-    if "/status/" in path:
-        get_status_glh = GLH(get_status_input_translator, get_status_handler, get_status_output_translator)
-        return get_status_glh.handle(event, context)
 
     if event["httpMethod"] == "GET":
         get_glh = GLH(get_input_translator, get_handler, get_output_translator)

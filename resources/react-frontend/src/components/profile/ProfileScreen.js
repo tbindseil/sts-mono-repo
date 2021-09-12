@@ -90,9 +90,14 @@ function ProfileBody(props) {
                     setErrorMessage("Error getting profile");
                 }
             );
+    }, [
+        user
+    ]);
 
-    // const [requestsSent, setRequestsSent] = useState([]);
-    // const [requestsReceived, setRequestsReceived] = useState([]);
+    const getRequestsSent = useCallback(() => {
+        if (!user) {
+            return;
+        }
 
         // get avail requests sent
         const availRequestSentUrl = new URL(availabilityRequestsBaseUrl);
@@ -116,6 +121,7 @@ function ProfileBody(props) {
                 (result) => {
                     console.log("requests sent result is:");
                     console.log(result);
+                    setRequestsSent(result);
                 },
                 // Note: it's important to handle errors here
                 // instead of a catch() block so that we don't swallow
@@ -125,6 +131,14 @@ function ProfileBody(props) {
                     setErrorMessage("Error getting requests sent");
                 }
             );
+    }, [
+        user
+    ]);
+
+    const getRequestsReceived = useCallback(() => {
+        if (!user) {
+            return;
+        }
 
         // get avail requests recieved
         const availRequestReceivedUrl = new URL(availabilityRequestsBaseUrl);
@@ -134,6 +148,7 @@ function ProfileBody(props) {
             fromUser: ""
         };
         availRequestReceivedUrl.searchParams.append('getAvailRequestInput', JSON.stringify(getAvailRequestsReceivedInput));
+        const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
         fetch(availRequestReceivedUrl, {
                 method: 'GET',
                 mode: 'cors',
@@ -147,6 +162,7 @@ function ProfileBody(props) {
                 (result) => {
                     console.log("requests received result is:");
                     console.log(result);
+                    setRequestsReceived(result);
                 },
                 // Note: it's important to handle errors here
                 // instead of a catch() block so that we don't swallow
@@ -156,7 +172,6 @@ function ProfileBody(props) {
                     setErrorMessage("Error getting requests received");
                 }
             );
-
     }, [
         user
     ]);
@@ -176,8 +191,19 @@ function ProfileBody(props) {
         user, getProfile
     ]);
 
-    const [requestsSent, setRequestsSent] = useState([]);
-    const [requestsReceived, setRequestsReceived] = useState([]);
+    const [requestsSent, setRequestsSent] = useState(new Map());
+    useEffect(() => {
+        getRequestsSent();
+    }, [
+        user, getRequestsSent
+    ]);
+
+    const [requestsReceived, setRequestsReceived] = useState(new Map());
+    useEffect(() => {
+        getRequestsReceived();
+    }, [
+        user, getRequestsReceived
+    ]);
 
     const editProfileOnClickHandler = () => {
         setEditting(true);
@@ -372,6 +398,7 @@ function ProfileBody(props) {
             //      notes:
             //          get all data at once (a little faster?)
             //          i don't have to make reusable code
+            // I decided to enhance existing
         }
                                     Request Sent
                                 </td>

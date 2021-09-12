@@ -51,7 +51,7 @@ export class AvailabilityRequestLambdaService extends Construct {
 
         const availabilityRequest = api.root.addResource("{availability-request-id}");
 
-        // update user with: PUT /{availability-request-id}
+        // update avail request with: PUT /{availability-request-id}
         const putAvailabilityRequestIntegration = new LambdaIntegration(handler, {
             timeout: Duration.seconds(29)
         });
