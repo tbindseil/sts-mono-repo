@@ -59,15 +59,26 @@ function CreateAvailabilityBody(props) {
     const updateStatus = useCallback(
         (id, status) => {
             const currStatus = statuses.get(id);
+            console.log("curr status and status are:");
+            console.log(currStatus);
+            console.log(status);
             if (currStatus === status) {
                 // base case
                 return;
             }
+            console.log("seting status to:");
+            console.log(status);
             statuses.set(id, status);
             const newStatuses = new Map(statuses);
+            console.log("does new statuses = statuses?");
+            if (newStatuses === statuses) {
+                console.log("@@@@@@@@@@@@@@ yes @@@@@@@@@@@@@@@");
+            } else {
+                console.log("@@@@@@@@@@@@@@ no @@@@@@@@@@@@@@@");
+            }
             setStatuses(newStatuses);
         },
-        [statuses]
+        [statuses, setStatuses]
     );
 
 
@@ -164,6 +175,8 @@ function CreateAvailabilityBody(props) {
                 })
                     .then(res => res.json())
                     .then((result) => {
+                        console.log("getting a result and it is:");
+                        console.log(result);
                         const id = result.id;
                         const status = result.status;
 
@@ -392,6 +405,9 @@ function CreateAvailabilityBody(props) {
                 {
                     Array.from(availabilities.entries()).map(availEntry => {
                         const status = statuses.get(availEntry[0]);
+                        console.log("$$$$$$$$$$$$$$$$$$$$$$$$$ rendering and is:");
+                        console.log("status is:");
+                        console.log(status);
                         return (
                             <tr>
                                 <td>

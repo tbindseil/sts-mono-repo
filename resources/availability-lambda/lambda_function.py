@@ -118,36 +118,48 @@ def delete_output_translator(raw_output):
 def get_status_input_translator(event, context):
     return event['path'].split('/')[-1]
 
+# TODO rename or fix or whatever
+# now I am getting whole availability, but there is already get_availability stuff above
 def get_status_handler(input, session, get_claims):
-    availability_req_id_to_get_status = input
+    availability_id_to_get = input
+
+    availability_to_get = session.query(Availability).filter(Availability.id==availability_id_to_get).one()
 
     claims = get_claims()
     cognito_id = claims["cognito:username"]
 
-    other_user_accepted_request_query = session.query(AvailabilityRequest).filter(AvailabilityRequest.forAvailability==availability_req_id_to_get_status).filter(AvailabilityRequest.fromUser!=cognito_id).filter(AvailabilityRequest.status=='ACCEPTED')
+    other_user_accepted_request_query = session.query(AvailabilityRequest).filter(AvailabilityRequest.forAvailability==availability_id_to_get).filter(AvailabilityRequest.fromUser!=cognito_id).filter(AvailabilityRequest.status=='ACCEPTED')
     if other_user_accepted_request_query.count() > 0:
-        return availability_req_id_to_get_status, 'CLOSED'
+        return availability_to_get, 'CLOSED'
 
-    user_request_query = session.query(AvailabilityRequest).filter(AvailabilityRequest.forAvailability==availability_req_id_to_get_status).filter(AvailabilityRequest.fromUser==cognito_id).filter(AvailabilityRequest.status!="CANCELED")
+    user_request_query = session.query(AvailabilityRequest).filter(AvailabilityRequest.forAvailability==availability_id_to_get).filter(AvailabilityRequest.fromUser==cognito_id).filter(AvailabilityRequest.status!="CANCELED")
     user_has_requested = user_request_query.count() > 0
 
     if user_has_requested:
         user_request = user_request_query.one()
 
         if user_request.status == 'ACCEPTED':
-            return availability_req_id_to_get_status, 'ACCEPTED'
+            return availability_to_get, 'ACCEPTED'
 
         if user_request.status == 'REQUESTED':
-            return availability_req_id_to_get_status, 'REQUESTED'
+            return availability_to_get, 'REQUESTED'
 
         if user_request.status == 'DENIED':
-            return availability_req_id_to_get_status, 'DENIED'
+            return availability_to_get, 'DENIED'
 
-    return availability_req_id_to_get_status, 'OPEN'
+    return availability_to_get, 'OPEN'
 
 def get_status_output_translator(raw_output):
-    id, status = raw_output
-    return 200, json.dumps({'status': status, 'id': id})
+    avail, status = raw_output
+    response = {
+        'id': avail.id,
+        'subjects': avail.subjects,
+        'startTime': avail.startTime.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+        'endTime': avail.endTime.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+        'tutor': avail.tutor,
+        'status': status,
+    }
+    return 200, json.dumps(response)
 
 
 def lambda_handler(event, context):

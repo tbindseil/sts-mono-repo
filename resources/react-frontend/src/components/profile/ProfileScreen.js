@@ -91,6 +91,9 @@ function ProfileBody(props) {
                 }
             );
 
+    // const [requestsSent, setRequestsSent] = useState([]);
+    // const [requestsReceived, setRequestsReceived] = useState([]);
+
         // get avail requests sent
         const availRequestSentUrl = new URL(availabilityRequestsBaseUrl);
         const getAvailRequestsInput = {
@@ -172,6 +175,9 @@ function ProfileBody(props) {
     }, [
         user, getProfile
     ]);
+
+    const [requestsSent, setRequestsSent] = useState([]);
+    const [requestsReceived, setRequestsReceived] = useState([]);
 
     const editProfileOnClickHandler = () => {
         setEditting(true);
@@ -328,6 +334,52 @@ function ProfileBody(props) {
                             </tr>
                         }
 
+                    </table>
+
+                {
+                    // so maybe it is better to jump to a ViewRequestScreen,
+                    // this screen would know whether to let the user cancel from the same screen
+                    // as they could..., well basically this is just another positive result of being able
+                    // to navigate to the same page from here as from the requestss page, less code duplication
+                    // blah blah blah
+                }
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>
+                                    Requests Sent
+                                </th>
+                                <th>
+                                    Requests Received
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+        {
+            // what info do i want to display anyways?
+            // date, time, subject, status
+            // already have status
+            //
+            // so i have a fork in the road
+            // 1) take forAvail and request deets about the avail
+            //      notes:
+            //          more restful
+            //          already started the beginning, but I would need an api to get single avail by id
+            // 2) enhance existing or make new api in order to return avail deets
+            //      notes:
+            //          get all data at once (a little faster?)
+            //          i don't have to make reusable code
+        }
+                                    Request Sent
+                                </td>
+                                <td>
+                                    Request Received
+                                </td>
+                            </tr>
+                        </tbody>
                     </table>
 
                     { failed &&

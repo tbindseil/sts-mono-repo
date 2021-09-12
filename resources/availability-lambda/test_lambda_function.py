@@ -331,7 +331,7 @@ class TestLambdaFunction(unittest.TestCase):
         self.session.add(avail_request_not_from_requestor)
         self.session.commit()
 
-        expected_status = str(avail.id), 'CLOSED'
+        expected_status = avail, 'CLOSED'
         returned_status = lambda_function.get_status_handler('1', self.session, self.get_claims)
 
         self.assertEqual(expected_status, returned_status)
@@ -346,7 +346,7 @@ class TestLambdaFunction(unittest.TestCase):
         self.session.add(avail_request_from_requestor)
         self.session.commit()
 
-        expected_status = str(avail.id), 'ACCEPTED'
+        expected_status = avail, 'ACCEPTED'
         returned_status = lambda_function.get_status_handler('1', self.session, self.get_claims)
 
         self.assertEqual(expected_status, returned_status)
@@ -361,7 +361,7 @@ class TestLambdaFunction(unittest.TestCase):
         self.session.add(avail_request_from_requestor)
         self.session.commit()
 
-        expected_status = str(avail.id), 'REQUESTED'
+        expected_status = avail, 'REQUESTED'
         returned_status = lambda_function.get_status_handler('1', self.session, self.get_claims)
 
         self.assertEqual(expected_status, returned_status)
@@ -376,7 +376,7 @@ class TestLambdaFunction(unittest.TestCase):
         self.session.add(avail_request_from_requestor)
         self.session.commit()
 
-        expected_status = str(avail.id), 'DENIED'
+        expected_status = avail, 'DENIED'
         returned_status = lambda_function.get_status_handler('1', self.session, self.get_claims)
 
         self.assertEqual(expected_status, returned_status)
@@ -391,7 +391,7 @@ class TestLambdaFunction(unittest.TestCase):
         self.session.add(avail_request_not_from_requestor)
         self.session.commit()
 
-        expected_status = str(avail.id), 'OPEN'
+        expected_status = avail, 'OPEN'
         returned_status = lambda_function.get_status_handler('1', self.session, self.get_claims)
 
         self.assertEqual(expected_status, returned_status)
@@ -413,17 +413,27 @@ class TestLambdaFunction(unittest.TestCase):
         self.session.add(avail)
         self.session.commit()
 
-        expected_status = str(avail.id), 'OPEN'
+        expected_status = avail, 'OPEN'
         returned_status = lambda_function.get_status_handler('1', self.session, self.get_claims)
 
         self.assertEqual(expected_status, returned_status)
 
     def test_get_status_output_translator(self):
-        expected_id = '1'
+        avail = self.build_default_availability()
         expected_status = 'STATUS'
-        actual_code, actual_response = lambda_function.get_status_output_translator((expected_id, expected_status))
+        actual_code, actual_response = lambda_function.get_status_output_translator((avail, expected_status))
         self.assertEqual(200, actual_code)
-        self.assertEqual(json.dumps({'status': expected_status, 'id': expected_id}), actual_response)
+
+        expected_response = json.dumps({
+            'id': avail.id,
+            'subjects': avail.subjects,
+            'startTime': avail.startTime.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+            'endTime': avail.endTime.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+            'tutor': avail.tutor,
+            'status': expected_status,
+        })
+        self.assertEqual(expected_response, actual_response)
+
 
     def tearDown(self):
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
