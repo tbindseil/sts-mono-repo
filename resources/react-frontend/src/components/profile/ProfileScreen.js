@@ -191,14 +191,14 @@ function ProfileBody(props) {
         user, getProfile
     ]);
 
-    const [requestsSent, setRequestsSent] = useState(new Map());
+    const [requestsSent, setRequestsSent] = useState({});
     useEffect(() => {
         getRequestsSent();
     }, [
         user, getRequestsSent
     ]);
 
-    const [requestsReceived, setRequestsReceived] = useState(new Map());
+    const [requestsReceived, setRequestsReceived] = useState({});
     useEffect(() => {
         getRequestsReceived();
     }, [
@@ -376,15 +376,54 @@ function ProfileBody(props) {
                                 <th>
                                     Requests Sent
                                 </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                Array.from(Object.entries(requestsSent)).map(requestEntry =>
+                                    <tr>
+                                        <td>
+                                            {requestEntry[1].subject}
+                                        </td>
+                                    </tr>
+                                )
+                            }
+                        </tbody>
+                    </table>
+
+                {
+                    // since each is its own table, have a row for subjects, starttime, tutor/requestor, and button
+                }
+
+                    <table>
+                        <thead>
+                            <tr>
                                 <th>
                                     Requests Received
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
+                            {
+                                Array.from(Object.entries(requestsReceived)).map(requestEntry =>
+                                    <tr>
+                                        <td>
+                                            {requestEntry[1].subject}
+                                        </td>
+                                    </tr>
+                                )
+                            }
+                        </tbody>
+                    </table>
+
+
+
         {
+
+            // TODO tutor and requestor in description?????
+
+                            // <tr>
+                                // <td>
             // what info do i want to display anyways?
             // date, time, subject, status
             // already have status
@@ -399,15 +438,20 @@ function ProfileBody(props) {
             //          get all data at once (a little faster?)
             //          i don't have to make reusable code
             // I decided to enhance existing
+            //
+            // now, how do i show two lists with potentially different lengths?
+            // 1) take max of both lenghts, and iterate that many times (this is for basic table)
+            // 2) two vertical flexboxes
+            //      one flexbox for received, and one for sent
+            //      they grow indefinitely, and each card takes the space needed
+            // 3) two vertical lists, not flexboxes - check
+                                    // Request Sent
+                                // </td>
+                                // <td>
+                                    // Request Received
+                                // </td>
+                            // </tr>
         }
-                                    Request Sent
-                                </td>
-                                <td>
-                                    Request Received
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
 
                     { failed &&
                         <p className="ErrorMessage">{errorMessage}</p>
