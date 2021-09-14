@@ -10,7 +10,8 @@ import {Title} from '../layout/Title';
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
 
 import {updateRequestStatus} from "../fetch-enhancements/update-status";
-import {makeStandardErrorHandler} from "../fetch-enhancements/error-handling";
+import {makeStandardErrorAndCatchHandlers} from "../fetch-enhancements/error-handling";
+import {makePostRequestStatusCall} from '../fetch-enhancements/fetch-call-builders';
 
 export function SelectAvailabilityScreen(props) {
     return (
@@ -103,6 +104,11 @@ function CreateAvailabilityBody(props) {
             url.searchParams.append('getAvailInput', JSON.stringify(getAvailInput));
 
             const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
+
+            const prefix = "Error getting availabilities";
+            const [getAvailabilitiesErrorHandler, getAvailabilitiesCatchHandler] =
+                    makeStandardErrorAndCatchHandlers(setFailed, setErrorMessage, prefix);
+
             fetch(url, {
                 method: 'GET',
                 mode: 'cors',
@@ -129,20 +135,10 @@ function CreateAvailabilityBody(props) {
                     // instead of a catch() block so that we don't swallow
                     // exceptions from actual bugs in components.
                     (error) => {
-                        setFailed(true);
-                        var message = "1Error getting availabilties";
-                        if (error.message) {
-                            message += ": " + error.message;
-                        }
-                        setErrorMessage(message);
+                        getAvailabilitiesErrorHandler(error);
                     })
-                .catch(err => { // TODO this code is wet as fuck
-                    setFailed(true);
-                    var message = "2Error getting availabilties";
-                    if (err.message) {
-                        message += ": " + err.message;
-                    }
-                    setErrorMessage(message);
+                .catch(error => { // TODO this code is wet as fuck
+                    getAvailabilitiesCatchHandler(error);
                 });
         },
         [startTime, subject]
@@ -153,6 +149,10 @@ function CreateAvailabilityBody(props) {
             if (!user) {
                 return;
             }
+
+            const prefix = "Error getting statuses";
+            const [getStatusesErrorHandler, getStatusesCatchHandler] =
+                    makeStandardErrorAndCatchHandlers(setFailed, setErrorMessage, prefix);
 
             availabilities.forEach(avail => {
                 const url = `${availabilityLambdaUrl}/status/${avail.id}`;
@@ -176,20 +176,10 @@ function CreateAvailabilityBody(props) {
                         // instead of a catch() block so that we don't swallow
                         // exceptions from actual bugs in components.
                         (error) => {
-                            setFailed(true);
-                            var message = "1Error getting availabilties";
-                            if (error.message) {
-                                message += ": " + error.message;
-                            }
-                            setErrorMessage(message);
+                            getStatusesErrorHandler(error);
                         })
-                    .catch(err => { // TODO this code is wet as fuck
-                        setFailed(true);
-                        var message = "2Error getting availabilties";
-                        if (err.message) {
-                            message += ": " + err.message;
-                        }
-                        setErrorMessage(message);
+                    .catch(error => { // TODO this code is wet as fuck
+                        getStatusesCatchHandler(error);
                     });
             });
         },
@@ -217,51 +207,21 @@ function CreateAvailabilityBody(props) {
         });
     };
 
-    const postRequestStatus = (availId) => {
-        // This is sort of a mistake, the id doesn't need to be appended to the url except I accidentaly made it like that in the cdk
-
-        const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
-        fetch(availabilityRequestLambdaUrl, {
-            method: 'POST',
-            mode: 'cors',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': tokenString
-            },
-            body: JSON.stringify({
-                forAvailability: availId,
-                fromUser: user.username
-            })
-        })
-            .then(res => res.json())
-            .then((result) => {
-                getStatuses(availabilities);
-            },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
-                (error) => {
-                    setFailed(true);
-                    var message = "1Error updating request status";
-                    if (error.message) {
-                        message += ": " + error.message;
-                    }
-                    setErrorMessage(message);
-                })
-            .catch(err => { // TODO this code is wet as fuck
-                setFailed(true);
-                var message = "2Error updating request status";
-                if (err.message) {
-                    message += ": " + err.message;
-                }
-                setErrorMessage(message);
-            });
-    };
-
     const onSendRequest = (event) => {
         const availId = event.target.getAttribute("data");
 
-        postRequestStatus(availId);
+        const body = JSON.stringify({
+            forAvailability: availId,
+            fromUser: user.username
+        });
+
+        const successCallback = (result) => {
+            console.log("in success callback");
+            getStatuses(availabilities);
+        };
+
+        const call = makePostRequestStatusCall(user, body, successCallback);
+        call();
     };
 
     const onCancelRequest = (event) => {
@@ -271,8 +231,8 @@ function CreateAvailabilityBody(props) {
         const successHandler = (result) => getStatuses(availabilities);
 
         const prefix = "Error updating request";
-        const cancelRequestErrorHandler = makeStandardErrorHandler(setFailed, setErrorMessage, prefix);
-        const cancelRequestCatchHandler = makeStandardErrorHandler(setFailed, setErrorMessage, `in catch: ${prefix}`);
+        const [cancelRequestErrorHandler, cancelRequestCatchHandler] =
+                makeStandardErrorAndCatchHandlers(setFailed, setErrorMessage, prefix);
 
         updateRequestStatus(availId,
                             status,
