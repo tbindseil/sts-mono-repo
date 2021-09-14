@@ -9,6 +9,9 @@ import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
 
+import {updateRequestStatus} from "../fetch-enhancements/update-status";
+import {makeStandardErrorHandler} from "../fetch-enhancements/error-handling";
+
 export function SelectAvailabilityScreen(props) {
     return (
         <div className="TopLevelContainer">
@@ -255,49 +258,6 @@ function CreateAvailabilityBody(props) {
             });
     };
 
-    const updateRequestStatus = (availId, newStatus) => {
-        // This is sort of a mistake, the id doesn't need to be appended to the url except I accidentaly made it like that in the cdk
-        const url = availabilityRequestLambdaUrl + "/" + availId;
-
-        const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
-        fetch(url, {
-            method: 'PUT',
-            mode: 'cors',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': tokenString
-            },
-            body: JSON.stringify({
-                forAvailability: availId,
-                fromUser: user.username,
-                status: newStatus
-            })
-        })
-            .then(res => res.json())
-            .then((result) => {
-                getStatuses(availabilities);
-            },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
-                (error) => {
-                    setFailed(true);
-                    var message = "1Error updating request status";
-                    if (error.message) {
-                        message += ": " + error.message;
-                    }
-                    setErrorMessage(message);
-                })
-            .catch(err => { // TODO this code is wet as fuck
-                setFailed(true);
-                var message = "2Error updating request status";
-                if (err.message) {
-                    message += ": " + err.message;
-                }
-                setErrorMessage(message);
-            });
-    };
-
     const onSendRequest = (event) => {
         const availId = event.target.getAttribute("data");
 
@@ -308,7 +268,18 @@ function CreateAvailabilityBody(props) {
         const availId = event.target.getAttribute("data");
         const status = 'CANCELED';
 
-        updateRequestStatus(availId, status);
+        const successHandler = (result) => getStatuses(availabilities);
+
+        const prefix = "Error updating request";
+        const cancelRequestErrorHandler = makeStandardErrorHandler(setFailed, setErrorMessage, prefix);
+        const cancelRequestCatchHandler = makeStandardErrorHandler(setFailed, setErrorMessage, `in catch: ${prefix}`);
+
+        updateRequestStatus(availId,
+                            status,
+                            user,
+                            successHandler,
+                            cancelRequestErrorHandler,
+                            cancelRequestCatchHandler);
     };
 
     const makeRequestAvailabilityButton = (availability) => {

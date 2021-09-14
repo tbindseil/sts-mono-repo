@@ -1,6 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import MediaQuery from 'react-responsive';
 
+import moment from 'moment';
 import {useHistory} from 'react-router-dom';
 import {cloneDeep} from 'lodash';
 
@@ -64,6 +65,7 @@ function ProfileBody(props) {
                 (result) => {
                     const profile = {
                         email: result.email,
+                        username: result.cognitoId,
                         firstName: result.firstName,
                         lastName: result.lastName,
                         school: result.school,
@@ -79,6 +81,7 @@ function ProfileBody(props) {
                 (error) => {
                     setProfile({
                         email: "",
+                        username: "",
                         firstName: "",
                         lastName: "",
                         school: "",
@@ -178,6 +181,7 @@ function ProfileBody(props) {
 
     const [profile, setProfile] = useState({
         email: "",
+        username: "",
         firstName: "",
         lastName: "",
         school: "",
@@ -234,6 +238,7 @@ function ProfileBody(props) {
             .catch(error => {
                 setProfile({
                     email: "",
+                    username:"",
                     firstName: "",
                     lastName: "",
                     school: "",
@@ -268,6 +273,34 @@ function ProfileBody(props) {
         setProfile(updatedProfile);
     }
 
+    const makeRequestSentActionButton = (status) => {
+        switch(status) {
+            case "REQUESTED":
+            case "ACCEPTED":
+                return (
+                    <button cancelRequest>
+                        Cancel
+                    </button>
+                );
+            case "DENIED":
+            case "CANCELLED":
+            default:
+                return (
+                    <button>
+                        No Action
+                    </button>
+                );
+        }
+    }
+
+    const makeRequestReceivedActionButton = (status) => {
+        return (
+            <button>
+                No Action
+            </button>
+        );
+    }
+
     return (
         <>
             <header className={props.pageBorderClass}>
@@ -283,6 +316,13 @@ function ProfileBody(props) {
                             name={"email"}
                             label={"Email:"}
                             value={profile.email}
+                            readOnly={true}/>
+
+                        <FormTableRow
+                            onChange={handleChange}
+                            name={"username"}
+                            label={"Username:"}
+                            value={profile.username}
                             readOnly={true}/>
 
                         <FormTableRow
@@ -370,11 +410,26 @@ function ProfileBody(props) {
                     // blah blah blah
                 }
 
-                    <table>
+                    <h2>
+                        Requests Sent
+                    </h2>
+                    <table className="Centered ProfileRequestsTable">
                         <thead>
                             <tr>
                                 <th>
-                                    Requests Sent
+                                    Start Time
+                                </th>
+                                <th>
+                                    Subjects
+                                </th>
+                                <th>
+                                    Tutor
+                                </th>
+                                <th>
+                                    Status
+                                </th>
+                                <th>
+                                    Action
                                 </th>
                             </tr>
                         </thead>
@@ -383,7 +438,21 @@ function ProfileBody(props) {
                                 Array.from(Object.entries(requestsSent)).map(requestEntry =>
                                     <tr>
                                         <td>
+                                            {moment(requestEntry[1].startTime).format("LT")}
+                                        </td>
+                                        <td>
                                             {requestEntry[1].subject}
+                                        </td>
+                                        <td>
+                                            {requestEntry[1].tutor}
+                                        </td>
+                                        <td>
+                                            {requestEntry[1].status}
+                                        </td>
+                                        <td>
+                                            {
+                                                makeRequestSentActionButton(requestEntry[1].status)
+                                            }
                                         </td>
                                     </tr>
                                 )
@@ -391,15 +460,26 @@ function ProfileBody(props) {
                         </tbody>
                     </table>
 
-                {
-                    // since each is its own table, have a row for subjects, starttime, tutor/requestor, and button
-                }
-
-                    <table>
+                    <h2>
+                        Requests Received
+                    </h2>
+                    <table className="Centered ProfileRequestsTable">
                         <thead>
                             <tr>
                                 <th>
-                                    Requests Received
+                                    Start Time
+                                </th>
+                                <th>
+                                    Subjects
+                                </th>
+                                <th>
+                                    Student
+                                </th>
+                                <th>
+                                    Status
+                                </th>
+                                <th>
+                                    Action
                                 </th>
                             </tr>
                         </thead>
@@ -408,7 +488,21 @@ function ProfileBody(props) {
                                 Array.from(Object.entries(requestsReceived)).map(requestEntry =>
                                     <tr>
                                         <td>
+                                            {`${moment(requestEntry[1].startTime).format("L")} ${moment(requestEntry[1].startTime).format("LT")}`}
+                                        </td>
+                                        <td>
                                             {requestEntry[1].subject}
+                                        </td>
+                                        <td>
+                                            {requestEntry[1].fromUser}
+                                        </td>
+                                        <td>
+                                            {requestEntry[1].status}
+                                        </td>
+                                        <td>
+                                            {
+                                                makeRequestReceivedActionButton(requestEntry[1].status)
+                                            }
                                         </td>
                                     </tr>
                                 )

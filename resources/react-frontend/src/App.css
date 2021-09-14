@@ -659,3 +659,8 @@ a { /* gotta override bootstrap here */
     display: inline;
     vertical-align: top;
 }
+
+.ProfileRequestsTable td, th {
+    padding: 5px;
+    text-align: left;
+}

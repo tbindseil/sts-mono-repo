@@ -107,7 +107,7 @@ def post_handler(input, session, get_claims):
 
         client = boto3.client('ses', region_name='us-west-2')
 
-        response = notifications.send_notification(recipients, body_html, body_text, subject)
+        # TODO in cdk... response = notifications.send_notification(recipients, body_html, body_text, subject)
 
     return "success"
 
