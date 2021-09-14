@@ -25,6 +25,7 @@ export const makeStandardErrorHandler = (setFailed, setErrorMessage, errorMessag
 // } else {
 //      vals are expected to be provided
 // }
+// TODO should be able to deprecate the below
 export const makeStandardErrorAndCatchHandlers = (setFailed, setErrorMessage, errorMessagePrefix = "") => {
     const cancelRequestErrorHandler = makeStandardErrorHandler(setFailed, setErrorMessage, errorMessagePrefix);
     const cancelRequestCatchHandler = makeStandardErrorHandler(setFailed, setErrorMessage, `in catch: ${errorMessagePrefix}`);

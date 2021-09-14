@@ -9,9 +9,8 @@ import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
 
-import {updateRequestStatus} from "../fetch-enhancements/update-status";
 import {makeStandardErrorAndCatchHandlers} from "../fetch-enhancements/error-handling";
-import {makePostRequestStatusCall} from '../fetch-enhancements/fetch-call-builders';
+import {makePostRequestStatusCall, makeUpdateRequestStatus} from '../fetch-enhancements/fetch-call-builders';
 
 export function SelectAvailabilityScreen(props) {
     return (
@@ -210,36 +209,36 @@ function CreateAvailabilityBody(props) {
     const onSendRequest = (event) => {
         const availId = event.target.getAttribute("data");
 
-        const body = JSON.stringify({
-            forAvailability: availId,
-            fromUser: user.username
-        });
-
         const successCallback = (result) => {
-            console.log("in success callback");
             getStatuses(availabilities);
         };
 
-        const call = makePostRequestStatusCall(user, body, successCallback);
+        const call = makePostRequestStatusCall(user,
+                                               availId,
+                                               user.username,
+                                               successCallback,
+                                               setFailed,
+                                               setErrorMessage,
+                                               'Error posting request');
         call();
     };
 
     const onCancelRequest = (event) => {
         const availId = event.target.getAttribute("data");
-        const status = 'CANCELED';
+        const newStatus = 'CANCELED';
 
-        const successHandler = (result) => getStatuses(availabilities);
+        const successHandler = (result) => {
+            getStatuses(availabilities);
+        };
 
-        const prefix = "Error updating request";
-        const [cancelRequestErrorHandler, cancelRequestCatchHandler] =
-                makeStandardErrorAndCatchHandlers(setFailed, setErrorMessage, prefix);
-
-        updateRequestStatus(availId,
-                            status,
-                            user,
-                            successHandler,
-                            cancelRequestErrorHandler,
-                            cancelRequestCatchHandler);
+        const call = makeUpdateRequestStatus(user,
+                                             availId,
+                                             newStatus,
+                                             successHandler,
+                                             setFailed,
+                                             setErrorMessage,
+                                             "Error updating request");
+        call();
     };
 
     const makeRequestAvailabilityButton = (availability) => {
