@@ -10,7 +10,7 @@ import {Title} from '../layout/Title';
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
 
 import {makeStandardErrorAndCatchHandlers} from "../fetch-enhancements/error-handling";
-import {makePostRequestStatusCall, makeUpdateRequestStatus} from '../fetch-enhancements/fetch-call-builders';
+import {makePostRequestStatusCall, makeUpdateRequestStatus, makeGetAvailabilities} from '../fetch-enhancements/fetch-call-builders';
 
 export function SelectAvailabilityScreen(props) {
     return (
@@ -87,58 +87,34 @@ function CreateAvailabilityBody(props) {
                 return;
             }
 
-            // startTime and endTime are 12:00:00 am of sunday morning and 11:59:59 of saturday night for week of selectedDate
-            const requestStartTime = moment(startTime).toDate();
-            const requestEndTime = moment(startTime).add('minute', 30).toDate();
-            const url = new URL(availabilityLambdaUrl)
-            const getAvailInput = {
-                username: "*",
-                subject: subject,
-                startTime: requestStartTime,
-                endTime: requestEndTime
-            };
-
             // TODO need to show time slot, all the more reason to make it searchable here too
 
-            url.searchParams.append('getAvailInput', JSON.stringify(getAvailInput));
+            const successHandler = (result) => {
+                console.log("result  is :");
+                console.log(result);
+                console.log("in success Handler");
+                const availabilitiesWithDates = new Map();
+                for (const [id, avail] of Object.entries(result)) {
+                    availabilitiesWithDates.set(id, {
+                        id: id,
+                        endTime: moment.utc(avail.endTime).local().toDate(),
+                        startTime: moment.utc(avail.startTime).local().toDate(),
+                        subjects: avail.subjects,
+                        tutor: avail.tutor,
+                    });
+                }
+                setAvailabilities(availabilitiesWithDates);
+            };
 
-            const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
-
-            const prefix = "Error getting availabilities";
-            const [getAvailabilitiesErrorHandler, getAvailabilitiesCatchHandler] =
-                    makeStandardErrorAndCatchHandlers(setFailed, setErrorMessage, prefix);
-
-            fetch(url, {
-                method: 'GET',
-                mode: 'cors',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': tokenString
-                },
-            })
-                .then(res => res.json())
-                .then((result) => {
-                    const availabilitiesWithDates = new Map();
-                    for (const [id, avail] of Object.entries(result)) {
-                        availabilitiesWithDates.set(id, {
-                            id: id,
-                            endTime: moment.utc(avail.endTime).local().toDate(),
-                            startTime: moment.utc(avail.startTime).local().toDate(),
-                            subjects: avail.subjects,
-                            tutor: avail.tutor,
-                        });
-                    }
-                    setAvailabilities(availabilitiesWithDates);
-                },
-                    // Note: it's important to handle errors here
-                    // instead of a catch() block so that we don't swallow
-                    // exceptions from actual bugs in components.
-                    (error) => {
-                        getAvailabilitiesErrorHandler(error);
-                    })
-                .catch(error => { // TODO this code is wet as fuck
-                    getAvailabilitiesCatchHandler(error);
-                });
+            const call = makeGetAvailabilities(user,
+                                               subject,
+                                               startTime,
+                                               successHandler,
+                                               setFailed,
+                                               setErrorMessage,
+                                               "Error getting availabilities");
+            console.log("calling");
+            call();
         },
         [startTime, subject]
     );

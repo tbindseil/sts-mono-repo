@@ -1,6 +1,9 @@
+import moment from 'moment';
+
 import {makeStandardErrorHandler} from "../fetch-enhancements/error-handling";
 
 // TODO maybe import from cdk output eventually?
+const AVAILABILITY_LAMBDA_URL = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
 const AVAILABILITY_REQUEST_URL = 'https://04c0w1j888.execute-api.us-west-2.amazonaws.com/prod/';
 
 const makeBasicFetchCall = (props) => {
@@ -89,6 +92,37 @@ export const makeUpdateRequestStatus = (user,
             fromUser: user.username,
             status: newStatus
         }),
+        successCallback: successCallback,
+        setFailed: setFailed,
+        setErrorMessage: setErrorMessage,
+        errorMessagePrefix: errorMessagePrefix
+    });
+}
+
+export const makeGetAvailabilities = (user,
+                                      subject,
+                                      startTime,
+                                      successCallback,
+                                      setFailed,
+                                      setErrorMessage,
+                                      errorMessagePrefix) => {
+    const url = new URL(AVAILABILITY_LAMBDA_URL);
+
+    // startTime and endTime are 12:00:00 am of sunday morning and 11:59:59 of saturday night for week of selectedDate
+    const requestStartTime = moment(startTime).toDate();
+    const requestEndTime = moment(startTime).add('minute', 30).toDate();
+    const getAvailInput = {
+        username: "*",
+        subject: subject,
+        startTime: requestStartTime,
+        endTime: requestEndTime
+    };
+    url.searchParams.append('getAvailInput', JSON.stringify(getAvailInput));
+
+    return makeAuthenticatedFetchCall({
+        url: url,
+        user: user,
+        method: 'GET',
         successCallback: successCallback,
         setFailed: setFailed,
         setErrorMessage: setErrorMessage,
