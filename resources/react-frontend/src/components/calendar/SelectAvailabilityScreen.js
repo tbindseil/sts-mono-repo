@@ -90,9 +90,6 @@ function CreateAvailabilityBody(props) {
             // TODO need to show time slot, all the more reason to make it searchable here too
 
             const successHandler = (result) => {
-                console.log("result  is :");
-                console.log(result);
-                console.log("in success Handler");
                 const availabilitiesWithDates = new Map();
                 for (const [id, avail] of Object.entries(result)) {
                     availabilitiesWithDates.set(id, {
@@ -113,7 +110,6 @@ function CreateAvailabilityBody(props) {
                                                setFailed,
                                                setErrorMessage,
                                                "Error getting availabilities");
-            console.log("calling");
             call();
         },
         [startTime, subject]

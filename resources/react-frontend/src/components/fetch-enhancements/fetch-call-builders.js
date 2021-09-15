@@ -27,7 +27,7 @@ const makeBasicFetchCall = (props) => {
             headers: props.headers,
             body: props.body
         })
-            .then(result => result.json)
+            .then(result => result.json())
             .then(
                 result => props.successCallback(result),
                 error => props.errorCallback(error)
