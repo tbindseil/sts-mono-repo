@@ -103,13 +103,15 @@ function CreateAvailabilityBody(props) {
                 setAvailabilities(availabilitiesWithDates);
             };
 
-            const call = makeGetAvailabilities(user,
-                                               subject,
-                                               startTime,
-                                               successHandler,
-                                               setFailed,
-                                               setErrorMessage,
-                                               "Error getting availabilities");
+            // TODO, use ...errorProps here, then maybe even roll them into a component
+            // gonna put this in a new folder (named ?? base-components)
+            // I should move header and footer there
+            const call = makeGetAvailabilities({user: user,
+                                                subject: subject,
+                                                startTime: startTime,
+                                                successHandler: successHandler,
+                                                setFailed: setFailed,
+                                                setErrorMessage: setErrorMessage});
             call();
         },
         [startTime, subject]
@@ -181,17 +183,16 @@ function CreateAvailabilityBody(props) {
     const onSendRequest = (event) => {
         const availId = event.target.getAttribute("data");
 
-        const successCallback = (result) => {
+        const successHandler = (result) => {
             getStatuses(availabilities);
         };
 
-        const call = makePostRequestStatusCall(user,
-                                               availId,
-                                               user.username,
-                                               successCallback,
-                                               setFailed,
-                                               setErrorMessage,
-                                               'Error posting request');
+        const call = makePostRequestStatusCall({user: user,
+                                                availId: availId,
+                                                username: user.username,
+                                                successHandler: successHandler,
+                                                setFailed: setFailed,
+                                                setErrorMessage: setErrorMessage});
         call();
     };
 
@@ -203,13 +204,12 @@ function CreateAvailabilityBody(props) {
             getStatuses(availabilities);
         };
 
-        const call = makeUpdateRequestStatus(user,
-                                             availId,
-                                             newStatus,
-                                             successHandler,
-                                             setFailed,
-                                             setErrorMessage,
-                                             "Error updating request");
+        const call = makeUpdateRequestStatus({user: user,
+                                              availId: availId,
+                                              newStatus: newStatus,
+                                              successHandler: successHandler,
+                                              setFailed: setFailed,
+                                              setErrorMessage: setErrorMessage});
         call();
     };
 

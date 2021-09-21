@@ -8,11 +8,11 @@ const AVAILABILITY_REQUEST_URL = 'https://04c0w1j888.execute-api.us-west-2.amazo
 
 const makeBasicFetchCall = (props) => {
     // default error handling
-    if (!props.errorCallback) {
-        props.errorCallback = makeStandardErrorHandler(props.setFailed, props.setErrorMessage, props.errorMessagePrefix);
+    if (!props.errorHandler) {
+        props.errorHandler = makeStandardErrorHandler(props.setFailed, props.setErrorMessage, props.errorMessagePrefix);
     }
-    if (!props.catchCallback) {
-        props.catchCallback = makeStandardErrorHandler(props.setFailed, props.setErrorMessage, `In catch: ${props.errorMessagePrefix}`);
+    if (!props.catchHandler) {
+        props.catchHandler = makeStandardErrorHandler(props.setFailed, props.setErrorMessage, `In catch: ${props.errorMessagePrefix}`);
     }
 
     props.headers ?
@@ -29,10 +29,10 @@ const makeBasicFetchCall = (props) => {
         })
             .then(result => result.json())
             .then(
-                result => props.successCallback(result),
-                error => props.errorCallback(error)
+                result => props.successHandler(result),
+                error => props.errorHandler(error)
             )
-            .catch(error => props.catchCallback(error));
+            .catch(error => props.catchHandler(error));
     };
 
     return fetchCall;
@@ -48,72 +48,54 @@ const makeAuthenticatedFetchCall = (props) => {
     return makeBasicFetchCall(props);
 }
 
-export const makePostRequestStatusCall = (user,
-                                          availId,
-                                          username,
-                                          successCallback,
-                                          setFailed,
-                                          setErrorMessage,
-                                          errorMessagePrefix) => {
+export const makePostRequestStatusCall = (props) => {
 
     const body = JSON.stringify({
-        forAvailability: availId,
-        fromUser: username
+        forAvailability: props.availId,
+        fromUser: props.username
     });
 
     return makeAuthenticatedFetchCall({
         url: AVAILABILITY_REQUEST_URL,
-        user: user,
+        user: props.user,
         method: 'POST',
         body: body,
-        successCallback: successCallback,
-        setFailed: setFailed,
-        setErrorMessage: setErrorMessage,
-        errorMessagePrefix: errorMessagePrefix
+        successHandler: props.successHandler,
+        setFailed: props.setFailed,
+        setErrorMessage: props.setErrorMessage,
+        errorMessagePrefix: 'Error posting request'
     });
 };
 
-export const makeUpdateRequestStatus = (user,
-                                        availId,
-                                        newStatus,
-                                        successCallback,
-                                        setFailed,
-                                        setErrorMessage,
-                                        errorMessagePrefix) => {
+export const makeUpdateRequestStatus = (props) => {
 
-    const url = AVAILABILITY_REQUEST_URL + "/" + availId;
+    const url = AVAILABILITY_REQUEST_URL + "/" + props.availId;
 
     return makeAuthenticatedFetchCall({
         url: url,
-        user: user,
+        user: props.user,
         method: 'PUT',
         body: JSON.stringify({
-            forAvailability: availId,
-            fromUser: user.username,
-            status: newStatus
+            forAvailability: props.availId,
+            fromUser: props.user.username,
+            status: props.newStatus
         }),
-        successCallback: successCallback,
-        setFailed: setFailed,
-        setErrorMessage: setErrorMessage,
-        errorMessagePrefix: errorMessagePrefix
+        successHandler: props.successHandler,
+        setFailed: props.setFailed,
+        setErrorMessage: props.setErrorMessage,
+        errorMessagePrefix: "Error updating request"
     });
 }
 
-export const makeGetAvailabilities = (user,
-                                      subject,
-                                      startTime,
-                                      successCallback,
-                                      setFailed,
-                                      setErrorMessage,
-                                      errorMessagePrefix) => {
+export const makeGetAvailabilities = (props) => {
     const url = new URL(AVAILABILITY_LAMBDA_URL);
 
     // startTime and endTime are 12:00:00 am of sunday morning and 11:59:59 of saturday night for week of selectedDate
-    const requestStartTime = moment(startTime).toDate();
-    const requestEndTime = moment(startTime).add('minute', 30).toDate();
+    const requestStartTime = moment(props.startTime).toDate();
+    const requestEndTime = moment(props.startTime).add('minute', 30).toDate();
     const getAvailInput = {
         username: "*",
-        subject: subject,
+        subject: props.subject,
         startTime: requestStartTime,
         endTime: requestEndTime
     };
@@ -121,11 +103,11 @@ export const makeGetAvailabilities = (user,
 
     return makeAuthenticatedFetchCall({
         url: url,
-        user: user,
+        user: props.user,
         method: 'GET',
-        successCallback: successCallback,
-        setFailed: setFailed,
-        setErrorMessage: setErrorMessage,
-        errorMessagePrefix: errorMessagePrefix
+        successHandler: props.successHandler,
+        setFailed: props.setFailed,
+        setErrorMessage: props.setErrorMessage,
+        errorMessagePrefix: "Error getting availabilities"
     });
 }
