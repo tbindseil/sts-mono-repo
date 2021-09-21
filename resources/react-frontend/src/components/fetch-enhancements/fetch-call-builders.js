@@ -157,3 +157,11 @@ export const makeGetUser = (props) => {
         catchHandler: props.catchHandler
     });
 };
+
+export const makePutUser = (props) => {
+    return makeAuthenticatedFetchCall({
+        url: USER_LAMBDA_URL + props.user.username,
+        method: 'PUT',
+        ...props
+    });
+};

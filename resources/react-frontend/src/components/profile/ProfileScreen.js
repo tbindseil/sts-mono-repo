@@ -11,7 +11,7 @@ import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
 import {FormTableRow} from '../forms/TextInput'
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
-import {makeGetUser, makeGetAvailabilityRequests} from '../fetch-enhancements/fetch-call-builders';
+import {makePutUser, makeGetUser, makeGetAvailabilityRequests} from '../fetch-enhancements/fetch-call-builders';
 import {makeStandardErrorHandler} from "../fetch-enhancements/error-handling";
 
 export function ProfileScreen() {
@@ -41,7 +41,6 @@ function ProfileBody(props) {
 
     // TODO dry access this from cfn exports somehow, and keep it dry, its in delete now
     const baseUrl = 'https://oercmchy3l.execute-api.us-west-2.amazonaws.com/prod/';
-    const availabilityRequestsBaseUrl = 'https://04c0w1j888.execute-api.us-west-2.amazonaws.com/prod/';
 
     const [editting, setEditting] = useState(false);
 
@@ -54,6 +53,13 @@ function ProfileBody(props) {
     }, [
         history, setUser
     ]);
+
+    const errorHandler = (error) => {
+        const newProfile = {};
+        setProfile(newProfile);
+        const standardErrorHandler = makeStandardErrorHandler(setFailed, setErrorMessage, "Error getting profile");
+        standardErrorHandler();
+    };
 
     const getProfile = useCallback(() => {
         if (!user) {
@@ -72,13 +78,6 @@ function ProfileBody(props) {
                 bio: result.bio,
             };
             setProfile(newProfile);
-        };
-
-        const errorHandler = (error) => {
-            const newProfile = {};
-            setProfile(newProfile);
-            const standardErrorHandler = makeStandardErrorHandler(setFailed, setErrorMessage, "Error getting profile");
-            standardErrorHandler();
         };
 
         const call = makeGetUser({
@@ -169,41 +168,15 @@ function ProfileBody(props) {
     }
 
     const onSave = () => {
-        async function putProfile(token = '') {
-            const url = baseUrl + user.username;
+        const call = makePutUser({
+            user: user,
+            successHandler: () => {},
+            errorHandler: errorHandler,
+            catchHandler: errorHandler,
+            body: JSON.stringify(profile)
+        });
 
-            const tokenString = 'Bearer ' + token;
-            const response = await fetch(url, {
-                method: 'PUT',
-                mode: 'cors',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': tokenString
-                },
-                body: JSON.stringify(profile)
-            });
-            return response;
-        }
-
-
-        putProfile(user.signInUserSession.idToken.jwtToken)
-            .then(data => {
-                setProfile(profile);
-            })
-            .catch(error => {
-                setProfile({
-                    email: "",
-                    username:"",
-                    firstName: "",
-                    lastName: "",
-                    school: "",
-                    grade: "",
-                    age: "",
-                    bio: ""
-                });
-                setFailed(true);
-                setErrorMessage("Error saving profile");
-            });
+        call();
 
         setEditting(false);
     }

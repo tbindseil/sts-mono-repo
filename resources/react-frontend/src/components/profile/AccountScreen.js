@@ -10,6 +10,8 @@ import {InDepthBottom, InDepthBottomHamburger} from '../header/Bottom';
 import {Title} from '../layout/Title';
 import {FormTableRow} from '../forms/TextInput'
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
+import {makeStandardErrorHandler} from "../fetch-enhancements/error-handling";
+import {makePutUser, makeGetUser} from '../fetch-enhancements/fetch-call-builders';
 
 /**
  * So, I dont think we should be able to edit parent name or parent email, which are the only
@@ -59,34 +61,34 @@ function AccountBody(props) {
         history, setUser
     ]);
 
+    const errorHandler = (error) => {
+        const newProfile = {};
+        setProfile(newProfile);
+        const standardErrorHandler = makeStandardErrorHandler(setFailed, setErrorMessage, "Error getting profile");
+        standardErrorHandler();
+    };
+
     const getProfile = useCallback(() => {
         if (!user) {
             return;
         }
 
-        const url = baseUrl + user.username;
-        fetch(url)
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    const profile = {
-                        parentName: result.parentName,
-                        parentEmail: result.parentEmail
-                    };
-                    setProfile(profile);
-                },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
-                (error) => {
-                    setProfile({
-                        parentName: "",
-                        parentEmail: "" // TODO this isn't dry
-                    });
-                    setFailed(true);
-                    setErrorMessage("Error getting profile");
-                }
-            );
+        const successHandler = (result) => {
+            const newProfile = {
+                parentName: result.parentName,
+                parentEmail: result.parentEmail
+            };
+
+            setProfile(newProfile);
+        };
+
+        const call = makeGetUser({
+            username: user.username,
+            successHandler: successHandler,
+            errorHandler: errorHandler,
+            catchHandler: errorHandler
+        });
+        call();
     }, [
         user
     ]);
@@ -106,36 +108,15 @@ function AccountBody(props) {
     }
 
     const onSave = (profile) => {
-        async function putProfile(url = '', token = '', profile = {}) {
-            const tokenString = 'Bearer ' + token;
-            console.log("profile is");
-            console.log(profile);
-            const response = await fetch(url, {
-                method: 'PUT',
-                mode: 'cors',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': tokenString
-                },
-                body: JSON.stringify(profile)
-            });
-            return response;
-        }
+        const call = makePutUser({
+            user: user,
+            successHandler: () => {},
+            errorHandler: errorHandler,
+            catchHandler: errorHandler,
+            body: JSON.stringify(profile)
+        });
 
-        const url = baseUrl + user.username;
-
-        putProfile(url, user.signInUserSession.idToken.jwtToken, profile)
-            .then(data => {
-                setProfile(profile);
-            })
-            .catch(error => {
-                setProfile({
-                    parentName: "",
-                    parentEmail: ""
-                });
-                setFailed(true);
-                setErrorMessage("Error saving profile");
-            });
+        call();
 
         setEditting(false);
     }
