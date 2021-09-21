@@ -128,7 +128,7 @@ export const makeGetAvailabilityStatus = (props) => {
 export const makeGetAvailabilityRequests = (props) => {
     const url = new URL(AVAILABILITY_REQUEST_URL);
     const getAvailRequestsReceivedInput = {
-        forUser: props.forUSer,
+        forUser: props.forUser,
         forAvailability: props.forAvailability,
         fromUser: props.fromUser
     };

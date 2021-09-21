@@ -11,6 +11,7 @@ import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
 import {FormTableRow} from '../forms/TextInput'
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
+import {makeGetAvailabilityRequests} from '../fetch-enhancements/fetch-call-builders';
 
 export function ProfileScreen() {
     return (
@@ -102,38 +103,18 @@ function ProfileBody(props) {
             return;
         }
 
-        // get avail requests sent
-        const availRequestSentUrl = new URL(availabilityRequestsBaseUrl);
-        const getAvailRequestsInput = {
-            forUser: "",
-            forAvailability: 0,
-            fromUser: user.username
+        const successHandler = (result) => {
+            setRequestsSent(result);
         };
-        availRequestSentUrl.searchParams.append('getAvailRequestInput', JSON.stringify(getAvailRequestsInput));
-        const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
-        fetch(availRequestSentUrl, {
-                method: 'GET',
-                mode: 'cors',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': tokenString
-                },
-            })
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    console.log("requests sent result is:");
-                    console.log(result);
-                    setRequestsSent(result);
-                },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
-                (error) => {
-                    setFailed(true);
-                    setErrorMessage("Error getting requests sent");
-                }
-            );
+
+        const call = makeGetAvailabilityRequests({forUser: "",
+                                                  forAvailability: 0,
+                                                  fromUser: user.username,
+                                                  user: user,
+                                                  successHandler: successHandler,
+                                                  setFailed: setFailed,
+                                                  setErrorMessage: setErrorMessage});
+        call();
     }, [
         user
     ]);
@@ -143,38 +124,18 @@ function ProfileBody(props) {
             return;
         }
 
-        // get avail requests recieved
-        const availRequestReceivedUrl = new URL(availabilityRequestsBaseUrl);
-        const getAvailRequestsReceivedInput = {
-            forUser: user.username,
-            forAvailability: 0,
-            fromUser: ""
+        const successHandler = (result) => {
+            setRequestsReceived(result);
         };
-        availRequestReceivedUrl.searchParams.append('getAvailRequestInput', JSON.stringify(getAvailRequestsReceivedInput));
-        const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
-        fetch(availRequestReceivedUrl, {
-                method: 'GET',
-                mode: 'cors',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': tokenString
-                },
-            })
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    console.log("requests received result is:");
-                    console.log(result);
-                    setRequestsReceived(result);
-                },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
-                (error) => {
-                    setFailed(true);
-                    setErrorMessage("Error getting requests received");
-                }
-            );
+
+        const call = makeGetAvailabilityRequests({forUser: user.username,
+                                                  forAvailability: 0,
+                                                  fromUser: "",
+                                                  user: user,
+                                                  successHandler: successHandler,
+                                                  setFailed: setFailed,
+                                                  setErrorMessage: setErrorMessage});
+        call();
     }, [
         user
     ]);
@@ -444,6 +405,9 @@ function ProfileBody(props) {
                                             {requestEntry[1].subject}
                                         </td>
                                         <td>
+                                    {
+                                        // TODO um this is wrogn dowag
+                                    }
                                             {requestEntry[1].tutor}
                                         </td>
                                         <td>
