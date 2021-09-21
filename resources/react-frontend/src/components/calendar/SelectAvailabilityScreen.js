@@ -9,8 +9,7 @@ import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
 
-import {makeStandardErrorAndCatchHandlers} from "../fetch-enhancements/error-handling";
-import {makePostRequestStatusCall, makeUpdateRequestStatus, makeGetAvailabilities} from '../fetch-enhancements/fetch-call-builders';
+import {makePostRequestStatusCall, makeUpdateRequestStatus, makeGetAvailabilities, makeGetAvailabilityStatus} from '../fetch-enhancements/fetch-call-builders';
 
 export function SelectAvailabilityScreen(props) {
     return (
@@ -40,8 +39,6 @@ export function SelectAvailabilityScreen(props) {
 
 // TODO cool idea, allow start time and subject to be selectable here
 function CreateAvailabilityBody(props) {
-    const availabilityLambdaUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
-    const availabilityRequestLambdaUrl = 'https://04c0w1j888.execute-api.us-west-2.amazonaws.com/prod/';
     const history = useHistory();
 
     const stateProps = props.location.state;
@@ -123,37 +120,20 @@ function CreateAvailabilityBody(props) {
                 return;
             }
 
-            const prefix = "Error getting statuses";
-            const [getStatusesErrorHandler, getStatusesCatchHandler] =
-                    makeStandardErrorAndCatchHandlers(setFailed, setErrorMessage, prefix);
+            const successHandler = (result) => {
+                const id = result.id.toString();
+                const status = result.status;
+
+                updateStatus(id, status);
+            };
 
             availabilities.forEach(avail => {
-                const url = `${availabilityLambdaUrl}/status/${avail.id}`;
-                const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
-                fetch(url, {
-                    method: 'GET',
-                    mode: 'cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': tokenString
-                    },
-                })
-                    .then(res => res.json())
-                    .then((result) => {
-                        const id = result.id.toString();
-                        const status = result.status;
-
-                        updateStatus(id, status);
-                    },
-                        // Note: it's important to handle errors here
-                        // instead of a catch() block so that we don't swallow
-                        // exceptions from actual bugs in components.
-                        (error) => {
-                            getStatusesErrorHandler(error);
-                        })
-                    .catch(error => { // TODO this code is wet as fuck
-                        getStatusesCatchHandler(error);
-                    });
+                const call = makeGetAvailabilityStatus({availId: avail.id,
+                                           user: user,
+                                           successHandler: successHandler,
+                                           setFailed: setFailed,
+                                           setErrorMessage: setErrorMessage});
+                call();
             });
         },
         [user, updateStatus]

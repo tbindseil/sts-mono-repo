@@ -46,7 +46,7 @@ const makeAuthenticatedFetchCall = (props) => {
         props.headers = {'Authorization': tokenString};
 
     return makeBasicFetchCall(props);
-}
+};
 
 export const makePostRequestStatusCall = (props) => {
 
@@ -85,7 +85,7 @@ export const makeUpdateRequestStatus = (props) => {
         setErrorMessage: props.setErrorMessage,
         errorMessagePrefix: "Error updating request"
     });
-}
+};
 
 export const makeGetAvailabilities = (props) => {
     const url = new URL(AVAILABILITY_LAMBDA_URL);
@@ -110,4 +110,37 @@ export const makeGetAvailabilities = (props) => {
         setErrorMessage: props.setErrorMessage,
         errorMessagePrefix: "Error getting availabilities"
     });
-}
+};
+
+export const makeGetAvailabilityStatus = (props) => {
+    return makeAuthenticatedFetchCall({
+        url: `${AVAILABILITY_LAMBDA_URL}/status/${props.availId}`,
+        user: props.user,
+        method: 'GET',
+        successHandler: props.successHandler,
+        setFailed: props.setFailed,
+        setErrorMessage: props.setErrorMessage,
+        errorMessagePrefix: "Error getting availability status"
+    });
+};
+
+// TODO on checkauthenticated, set/unset user in factory (this is the factory)
+export const makeGetAvailabilityRequests = (props) => {
+    const url = new URL(AVAILABILITY_REQUEST_URL);
+    const getAvailRequestsReceivedInput = {
+        forUser: props.forUSer,
+        forAvailability: props.forAvailability,
+        fromUser: props.fromUser
+    };
+    url.searchParams.append('getAvailRequestInput', JSON.stringify(getAvailRequestsReceivedInput));
+
+    return makeAuthenticatedFetchCall({
+        url: url,
+        user: props.user,
+        method: 'GET',
+        successHandler: props.successHandler,
+        setFailed: props.setFailed,
+        setErrorMessage: props.setErrorMessage,
+        errorMessagePrefix: "Error getting availability status"
+    });
+};
