@@ -11,7 +11,8 @@ import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
 import {FormTableRow} from '../forms/TextInput'
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
-import {makeGetAvailabilityRequests} from '../fetch-enhancements/fetch-call-builders';
+import {makeGetUser, makeGetAvailabilityRequests} from '../fetch-enhancements/fetch-call-builders';
+import {makeStandardErrorHandler} from "../fetch-enhancements/error-handling";
 
 export function ProfileScreen() {
     return (
@@ -59,41 +60,34 @@ function ProfileBody(props) {
             return;
         }
 
-        const url = baseUrl + user.username;
-        fetch(url)
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    const profile = {
-                        email: result.email,
-                        username: result.cognitoId,
-                        firstName: result.firstName,
-                        lastName: result.lastName,
-                        school: result.school,
-                        grade: result.grade,
-                        age: result.age,
-                        bio: result.bio,
-                    };
-                    setProfile(profile);
-                },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
-                (error) => {
-                    setProfile({
-                        email: "",
-                        username: "",
-                        firstName: "",
-                        lastName: "",
-                        school: "",
-                        grade: "",
-                        age: "",
-                        bio: ""
-                    });
-                    setFailed(true);
-                    setErrorMessage("Error getting profile");
-                }
-            );
+        const successHandler = (result) => {
+            const newProfile = {
+                email: result.email,
+                username: result.cognitoId,
+                firstName: result.firstName,
+                lastName: result.lastName,
+                school: result.school,
+                grade: result.grade,
+                age: result.age,
+                bio: result.bio,
+            };
+            setProfile(newProfile);
+        };
+
+        const errorHandler = (error) => {
+            const newProfile = {};
+            setProfile(newProfile);
+            const standardErrorHandler = makeStandardErrorHandler(setFailed, setErrorMessage, "Error getting profile");
+            standardErrorHandler();
+        };
+
+        const call = makeGetUser({
+            username: user.username,
+            successHandler: successHandler,
+            errorHandler: errorHandler,
+            catchHandler: errorHandler
+        });
+        call();
     }, [
         user
     ]);
@@ -174,8 +168,10 @@ function ProfileBody(props) {
         setEditting(true);
     }
 
-    const onSave = (profile) => {
-        async function putProfile(url = '', token = '', profile = {}) {
+    const onSave = () => {
+        async function putProfile(token = '') {
+            const url = baseUrl + user.username;
+
             const tokenString = 'Bearer ' + token;
             const response = await fetch(url, {
                 method: 'PUT',
@@ -190,9 +186,7 @@ function ProfileBody(props) {
         }
 
 
-        const url = baseUrl + user.username;
-
-        putProfile(url, user.signInUserSession.idToken.jwtToken, profile)
+        putProfile(user.signInUserSession.idToken.jwtToken)
             .then(data => {
                 setProfile(profile);
             })

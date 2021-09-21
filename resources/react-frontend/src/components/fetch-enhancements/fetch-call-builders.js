@@ -3,6 +3,7 @@ import moment from 'moment';
 import {makeStandardErrorHandler} from "../fetch-enhancements/error-handling";
 
 // TODO maybe import from cdk output eventually?
+const USER_LAMBDA_URL = 'https://oercmchy3l.execute-api.us-west-2.amazonaws.com/prod/';
 const AVAILABILITY_LAMBDA_URL = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
 const AVAILABILITY_REQUEST_URL = 'https://04c0w1j888.execute-api.us-west-2.amazonaws.com/prod/';
 
@@ -142,5 +143,17 @@ export const makeGetAvailabilityRequests = (props) => {
         setFailed: props.setFailed,
         setErrorMessage: props.setErrorMessage,
         errorMessagePrefix: "Error getting availability status"
+    });
+};
+
+// TODO so far I haven't ensured I can send error message or failed either
+export const makeGetUser = (props) => {
+    return makeBasicFetchCall({
+        url: USER_LAMBDA_URL + props.username,
+        method: 'GET',
+        successHandler: props.successHandler,
+        setFailed: props.setFailed,
+        errorHandler: props.errorHandler,
+        catchHandler: props.catchHandler
     });
 };
