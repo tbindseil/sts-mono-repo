@@ -103,12 +103,17 @@ function CreateAvailabilityBody(props) {
             // TODO, use ...errorProps here, then maybe even roll them into a component
             // gonna put this in a new folder (named ?? base-components)
             // I should move header and footer there
-            const call = makeGetAvailabilities({user: user,
-                                                subject: subject,
-                                                startTime: startTime,
-                                                successHandler: successHandler,
-                                                setFailed: setFailed,
-                                                setErrorMessage: setErrorMessage});
+            const endTime = moment(startTime).add('minute', 30).toDate();
+            const call = makeGetAvailabilities({
+                user: user,
+                username: "*",
+                subject: subject,
+                startTime: startTime,
+                endTime: endTime,
+                successHandler: successHandler,
+                setFailed: setFailed,
+                setErrorMessage: setErrorMessage
+            });
             call();
         },
         [startTime, subject]

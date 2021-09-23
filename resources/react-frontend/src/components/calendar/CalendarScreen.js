@@ -14,6 +14,7 @@ import {Title} from '../layout/Title';
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
 import {Calendar} from './Calendar';
 import {BigScreenNavigationTable, SmallScreenNavigationTable, goToDate} from './NavigationTable';
+import {makeGetAvailabilities} from '../fetch-enhancements/fetch-call-builders';
 
 // using a two layered "MediaQueryWrapper" here
 export function CalendarScreen(props) {
@@ -68,61 +69,33 @@ function CalendarBody(props) {
                 return;
             }
 
-            // startTime and endTime are 12:00:00 am of sunday morning and 11:59:59 of saturday night for week of selectedDate
-            // could be improved by only getting for 1 day for small screen
+            const successHandler = (result) => {
+                const availabilitiesWithDates = []
+                for (const [id, avail] of Object.entries(result)) {
+                    availabilitiesWithDates.push({
+                        endTime: moment.utc(avail.endTime).local().toDate(),
+                        startTime: moment.utc(avail.startTime).local().toDate(),
+                        subjects: avail.subjects,
+                        tutor: avail.tutor,
+                        id: id
+                    });
+                }
+                setAvailabilities(availabilitiesWithDates);
+            };
+
             const startTime = moment(selectedDate).startOf('week').toDate();
             const endTime = moment(selectedDate).endOf('week').toDate();
-            const url = new URL(baseUrl)
-            const getAvailInput = {
+            const call = makeGetAvailabilities({
+                user: user,
                 username: "*",
                 subject: selectedSubject,
                 startTime: startTime,
-                endTime: endTime
-            };
-            url.searchParams.append('getAvailInput', JSON.stringify(getAvailInput));
-
-            const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
-            fetch(url, {// TJTAG
-                method: 'GET',
-                mode: 'cors',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': tokenString
-                },
-            })
-                .then(res => res.json())
-                .then((result) => {
-                    const availabilitiesWithDates = []
-                    for (const [id, avail] of Object.entries(result)) {
-                        availabilitiesWithDates.push({
-                            endTime: moment.utc(avail.endTime).local().toDate(),
-                            startTime: moment.utc(avail.startTime).local().toDate(),
-                            subjects: avail.subjects,
-                            tutor: avail.tutor,
-                            id: id
-                        });
-                    }
-                    setAvailabilities(availabilitiesWithDates);
-                },
-                    // Note: it's important to handle errors here
-                    // instead of a catch() block so that we don't swallow
-                    // exceptions from actual bugs in components.
-                    (error) => {
-                        setFailed(true);
-                        var message = "1Error getting availabilties";
-                        if (error.message) {
-                            message += ": " + error.message;
-                        }
-                        setErrorMessage(message);
-                    })
-                .catch(err => { // TODO this code is wet as fuck
-                    setFailed(true);
-                    var message = "2Error getting availabilties";
-                    if (err.message) {
-                        message += ": " + err.message;
-                    }
-                    setErrorMessage(message);
-                });
+                endTime: endTime,
+                successHandler: successHandler,
+                setFailed: setFailed,
+                setErrorMessage: setErrorMessage
+            });
+            call();
         },
         [selectedDate, selectedSubject]
     );

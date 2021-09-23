@@ -91,11 +91,10 @@ export const makeUpdateRequestStatus = (props) => {
 export const makeGetAvailabilities = (props) => {
     const url = new URL(AVAILABILITY_LAMBDA_URL);
 
-    // startTime and endTime are 12:00:00 am of sunday morning and 11:59:59 of saturday night for week of selectedDate
     const requestStartTime = moment(props.startTime).toDate();
-    const requestEndTime = moment(props.startTime).add('minute', 30).toDate();
+    const requestEndTime = moment(props.endTime).toDate();
     const getAvailInput = {
-        username: "*",
+        username: props.username,
         subject: props.subject,
         startTime: requestStartTime,
         endTime: requestEndTime
