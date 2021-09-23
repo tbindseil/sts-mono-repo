@@ -62,7 +62,8 @@ def get_output_translator(raw_output):
             'forAvailability': avail_req.forAvailability,
             'status': avail_req.status,
             'startTime': avails[avail_req.forAvailability].startTime.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
-            'subject': avails[avail_req.forAvailability].subjects
+            'subject': avails[avail_req.forAvailability].subjects,
+            'tutor': avails[avail_req.forAvailability].tutor
         }
 
     return 200, json.dumps(response)

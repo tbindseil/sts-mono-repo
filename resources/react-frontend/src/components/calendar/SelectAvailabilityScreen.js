@@ -192,7 +192,8 @@ function CreateAvailabilityBody(props) {
             getStatuses(availabilities);
         };
 
-        const call = makeUpdateRequestStatus({user: user,
+        const call = makeUpdateRequestStatus({
+            user: user,
             availId: availId,
             newStatus: newStatus,
             successHandler: successHandler,

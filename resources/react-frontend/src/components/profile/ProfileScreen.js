@@ -11,7 +11,7 @@ import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
 import {FormTableRow} from '../forms/TextInput'
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
-import {makePutUser, makeGetUser, makeGetAvailabilityRequests} from '../fetch-enhancements/fetch-call-builders';
+import {makePutUser, makeGetUser, makeGetAvailabilityRequests, makeUpdateRequestStatus} from '../fetch-enhancements/fetch-call-builders';
 import {makeStandardErrorHandler} from "../fetch-enhancements/error-handling";
 
 export function ProfileScreen() {
@@ -98,12 +98,13 @@ function ProfileBody(props) {
         };
 
         const call = makeGetAvailabilityRequests({forUser: "",
-                                                  forAvailability: 0,
-                                                  fromUser: user.username,
-                                                  user: user,
-                                                  successHandler: successHandler,
-                                                  setFailed: setFailed,
-                                                  setErrorMessage: setErrorMessage});
+            forAvailability: 0,
+            fromUser: user.username,
+            user: user,
+            successHandler: successHandler,
+            setFailed: setFailed,
+            setErrorMessage: setErrorMessage
+        });
         call();
     }, [
         user
@@ -119,12 +120,13 @@ function ProfileBody(props) {
         };
 
         const call = makeGetAvailabilityRequests({forUser: user.username,
-                                                  forAvailability: 0,
-                                                  fromUser: "",
-                                                  user: user,
-                                                  successHandler: successHandler,
-                                                  setFailed: setFailed,
-                                                  setErrorMessage: setErrorMessage});
+            forAvailability: 0,
+            fromUser: "",
+            user: user,
+            successHandler: successHandler,
+            setFailed: setFailed,
+            setErrorMessage: setErrorMessage
+        });
         call();
     }, [
         user
@@ -198,12 +200,32 @@ function ProfileBody(props) {
         setProfile(updatedProfile);
     }
 
-    const makeRequestSentActionButton = (status) => {
+    const updateRequest = (availId, newStatus) => {
+        const successHandler = (result) => {
+            getRequestsSent();
+        };
+
+        const call = makeUpdateRequestStatus({
+            user: user,
+            availId: availId,
+            newStatus: newStatus,
+            successHandler: successHandler,
+            setFailed: setFailed,
+            setErrorMessage: setErrorMessage
+        });
+        call();
+    };
+
+    const makeRequestSentActionButton = (forAvailability, status) => {
+        const cancelRequest = (event) => {
+            updateRequest(forAvailability, 'CANCELED');
+        };
+
         switch(status) {
             case "REQUESTED":
             case "ACCEPTED":
                 return (
-                    <button cancelRequest>
+                    <button onClick={cancelRequest}>
                         Cancel
                     </button>
                 );
@@ -327,14 +349,6 @@ function ProfileBody(props) {
 
                     </table>
 
-                {
-                    // so maybe it is better to jump to a ViewRequestScreen,
-                    // this screen would know whether to let the user cancel from the same screen
-                    // as they could..., well basically this is just another positive result of being able
-                    // to navigate to the same page from here as from the requestss page, less code duplication
-                    // blah blah blah
-                }
-
                     <h2>
                         Requests Sent
                     </h2>
@@ -369,9 +383,6 @@ function ProfileBody(props) {
                                             {requestEntry[1].subject}
                                         </td>
                                         <td>
-                                    {
-                                        // TODO um this is wrogn dowag
-                                    }
                                             {requestEntry[1].tutor}
                                         </td>
                                         <td>
@@ -379,7 +390,7 @@ function ProfileBody(props) {
                                         </td>
                                         <td>
                                             {
-                                                makeRequestSentActionButton(requestEntry[1].status)
+                                                makeRequestSentActionButton(requestEntry[1].availId, requestEntry[1].status)
                                             }
                                         </td>
                                     </tr>
@@ -437,43 +448,6 @@ function ProfileBody(props) {
                             }
                         </tbody>
                     </table>
-
-
-
-        {
-
-            // TODO tutor and requestor in description?????
-
-                            // <tr>
-                                // <td>
-            // what info do i want to display anyways?
-            // date, time, subject, status
-            // already have status
-            //
-            // so i have a fork in the road
-            // 1) take forAvail and request deets about the avail
-            //      notes:
-            //          more restful
-            //          already started the beginning, but I would need an api to get single avail by id
-            // 2) enhance existing or make new api in order to return avail deets
-            //      notes:
-            //          get all data at once (a little faster?)
-            //          i don't have to make reusable code
-            // I decided to enhance existing
-            //
-            // now, how do i show two lists with potentially different lengths?
-            // 1) take max of both lenghts, and iterate that many times (this is for basic table)
-            // 2) two vertical flexboxes
-            //      one flexbox for received, and one for sent
-            //      they grow indefinitely, and each card takes the space needed
-            // 3) two vertical lists, not flexboxes - check
-                                    // Request Sent
-                                // </td>
-                                // <td>
-                                    // Request Received
-                                // </td>
-                            // </tr>
-        }
 
                     { failed &&
                         <p className="ErrorMessage">{errorMessage}</p>
