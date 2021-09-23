@@ -11,6 +11,7 @@ import {Title} from '../layout/Title';
 import {LoadingFormButton} from '../forms/FormButton';
 import {checkUnauthenticated} from "./CheckAuthenticated";
 import {PasswordRequirements} from './PasswordRequirements';
+import {makePostUser} from '../fetch-enhancements/fetch-call-builders';
 
 export function RegisterScreen() {
     return (
@@ -130,15 +131,13 @@ function RegisterBody(props) {
                     bio: bio,
                 }
 
-                const url = 'https://oercmchy3l.execute-api.us-west-2.amazonaws.com/prod/';
-                return fetch(url, {// TJTAG
-                    method: 'POST',
-                    mode: 'cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(profile)
+                const call = makePostUser({
+                    body: JSON.stringify(profile),
+                    successHandler: () => {},
+                    setFailed: setFailed,
+                    setErrorMessage: setErrorMessage
                 });
+                return call();
             })
             .then(data => {
                 // TODO still goes to confirm even when fetch fails

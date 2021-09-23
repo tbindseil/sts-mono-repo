@@ -107,7 +107,11 @@ export const makePutUser = (props) => {
 };
 
 export const makePostUser = (props) => {
-
+    return makeBasicFetchCall({
+        url: USER_LAMBDA_URL,
+        method: 'POST',
+        ...props
+    });
 };
 
 // TODO on checkauthenticated, set/unset user in factory (this is the factory)
