@@ -114,6 +114,14 @@ export const makePostUser = (props) => {
     });
 };
 
+export const makeDeleteUser = (props) => {
+    return makeBasicFetchCall({ // TODO this needs to be authenticated
+        url: USER_LAMBDA_URL + props.user.username,
+        method: 'DELETE',
+        ...props
+    });
+};
+
 // TODO on checkauthenticated, set/unset user in factory (this is the factory)
 export const makeGetAvailabilityRequests = (props) => {
     const url = new URL(AVAILABILITY_REQUEST_URL);

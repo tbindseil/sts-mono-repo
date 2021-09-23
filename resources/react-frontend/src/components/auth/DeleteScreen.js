@@ -9,6 +9,7 @@ import {Header} from '../header/Header';
 import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
 import {checkAuthenticated} from "./CheckAuthenticated";
+import {makeDeleteUser} from '../fetch-enhancements/fetch-call-builders';
 
 export function DeleteScreen() {
     return (
@@ -62,18 +63,17 @@ function DeleteBody(props) {
             };
             cognitoIdentityProvider.deleteUser(params, function(err, data)  {
                 if (err) {
+                    // TODO yikes..
                     setFailed(true);
                 }
 
-                const url = baseUrl + user.username;
-                fetch(url, {// TJTAG
-                    method: 'DELETE',
-                    mode: 'cors',
-                })
-                    .then(history.push("/"))
-                    .catch((err) => {
-                        setFailed(true);
-                    });
+                const call = makeDeleteUser({
+                    user: user,
+                    successHandler: () => {},
+                    setFailed: setFailed,
+                    setErrorMessage: () => {history.push("/")}
+                });
+                call();
 
                 Auth.signOut({ global: true });
                 setUser(null);
