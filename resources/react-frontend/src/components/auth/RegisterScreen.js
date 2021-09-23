@@ -131,7 +131,7 @@ function RegisterBody(props) {
                 }
 
                 const url = 'https://oercmchy3l.execute-api.us-west-2.amazonaws.com/prod/';
-                return fetch(url, {
+                return fetch(url, {// TJTAG
                     method: 'POST',
                     mode: 'cors',
                     headers: {

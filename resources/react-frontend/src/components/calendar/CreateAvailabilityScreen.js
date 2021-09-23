@@ -14,6 +14,8 @@ import {Header} from '../header/Header';
 import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
+import {makeStandardErrorHandler} from "../fetch-enhancements/error-handling";
+import {makePostAvailability} from '../fetch-enhancements/fetch-call-builders';
 
 export function CreateAvailabilityScreen(props) {
     return (
@@ -148,59 +150,41 @@ function CreateAvailabilityBody(props) {
     // so what is actually happening?
     // first, create avail to post
     // then, make post call
-    const postAvailability = async () => {
+    const onFinish = async () => {
         if (selectedSubjects.length === 0) {
-            throw new Error('Must select at least one subject');
+            setFailed(true);
+            setErrorMessage('Must select at least one subject');
+            return;
         }
 
-        const availStart = moment(day).set('hour', startTime.hours()).set('minute', startTime.minutes()).toDate();
-        const availEndMoment = moment(day).set('hour', endTime.hours()).set('minute', endTime.minutes());
-
-        // gotta deal with 12AM...
-        if (endTime.hours() === 0 && endTime.minutes() === 0) {
-            availEndMoment.add('day', 1);
-        }
-
-        const availEnd = availEndMoment.toDate();
-
-        const availability = {
-            subjects: selectedSubjects.map(subject => subject.name).join(','),
-            startTime: availStart,
-            endTime: availEnd,
-            tutor: user.username
+        const successHandler = (result) => {
+            history.push({
+                pathname: "/my-calendar",
+                state: {
+                    selectedDate: initialSelectedDate
+                }
+            });
         };
 
-        const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
-        const response = await fetch(baseUrl, {
-            method: 'POST',
-            mode: 'cors',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': tokenString
-            },
-            body: JSON.stringify(availability)
-        });
-        if (!response.ok) {
-            throw (new Error(await response.text()));
-        }
-    }
+        const errorHandler = (error) => {
+            setLoading(false);
+            const standardErrorHandler = makeStandardErrorHandler(setFailed, setErrorMessage, "Error getting profile");
+            standardErrorHandler(error);
+        };
 
-    const onFinish = async () => {
         setLoading(true);
-        postAvailability()
-            .then(() => {
-                history.push({
-                    pathname: "/my-calendar",
-                    state: {
-                        selectedDate: initialSelectedDate
-                    }
-                });
-            })
-            .catch(err => {
-                setLoading(false);
-                setFailed(true);
-                setErrorMessage(`${err}`);
-            });
+
+        const call = makePostAvailability({
+            day: day,
+            startTime: startTime,
+            endTime: endTime,
+            selectedSubjects: selectedSubjects,
+            user: user,
+            successHandler: successHandler,
+            errorHandler: errorHandler,
+            catchHandler: errorHandler
+        });
+        call();
     };
 
     const onCancel = () => {

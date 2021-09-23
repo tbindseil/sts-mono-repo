@@ -77,7 +77,7 @@ function MyCalendarBody(props) {
             url.searchParams.append('getAvailInput', JSON.stringify(getAvailInput));
 
             const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
-            fetch(url, {
+            fetch(url, {// TJTAG
                 method: 'GET',
                 mode: 'cors',
                 headers: {

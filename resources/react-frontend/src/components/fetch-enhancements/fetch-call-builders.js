@@ -165,3 +165,29 @@ export const makePutUser = (props) => {
         ...props
     });
 };
+
+export const makePostAvailability = (props) => {
+    const availStart = moment(props.day).set('hour', props.startTime.hours()).set('minute', props.startTime.minutes()).toDate();
+    const availEndMoment = moment(props.day).set('hour', props.endTime.hours()).set('minute', props.endTime.minutes());
+
+    // gotta deal with 12AM...
+    if (props.endTime.hours() === 0 && props.endTime.minutes() === 0) {
+        availEndMoment.add('day', 1);
+    }
+
+    const availEnd = availEndMoment.toDate();
+
+    const availability = { // Continue here, why am i getting failures herer?
+        subjects: props.selectedSubjects.map(subject => subject.name).join(','),
+        startTime: availStart,
+        endTime: availEnd,
+        tutor: props.user.username
+    };
+
+    return makeAuthenticatedFetchCall({
+        url: AVAILABILITY_LAMBDA_URL,
+        method: 'POST',
+        body: JSON.stringify(availability),
+        ...props
+    });
+};

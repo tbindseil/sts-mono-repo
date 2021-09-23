@@ -66,7 +66,7 @@ function DeleteBody(props) {
                 }
 
                 const url = baseUrl + user.username;
-                fetch(url, {
+                fetch(url, {// TJTAG
                     method: 'DELETE',
                     mode: 'cors',
                 })
