@@ -22,7 +22,7 @@ const makeBasicFetchCall = (props) => {
         props.headers = {'Content-Type': 'application/json'};
 
     const fetchCall = () => { // Ahhh how to do any args?
-        fetch(props.url, {
+        return fetch(props.url, {
             method: props.method,
             mode: 'cors',
             headers: props.headers,
