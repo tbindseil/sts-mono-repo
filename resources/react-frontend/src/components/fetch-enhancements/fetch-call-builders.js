@@ -50,7 +50,6 @@ const makeAuthenticatedFetchCall = (props) => {
 };
 
 export const makePostRequestStatusCall = (props) => {
-
     const body = JSON.stringify({
         forAvailability: props.availId,
         fromUser: props.username
@@ -69,7 +68,6 @@ export const makePostRequestStatusCall = (props) => {
 };
 
 export const makeUpdateRequestStatus = (props) => {
-
     const url = AVAILABILITY_REQUEST_URL + "/" + props.availId;
 
     return makeAuthenticatedFetchCall({
@@ -85,6 +83,77 @@ export const makeUpdateRequestStatus = (props) => {
         setFailed: props.setFailed,
         setErrorMessage: props.setErrorMessage,
         errorMessagePrefix: "Error updating request"
+    });
+};
+
+// TODO so far I haven't ensured I can send error message or failed either
+export const makeGetUser = (props) => {
+    return makeBasicFetchCall({
+        url: USER_LAMBDA_URL + props.username,
+        method: 'GET',
+        successHandler: props.successHandler,
+        setFailed: props.setFailed,
+        errorHandler: props.errorHandler,
+        catchHandler: props.catchHandler
+    });
+};
+
+export const makePutUser = (props) => {
+    return makeAuthenticatedFetchCall({
+        url: USER_LAMBDA_URL + props.user.username,
+        method: 'PUT',
+        ...props
+    });
+};
+
+export const makePostUser = (props) => {
+
+};
+
+// TODO on checkauthenticated, set/unset user in factory (this is the factory)
+export const makeGetAvailabilityRequests = (props) => {
+    const url = new URL(AVAILABILITY_REQUEST_URL);
+    const getAvailRequestsReceivedInput = {
+        forUser: props.forUser,
+        forAvailability: props.forAvailability,
+        fromUser: props.fromUser
+    };
+    url.searchParams.append('getAvailRequestInput', JSON.stringify(getAvailRequestsReceivedInput));
+
+    return makeAuthenticatedFetchCall({
+        url: url,
+        user: props.user,
+        method: 'GET',
+        successHandler: props.successHandler,
+        setFailed: props.setFailed,
+        setErrorMessage: props.setErrorMessage,
+        errorMessagePrefix: "Error getting availability status"
+    });
+};
+
+export const makePostAvailability = (props) => {
+    const availStart = moment(props.day).set('hour', props.startTime.hours()).set('minute', props.startTime.minutes()).toDate();
+    const availEndMoment = moment(props.day).set('hour', props.endTime.hours()).set('minute', props.endTime.minutes());
+
+    // gotta deal with 12AM...
+    if (props.endTime.hours() === 0 && props.endTime.minutes() === 0) {
+        availEndMoment.add('day', 1);
+    }
+
+    const availEnd = availEndMoment.toDate();
+
+    const availability = { // Continue here, why am i getting failures herer?
+        subjects: props.selectedSubjects.map(subject => subject.name).join(','),
+        startTime: availStart,
+        endTime: availEnd,
+        tutor: props.user.username
+    };
+
+    return makeAuthenticatedFetchCall({
+        url: AVAILABILITY_LAMBDA_URL,
+        method: 'POST',
+        body: JSON.stringify(availability),
+        ...props
     });
 };
 
@@ -121,72 +190,5 @@ export const makeGetAvailabilityStatus = (props) => {
         setFailed: props.setFailed,
         setErrorMessage: props.setErrorMessage,
         errorMessagePrefix: "Error getting availability status"
-    });
-};
-
-// TODO on checkauthenticated, set/unset user in factory (this is the factory)
-export const makeGetAvailabilityRequests = (props) => {
-    const url = new URL(AVAILABILITY_REQUEST_URL);
-    const getAvailRequestsReceivedInput = {
-        forUser: props.forUser,
-        forAvailability: props.forAvailability,
-        fromUser: props.fromUser
-    };
-    url.searchParams.append('getAvailRequestInput', JSON.stringify(getAvailRequestsReceivedInput));
-
-    return makeAuthenticatedFetchCall({
-        url: url,
-        user: props.user,
-        method: 'GET',
-        successHandler: props.successHandler,
-        setFailed: props.setFailed,
-        setErrorMessage: props.setErrorMessage,
-        errorMessagePrefix: "Error getting availability status"
-    });
-};
-
-// TODO so far I haven't ensured I can send error message or failed either
-export const makeGetUser = (props) => {
-    return makeBasicFetchCall({
-        url: USER_LAMBDA_URL + props.username,
-        method: 'GET',
-        successHandler: props.successHandler,
-        setFailed: props.setFailed,
-        errorHandler: props.errorHandler,
-        catchHandler: props.catchHandler
-    });
-};
-
-export const makePutUser = (props) => {
-    return makeAuthenticatedFetchCall({
-        url: USER_LAMBDA_URL + props.user.username,
-        method: 'PUT',
-        ...props
-    });
-};
-
-export const makePostAvailability = (props) => {
-    const availStart = moment(props.day).set('hour', props.startTime.hours()).set('minute', props.startTime.minutes()).toDate();
-    const availEndMoment = moment(props.day).set('hour', props.endTime.hours()).set('minute', props.endTime.minutes());
-
-    // gotta deal with 12AM...
-    if (props.endTime.hours() === 0 && props.endTime.minutes() === 0) {
-        availEndMoment.add('day', 1);
-    }
-
-    const availEnd = availEndMoment.toDate();
-
-    const availability = { // Continue here, why am i getting failures herer?
-        subjects: props.selectedSubjects.map(subject => subject.name).join(','),
-        startTime: availStart,
-        endTime: availEnd,
-        tutor: props.user.username
-    };
-
-    return makeAuthenticatedFetchCall({
-        url: AVAILABILITY_LAMBDA_URL,
-        method: 'POST',
-        body: JSON.stringify(availability),
-        ...props
     });
 };
