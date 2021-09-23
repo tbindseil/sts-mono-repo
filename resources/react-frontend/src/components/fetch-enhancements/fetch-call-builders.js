@@ -68,15 +68,15 @@ export const makePostRequestStatusCall = (props) => {
 };
 
 export const makeUpdateRequestStatus = (props) => {
-    const url = AVAILABILITY_REQUEST_URL + "/" + props.availId;
+    const url = AVAILABILITY_REQUEST_URL + "/" + props.forAvailability;
 
     return makeAuthenticatedFetchCall({
         url: url,
         user: props.user,
         method: 'PUT',
         body: JSON.stringify({
-            forAvailability: props.availId,
-            fromUser: props.user.username,
+            forAvailability: props.forAvailability,
+            fromUser: props.fromUser,
             status: props.newStatus
         }),
         successHandler: props.successHandler,

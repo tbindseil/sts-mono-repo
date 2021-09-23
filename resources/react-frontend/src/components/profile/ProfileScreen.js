@@ -200,14 +200,15 @@ function ProfileBody(props) {
         setProfile(updatedProfile);
     }
 
-    const updateRequest = (availId, newStatus) => {
+    const updateRequest = (forAvailability, newStatus) => {
         const successHandler = (result) => {
             getRequestsSent();
         };
 
         const call = makeUpdateRequestStatus({
             user: user,
-            availId: availId,
+            fromUser: user.username,
+            forAvailability: forAvailability,
             newStatus: newStatus,
             successHandler: successHandler,
             setFailed: setFailed,
@@ -390,7 +391,7 @@ function ProfileBody(props) {
                                         </td>
                                         <td>
                                             {
-                                                makeRequestSentActionButton(requestEntry[1].availId, requestEntry[1].status)
+                                                makeRequestSentActionButton(requestEntry[1].forAvailability, requestEntry[1].status)
                                             }
                                         </td>
                                     </tr>

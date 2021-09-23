@@ -52,6 +52,7 @@ export class AvailabilityRequestLambdaService extends Construct {
         const availabilityRequest = api.root.addResource("{availability-request-id}");
 
         // update avail request with: PUT /{availability-request-id}
+        // TODO avail request is identified by body, no need for trailing part of url
         const putAvailabilityRequestIntegration = new LambdaIntegration(handler, {
             timeout: Duration.seconds(29)
         });

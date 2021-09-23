@@ -185,7 +185,7 @@ function CreateAvailabilityBody(props) {
     };
 
     const onCancelRequest = (event) => {
-        const availId = event.target.getAttribute("data");
+        const forAvailability = event.target.getAttribute("data");
         const newStatus = 'CANCELED';
 
         const successHandler = (result) => {
@@ -194,7 +194,8 @@ function CreateAvailabilityBody(props) {
 
         const call = makeUpdateRequestStatus({
             user: user,
-            availId: availId,
+            fromUser: user.username,
+            forAvailability: forAvailability,
             newStatus: newStatus,
             successHandler: successHandler,
             setFailed: setFailed,
