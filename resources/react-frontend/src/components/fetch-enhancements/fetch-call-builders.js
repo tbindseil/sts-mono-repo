@@ -122,7 +122,6 @@ export const makeDeleteUser = (props) => {
     });
 };
 
-// TODO on checkauthenticated, set/unset user in factory (this is the factory)
 export const makeGetAvailabilityRequests = (props) => {
     const url = new URL(AVAILABILITY_REQUEST_URL);
     const getAvailRequestsReceivedInput = {

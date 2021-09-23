@@ -65,7 +65,6 @@ const App = () => {
         <Route path={"/create-availability"} component={CreateAvailabilityScreen}/>
         <Route path={"/select-availability"} component={SelectAvailabilityScreen}/>
         <Route path={"/delete-availability"} component={DeleteAvailabilityScreen}/>
-
       </Switch>
     </div>
   );

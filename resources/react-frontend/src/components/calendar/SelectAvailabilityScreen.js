@@ -133,11 +133,13 @@ function CreateAvailabilityBody(props) {
             };
 
             availabilities.forEach(avail => {
-                const call = makeGetAvailabilityStatus({availId: avail.id,
-                                           user: user,
-                                           successHandler: successHandler,
-                                           setFailed: setFailed,
-                                           setErrorMessage: setErrorMessage});
+                const call = makeGetAvailabilityStatus({
+                    availId: avail.id,
+                    user: user,
+                    successHandler: successHandler,
+                    setFailed: setFailed,
+                    setErrorMessage: setErrorMessage
+                });
                 call();
             });
         },
@@ -173,11 +175,12 @@ function CreateAvailabilityBody(props) {
         };
 
         const call = makePostRequestStatusCall({user: user,
-                                                availId: availId,
-                                                username: user.username,
-                                                successHandler: successHandler,
-                                                setFailed: setFailed,
-                                                setErrorMessage: setErrorMessage});
+            availId: availId,
+            username: user.username,
+            successHandler: successHandler,
+            setFailed: setFailed,
+            setErrorMessage: setErrorMessage
+        });
         call();
     };
 
@@ -190,11 +193,12 @@ function CreateAvailabilityBody(props) {
         };
 
         const call = makeUpdateRequestStatus({user: user,
-                                              availId: availId,
-                                              newStatus: newStatus,
-                                              successHandler: successHandler,
-                                              setFailed: setFailed,
-                                              setErrorMessage: setErrorMessage});
+            availId: availId,
+            newStatus: newStatus,
+            successHandler: successHandler,
+            setFailed: setFailed,
+            setErrorMessage: setErrorMessage
+        });
         call();
     };
 

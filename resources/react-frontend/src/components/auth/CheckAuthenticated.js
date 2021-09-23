@@ -6,8 +6,8 @@ import {Auth} from "aws-amplify";
  * checks for authentication status,
  * and takes action if authentication status does not match desired state
  *
- * desired: true if looking for an authenticated user, false if looking for unathenticated
  * action: what to do if user authentication status doesn't match desired state
+ * setUser: how to set user
  */
 export function checkAuthenticated(action, setUser) {
    Auth.currentAuthenticatedUser({
