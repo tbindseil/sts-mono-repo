@@ -55,8 +55,6 @@ function CreateAvailabilityBody(props) {
         selectedDate = new Date();
     }
 
-    const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
-
     const [user, setUser] = useState(undefined)
     useEffect(() => {
         checkAuthenticated(() => history.push("/anonymous-user"), setUser);

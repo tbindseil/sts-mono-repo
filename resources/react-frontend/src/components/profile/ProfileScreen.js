@@ -39,9 +39,6 @@ export function ProfileScreen() {
 function ProfileBody(props) {
     const history = useHistory();
 
-    // TODO dry access this from cfn exports somehow, and keep it dry, its in delete now
-    const baseUrl = 'https://oercmchy3l.execute-api.us-west-2.amazonaws.com/prod/';
-
     const [editting, setEditting] = useState(false);
 
     const [failed, setFailed] = useState(false);

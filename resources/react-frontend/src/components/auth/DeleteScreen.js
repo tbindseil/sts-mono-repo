@@ -36,8 +36,6 @@ export function DeleteScreen() {
 }
 
 function DeleteBody(props) {
-    const baseUrl = 'https://oercmchy3l.execute-api.us-west-2.amazonaws.com/prod/';
-
     const history = useHistory();
 
     const [user, setUser] = useState(undefined)

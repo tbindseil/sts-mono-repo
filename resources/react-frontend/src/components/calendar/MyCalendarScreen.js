@@ -43,8 +43,6 @@ export function MyCalendarScreen(props) {
 }
 
 function MyCalendarBody(props) {
-    const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
-
     const history = useHistory();
 
     const [user, setUser] = useState(undefined)
