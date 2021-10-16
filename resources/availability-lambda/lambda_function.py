@@ -120,6 +120,8 @@ def get_status_input_translator(event, context):
 
 # TODO rename or fix or whatever
 # now I am getting whole availability, but there is already get_availability stuff above
+# wtf is causational_id?
+# am i doing this so i can operate on the other_user_accepted_request_query.id?
 def get_status_handler(input, session, get_claims):
     availability_id_to_get = input
 
@@ -131,6 +133,7 @@ def get_status_handler(input, session, get_claims):
     other_user_accepted_request_query = session.query(AvailabilityRequest).filter(AvailabilityRequest.forAvailability==availability_id_to_get).filter(AvailabilityRequest.fromUser!=cognito_id).filter(AvailabilityRequest.status=='ACCEPTED')
     if other_user_accepted_request_query.count() > 0:
         return availability_to_get, 'CLOSED'
+        # return availability_to_get, other_user_accepted_request_query.id, 'CLOSED'
 
     user_request_query = session.query(AvailabilityRequest).filter(AvailabilityRequest.forAvailability==availability_id_to_get).filter(AvailabilityRequest.fromUser==cognito_id).filter(AvailabilityRequest.status!="CANCELED")
     user_has_requested = user_request_query.count() > 0
@@ -148,6 +151,7 @@ def get_status_handler(input, session, get_claims):
             return availability_to_get, 'DENIED'
 
     return availability_to_get, 'OPEN'
+    # return availability_to_get, causational_id, 'OPEN'
 
 def get_status_output_translator(raw_output):
     avail, status = raw_output

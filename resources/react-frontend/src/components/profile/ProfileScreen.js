@@ -200,14 +200,16 @@ function ProfileBody(props) {
         setProfile(updatedProfile);
     }
 
-    const updateRequest = (forAvailability, newStatus) => {
+    const updateRequest = (forAvailability, fromUser, newStatus) => {
+        // TODO can still receive requests from self.
         const successHandler = (result) => {
             getRequestsSent();
+            getRequestsReceived();
         };
 
         const call = makeUpdateRequestStatus({
             user: user,
-            fromUser: user.username,
+            fromUser: fromUser,
             forAvailability: forAvailability,
             newStatus: newStatus,
             successHandler: successHandler,
@@ -219,7 +221,8 @@ function ProfileBody(props) {
 
     const makeRequestSentActionButton = (forAvailability, status) => {
         const cancelRequest = (event) => {
-            updateRequest(forAvailability, 'CANCELED');
+            // TODO can they uncancel? Or jump back to the same time?
+            updateRequest(forAvailability, user.username, 'CANCELED');
         };
 
         switch(status) {
@@ -241,12 +244,47 @@ function ProfileBody(props) {
         }
     }
 
-    const makeRequestReceivedActionButton = (status) => {
-        return (
-            <button>
-                No Action
-            </button>
-        );
+    const makeRequestReceivedActionButton = (forAvailability, fromUser, status) => {
+        const acceptRequest = (event) => {
+            updateRequest(forAvailability, fromUser, 'ACCEPTED');
+        };
+        const denyRequest = (event) => {
+            updateRequest(forAvailability, fromUser, 'DENIED');
+        };
+
+        switch(status) {
+            case "REQUESTED":
+                return (
+                    <table>
+                        <tr>
+                            <td>
+                                <button onClick={acceptRequest}>
+                                    Accept
+                                </button>
+                            </td>
+                            <td>
+                                <button onClick={denyRequest}>
+                                    Deny
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+                );
+            case "ACCEPTED":
+                return (
+                    <button onClick={denyRequest}>
+                        Deny
+                    </button>
+                );
+            case "DENIED":
+            case "CANCELLED":
+            default:
+                return (
+                    <button>
+                        No Action
+                    </button>
+                );
+        }
     }
 
     return (
@@ -441,7 +479,7 @@ function ProfileBody(props) {
                                         </td>
                                         <td>
                                             {
-                                                makeRequestReceivedActionButton(requestEntry[1].status)
+                                                makeRequestReceivedActionButton(requestEntry[1].forAvailability, requestEntry[1].fromUser, requestEntry[1].status)
                                             }
                                         </td>
                                     </tr>
