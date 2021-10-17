@@ -188,7 +188,7 @@ backend
 
 ...
 
-    in conclusion    
+    in conclusion
         I need to change user lambda
             get returns more stuff - done
             implement post - done
@@ -401,18 +401,73 @@ when a user selects request on an open avail, it sends a notification to the tut
     * user can select and cancel request - done
     * tutor receives notification of request received - done
 
-avail requests need show up on profile
-    * requests sent
-    * requests received
+avail requests need show up on profile - done
+    * requests sent - done
+    * requests received - done
 
-tutor can accept or deny requests
+tutor can accept or deny requests - done
     * from notificaiton
-    * from profile
+    * from profile - done
 
 user receives notification upon request being accepted or denied
     * upon accept, contact info is exchanged to both
         * same email to both ?
-    * should probably show accepted tutoring session on both users' calendar
+
+~~~~~
+
+so far, a lot of whats left above is notifications,
+I want to create a design where each type of notification is a command. The notification client builds a command from a library, then says sendEmail(command)
+
+well, what has to be there?
+message body text for each
+a way to generate to (maybe pass in avail request)
+
+so..
+createNotification(availRequest): # could also have two switch statements, one for build recipients, one for build body
+    if status is 'DENIED':
+        recipients = availRequest.fromUser.parentEmail, availRequest.fromUser.email
+        body_html = 'tutor %s denied your request for %s subjects on %date'
+    elif status is 'ACCEPTED':
+        recipients = availRequest.fromUser.parentEmail, availRequest.fromUser.email, availRequest.forAvailability.tutor.parentEmail, availRequest.forAvailability.tutor.email
+        body_html = 'dear student %s, tutor %s accepted your request for %s subjects on %date.  Here is your tutor's contact info: %s'
+    elif status is 'REQUESTED':
+        recipients = availRequest.forAvailability.tutor.parentEmail, availRequest.forAvailability.tutor.email
+        body_html = 'dear tutor %s, student %s requested your availability for %s subjects on %date.  click <here> to accept or <here> to deny.  Also, all requests can be seen from you <profile page>'
+    elif status is 'CANCELLED':
+        recipients = availRequest.forAvailability.tutor.parentEmail, availRequest.forAvailability.tutor.email
+        body_html = 'dear tutor %s, student %s cancelled their request for %s subjects on %date.'
+
+
+now, how does the above "notificationCommand" change the existing send_notification?
+it could be as simple as send_notification(recipients, body_html, body_text, subject) => send_notification(notification_command)
+    then, recipients = notificaiton_command.get_recipients()
+    then, body_html = notificaiton_command.get_body_html()
+    then, body_text = notificaiton_command.get_body_text()
+
+
+Another option....
+a facade
+NotificationFacade():
+    send_avail_request_accepted_notification(avail_request):
+    send_avail_request_denied_notification(avail_request):
+    send_avail_request_reqeusted_notification(avail_request):
+    send_avail_request_cancelled_notification(avail_request):
+
+this could be the better option since the command is just an unneccessary middleman
+
+
+
+
+another set of notifications would be reminders for ACCEPTED and REQEUSTED requests
+these would need to run via a cron like thingy
+
+
+(post api call to a notification service? or just a library like described above :/)
+
+
+~~~~~
+
+should probably show accepted tutoring session on both users' calendar
 
 weird problem #1, can a request be pending by multiple people? if so, what happens when one is accepted? basically I would say that the rest get notified that the tutor has accepted another individual
 
