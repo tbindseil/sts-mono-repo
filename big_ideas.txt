@@ -468,6 +468,7 @@ these would need to run via a cron like thingy
 ~~~~~
 
 should probably show accepted tutoring session on both users' calendar
+    - yep, and link to (visitor's) other profile
 
 weird problem #1, can a request be pending by multiple people? if so, what happens when one is accepted? basically I would say that the rest get notified that the tutor has accepted another individual
 
