@@ -1,12 +1,7 @@
 # TODO rename file and notifications.py
 # TODO I could probably refactor user-registration email...
 
-class Notification():
-    def __init__(self, subject, body_text, body_html):
-        self.subject = subject
-        self.body_text = body_text
-        self.body_html = body_html
-
+from .notification import Notification
 
 def make_requested_notification():
     return Notification(
