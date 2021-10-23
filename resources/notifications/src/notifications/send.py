@@ -33,39 +33,26 @@ def _add_recipient_email(user, recipients):
 
 # might need session to get for_availabity.tutor
 # assumes the final state is all that is relevant
-def send(avail_request, session): # why rely on session here? Why not create a data extractor? (take in avail request, return factory creation command?
-    student = session.query(User).filter(User.id==avail_request.from_user).one()
-    avail = session.query(Availability).filter(Availability.id==avail_request.for_availability).one()
-    tutor = session.query(User).filter(User.id==avail.tutor).one()
+def send(avail_request, student, avail, tutor):
+    # student = session.query(User).filter(User.id==avail_request.from_user).one()
+    # avail = session.query(Availability).filter(Availability.id==avail_request.for_availability).one()
+    # tutor = session.query(User).filter(User.id==avail.tutor).one()
 
     recipients = []
 
     if avail_request.status is 'ACCEPTED':
         _add_recipient_email(student, recipients)
         _add_recipient_email(tutor, recipients)
-
-        body_html = 'bh'
-        body_text = 'bt'
-        subject = 's'
+        notification = make_accepted_notification(tutor.id)
     elif avail_request.status is 'REQUESTED':
         _add_recipient_email(tutor, recipients)
-
-        body_html = 'bh'
-        body_text = 'bt'
-        subject = 's'
+        notification = make_requested_notification(tutor.id)
     elif avail_request.status is 'CANCELED':
         _add_recipient_email(tutor, recipients)
-        # notification = 
-
-        body_html = 'bh'
-        body_text = 'bt'
-        subject = 's'
+        notification = make_canceled_notification(tutor.id)
     elif avail_request.status is 'DENIED':
         _add_recipient_email(student, recipients)
-
-        body_html = 'bh'
-        body_text = 'bt'
-        subject = 's'
+        notification = make_denied_notification(tutor.id)
 
     send(recipients, body_html, body_text, subject):
 

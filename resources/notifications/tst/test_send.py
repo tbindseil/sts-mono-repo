@@ -28,3 +28,4 @@ def send_actual_notification(recipients, body_html, body_text, subject):
 
 # from src.notifications.notifications import send_notification
 #       send_notification(["tjbindseil@gmail.com"], "body_html", "body_text", "subject")
+
