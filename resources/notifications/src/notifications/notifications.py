@@ -54,6 +54,7 @@ def send_notification(avail_request, session):
         subject = 's'
     elif avail_request.status is 'CANCELED':
         add_recipient_email(tutor, recipients)
+        # notification = 
 
         body_html = 'bh'
         body_text = 'bt'

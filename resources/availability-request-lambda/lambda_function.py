@@ -9,7 +9,7 @@ from guided_lambda_handler.translators import json_to_model
 from models.user import User
 from models.availability import Availability
 from models.availability import AvailabilityRequest
-from notifications import notifications
+# from notifications import notifications
 
 import boto3
 from botocore.exceptions import ClientError
