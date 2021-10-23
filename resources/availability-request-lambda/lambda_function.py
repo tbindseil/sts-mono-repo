@@ -137,7 +137,7 @@ def put_handler(input, session, get_claims):
     session.add(avail_req_to_update)
 
     for_availability = session.query(Availability).filter(Availability.id==for_availability_id).one()
-    student = session.query(User).filter(User.cognitoId==posted_availability_request.fromUser).one()
+    student = session.query(User).filter(User.cognitoId==from_user).one()
     tutor = session.query(User).filter(User.cognitoId==for_availability.tutor).one()
     send.send_avail_request_notification(avail_req_to_update, student, tutor)
 

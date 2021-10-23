@@ -1,7 +1,9 @@
 README.md
 setup.py
 src/notifications/__init__.py
-src/notifications/notifications.py
+src/notifications/factory.py
+src/notifications/notification.py
+src/notifications/send.py
 src/notifications_tj.egg-info/PKG-INFO
 src/notifications_tj.egg-info/SOURCES.txt
 src/notifications_tj.egg-info/dependency_links.txt
