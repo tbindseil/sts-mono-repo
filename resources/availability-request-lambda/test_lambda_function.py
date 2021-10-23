@@ -262,6 +262,7 @@ class TestLambdaFunction(unittest.TestCase):
         expected_student = self.session.query(User).filter(User.cognitoId==self.another_cognito_id).one()
         expected_tutor = self.session.query(User).filter(User.cognitoId==avail.tutor).one()
         mock_send_avail_request_notification.assert_called_with(expected_avail_req, expected_student, expected_tutor)
+        # TODO test put handler notifies
 
     def test_post_output_translator(self):
         raw_output = "raw_output"
@@ -291,7 +292,8 @@ class TestLambdaFunction(unittest.TestCase):
             input = lambda_function.put_input_translator(event, "context")
         self.assertEqual(str(e.exception), 'Invalid status, options are REQUESTED, ACCEPTED, DENIED, CANCELED')
 
-    def test_put_handler_updates_status(self):
+    @patch('notifications.send.send_avail_request_notification')
+    def test_put_handler_updates_status(self, mock_send_avail_request_notification):
         avail = self.build_default_availability()
         self.session.add(avail)
         self.session.commit()
