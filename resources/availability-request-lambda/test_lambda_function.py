@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 from datetime import datetime, timedelta
 import json
 
@@ -14,8 +14,6 @@ from models import Base
 from models.user import User
 from models.availability import Availability
 from models.availability_request import AvailabilityRequest
-from notifications import notifications
-# from notifications.notifications import send_notification
 
 import lambda_function
 
@@ -187,8 +185,8 @@ class TestLambdaFunction(unittest.TestCase):
 
         self.assertAvailRequestEquals(expected_avail_req, input)
 
-    def test_post_adds_availability_request(self):
-        notifications.send_notification = MagicMock()
+    @patch('notifications.send.send_avail_request_notification')
+    def test_post_adds_availability_request(self, mock_send_avail_request_notification):
         avail = self.build_default_availability()
         self.session.add(avail)
         self.session.commit()
@@ -202,8 +200,8 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertAvailRequestEquals(expected_avail_req, resulting_avail_req)
         self.assertEqual(len(requesting_user.requestsSent), 1)
 
-    def test_post_does_not_add_when_from_user_already_has_request(self):
-        notifications.send_notification = MagicMock()
+    @patch('notifications.send.send_avail_request_notification')
+    def test_post_does_not_add_when_from_user_already_has_request(self, mock_send_avail_request_notification):
         avail = self.build_default_availability()
         self.session.add(avail)
         self.session.commit()
@@ -225,8 +223,8 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertAvailRequestEquals(expected_avail_req, resulting_avail_req)
         self.assertEqual(len(requesting_user.requestsSent), 1)
 
-    def test_post_does_add_when_from_user_already_has_canceled_requests(self):
-        notifications.send_notification = MagicMock()
+    @patch('notifications.send.send_avail_request_notification')
+    def test_post_does_add_when_from_user_already_has_canceled_requests(self, mock_send_avail_request_notification):
         avail = self.build_default_availability()
         self.session.add(avail)
         self.session.commit()
@@ -249,9 +247,9 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertAvailRequestEquals(another_avail_req, resulting_avail_req)
         self.assertEqual(len(requesting_user.requestsSent), 2)
 
-    def est_post_handler_sends_notification_to_tutor(self): # TODO in cdk... (thats the comment in the lambda function
+    @patch('notifications.send.send_avail_request_notification')
+    def test_post_handler_sends_notification(self, mock_send_avail_request_notification):
         mock_send_notification = MagicMock()
-        notifications.send_notification = mock_send_notification
 
         avail = self.build_default_availability()
         self.session.add(avail)
@@ -261,8 +259,9 @@ class TestLambdaFunction(unittest.TestCase):
         raw_output = lambda_function.post_handler(expected_avail_req, self.session, self.get_claims)
         self.session.commit()
 
-        expected_recipients = ["user.parentEmail", "email"]
-        mock_send_notification.assert_called_once_with(expected_recipients, Any(), Any(), Any())
+        expected_student = self.session.query(User).filter(User.cognitoId==self.another_cognito_id).one()
+        expected_tutor = self.session.query(User).filter(User.cognitoId==avail.tutor).one()
+        mock_send_avail_request_notification.assert_called_with(expected_avail_req, expected_student, expected_tutor)
 
     def test_post_output_translator(self):
         raw_output = "raw_output"

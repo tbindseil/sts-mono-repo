@@ -42,16 +42,16 @@ def send_avail_request_notification(avail_request, student, tutor):
     if avail_request.status == 'ACCEPTED':
         _add_recipient_email(student, recipients)
         _add_recipient_email(tutor, recipients)
-        notification = factory.make_accepted_notification(tutor.id)
+        notification = factory.make_accepted_notification(tutor.cognitoId)
     elif avail_request.status == 'REQUESTED':
         _add_recipient_email(tutor, recipients)
-        notification = factory.make_requested_notification(student.id)
+        notification = factory.make_requested_notification(student.cognitoId)
     elif avail_request.status == 'CANCELED':
         _add_recipient_email(tutor, recipients)
-        notification = factory.make_canceled_notification(student.id)
+        notification = factory.make_canceled_notification(student.cognitoId)
     elif avail_request.status == 'DENIED':
         _add_recipient_email(student, recipients)
-        notification = factory.make_denied_notification(tutor.id)
+        notification = factory.make_denied_notification(tutor.cognitoId)
 
     send(recipients, notification)
 

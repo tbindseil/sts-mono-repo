@@ -9,7 +9,7 @@ from guided_lambda_handler.translators import json_to_model
 from models.user import User
 from models.availability import Availability
 from models.availability import AvailabilityRequest
-# from notifications import notifications
+from notifications import send
 
 import boto3
 from botocore.exceptions import ClientError
@@ -79,11 +79,15 @@ def post_handler(input, session, get_claims):
     existing_request = session.query(AvailabilityRequest).filter(AvailabilityRequest.forAvailability==posted_availability_request.forAvailability).filter(AvailabilityRequest.fromUser==posted_availability_request.fromUser).filter(AvailabilityRequest.status!='CANCELED').count() > 0
 
     if not existing_request:
-        forAvailability = session.query(Availability).filter(Availability.id==posted_availability_request.forAvailability).one()
-        forAvailability.requests.append(posted_availability_request)
-        session.add(forAvailability) # should add happen after the send_email call?
+        # TODO snake case
+        for_availability = session.query(Availability).filter(Availability.id==posted_availability_request.forAvailability).one()
+        for_availability.requests.append(posted_availability_request)
+        session.add(for_availability)
 
-        tutor = session.query(User).filter(User.cognitoId==forAvailability.tutor).one()
+        student = session.query(User).filter(User.cognitoId==posted_availability_request.fromUser).one()
+        tutor = session.query(User).filter(User.cognitoId==for_availability.tutor).one()
+        send.send_avail_request_notification(posted_availability_request, student, tutor)
+
         recipients = [tutor.parentEmail]
         if tutor.email:
             recipients.append(tutor.email)
@@ -126,11 +130,16 @@ def put_input_translator(event, context):
     return body_map['forAvailability'], body_map['fromUser'], body_map['status']
 
 def put_handler(input, session, get_claims):
-    for_availability, from_user, new_status = input
+    for_availability_id, from_user, new_status = input
 
-    avail_req_to_update = session.query(AvailabilityRequest).filter(AvailabilityRequest.forAvailability==for_availability).filter(AvailabilityRequest.fromUser==from_user).filter(AvailabilityRequest.status!='CANCELED').one()
+    avail_req_to_update = session.query(AvailabilityRequest).filter(AvailabilityRequest.forAvailability==for_availability_id).filter(AvailabilityRequest.fromUser==from_user).filter(AvailabilityRequest.status!='CANCELED').one()
     avail_req_to_update.status = new_status
     session.add(avail_req_to_update)
+
+    for_availability = session.query(Availability).filter(Availability.id==for_availability_id).one()
+    student = session.query(User).filter(User.cognitoId==posted_availability_request.fromUser).one()
+    tutor = session.query(User).filter(User.cognitoId==for_availability.tutor).one()
+    send.send_avail_request_notification(avail_req_to_update, student, tutor)
 
     return avail_req_to_update
 

@@ -32,7 +32,7 @@ class TestNotification(unittest.TestCase):
 
         ret_val = "ret_val"
         def side_effect(username):
-            if username == tutor.id:
+            if username == tutor.cognitoId:
                 return ret_val
             else:
                 return "nah"
@@ -52,7 +52,7 @@ class TestNotification(unittest.TestCase):
 
         ret_val = "ret_val"
         def side_effect(username):
-            if username == student.id: # TODO order all these consistently plz
+            if username == student.cognitoId: # TODO order all these consistently plz
                 return ret_val
             else:
                 return "nah"
@@ -72,7 +72,7 @@ class TestNotification(unittest.TestCase):
 
         ret_val = "ret_val"
         def side_effect(username):
-            if username == student.id:
+            if username == student.cognitoId:
                 return ret_val
             else:
                 return "nah"
@@ -92,7 +92,7 @@ class TestNotification(unittest.TestCase):
 
         ret_val = "ret_val"
         def side_effect(username):
-            if username == tutor.id:
+            if username == tutor.cognitoId:
                 return ret_val
             else:
                 return "nah"
@@ -104,7 +104,7 @@ class TestNotification(unittest.TestCase):
 
     def create_mock_user(self, identifier):
         user = MagicMock()
-        user.id = '{} - id'.format(identifier)
+        user.cognitoId = '{} - id'.format(identifier)
         user.parentEmail = '{} - parentEmail'.format(identifier)
         user.email = '{} - email'.format(identifier)
         return user
