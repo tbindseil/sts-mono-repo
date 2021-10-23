@@ -2,23 +2,23 @@
 
 from .notification import Notification
 
-def make_requested_notification():
+def make_requested_notification(student_name):
     return Notification(
         subject="Someone Requested Your Availability",
-        body_text="""Someone has requested your availability!\r\n
+        body_text="""{} has requested your availability!\r\n
                         You can accept, deny, or ignore this request.\r\n
-                        Visit studentsts.org/profile to accept or deny.""",
+                        Visit studentsts.org/profile to accept or deny.""".format(student_name),
         body_html="""
             <html>
                 <head></head>
                 <body>
-                    <h1>Someone has requested your availability!</h1>
+                    <h1>{} has requested your availability!</h1>
                     <p>You can accept, deny, or ignore this request.</p>
                     <br/>
                     <p>Visit <a href='https://studentsts.org/profile'>Profile Page</a> to accept or deny</p>
                 </body>
             </html>
-            """
+            """.format(student_name)
     )
 
 

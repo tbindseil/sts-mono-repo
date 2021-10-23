@@ -1,8 +1,7 @@
 import boto3
 from botocore.exceptions import ClientError
 
-# might not even need from .notification import Notification
-from .factory import make_accepted_notification, make_requested_notification, make_canceled_notification, make_canceled_notification
+from . import factory
 
 # Replace sender@example.com with your "From" address.
 # This address must be verified with Amazon SES.
@@ -33,7 +32,7 @@ def _add_recipient_email(user, recipients):
 
 # might need session to get for_availabity.tutor
 # assumes the final state is all that is relevant
-def send(avail_request, student, avail, tutor):
+def send_avail_request_notification(avail_request, student, tutor):
     # student = session.query(User).filter(User.id==avail_request.from_user).one()
     # avail = session.query(Availability).filter(Availability.id==avail_request.for_availability).one()
     # tutor = session.query(User).filter(User.id==avail.tutor).one()
@@ -43,16 +42,16 @@ def send(avail_request, student, avail, tutor):
     if avail_request.status == 'ACCEPTED':
         _add_recipient_email(student, recipients)
         _add_recipient_email(tutor, recipients)
-        notification = make_accepted_notification(tutor.id)
+        notification = factory.make_accepted_notification(tutor.id)
     elif avail_request.status == 'REQUESTED':
         _add_recipient_email(tutor, recipients)
-        notification = make_requested_notification(tutor.id)
+        notification = factory.make_requested_notification(student.id)
     elif avail_request.status == 'CANCELED':
         _add_recipient_email(tutor, recipients)
-        notification = make_canceled_notification(tutor.id)
+        notification = factory.make_canceled_notification(student.id)
     elif avail_request.status == 'DENIED':
         _add_recipient_email(student, recipients)
-        notification = make_denied_notification(tutor.id)
+        notification = factory.make_denied_notification(tutor.id)
 
     send(recipients, notification)
 
