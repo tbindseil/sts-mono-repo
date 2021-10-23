@@ -2,7 +2,7 @@ import boto3
 from botocore.exceptions import ClientError
 
 # might not even need from .notification import Notification
-import .notification_constants
+from .factory import make_accepted_notification, make_requested_notification, make_canceled_notification, make_canceled_notification
 
 # Replace sender@example.com with your "From" address.
 # This address must be verified with Amazon SES.
@@ -40,24 +40,24 @@ def send(avail_request, student, avail, tutor):
 
     recipients = []
 
-    if avail_request.status is 'ACCEPTED':
+    if avail_request.status == 'ACCEPTED':
         _add_recipient_email(student, recipients)
         _add_recipient_email(tutor, recipients)
         notification = make_accepted_notification(tutor.id)
-    elif avail_request.status is 'REQUESTED':
+    elif avail_request.status == 'REQUESTED':
         _add_recipient_email(tutor, recipients)
         notification = make_requested_notification(tutor.id)
-    elif avail_request.status is 'CANCELED':
+    elif avail_request.status == 'CANCELED':
         _add_recipient_email(tutor, recipients)
         notification = make_canceled_notification(tutor.id)
-    elif avail_request.status is 'DENIED':
+    elif avail_request.status == 'DENIED':
         _add_recipient_email(student, recipients)
         notification = make_denied_notification(tutor.id)
 
-    send(recipients, body_html, body_text, subject):
+    send(recipients, notification)
 
 
-def send(recipients, body_html, body_text, subject):
+def send(recipients, notification):
     # Try to send the email.
     try:
         #Provide the contents of the email.
@@ -69,16 +69,16 @@ def send(recipients, body_html, body_text, subject):
                 'Body': {
                     'Html': {
                         'Charset': CHARSET,
-                        'Data': body_html,
+                        'Data': notification.body_html,
                     },
                     'Text': {
                         'Charset': CHARSET,
-                        'Data': body_text,
+                        'Data': notification.body_text,
                     },
                 },
                 'Subject': {
                     'Charset': CHARSET,
-                    'Data': subject,
+                    'Data': notification.subject,
                 },
             },
             Source=SENDER,

@@ -1,4 +1,3 @@
-# TODO rename file and notifications.py
 # TODO I could probably refactor user-registration email...
 
 from .notification import Notification
@@ -74,29 +73,3 @@ def make_canceled_notification(student_name):
             </html>
             """.format(student_name)
     )
-
-
-
-
-
-
-
-
-# could just be configured to save on lines of code to test
-#
-#
-
-# something extracts details from avail_requst
-# as long as that works, {might need interfaces here} o
-# then something extracts specifics for each possible factory
-# all factories have this second extractor, and thats what we test instead of just copy pasta all this crap (all this crap is inserted via config?)
-
-# so two way extraction (bridge? adapter?)
-# first extraction takes in an avail request and outputs a bunch-of-data
-# then, second takes in bunch-of-data and outputs a 
-
-# i dont think this is helping
-
-
-
-
