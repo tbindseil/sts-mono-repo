@@ -249,8 +249,6 @@ class TestLambdaFunction(unittest.TestCase):
 
     @patch('notifications.send.send_avail_request_notification')
     def test_post_handler_sends_notification(self, mock_send_avail_request_notification):
-        mock_send_notification = MagicMock()
-
         avail = self.build_default_availability()
         self.session.add(avail)
         self.session.commit()
@@ -262,7 +260,6 @@ class TestLambdaFunction(unittest.TestCase):
         expected_student = self.session.query(User).filter(User.cognitoId==self.another_cognito_id).one()
         expected_tutor = self.session.query(User).filter(User.cognitoId==avail.tutor).one()
         mock_send_avail_request_notification.assert_called_with(expected_avail_req, expected_student, expected_tutor)
-        # TODO test put handler notifies
 
     def test_post_output_translator(self):
         raw_output = "raw_output"
@@ -311,6 +308,25 @@ class TestLambdaFunction(unittest.TestCase):
 
         updated_avail_req = self.session.query(AvailabilityRequest).filter(AvailabilityRequest.id==avail_req.id).one()
         self.assertEqual(updated_avail_req.status, new_status)
+
+    @patch('notifications.send.send_avail_request_notification')
+    def test_put_handler_sends_notification(self, mock_send_avail_request_notification):
+        avail = self.build_default_availability()
+        self.session.add(avail)
+        self.session.commit()
+        avail_req = AvailabilityRequest(self.another_cognito_id, avail.id)
+        avail.requests.append(avail_req)
+        self.session.add(avail)
+        self.session.commit()
+
+        new_status = "ACCEPTED"
+
+        raw_output = lambda_function.put_handler((avail.id, self.another_cognito_id, new_status), self.session, self.get_claims)
+        self.session.commit()
+
+        expected_student = self.session.query(User).filter(User.cognitoId==self.another_cognito_id).one()
+        expected_tutor = self.session.query(User).filter(User.cognitoId==avail.tutor).one()
+        mock_send_avail_request_notification.assert_called_with(avail_req, expected_student, expected_tutor)
 
     def test_put_output_translator(self):
         avail_req = AvailabilityRequest(self.cognito_id, 1)
