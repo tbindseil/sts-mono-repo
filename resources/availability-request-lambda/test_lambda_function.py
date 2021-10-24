@@ -27,6 +27,7 @@ def Any():
 
 
 class TestLambdaFunction(unittest.TestCase):
+    # engine = create_engine('sqlite:///:memory:', echo=True) # note tear down not needed since this is in memory
     engine = create_engine('sqlite:///:memory:') # note tear down not needed since this is in memory
 
     def setUp(self):
@@ -185,6 +186,7 @@ class TestLambdaFunction(unittest.TestCase):
 
         self.assertAvailRequestEquals(expected_avail_req, input)
 
+    # problematic..
     @patch('notifications.send.send_avail_request_notification')
     def test_post_adds_availability_request(self, mock_send_avail_request_notification):
         avail = self.build_default_availability()
@@ -223,6 +225,7 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertAvailRequestEquals(expected_avail_req, resulting_avail_req)
         self.assertEqual(len(requesting_user.requestsSent), 1)
 
+    # problematic..
     @patch('notifications.send.send_avail_request_notification')
     def test_post_does_add_when_from_user_already_has_canceled_requests(self, mock_send_avail_request_notification):
         avail = self.build_default_availability()
@@ -381,8 +384,17 @@ class TestLambdaFunction(unittest.TestCase):
     def tearDown(self):
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
         another_test_user =  self.session.query(User).filter(User.cognitoId==self.another_cognito_id).one()
-        self.session.delete(user)
+
+        # interesting observation,
+        # without intermediate commit, I get a warning that avail requests are expected to be deleted, but arent'
+        # this is a result of cascading delete behavior on both users,
+        # user and another user ultimately cascade when deleted to delete the same avail req
+        # (one user is student other is tutor)
+        # but, if I commit first, the ORM(?) gets rid of avail req after first commit
+        # and doesn't expect to find it after second
         self.session.delete(another_test_user)
+        self.session.commit()
+        self.session.delete(user)
         self.session.commit()
 
     def build_default_availability(self):
