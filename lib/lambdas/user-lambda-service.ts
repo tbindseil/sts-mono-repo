@@ -2,6 +2,7 @@ import { Construct, Duration } from '@aws-cdk/core';
 import { Cors, LambdaIntegration, RestApi } from "@aws-cdk/aws-apigateway";
 import { Code, Function, Runtime } from "@aws-cdk/aws-lambda";
 import { DatabaseSecret } from '@aws-cdk/aws-rds';
+import { Effect, PolicyStatement } from '@aws-cdk/aws-iam';
 
 export interface UserLambdaServiceProps {
     dbSecret: DatabaseSecret;
@@ -18,6 +19,11 @@ export class UserLambdaService extends Construct {
             timeout: Duration.seconds(29)
         });
         props.dbSecret.grantRead(handler.role!);
+        handler.addToRolePolicy(new PolicyStatement({
+            actions: ['ses:SendEmail', 'ses:SendRawEmail'],
+            resources: ['*'],
+            effect: Effect.ALLOW,
+        }));
 
         const api = new RestApi(this, "users-api", {
             restApiName: "User Service",

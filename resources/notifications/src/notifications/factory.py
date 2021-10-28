@@ -62,7 +62,7 @@ def make_denied_notification(tutor_name):
 
 def make_canceled_notification(student_name):
     return Notification(
-        subject="A request for your availability has been caneled",
+        subject="A request for your availability has been canceled",
         body_text="""{} has canceled their request for your availability.""".format(student_name),
         body_html="""
             <html>
