@@ -32,6 +32,7 @@ import {CreateAvailabilityScreen} from "./components/calendar/CreateAvailability
 import {SelectAvailabilityScreen} from './components/calendar/SelectAvailabilityScreen';
 import {DeleteAvailabilityScreen} from "./components/calendar/DeleteAvailabilityScreen";
 
+import {TestScreen} from "./components/base-components/TestScreen";
 
 // TODO add blue
 Amplify.configure(awsConfig);
@@ -65,6 +66,8 @@ const App = () => {
         <Route path={"/create-availability"} component={CreateAvailabilityScreen}/>
         <Route path={"/select-availability"} component={SelectAvailabilityScreen}/>
         <Route path={"/delete-availability"} component={DeleteAvailabilityScreen}/>
+
+        <Route path={"/test"} component={TestScreen}/>
       </Switch>
     </div>
   );

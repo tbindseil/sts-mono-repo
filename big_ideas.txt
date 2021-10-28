@@ -397,7 +397,7 @@ denied requests in count??
 own user's avails in count?
 can i make a request for a time that i am available? - no
 
-when a user selects request on an open avail, it sends a notification to the tutor and updates status - TJTAG
+when a user selects request on an open avail, it sends a notification to the tutor and updates status - done
     * user can select and cancel request - done
     * tutor receives notification of request received - done
 
@@ -409,7 +409,7 @@ tutor can accept or deny requests - done
     * from notificaiton
     * from profile - done
 
-user receives notification upon request being accepted or denied
+user receives notification upon request being accepted or denied - done
     * upon accept, contact info is exchanged to both
         * same email to both ?
 
@@ -417,6 +417,8 @@ clear cancelled requests from profile
 add avail should (if possible) start at selected time
 
 select part of an availability
+
+web page should be grid that fills at least full screen but can stretch vertically to accomidate plenty of crap in the middle - TJTAG
 
 ~~~~~
 
