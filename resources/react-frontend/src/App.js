@@ -11,7 +11,7 @@ import {AboutUs} from './components/info/AboutUs';
 import {GetInvolved} from './components/info/GetInvolved';
 import {RequestTutor} from './components/info/RequestTutor';
 import {Contacts} from './components/info/Contacts';
-import {Home} from './components/info/Home';
+import {HomeScreen} from './components/info/Home';
 import {Process} from './components/info/Process';
 
 import {AnonymousUserScreen} from "./components/auth/AnonymousUserScreen";
@@ -41,8 +41,8 @@ const App = () => {
   return (
     <div className="App">
       <Switch>
-        <Route exact path="/" component={Home}/>
-        <Route path="/home" component={Home}/>
+        <Route exact path="/" component={HomeScreen}/>
+        <Route path="/home" component={HomeScreen}/>
         <Route path="/about-us" component={AboutUs}/>
         <Route path="/process" component= {Process}/>
         <Route path="/get-involved" component={GetInvolved}/>

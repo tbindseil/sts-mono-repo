@@ -17,7 +17,7 @@ import {BaseScreen} from './BaseScreen';
 
 export function TestScreen(props) {
     return (
-        <BaseScreen>
+        <BaseScreen titleText="Profile">
             <p className="AnotherImaginaryClass">
                 TEST
             </p>

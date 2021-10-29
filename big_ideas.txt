@@ -419,6 +419,10 @@ add avail should (if possible) start at selected time
 select part of an availability
 
 web page should be grid that fills at least full screen but can stretch vertically to accomidate plenty of crap in the middle - TJTAG
+    * use in all places
+    * revamp grid
+    * revamp error stuff
+    * revamp authed vs unauthed
 
 ~~~~~
 

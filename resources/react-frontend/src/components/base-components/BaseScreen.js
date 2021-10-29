@@ -49,20 +49,15 @@
 
 
 
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import MediaQuery from 'react-responsive';
 
-import moment from 'moment';
 import {useHistory} from 'react-router-dom';
-import {cloneDeep} from 'lodash';
 
 import {Header} from '../header/Header';
 import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
-import {FormTableRow} from '../forms/TextInput'
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
-import {makePutUser, makeGetUser, makeGetAvailabilityRequests, makeUpdateRequestStatus} from '../fetch-enhancements/fetch-call-builders';
-import {makeStandardErrorHandler} from "../fetch-enhancements/error-handling";
 
 export function BaseScreen(props) {
     return (
@@ -70,19 +65,21 @@ export function BaseScreen(props) {
             <Header/>
 
             <MediaQuery minWidth={765}>
-                <ProfileBody
+                <BaseBody
                     pageBorderClass={"PageBorder"}
-                    underlineClass={"Underline"}>
+                    underlineClass={"Underline"}
+                    titleText={props.titleText}>
                     {props.children}
-                </ProfileBody>
+                </BaseBody>
             </MediaQuery>
 
             <MediaQuery maxWidth={765}>
-                <ProfileBody
+                <BaseBody
                     pageBorderClass={"PageBorder2"}
-                    underlineClass={"Underline2"}>
+                    underlineClass={"Underline2"}
+                    titleText={props.titleText}>
                     {props.children}
-                </ProfileBody>
+                </BaseBody>
             </MediaQuery>
 
             <Bottom/>
@@ -90,7 +87,7 @@ export function BaseScreen(props) {
     );
 };
 
-function ProfileBody(props) {
+function BaseBody(props) {
     const history = useHistory();
 
     // TODO are errors handled by basescreen? that is something that could reduce
@@ -99,22 +96,21 @@ function ProfileBody(props) {
     const [errorMessage, setErrorMessage] = useState("");
 
     // TODO flag for authenticated vs not
-    const [user, setUser] = useState(undefined);
+    /*const [user, setUser] = useState(undefined);
     useEffect(() => {
         checkAuthenticated(() => history.push("/anonymous-user"), setUser);
     }, [
         history, setUser
-    ]);
+    ]);*/
 
     return (
         <>
             <header className={props.pageBorderClass}>
 
                 <Title
-                    titleText={"Profile"}
+                    titleText={props.titleText}
                     underlineClass={props.underlineClass}/>
 
-                <div className="Centered MaxWidth ImaginaryClass">
 
                     {props.children}
 
@@ -123,7 +119,6 @@ function ProfileBody(props) {
                         <p className="ErrorMessage">{errorMessage}</p>
                     }
 
-                </div>
 
             </header>
         </>
