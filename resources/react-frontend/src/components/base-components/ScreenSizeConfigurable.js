@@ -11,9 +11,6 @@ export function ScreenSizeConfigurable(props) {
     const bigScreen = useMediaQuery({ query: '(min-width: 765px)' });
 
     const wrapped = React.Children.only(props.children);
-    console.log("wrapped is:");
-    console.log(wrapped);
-    console.log("done wrapped is:");
 
     // only works for basic stuff
     const proops = {
@@ -22,16 +19,12 @@ export function ScreenSizeConfigurable(props) {
     };
     delete proops.children;
 
-    console.log("proops is;");
-    console.log(proops);
-    console.log("props is;");
-    console.log(props);
-
     switch (wrapped.type) {
         case 'p':
             return <p {...proops}> {props.children} </p>;
+        case 'div':
+            return <div {...proops}> {props.children} </div>;
         default:
-            console.log("throwing");
             throw new ScreenSizeConfigurableException(`type ${wrapped.type} not yet supported`);
     }
 }

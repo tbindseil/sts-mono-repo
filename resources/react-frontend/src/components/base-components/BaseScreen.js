@@ -103,18 +103,14 @@ function BaseBody(props) {
     const [errorMessage, setErrorMessage] = useState("");
 
     useEffect(() => {
-        console.log("IN USE EFFECT");
-        console.log("props is:");
-        console.log(props);
         if (props.needAuthenticated) {
-            console.log("in need auth");
             checkAuthenticated(() => history.push("/anonymous-user"), props.setUser);
         }
         if (props.needUnauthenticated) {
             checkUnauthenticated(() => history.push("/profile"));
         }
     }, [
-        history, props
+        history, props.setUser, props.needUnauthenticated, props.needAuthenticated
     ]);
 
     return (

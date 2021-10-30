@@ -8,52 +8,17 @@ import {Dropdown} from 'semantic-ui-react';
 
 import './Calendar.css';
 import subjects from '../../configs/subjects';
-import {Header} from '../header/Header';
-import {Bottom} from '../header/Bottom';
-import {Title} from '../layout/Title';
-import {checkAuthenticated} from "../auth/CheckAuthenticated";
 import {Calendar} from './Calendar';
 import {BigScreenNavigationTable, SmallScreenNavigationTable, goToDate} from './NavigationTable';
 import {makeGetAvailabilities} from '../fetch-enhancements/fetch-call-builders';
+import {BaseScreen} from '../base-components/BaseScreen';
+import {ScreenSizeConfigurable} from '../base-components/ScreenSizeConfigurable';
 
 // using a two layered "MediaQueryWrapper" here
 export function CalendarScreen(props) {
-    return (
-        <div>
-            <Header/>
-
-            <MediaQuery minWidth={765}>
-                <CalendarBody
-                    location={props.location}
-                    pageBorderClass={"PageBorderCalendar"}
-                    underlineClass={"Underline"}
-                    datePickerClass={"BigScreenNavigationDatePicker"}/>
-            </MediaQuery>
-
-            <MediaQuery maxWidth={765}>
-                <CalendarBody
-                    location={props.location}
-                    pageBorderClass={"PageBorder2"}
-                    underlineClass={"Underline2"}
-                    datePickerClass={"SmallScreenNavigationDatePicker"}/>
-            </MediaQuery>
-
-            <Bottom/>
-        </div>
-    );
-}
-
-function CalendarBody(props) {
-    const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
-
     const history = useHistory();
 
     const [user, setUser] = useState(undefined)
-    useEffect(() => {
-        checkAuthenticated(() => history.push("/anonymous-user"), setUser);
-    }, [
-        history, setUser
-    ]);
 
     // based off stateProps.selectedDate
     const stateProps = props.location.state;
@@ -181,10 +146,10 @@ function CalendarBody(props) {
     }
 
     return (
-        <header className={props.pageBorderClass}>
-            <Title
-                titleText="Calendar Screen"
-                underlineClass={props.underlineClass}/>
+        <BaseScreen
+            titleText={"Calendar Screen"}
+            needAuthenticated={true}
+            setUser={setUser}>
 
             { failed &&
                 <p className="ErrorMessage">{errorMessage}</p>
@@ -213,11 +178,15 @@ function CalendarBody(props) {
                 />
             </div>
 
-            <div className={props.datePickerClass}>
-                <label for="jumpToDate">Jump to Date:</label>
-                <input onChange={handleChangeJumpToDate} type="date" name="jumpToDate" value={moment(jumpToDate).format("YYYY-MM-DD")}/>
-                <button onClick={onClickJumpToDate}>Go</button>
-            </div>
+            <ScreenSizeConfigurable
+                bigScreenClassName={"BigScreenNavigationDatePicker"}
+                smallScreenClassName={"SmallScreenNavigationDatePicker"}>
+                <div className={props.datePickerClass}>
+                    <label for="jumpToDate">Jump to Date:</label>
+                    <input onChange={handleChangeJumpToDate} type="date" name="jumpToDate" value={moment(jumpToDate).format("YYYY-MM-DD")}/>
+                    <button onClick={onClickJumpToDate}>Go</button>
+                </div>
+            </ScreenSizeConfigurable>
 
             <Calendar
                 timeSlots={timeSlots}
@@ -233,6 +202,6 @@ function CalendarBody(props) {
                 </p>
             </div>
 
-        </header>
+        </BaseScreen>
     );
 }
