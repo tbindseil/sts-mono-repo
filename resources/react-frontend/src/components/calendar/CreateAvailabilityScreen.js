@@ -115,7 +115,7 @@ export function CreateAvailabilityScreen(props) {
     // then, make post call
     const onFinish = async () => {
         if (selectedSubjects.length === 0) {
-            setFailed(true);
+            setFailed(true); // TJTAG
             setErrorMessage('Must select at least one subject');
             return;
         }

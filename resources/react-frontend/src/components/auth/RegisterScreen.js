@@ -111,7 +111,7 @@ export function RegisterScreen() {
                 history.push("/confirm");
             })
             .catch(err => {
-                setFailed(true);
+                setFailed(true); // TJTAg
                 var message = "Error Registering";
                 if (err.message) {
                     message += ": " + err.message;

@@ -14,6 +14,7 @@ import {makePutUser, makeGetUser, makeGetAvailabilityRequests, makeUpdateRequest
 import {makeStandardErrorHandler} from "../fetch-enhancements/error-handling";
 
 import {BaseScreen} from './BaseScreen';
+import {ErrorRegistry} from './ErrorRegistry';
 
 
 
@@ -25,6 +26,10 @@ export function TestScreen(props) {
             <ScreenSizeConfigurable smallScreenClassName={"Blue"} bigScreenClassName={"Red"}>
                 <p>Test</p>
             </ScreenSizeConfigurable>
+
+            <button onClick={() => { ErrorRegistry.getInstance().setFailed(true); ErrorRegistry.getInstance().setErrorMessage("errrrr") }}>
+                BUTTON
+            </button>
         </BaseScreen>
     );
 }

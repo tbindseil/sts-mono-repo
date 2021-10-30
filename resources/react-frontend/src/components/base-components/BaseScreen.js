@@ -59,6 +59,7 @@ import {Header} from '../header/Header';
 import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
 import {checkAuthenticated, checkUnauthenticated} from "../auth/CheckAuthenticated";
+import {ErrorRegistry} from './ErrorRegistry';
 
 export function BaseScreen(props) {
     return (
@@ -97,10 +98,11 @@ export function BaseScreen(props) {
 function BaseBody(props) {
     const history = useHistory();
 
-    // TODO are errors handled by basescreen? that is something that could reduce
-    // code for passing error handlers to api call factories
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+
+    ErrorRegistry.getInstance().set_setFailed(setFailed);
+    ErrorRegistry.getInstance().set_setErrorMessage(setErrorMessage);
 
     useEffect(() => {
         if (props.needAuthenticated) {
@@ -134,3 +136,13 @@ function BaseBody(props) {
         </>
     );
 }
+
+
+// basically considering making a poor mans redux for errors
+// one singleton error state registry, with methods like setFailed, setErrorMessage
+// concrete screens call error_registry.instance().setFailed(true)/setErrorMessage('it broke')
+// base class component, upon instantiation and creation of setFailed and setErrorMessage, calls:
+// error_reigstry.instance().set_setFailed(setFailed) and error_reigstry.instance().set_setErrorMessage(setErrorMessage)
+// hten, when concrete screen calls setFailed, error_registry just forwards it to what was set
+//
+// TODO the only thing is to detach upon component destruction

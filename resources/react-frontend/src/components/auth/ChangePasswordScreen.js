@@ -36,7 +36,7 @@ export function ChangePasswordScreen() {
     const onFinish = async () => {
         if (newPassword !== confirmPassword) {
             setErrorMessage("password entries do not match");
-            setFailed(true);
+            setFailed(true); // TJTAG
             return;
         }
 
