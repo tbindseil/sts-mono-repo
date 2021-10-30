@@ -1,46 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import MediaQuery from 'react-responsive';
+import React, {useState} from 'react';
 import {useHistory} from 'react-router-dom';
 
 import {Auth} from 'aws-amplify';
 
-import {Header} from '../header/Header';
-import {Bottom} from '../header/Bottom';
-import {Title} from '../layout/Title';
 import {TextInput} from '../forms/TextInput';
 import {LoadingFormButton} from '../forms/FormButton';
-import {checkUnauthenticated} from "./CheckAuthenticated";
+import {BaseScreen} from '../base-components/BaseScreen';
 
-export function ConfirmScreen() {
-    return (
-        <div className="TopLevelContainer">
-            <Header/>
-
-            <MediaQuery minWidth={765}>
-                <ConfirmBody
-                    pageBorderClass={"PageBorder"}
-                    underlineClass={"Underline"}/>
-            </MediaQuery>
-
-            <MediaQuery maxWidth={765}>
-                <ConfirmBody
-                    pageBorderClass={"PageBorder2"}
-                    underlineClass={"Underline2"}/>
-            </MediaQuery>
-
-            <Bottom/>
-        </div>
-    );
-}
-
-function ConfirmBody(props) {
+export function ConfirmScreen(props) {
     const history = useHistory();
-
-    useEffect(() => {
-        checkUnauthenticated(() => history.push("/profile"));
-    }, [
-        history
-    ]);
 
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -96,59 +64,54 @@ function ConfirmBody(props) {
     };
 
     return (
-        <>
-            <header className={props.pageBorderClass}>
+        <BaseScreen
+            titleText={"Confirm Registration"}
+            needUnauthenticated={true}>
 
-                <Title
-                    titleText={"Confirm Registration"}
-                    underlineClass={props.underlineClass}/>
-
-                <div className="Centered MaxWidth">
-                    <p>
-                        Use the emailed code to confirm your email.
-                        <br/>
-                        Note that the code will only be emailed to the parent's email address.
-                    </p>
-
-                    { failed &&
-                        <p className="ErrorMessage">{errorMessage}</p>
-                    }
-                </div>
-
-                <form
-                    className="Centered MaxWidth AuthForm"
-                    onChange={handleChange}>
-
-                    <TextInput
-                        name={"username"}
-                        placeHolder={"Username"}
-                        value={username}/>
+            <div className="Centered MaxWidth">
+                <p>
+                    Use the emailed code to confirm your email.
                     <br/>
+                    Note that the code will only be emailed to the parent's email address.
+                </p>
 
-                    <TextInput
-                        name={"code"}
-                        placeHolder={"Code"}
-                        value={code}/>
-                    <br/>
+                { failed &&
+                    <p className="ErrorMessage">{errorMessage}</p>
+                }
+            </div>
 
-                    <LoadingFormButton
-                        loading={loading}
-                        onClick={onFinish}
-                        value={"Confirm User"}/>
-                    <LoadingFormButton
-                        loading={loading}
-                        onClick={resendCode}
-                        value={"Send New Code"}/>
-                </form>
+            <form
+                className="Centered MaxWidth AuthForm"
+                onChange={handleChange}>
+
+                <TextInput
+                    name={"username"}
+                    placeHolder={"Username"}
+                    value={username}/>
                 <br/>
 
-                <div className="Centered MaxWidth">
-                    <p>Already confirmed? <a href="/login">Login here</a></p>
-                    <p>Not registered yet? <a href="/register">Register here</a></p>
-                </div>
+                <TextInput
+                    name={"code"}
+                    placeHolder={"Code"}
+                    value={code}/>
+                <br/>
 
-            </header>
+                <LoadingFormButton
+                    loading={loading}
+                    onClick={onFinish}
+                    value={"Confirm User"}/>
+                <LoadingFormButton
+                    loading={loading}
+                    onClick={resendCode}
+                    value={"Send New Code"}/>
+            </form>
+            <br/>
 
-        </>
+            <div className="Centered MaxWidth">
+                <p>Already confirmed? <a href="/login">Login here</a></p>
+                <p>Not registered yet? <a href="/register">Register here</a></p>
+            </div>
+
+        </BaseScreen>
     );
 }

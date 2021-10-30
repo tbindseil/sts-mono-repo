@@ -1,50 +1,16 @@
-import React, {useEffect, useState} from 'react';
-import MediaQuery from 'react-responsive';
+import React, {useState} from 'react';
 import {useHistory} from 'react-router-dom';
 
 import {Auth} from 'aws-amplify';
 
-import {Header} from '../header/Header';
-import {Bottom} from '../header/Bottom';
 import {TextInput} from '../forms/TextInput';
-import {Title} from '../layout/Title';
 import {LoadingFormButton} from '../forms/FormButton';
-import {checkUnauthenticated} from "./CheckAuthenticated";
 import {PasswordRequirements} from './PasswordRequirements';
 import {makePostUser} from '../fetch-enhancements/fetch-call-builders';
+import {BaseScreen} from '../base-components/BaseScreen';
 
 export function RegisterScreen() {
-    return (
-        <div className="TopLevelContainer">
-
-            <Header/>
-
-            <MediaQuery minWidth={765}>
-                <RegisterBody
-                    pageBorderClass={"PageBorder"}
-                    underlineClass={"Underline"}/>
-            </MediaQuery>
-
-            <MediaQuery maxWidth={765}>
-                <RegisterBody
-                    pageBorderClass={"PageBorder2"}
-                    underlineClass={"Underline2"}/>
-            </MediaQuery>
-
-            <Bottom/>
-
-        </div>
-    );
-}
-
-function RegisterBody(props) {
     const history = useHistory();
-
-    useEffect(() => {
-        checkUnauthenticated(() => history.push("/profile"));
-    }, [
-        history
-    ]);
 
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -158,138 +124,135 @@ function RegisterBody(props) {
     };
 
     return (
-        <>
-            <header className={props.pageBorderClass}>
+        <BaseScreen
+            titleText={"Register"}
+            needUnauthenticated={true}>
 
-                <Title
-                    titleText={"Register"}
-                    underlineClass={props.underlineClass}/>
 
-                <form
-                    className="Centered MaxWidth AuthForm"
-                    onChange={handleChange}>
+            <form
+                className="Centered MaxWidth AuthForm"
+                onChange={handleChange}>
 
-                    Please keep in mind the following while completing the form: <br/>
-               
-                    We ask parents or legal guardians to complete the form if the student is not in highschool. <br/>
-                   
-                    Before submitting the form, parents/legal guardians will be required to sign a wavier if you are under the age of 18. <br/>
-           
-                    <br/>Student Info<br/>
-                    
+                Please keep in mind the following while completing the form: <br/>
 
-                    <TextInput
-                        name={"firstName"}
-                        placeHolder={"First Name"}
-                        value={firstName}/>
-                    <br/>
+                We ask parents or legal guardians to complete the form if the student is not in highschool. <br/>
 
-                    <TextInput
-                        name={"lastName"}
-                        placeHolder={"Last Name"}
-                        value={lastName}/>
-                    <br/>
-                 
-                    <TextInput
-                        name={"age"}
-                        placeHolder={"Age"}
-                        value={age}
-                        type={"number"}/>
-                    <br/>
+                Before submitting the form, parents/legal guardians will be required to sign a wavier if you are under the age of 18. <br/>
 
-                    <TextInput
-                        name={"grade"}
-                        placeHolder={"Grade"}
-                        value={grade}
-                        type={"number"}/>
-                    <br/>
+                <br/>Student Info<br/>
 
-                    <TextInput
-                        name={"school"}
-                        placeHolder={"School Name"}
-                        value={school}/>
-                    <br/>
 
-                    <TextInput
-                        name={"address"}
-                        placeHolder={"School Address"}
-                        value={address}/>
-                    <br/>
-
-                    <TextInput
-                        name={"email"}
-                        placeHolder={"Student Email"}
-                        value={email}/>
-                    <br/>
-
-                    <TextInput
-                        name={"bio"}
-                        placeHolder={"Bio"}
-                        value={bio}/>
-                    <br/>
-
-                    <br/>Parent Info<br/>
-                    <TextInput
-                        name={"parentEmail"}
-                        value={parentEmail}
-                        placeHolder={"Parent Email"}/>
-                    <br/>
-
-                    <TextInput
-                        name={"parentName"}
-                        value={parentName}
-                        placeHolder={"Parent Name"}/>
-                    <br/>
-                    <br/>
-
-                </form>
-
-                <form
-                    className="Centered MaxWidth AuthForm"
-                    onChange={handleChange}>
-
-                    <br/>Login Info<br/>
-
-                    <div className="Centered MaxWidth">
-                    <PasswordRequirements/>
-
-                    { failed &&
-                        <p className="ErrorMessage">{errorMessage}</p>
-                    }
-                    </div>
-                    <TextInput
-                        name={"username"}
-                        value={username}
-                        placeHolder={"Username"}/>
-                    <br/>
-
-                    <TextInput
-                        name={"password"}
-                        value={password}
-                        placeHolder={"Password"}
-                        type={"password"}/>
-                    <br/>
-
-                    <TextInput
-                        name={"confirmPassword"}
-                        value={confirmPassword}
-                        placeHolder={'Confirm Password'}
-                        type={"password"}/>
-                    <br/>
-
-                        <LoadingFormButton
-                        loading={loading}
-                        onClick={onFinish}
-                        value={"Register"}/>
-                </form>
+                <TextInput
+                    name={"firstName"}
+                    placeHolder={"First Name"}
+                    value={firstName}/>
                 <br/>
 
-                <div className="Centered MaxWidth">
-                    <p>Already registered? <a href="/login">Log in here</a></p>
-                    <p>Looking to confirm registration? <a href="/confirm">Go here</a></p>
-                </div>
+                <TextInput
+                    name={"lastName"}
+                    placeHolder={"Last Name"}
+                    value={lastName}/>
+                <br/>
 
-            </header>
-        </>
+                <TextInput
+                    name={"age"}
+                    placeHolder={"Age"}
+                    value={age}
+                    type={"number"}/>
+                <br/>
+
+                <TextInput
+                    name={"grade"}
+                    placeHolder={"Grade"}
+                    value={grade}
+                    type={"number"}/>
+                <br/>
+
+                <TextInput
+                    name={"school"}
+                    placeHolder={"School Name"}
+                    value={school}/>
+                <br/>
+
+                <TextInput
+                    name={"address"}
+                    placeHolder={"School Address"}
+                    value={address}/>
+                <br/>
+
+                <TextInput
+                    name={"email"}
+                    placeHolder={"Student Email"}
+                    value={email}/>
+                <br/>
+
+                <TextInput
+                    name={"bio"}
+                    placeHolder={"Bio"}
+                    value={bio}/>
+                <br/>
+
+                <br/>Parent Info<br/>
+                <TextInput
+                    name={"parentEmail"}
+                    value={parentEmail}
+                    placeHolder={"Parent Email"}/>
+                <br/>
+
+                <TextInput
+                    name={"parentName"}
+                    value={parentName}
+                    placeHolder={"Parent Name"}/>
+                <br/>
+                <br/>
+
+            </form>
+
+            <form
+                className="Centered MaxWidth AuthForm"
+                onChange={handleChange}>
+
+                <br/>Login Info<br/>
+
+                <div className="Centered MaxWidth">
+                <PasswordRequirements/>
+
+                { failed &&
+                    <p className="ErrorMessage">{errorMessage}</p>
+                }
+                </div>
+                <TextInput
+                    name={"username"}
+                    value={username}
+                    placeHolder={"Username"}/>
+                <br/>
+
+                <TextInput
+                    name={"password"}
+                    value={password}
+                    placeHolder={"Password"}
+                    type={"password"}/>
+                <br/>
+
+                <TextInput
+                    name={"confirmPassword"}
+                    value={confirmPassword}
+                    placeHolder={'Confirm Password'}
+                    type={"password"}/>
+                <br/>
+
+                    <LoadingFormButton
+                    loading={loading}
+                    onClick={onFinish}
+                    value={"Register"}/>
+            </form>
+            <br/>
+
+            <div className="Centered MaxWidth">
+                <p>Already registered? <a href="/login">Log in here</a></p>
+                <p>Looking to confirm registration? <a href="/confirm">Go here</a></p>
+            </div>
+
+        </BaseScreen>
     );
 }

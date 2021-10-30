@@ -60,12 +60,6 @@ import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
 import {checkAuthenticated, checkUnauthenticated} from "../auth/CheckAuthenticated";
 
-import { useMediaQuery } from 'react-responsive'
-
-/*const isBigScreen = () => {
-    return useMediaQuery({query: '(minWidth=765)'});
-};*/
-
 export function BaseScreen(props) {
     return (
         <div className="TopLevelContainer">

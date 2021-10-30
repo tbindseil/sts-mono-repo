@@ -1,49 +1,16 @@
-import React, {useEffect, useState} from 'react';
-import MediaQuery from 'react-responsive';
+import React, {useState} from 'react';
 import {useHistory} from 'react-router-dom';
 
 import {Auth} from 'aws-amplify';
 
-import {Header} from '../header/Header';
-import {Bottom} from '../header/Bottom';
-import {Title} from '../layout/Title';
 import {TextInput} from '../forms/TextInput';
 import {LoadingFormButton} from '../forms/FormButton';
-import {checkUnauthenticated} from "./CheckAuthenticated";
 import {PasswordRequirements} from './PasswordRequirements';
+import {BaseScreen} from '../base-components/BaseScreen';
 
-export function ConfirmPasswordResetScreen() {
-    return (
-        <div className="TopLevelContainer">
+export function ConfirmPasswordResetScreen(props) {
 
-            <Header/>
-
-            <MediaQuery minWidth={765}>
-                <ConfirmPasswordResetBody
-                    pageBorderClass={"PageBorder"}
-                    underlineClass={"Underline"}/>
-            </MediaQuery>
-
-            <MediaQuery maxWidth={765}>
-                <ConfirmPasswordResetBody
-                    pageBorderClass={"PageBorder2"}
-                    underlineClass={"Underline2"}/>
-            </MediaQuery>
-
-            <Bottom/>
-
-        </div>
-    );
-}
-
-function ConfirmPasswordResetBody(props) {
     const history = useHistory();
-
-    useEffect(() => {
-        checkUnauthenticated(() => history.push("/profile"));
-    }, [
-        history
-    ]);
 
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -96,63 +63,58 @@ function ConfirmPasswordResetBody(props) {
     };
 
     return (
-        <>
-            <header className={props.pageBorderClass}>
+        <BaseScreen
+            titleText={"Confirm Password Reset"}
+            needUnauthenticated={true}>
 
-                <Title
-                    titleText={"Confirm Password Reset"}
-                    underlineClass={props.underlineClass}/>
+            <div className={"Centered MaxWidth"}>
+                <p>
+                    Use the emailed code change your password
+                </p>
 
-                <div className={"Centered MaxWidth"}>
-                    <p>
-                        Use the emailed code change your password
-                    </p>
+                <PasswordRequirements/>
 
-                    <PasswordRequirements/>
+                { failed &&
+                    <p className="ErrorMessage">{errorMessage}</p>
+                }
 
-                    { failed &&
-                        <p className="ErrorMessage">{errorMessage}</p>
-                    }
+                <form
+                    className={"AuthForm"}
+                    onChange={handleChange}>
 
-                    <form
-                        className={"AuthForm"}
-                        onChange={handleChange}>
+                    <TextInput
+                        name={"username"}
+                        placeHolder={"Username"}
+                        value={username}/>
+                    <br/>
 
-                        <TextInput
-                            name={"username"}
-                            placeHolder={"Username"}
-                            value={username}/>
-                        <br/>
+                    <TextInput
+                        name={"code"}
+                        placeHolder={"Code"}
+                        value={code}/>
+                    <br/>
 
-                        <TextInput
-                            name={"code"}
-                            placeHolder={"Code"}
-                            value={code}/>
-                        <br/>
+                    <TextInput
+                        name={"newPassword"}
+                        placeHolder={"New Password"}
+                        value={newPassword}
+                        type={"password"}/>
+                    <br/>
 
-                        <TextInput
-                            name={"newPassword"}
-                            placeHolder={"New Password"}
-                            value={newPassword}
-                            type={"password"}/>
-                        <br/>
+                    <TextInput
+                        name={"confirmPassword"}
+                        placeHolder={"Confirm New Password"}
+                        value={confirmPassword}
+                        type={"password"}/>
+                    <br/>
 
-                        <TextInput
-                            name={"confirmPassword"}
-                            placeHolder={"Confirm New Password"}
-                            value={confirmPassword}
-                            type={"password"}/>
-                        <br/>
+                    <LoadingFormButton
+                        loading={loading}
+                        onClick={onFinish}
+                        value={"Reset Passord"}/>
+                </form>
+            </div>
 
-                        <LoadingFormButton
-                            loading={loading}
-                            onClick={onFinish}
-                            value={"Reset Passord"}/>
-                    </form>
-                </div>
-
-            </header>
-        </>
+        </BaseScreen>
     );
 }
-

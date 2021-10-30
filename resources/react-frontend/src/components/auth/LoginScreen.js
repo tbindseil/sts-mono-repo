@@ -1,46 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import MediaQuery from 'react-responsive';
+import React, {useState} from 'react';
 import {useHistory} from 'react-router-dom';
 
 import {Auth} from "aws-amplify";
 
-import {Header} from '../header/Header';
-import {Bottom} from '../header/Bottom';
-import {Title} from '../layout/Title';
 import {TextInput} from '../forms/TextInput';
 import {LoadingFormButton} from '../forms/FormButton';
-import {checkUnauthenticated} from "./CheckAuthenticated";
+import {BaseScreen} from '../base-components/BaseScreen';
 
 export function LoginScreen() {
-    return (
-        <div className="TopLevelContainer">
-            <Header/>
-
-            <MediaQuery minWidth={765}>
-                <LoginBody
-                    pageBorderClass={"PageBorder"}
-                    underlineClass={"Underline"}/>
-            </MediaQuery>
-
-            <MediaQuery maxWidth={765}>
-                <LoginBody
-                    pageBorderClass={"PageBorder2"}
-                    underlineClass={"Underline2"}/>
-            </MediaQuery>
-
-            <Bottom/>
-        </div>
-    );
-}
-
-function LoginBody(props) {
     const history = useHistory();
-
-    useEffect(() => {
-        checkUnauthenticated(() => history.push("/profile"));
-    }, [
-        history
-    ]);
 
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -60,7 +28,6 @@ function LoginBody(props) {
             setPassword(value);
         }
     }
-
 
     const onFinish = () => {
         setLoading(true);
@@ -82,48 +49,45 @@ function LoginBody(props) {
     };
 
     return (
-        <>
-            <header className={props.pageBorderClass}>
-                <Title
-                    titleText={"Log In"}
-                    underlineClass={props.underlineClass}/>
+        <BaseScreen
+            titleText={"Log In"}
+            needUnauthenticated={true}>
 
-                <div className="Centered MaxWidth">
-                    { failed &&
-                        <p className="ErrorMessage">{errorMessage}</p>
-                    }
-                </div>
+            <div className="Centered MaxWidth">
+                { failed &&
+                    <p className="ErrorMessage">{errorMessage}</p>
+                }
+            </div>
 
-                <form
-                    className="Centered MaxWidth AuthForm"
-                    onChange={handleChange}>
+            <form
+                className="Centered MaxWidth AuthForm"
+                onChange={handleChange}>
 
-                    <TextInput
-                        name={"username"}
-                        placeHolder={"Username"}
-                        value={username}/>
-                    <br/>
-
-                    <TextInput
-                        name={"password"}
-                        placeHolder={"Password"}
-                        value={password}
-                        type={"password"}/>
-                    <br/>
-
-                    <LoadingFormButton
-                        loading={loading}
-                        onClick={onFinish}
-                        value={"Log in"}/>
-                </form>
+                <TextInput
+                    name={"username"}
+                    placeHolder={"Username"}
+                    value={username}/>
                 <br/>
 
-                <div className="Centered MaxWidth">
-                    <p>Forgot password? <a href="/initiate-password-reset">Reset it here</a></p>
-                    <p>Don't have an account? <a href="/register">Register here</a></p>
-                </div>
+                <TextInput
+                    name={"password"}
+                    placeHolder={"Password"}
+                    value={password}
+                    type={"password"}/>
+                <br/>
 
-            </header>
-        </>
+                <LoadingFormButton
+                    loading={loading}
+                    onClick={onFinish}
+                    value={"Log in"}/>
+            </form>
+            <br/>
+
+            <div className="Centered MaxWidth">
+                <p>Forgot password? <a href="/initiate-password-reset">Reset it here</a></p>
+                <p>Don't have an account? <a href="/register">Register here</a></p>
+            </div>
+
+        </BaseScreen>
     );
 }

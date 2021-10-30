@@ -1,48 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import MediaQuery from 'react-responsive';
+import React, {useState} from 'react';
 import {useHistory} from 'react-router-dom';
 
 import {Auth} from "aws-amplify";
 
-import {Header} from '../header/Header';
-import {Bottom} from '../header/Bottom';
-import {Title} from '../layout/Title';
 import {TextInput} from '../forms/TextInput';
 import {FormButton} from '../forms/FormButton';
-import {checkUnauthenticated} from "./CheckAuthenticated";
+import {BaseScreen} from '../base-components/BaseScreen';
 
 export function InitiatePasswordResetScreen() {
-    return (
-        <div className="TopLevelContainer">
-
-            <Header/>
-
-            <MediaQuery minWidth={765}>
-                <InitiatePasswordResetBody
-                    pageBorderClass={"PageBorder"}
-                    underlineClass={"Underline"}/>
-            </MediaQuery>
-
-            <MediaQuery maxWidth={765}>
-                <InitiatePasswordResetBody
-                    pageBorderClass={"PageBorder2"}
-                    underlineClass={"Underline2"}/>
-            </MediaQuery>
-
-            <Bottom/>
-
-        </div>
-    );
-}
-
-function InitiatePasswordResetBody(props) {
     const history = useHistory();
-
-    useEffect(() => {
-        checkUnauthenticated(() => history.push("/profile"));
-    }, [
-        history
-    ]);
 
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -74,12 +40,9 @@ function InitiatePasswordResetBody(props) {
     };
 
     return (
-        <>
-            <header className={props.pageBorderClass}>
-
-            <Title
-                titleText={"Initiate Password Reset"}
-                underlineClass={props.underlineClass}/>
+        <BaseScreen
+            titleText={"Initiate Password Reset"}
+            needUnauthenticated={true}>
 
             <div className="Centered MaxWidth">
                 <p>
@@ -106,7 +69,7 @@ function InitiatePasswordResetBody(props) {
                 </form>
             </div>
 
-            </header>
-        </>
+        </BaseScreen>
+
     );
 }
