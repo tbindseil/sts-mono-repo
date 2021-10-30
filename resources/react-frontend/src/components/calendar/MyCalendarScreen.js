@@ -5,52 +5,17 @@ import {useHistory} from 'react-router-dom';
 import moment from 'moment';
 
 import './Calendar.css';
-import {Header} from '../header/Header';
-import {Bottom} from '../header/Bottom';
-import {Title} from '../layout/Title';
-import {checkAuthenticated} from "../auth/CheckAuthenticated";
 import {Calendar} from './Calendar';
 import {BigScreenNavigationTable, SmallScreenNavigationTable, goToDate} from './NavigationTable';
 import {makeGetAvailabilities} from '../fetch-enhancements/fetch-call-builders';
+import {BaseScreen} from '../base-components/BaseScreen';
+import {ScreenSizeConfigurable} from '../base-components/ScreenSizeConfigurable';
 
 // using a two layered "MediaQueryWrapper" here
 export function MyCalendarScreen(props) {
-    return (
-        <div>
-            <Header/>
-
-            <MediaQuery minWidth={765}>
-                { // TODO the different classes for this stuff could be handled by a registry?
-                }
-                <MyCalendarBody
-                    location={props.location}
-                    pageBorderClass={"PageBorderCalendar"}
-                    underlineClass={"Underline"}
-                    datePickerClass={"BigScreenNavigationDatePicker"}/>
-            </MediaQuery>
-
-            <MediaQuery maxWidth={765}>
-                <MyCalendarBody
-                    location={props.location}
-                    pageBorderClass={"PageBorder2"}
-                    underlineClass={"Underline2"}
-                    datePickerClass={"SmallScreenNavigationDatePicker"}/>
-            </MediaQuery>
-
-            <Bottom/>
-        </div>
-    );
-}
-
-function MyCalendarBody(props) {
     const history = useHistory();
 
     const [user, setUser] = useState(undefined)
-    useEffect(() => {
-        checkAuthenticated(() => history.push("/anonymous-user"), setUser);
-    }, [
-        history, setUser
-    ]);
 
     const stateProps = props.location.state;
     const selectedDate = useMemo(() => { return stateProps ? (stateProps.selectedDate ? stateProps.selectedDate : new Date()) : new Date() }, [stateProps]);
@@ -176,10 +141,10 @@ function MyCalendarBody(props) {
     }
 
     return (
-        <header className={props.pageBorderClass}>
-            <Title
-                titleText="My Calendar Screen"
-                underlineClass={props.underlineClass}/>
+        <BaseScreen
+            titleText={"Log Out"}
+            needAuthenticated={true}
+            setUser={setUser}>
 
             { failed &&
                 <p className="ErrorMessage">{errorMessage}</p>
@@ -196,11 +161,16 @@ function MyCalendarBody(props) {
                     pathName="/my-calendar"/>
             </MediaQuery>
 
-            <div className={props.datePickerClass}>
-                <label for="jumpToDate">Jump to Date:</label>
-                <input onChange={handleChangeJumpToDate} type="date" name="jumpToDate" value={moment(jumpToDate).format("YYYY-MM-DD")}/>
-                <button onClick={onClickJumpToDate}>Go</button>
-            </div>
+            <ScreenSizeConfigurable
+                bigScreenClassName={"BigScreenNavigationDatePicker"}
+                smallScreenClassName={"SmallScreenNavigationDatePicker"}>
+                <div className={props.datePickerClass}>
+                    <label for="jumpToDate">Jump to Date:</label>
+                    <input onChange={handleChangeJumpToDate} type="date" name="jumpToDate" value={moment(jumpToDate).format("YYYY-MM-DD")}/>
+                    <button onClick={onClickJumpToDate}>Go</button>
+                </div>
+            </ScreenSizeConfigurable>
+
 
             <br/>
 
@@ -218,6 +188,6 @@ function MyCalendarBody(props) {
                 </p>
             </div>
 
-        </header>
+        </BaseScreen>
     );
 }

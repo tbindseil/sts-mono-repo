@@ -1,44 +1,13 @@
 import React, {useCallback, useEffect, useState} from 'react';
 
 import moment from 'moment';
-import MediaQuery from 'react-responsive';
 import {useHistory} from 'react-router-dom';
 
-import {Header} from '../header/Header';
-import {Bottom} from '../header/Bottom';
-import {Title} from '../layout/Title';
-import {checkAuthenticated} from "../auth/CheckAuthenticated";
-
 import {makePostRequestStatusCall, makeUpdateRequestStatus, makeGetAvailabilities, makeGetAvailabilityStatus} from '../fetch-enhancements/fetch-call-builders';
-
-export function SelectAvailabilityScreen(props) {
-    return (
-        <div className="TopLevelContainer">
-
-            <Header/>
-
-            <MediaQuery minWidth={765}>
-                <CreateAvailabilityBody
-                    location={props.location}
-                    pageBorderClass={"PageBorder"}
-                    underlineClass={"Underline"}/>
-            </MediaQuery>
-
-            <MediaQuery maxWidth={765}>
-                <CreateAvailabilityBody
-                    location={props.location}
-                    pageBorderClass={"PageBorder2"}
-                    underlineClass={"Underline2"}/>
-            </MediaQuery>
-
-            <Bottom/>
-
-        </div>
-    );
-}
+import {BaseScreen} from '../base-components/BaseScreen';
 
 // TODO cool idea, allow start time and subject to be selectable here
-function CreateAvailabilityBody(props) {
+export function SelectAvailabilityScreen(props) {
     const history = useHistory();
 
     const stateProps = props.location.state;
@@ -48,11 +17,6 @@ function CreateAvailabilityBody(props) {
     const subject = stateProps.subject;
 
     const [user, setUser] = useState(undefined)
-    useEffect(() => {
-        checkAuthenticated(() => history.push("/anonymous-user"), setUser);
-    }, [
-        history, setUser
-    ]);
 
     const [availabilities, setAvailabilities] = useState(new Map());
     const [statuses, setStatuses] = useState(new Map());
@@ -254,10 +218,10 @@ function CreateAvailabilityBody(props) {
     };
 
     return (
-        <header className={props.pageBorderClass}>
-            <Title
-                titleText={"Select Availability"}
-                underlineClass={props.underlineClass}/>
+        <BaseScreen
+            titleText={"Select Availability"}
+            needAuthenticated={true}
+            setUser={setUser}>
 
             <table className="AvailabilityForm">
 
@@ -336,6 +300,6 @@ function CreateAvailabilityBody(props) {
                 }
             </div>
 
-        </header>
+        </BaseScreen>
     );
 }

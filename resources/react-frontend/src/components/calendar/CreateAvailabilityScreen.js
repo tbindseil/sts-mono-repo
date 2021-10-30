@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 
-import MediaQuery from 'react-responsive';
 import {useHistory} from 'react-router-dom';
 import moment from 'moment';
 
@@ -10,40 +9,11 @@ import {Dropdown} from 'semantic-ui-react';
 import subjects from '../../configs/subjects';
 
 import {LoadingFormButton} from '../forms/FormButton';
-import {Header} from '../header/Header';
-import {Bottom} from '../header/Bottom';
-import {Title} from '../layout/Title';
-import {checkAuthenticated} from "../auth/CheckAuthenticated";
 import {makeStandardErrorHandler} from "../fetch-enhancements/error-handling";
 import {makePostAvailability} from '../fetch-enhancements/fetch-call-builders';
+import {BaseScreen} from '../base-components/BaseScreen';
 
 export function CreateAvailabilityScreen(props) {
-    return (
-        <div className="TopLevelContainer">
-
-            <Header/>
-
-            <MediaQuery minWidth={765}>
-                <CreateAvailabilityBody
-                    location={props.location}
-                    pageBorderClass={"PageBorder"}
-                    underlineClass={"Underline"}/>
-            </MediaQuery>
-
-            <MediaQuery maxWidth={765}>
-                <CreateAvailabilityBody
-                    location={props.location}
-                    pageBorderClass={"PageBorder2"}
-                    underlineClass={"Underline2"}/>
-            </MediaQuery>
-
-            <Bottom/>
-
-        </div>
-    );
-}
-
-function CreateAvailabilityBody(props) {
     const history = useHistory();
 
     const stateProps = props.location.state;
@@ -56,11 +26,6 @@ function CreateAvailabilityBody(props) {
     }
 
     const [user, setUser] = useState(undefined)
-    useEffect(() => {
-        checkAuthenticated(() => history.push("/anonymous-user"), setUser);
-    }, [
-        history, setUser
-    ]);
 
     // time stuff
     const snapDownTo30Min = (initial) => {
@@ -255,10 +220,10 @@ function CreateAvailabilityBody(props) {
     const [loading, setLoading] = useState(false);
 
     return (
-        <header className={props.pageBorderClass}>
-            <Title
-                titleText={"CreateAvailability"}
-                underlineClass={props.underlineClass}/>
+        <BaseScreen
+            titleText={"Create Availability"}
+            needAuthenticated={true}
+            setUser={setUser}>
 
             <table className="AvailabilityForm">
                 <tr>
@@ -347,7 +312,6 @@ function CreateAvailabilityBody(props) {
                     <p className="ErrorMessage">{errorMessage}</p>
                 }
             </div>
-
-        </header>
+        </BaseScreen>
     );
 }

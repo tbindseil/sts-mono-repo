@@ -1,51 +1,16 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 
-import MediaQuery from 'react-responsive';
 import {useHistory} from 'react-router-dom';
 import moment from 'moment';
 
-import {Header} from '../header/Header';
-import {Bottom} from '../header/Bottom';
-import {Title} from '../layout/Title';
-import {checkAuthenticated} from "../auth/CheckAuthenticated";
+import {BaseScreen} from '../base-components/BaseScreen';
 
 export function DeleteAvailabilityScreen(props) {
-    return (
-        <div className="TopLevelContainer">
-
-            <Header/>
-
-            <MediaQuery minWidth={765}>
-                <DeleteAvailabilityBody
-                    location={props.location}
-                    pageBorderClass={"PageBorder"}
-                    underlineClass={"Underline"}/>
-            </MediaQuery>
-
-            <MediaQuery maxWidth={765}>
-                <DeleteAvailabilityBody
-                    location={props.location}
-                    pageBorderClass={"PageBorder2"}
-                    underlineClass={"Underline2"}/>
-            </MediaQuery>
-
-            <Bottom/>
-
-        </div>
-    );
-}
-
-function DeleteAvailabilityBody(props) {
     const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod/'
 
     const history = useHistory();
 
     const [user, setUser] = useState(undefined)
-    useEffect(() => {
-        checkAuthenticated(() => history.push("/anonymous-user"), setUser);
-    }, [
-        history, setUser
-    ]);
 
     const deleteAvailability = async () => {
 
@@ -88,10 +53,10 @@ function DeleteAvailabilityBody(props) {
     const availability = stateProps.availability;
 
     return (
-        <header className={props.pageBorderClass}>
-            <Title
-                titleText={"View Availability"}
-                underlineClass={props.underlineClass}/>
+        <BaseScreen
+            titleText={"View Availability"}
+            needAuthenticated={true}
+            setUser={setUser}>
 
             <table className="AvailabilityForm">
                 <tr>
@@ -126,7 +91,7 @@ function DeleteAvailabilityBody(props) {
                 </tr>
             </table>
 
-        </header>
+        </BaseScreen>
     );
 }
 
