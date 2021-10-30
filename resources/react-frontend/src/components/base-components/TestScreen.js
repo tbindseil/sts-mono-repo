@@ -15,12 +15,16 @@ import {makeStandardErrorHandler} from "../fetch-enhancements/error-handling";
 
 import {BaseScreen} from './BaseScreen';
 
+
+
+import {ScreenSizeConfigurable} from './ScreenSizeConfigurable';
+
 export function TestScreen(props) {
     return (
         <BaseScreen titleText="Profile">
-            <p className="AnotherImaginaryClass">
-                TEST
-            </p>
+            <ScreenSizeConfigurable smallScreenClassName={"Blue"} bigScreenClassName={"Red"}>
+                <p>Test</p>
+            </ScreenSizeConfigurable>
         </BaseScreen>
     );
 }
