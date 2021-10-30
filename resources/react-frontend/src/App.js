@@ -8,8 +8,6 @@ import Amplify from '@aws-amplify/core'
 import awsConfig from "./configs/aws-configs";
 
 import {AboutUs} from './components/info/AboutUs';
-import {GetInvolved} from './components/info/GetInvolved';
-import {RequestTutor} from './components/info/RequestTutor';
 import {Contacts, Contacts2} from './components/info/Contacts';
 import {HomeScreen} from './components/info/Home';
 import {Process} from './components/info/Process';
@@ -45,8 +43,6 @@ const App = () => {
         <Route path="/home" component={HomeScreen}/>
         <Route path="/about-us" component={AboutUs}/>
         <Route path="/process" component= {Process}/>
-        <Route path="/get-involved" component={GetInvolved}/>
-        <Route path="/request-a-tutor" component={RequestTutor}/>
         <Route path="/contacts" component={Contacts}/>
         <Route path="/contacts2" component={Contacts2}/>
 

@@ -429,8 +429,8 @@ web page should be grid that fills at least full screen but can stretch vertical
                 so far only 2
                     * <hr className={props.underlineClass}/>
                     * <p className={props.textClass}>
-                    * <img className={props.imgClass} src={course} alt="stock"/>
                     * <p className={props.mainTextClass}>
+                    * <img className={props.imgClass} src={course} alt="stock"/>
 
 
             =-=
