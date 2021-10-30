@@ -70,6 +70,7 @@ export function BaseScreen(props) {
                     pageBorderClass={"PageBorder"}
                     underlineClass={"Underline"}
                     titleText={props.titleText}
+                    setUser={props.setUser}
                     needAuthenticated={props.needAuthenticated}
                     needUnauthenticated={props.needUnauthenticated}>
                     {props.children}
@@ -81,6 +82,7 @@ export function BaseScreen(props) {
                     pageBorderClass={"PageBorder2"}
                     underlineClass={"Underline2"}
                     titleText={props.titleText}
+                    setUser={props.setUser}
                     needAuthenticated={props.needAuthenticated}
                     needUnauthenticated={props.needUnauthenticated}>
                     {props.children}
@@ -100,26 +102,19 @@ function BaseBody(props) {
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
-    // TODO flag for authenticated vs not
-    /*const [user, setUser] = useState(undefined);
-    useEffect(() => {
-        checkAuthenticated(() => history.push("/anonymous-user"), setUser);
-    }, [
-        history, setUser
-    ]);*/
-
-    const [user, setUser] = useState(undefined);
     useEffect(() => {
         console.log("IN USE EFFECT");
+        console.log("props is:");
+        console.log(props);
         if (props.needAuthenticated) {
-            checkAuthenticated(() => history.push("/anonymous-user"), setUser);
+            console.log("in need auth");
+            checkAuthenticated(() => history.push("/anonymous-user"), props.setUser);
         }
         if (props.needUnauthenticated) {
-            console.log("IN needUnauthenticated");
             checkUnauthenticated(() => history.push("/profile"));
         }
     }, [
-        history, setUser, props.needAuthenticated, props.needUnauthenticated
+        history, props
     ]);
 
     return (

@@ -1,50 +1,17 @@
-import React, {useEffect, useState} from 'react';
-import MediaQuery from 'react-responsive';
+import React, {useState} from 'react';
 import {useHistory} from 'react-router-dom';
 
 import {Auth} from "aws-amplify";
 
-import {Header} from '../header/Header';
-import {Bottom} from '../header/Bottom';
-import {Title} from '../layout/Title';
 import {TextInput} from '../forms/TextInput';
 import {FormButton} from '../forms/FormButton';
-import {checkAuthenticated} from "./CheckAuthenticated";
 import {PasswordRequirements} from './PasswordRequirements';
+import {BaseScreen} from '../base-components/BaseScreen';
 
 export function ChangePasswordScreen() {
-    return (
-        <div className="TopLevelContainer">
-
-            <Header/>
-
-            <MediaQuery minWidth={765}>
-                <ChangePasswordBody
-                    pageBorderClass={"PageBorder"}
-                    underlineClass={"Underline"}/>
-            </MediaQuery>
-
-            <MediaQuery maxWidth={765}>
-                <ChangePasswordBody
-                    pageBorderClass={"PageBorder2"}
-                    underlineClass={"Underline2"}/>
-            </MediaQuery>
-
-            <Bottom/>
-
-        </div>
-    );
-}
-
-function ChangePasswordBody(props) {
     const history = useHistory();
 
     const [user, setUser] = useState(undefined)
-    useEffect(() => {
-        checkAuthenticated(() => history.push("/anonymous-user"), setUser);
-    }, [
-        history, setUser
-    ]);
 
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -86,52 +53,50 @@ function ChangePasswordBody(props) {
     };
 
     return (
-        <>
-            <header className={props.pageBorderClass}>
-                <Title
-                    titleText={"Change Password"}
-                    underlineClass={props.underlineClass}/>
+        <BaseScreen
+            titleText={"Change Password"}
+            needAuthenticated={true}
+            setUser={setUser}>
 
-                <div className={"Centered MaxWidth"}>
+            <div className={"Centered MaxWidth"}>
 
-                    <PasswordRequirements/>
+                <PasswordRequirements/>
 
-                    { failed &&
-                        <p className="ErrorMessage">{errorMessage}</p>
-                    }
+                { failed &&
+                    <p className="ErrorMessage">{errorMessage}</p>
+                }
 
-                    <form
-                        className={"AuthForm"}
-                        onChange={handleChange}>
+                <form
+                    className={"AuthForm"}
+                    onChange={handleChange}>
 
-                        <TextInput
-                            name={"oldPassword"}
-                            placeHolder={"Old Password"}
-                            value={oldPassword}
-                            type={"password"}/>
-                        <br/>
+                    <TextInput
+                        name={"oldPassword"}
+                        placeHolder={"Old Password"}
+                        value={oldPassword}
+                        type={"password"}/>
+                    <br/>
 
-                        <TextInput
-                            name={"newPassword"}
-                            placeHolder={"New Password"}
-                            value={newPassword}
-                            type={"password"}/>
-                        <br/>
+                    <TextInput
+                        name={"newPassword"}
+                        placeHolder={"New Password"}
+                        value={newPassword}
+                        type={"password"}/>
+                    <br/>
 
-                        <TextInput
-                            name={"confirmPassword"}
-                            placeHolder={"Confirm New Password"}
-                            value={confirmPassword}
-                            type={"password"}/>
-                        <br/>
+                    <TextInput
+                        name={"confirmPassword"}
+                        placeHolder={"Confirm New Password"}
+                        value={confirmPassword}
+                        type={"password"}/>
+                    <br/>
 
-                        <FormButton
-                            onClick={onFinish}
-                            value={"Change Password"}/>
-                    </form>
-                </div>
+                    <FormButton
+                        onClick={onFinish}
+                        value={"Change Password"}/>
+                </form>
+            </div>
 
-            </header>
-        </>
+        </BaseScreen>
     );
 }
