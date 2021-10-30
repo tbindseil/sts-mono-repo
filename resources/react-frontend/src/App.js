@@ -10,7 +10,7 @@ import awsConfig from "./configs/aws-configs";
 import {AboutUs} from './components/info/AboutUs';
 import {GetInvolved} from './components/info/GetInvolved';
 import {RequestTutor} from './components/info/RequestTutor';
-import {Contacts} from './components/info/Contacts';
+import {Contacts, Contacts2} from './components/info/Contacts';
 import {HomeScreen} from './components/info/Home';
 import {Process} from './components/info/Process';
 
@@ -48,6 +48,7 @@ const App = () => {
         <Route path="/get-involved" component={GetInvolved}/>
         <Route path="/request-a-tutor" component={RequestTutor}/>
         <Route path="/contacts" component={Contacts}/>
+        <Route path="/contacts2" component={Contacts2}/>
 
         <Route path={"/anonymous-user"} component={AnonymousUserScreen}/>
         <Route path={"/login"} component={LoginScreen}/>

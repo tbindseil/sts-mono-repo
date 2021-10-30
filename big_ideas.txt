@@ -420,6 +420,21 @@ select part of an availability
 
 web page should be grid that fills at least full screen but can stretch vertically to accomidate plenty of crap in the middle - TJTAG
     * use in all places
+        * so there is a problem here, a lot of things take in classnames from props and those classnames can switch depending on whether its full screen or not
+            Now that basescreen determines that, the specific screens can't pass those into their specific components
+            the solution: have a single registry of classnames. fetch classnames based on screen size enum or something
+            =-=
+            ok, so that didnt' work, it appears media query must be a part of a component. So, maybe I make the components first, each (commonly used one) that can decide for itself
+            so which are commonly used:
+                so far only 2
+                    * <hr className={props.underlineClass}/>
+                    * <p className={props.textClass}>
+                    * <img className={props.imgClass} src={course} alt="stock"/>
+                    * <p className={props.mainTextClass}>
+
+
+            =-=
+            another option: pass in both classes to the class - NOPE!
     * revamp grid
     * revamp error stuff
     * revamp authed vs unauthed

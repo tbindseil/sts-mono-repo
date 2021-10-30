@@ -12,6 +12,7 @@ const sideBy = {
   display: 'flex',
 };
 
+// TODO this one (and process) is a weird one that doesn't fit the easy basescreen format
 export const AboutUs = () => (
 
     <div>
