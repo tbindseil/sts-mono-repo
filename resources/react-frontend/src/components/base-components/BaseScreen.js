@@ -54,10 +54,11 @@ import MediaQuery from 'react-responsive';
 
 import {useHistory} from 'react-router-dom';
 
+// TODO move below to base-components
 import {Header} from '../header/Header';
 import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
-import {checkAuthenticated} from "../auth/CheckAuthenticated";
+import {checkAuthenticated, checkUnauthenticated} from "../auth/CheckAuthenticated";
 
 import { useMediaQuery } from 'react-responsive'
 
@@ -74,7 +75,9 @@ export function BaseScreen(props) {
                 <BaseBody
                     pageBorderClass={"PageBorder"}
                     underlineClass={"Underline"}
-                    titleText={props.titleText}>
+                    titleText={props.titleText}
+                    needAuthenticated={props.needAuthenticated}
+                    needUnauthenticated={props.needUnauthenticated}>
                     {props.children}
                 </BaseBody>
             </MediaQuery>
@@ -83,7 +86,9 @@ export function BaseScreen(props) {
                 <BaseBody
                     pageBorderClass={"PageBorder2"}
                     underlineClass={"Underline2"}
-                    titleText={props.titleText}>
+                    titleText={props.titleText}
+                    needAuthenticated={props.needAuthenticated}
+                    needUnauthenticated={props.needUnauthenticated}>
                     {props.children}
                 </BaseBody>
             </MediaQuery>
@@ -108,6 +113,20 @@ function BaseBody(props) {
     }, [
         history, setUser
     ]);*/
+
+    const [user, setUser] = useState(undefined);
+    useEffect(() => {
+        console.log("IN USE EFFECT");
+        if (props.needAuthenticated) {
+            checkAuthenticated(() => history.push("/anonymous-user"), setUser);
+        }
+        if (props.needUnauthenticated) {
+            console.log("IN needUnauthenticated");
+            checkUnauthenticated(() => history.push("/profile"));
+        }
+    }, [
+        history, setUser, props.needAuthenticated, props.needUnauthenticated
+    ]);
 
     return (
         <>
