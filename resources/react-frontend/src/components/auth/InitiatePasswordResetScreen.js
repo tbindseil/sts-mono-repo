@@ -6,12 +6,11 @@ import {Auth} from "aws-amplify";
 import {TextInput} from '../forms/TextInput';
 import {FormButton} from '../forms/FormButton';
 import {BaseScreen} from '../base-components/BaseScreen';
+import {ErrorRegistry} from '../base-components/ErrorRegistry';
 
 export function InitiatePasswordResetScreen() {
     const history = useHistory();
 
-    const [failed, setFailed] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
     const [username, setUsername] = useState("");
 
     const handleChange = event => {
@@ -30,12 +29,12 @@ export function InitiatePasswordResetScreen() {
                 history.push("/confirm-password-reset");
             })
             .catch(err => {
-                setFailed(true);
+                ErrorRegistry.getInstance().setFailed(true);
                 var message = "Error Initiating Password Reset";
                 if (err.message) {
                     message += ": " + err.message;
                 }
-                setErrorMessage(message);
+                ErrorRegistry.getInstance().setErrorMessage(message);
             });
     };
 
@@ -48,10 +47,6 @@ export function InitiatePasswordResetScreen() {
                 <p>
                     Enter the username for which to reset the password, and expect a code to be sent to the parent email address associated with the account.
                 </p>
-
-                { failed &&
-                    <p className="ErrorMessage">{errorMessage}</p>
-                }
 
                 <form
                     className={"AuthForm"}

@@ -41,22 +41,12 @@ function ProfileBody(props) {
 
     const [editting, setEditting] = useState(false);
 
-    const [failed, setFailed] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
-
     const [user, setUser] = useState(undefined);
     useEffect(() => {
         checkAuthenticated(() => history.push("/anonymous-user"), setUser);
     }, [
         history, setUser
     ]);
-
-    const errorHandler = (error) => {
-        const newProfile = {};
-        setProfile(newProfile);
-        const standardErrorHandler = makeStandardErrorHandler(setFailed, setErrorMessage, "Error getting profile");
-        standardErrorHandler();
-    };
 
     const getProfile = useCallback(() => {
         if (!user) {
@@ -79,9 +69,7 @@ function ProfileBody(props) {
 
         const call = apiFactory.makeGetUser({
             username: user.username,
-            successHandler: successHandler,
-            errorHandler: errorHandler,
-            catchHandler: errorHandler
+            successHandler: successHandler
         });
         call();
     }, [
@@ -101,9 +89,7 @@ function ProfileBody(props) {
             forAvailability: 0,
             fromUser: user.username,
             user: user,
-            successHandler: successHandler,
-            setFailed: setFailed,
-            setErrorMessage: setErrorMessage
+            successHandler: successHandler
         });
         call();
     }, [
@@ -123,9 +109,7 @@ function ProfileBody(props) {
             forAvailability: 0,
             fromUser: "",
             user: user,
-            successHandler: successHandler,
-            setFailed: setFailed,
-            setErrorMessage: setErrorMessage
+            successHandler: successHandler
         });
         call();
     }, [
@@ -170,8 +154,6 @@ function ProfileBody(props) {
         const call = apiFactory.makePutUser({
             user: user,
             successHandler: () => {},
-            errorHandler: errorHandler,
-            catchHandler: errorHandler,
             body: JSON.stringify(profile)
         });
 
@@ -212,9 +194,7 @@ function ProfileBody(props) {
             fromUser: fromUser,
             forAvailability: forAvailability,
             newStatus: newStatus,
-            successHandler: successHandler,
-            setFailed: setFailed,
-            setErrorMessage: setErrorMessage
+            successHandler: successHandler
         });
         call();
     };
@@ -487,10 +467,6 @@ function ProfileBody(props) {
                             }
                         </tbody>
                     </table>
-
-                    { failed &&
-                        <p className="ErrorMessage">{errorMessage}</p>
-                    }
 
                 </div>
 

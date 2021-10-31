@@ -1,15 +1,13 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {useHistory} from 'react-router-dom';
 
 import {Auth} from "aws-amplify";
 
 import {BaseScreen} from '../base-components/BaseScreen';
+import {ErrorRegistry} from '../base-components/ErrorRegistry';
 
 export function LogoutScreen() {
     const history = useHistory();
-
-    const [failed, setFailed] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
 
     const onFinish = values => {
         Auth.signOut({ global: true })
@@ -17,12 +15,12 @@ export function LogoutScreen() {
                 history.push("/");
             })
             .catch(err => {
-                setFailed(true);
+                ErrorRegistry.getInstance().setFailed(true);
                 var message = "Error Logging Out";
                 if (err.message) {
                     message += ": " + err.message;
                 }
-                setErrorMessage(message);
+                ErrorRegistry.getInstance().setErrorMessage(message);
             });
     };
 
@@ -33,10 +31,6 @@ export function LogoutScreen() {
             setUser={() => {}}>
 
             <div className="Centered MaxWidth">
-                { failed &&
-                    <p className="ErrorMessage">{errorMessage}</p>
-                }
-
                 <button onClick={onFinish}>
                     Log Out
                 </button>

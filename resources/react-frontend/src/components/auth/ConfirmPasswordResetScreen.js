@@ -7,13 +7,12 @@ import {TextInput} from '../forms/TextInput';
 import {LoadingFormButton} from '../forms/FormButton';
 import {PasswordRequirements} from './PasswordRequirements';
 import {BaseScreen} from '../base-components/BaseScreen';
+import {ErrorRegistry} from '../base-components/ErrorRegistry';
 
 export function ConfirmPasswordResetScreen(props) {
 
     const history = useHistory();
 
-    const [failed, setFailed] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
     const [username, setUsername] = useState("");
     const [code, setCode] = useState("");
     const [newPassword, setNewPassword] = useState("");
@@ -39,8 +38,8 @@ export function ConfirmPasswordResetScreen(props) {
 
     const onFinish = () => {
         if (newPassword !== confirmPassword) {
-            setErrorMessage("password entries do not match");
-            setFailed(true);
+            ErrorRegistry.getInstance().setFailed(true);
+            ErrorRegistry.getInstance().setErrorMessage("password entries do not match");
             return;
         }
 
@@ -50,12 +49,12 @@ export function ConfirmPasswordResetScreen(props) {
                 history.push("/login");
             })
             .catch(err => {
-                setFailed(true);
+                ErrorRegistry.getInstance().setFailed(true);
                 var message = "Error Confirming Password Reset";
                 if (err.message) {
                     message += ": " + err.message;
                 }
-                setErrorMessage(message);
+                ErrorRegistry.getInstance().setErrorMessage(message);
             })
             .finally(() => {
                 setLoading(false);
@@ -73,10 +72,6 @@ export function ConfirmPasswordResetScreen(props) {
                 </p>
 
                 <PasswordRequirements/>
-
-                { failed &&
-                    <p className="ErrorMessage">{errorMessage}</p>
-                }
 
                 <form
                     className={"AuthForm"}

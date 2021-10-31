@@ -60,6 +60,7 @@ import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
 import {checkAuthenticated, checkUnauthenticated} from "../auth/CheckAuthenticated";
 import {ErrorRegistry} from './ErrorRegistry';
+import {apiFactory} from '../fetch-enhancements/fetch-call-builders';
 
 export function BaseScreen(props) {
     return (
@@ -103,6 +104,8 @@ function BaseBody(props) {
 
     ErrorRegistry.getInstance().set_setFailed(setFailed);
     ErrorRegistry.getInstance().set_setErrorMessage(setErrorMessage);
+
+    apiFactory.configure(setFailed, setErrorMessage);
 
     useEffect(() => {
         if (props.needAuthenticated) {

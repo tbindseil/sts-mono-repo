@@ -6,12 +6,11 @@ import {Auth} from "aws-amplify";
 import {TextInput} from '../forms/TextInput';
 import {LoadingFormButton} from '../forms/FormButton';
 import {BaseScreen} from '../base-components/BaseScreen';
+import {ErrorRegistry} from '../base-components/ErrorRegistry';
 
 export function LoginScreen() {
     const history = useHistory();
 
-    const [failed, setFailed] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
@@ -36,12 +35,12 @@ export function LoginScreen() {
                 history.push("/profile");
             })
             .catch(err => {
-                setFailed(true);
+                ErrorRegistry.getInstance().setFailed(true);
                 var message = "Error Logging In";
                 if (err.message) {
                     message += ": " + err.message;
                 }
-                setErrorMessage(message);
+                ErrorRegistry.getInstance().setErrorMessage(message);
             })
             .finally(() => {
                 setLoading(false);
@@ -52,12 +51,6 @@ export function LoginScreen() {
         <BaseScreen
             titleText={"Log In"}
             needUnauthenticated={true}>
-
-            <div className="Centered MaxWidth">
-                { failed &&
-                    <p className="ErrorMessage">{errorMessage}</p>
-                }
-            </div>
 
             <form
                 className="Centered MaxWidth AuthForm"

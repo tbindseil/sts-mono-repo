@@ -437,6 +437,20 @@ web page should be grid that fills at least full screen but can stretch vertical
             another option: pass in both classes to the class - NOPE!
     * revamp grid
     * revamp error stuff - TJTAG
+        * seems tightly coupled to loading stuff
+            * so what is loading? one api call at a time??
+              if so, then we can just pass a flag in (man, lots of props..)
+                when the flag is present, wrap success and failure handlers in 'setLoading(false); og_success/failurehandler();'
+              also, could use a queue
+            * or, loading is another hook
+            * each screen owns as many loading / setLoading states as needed, when call is made, loading is started, when call finishes
+              (whether success or failure, aka .finally(setLoading(false))), loading goes to false via a provided callback
+                can i remove the providing of the callback?
+            * maybe there could be a (wrapper) component that encapsulates the loading aspect
+                * absorb clicks
+                * show progress dots (. => .. => ... => . or arrow circle thing)
+            * regardless, I'm ripping it out and doing the error stuff, then I'll come back
+                * actually, instead of ripping out i'll just leave it, seems like the loading form button could be interesting
     * revamp authed vs unauthed - done
 
 ~~~~~

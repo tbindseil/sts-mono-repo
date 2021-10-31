@@ -8,12 +8,10 @@ import {LoadingFormButton} from '../forms/FormButton';
 import {PasswordRequirements} from './PasswordRequirements';
 import {apiFactory} from '../fetch-enhancements/fetch-call-builders';
 import {BaseScreen} from '../base-components/BaseScreen';
+import {ErrorRegistry} from '../base-components/ErrorRegistry';
 
 export function RegisterScreen() {
     const history = useHistory();
-
-    const [failed, setFailed] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -73,8 +71,8 @@ export function RegisterScreen() {
 
     const onFinish = () => {
         if (password !== confirmPassword) {
-            setFailed(true);
-            setErrorMessage("password entries do not match");
+            ErrorRegistry.getInstance().setFailed(true);
+            ErrorRegistry.getInstance().setErrorMessage("password entries do not match");
             return;
         }
 
@@ -99,9 +97,7 @@ export function RegisterScreen() {
 
                 const call = apiFactory.makePostUser({
                     body: JSON.stringify(profile),
-                    successHandler: () => {},
-                    setFailed: setFailed,
-                    setErrorMessage: setErrorMessage
+                    successHandler: () => {}
                 });
                 return call();
             })
@@ -111,12 +107,12 @@ export function RegisterScreen() {
                 history.push("/confirm");
             })
             .catch(err => {
-                setFailed(true); // TJTAg
+                ErrorRegistry.getInstance().setFailed(true);
                 var message = "Error Registering";
                 if (err.message) {
                     message += ": " + err.message;
                 }
-                setErrorMessage(message);
+                ErrorRegistry.getInstance().setErrorMessage(message);
             })
             .finally(() => {
                 setLoading(false);
@@ -215,12 +211,9 @@ export function RegisterScreen() {
                 <br/>Login Info<br/>
 
                 <div className="Centered MaxWidth">
-                <PasswordRequirements/>
-
-                { failed &&
-                    <p className="ErrorMessage">{errorMessage}</p>
-                }
+                    <PasswordRequirements/>
                 </div>
+
                 <TextInput
                     name={"username"}
                     value={username}

@@ -9,9 +9,9 @@ import {Dropdown} from 'semantic-ui-react';
 import subjects from '../../configs/subjects';
 
 import {LoadingFormButton} from '../forms/FormButton';
-import {makeStandardErrorHandler} from "../fetch-enhancements/error-handling";
 import {apiFactory} from '../fetch-enhancements/fetch-call-builders';
 import {BaseScreen} from '../base-components/BaseScreen';
+import {ErrorRegistry} from './ErrorRegistry';
 
 export function CreateAvailabilityScreen(props) {
     const history = useHistory();
@@ -115,8 +115,8 @@ export function CreateAvailabilityScreen(props) {
     // then, make post call
     const onFinish = async () => {
         if (selectedSubjects.length === 0) {
-            setFailed(true); // TJTAG
-            setErrorMessage('Must select at least one subject');
+            ErrorRegistry.getInstance().setFailed(true);
+            ErrorRegistry.getInstance().setErrorMessage('Must select at least one subject');
             return;
         }
 
@@ -129,12 +129,6 @@ export function CreateAvailabilityScreen(props) {
             });
         };
 
-        const errorHandler = (error) => {
-            setLoading(false);
-            const standardErrorHandler = makeStandardErrorHandler(setFailed, setErrorMessage, "Error getting profile");
-            standardErrorHandler(error);
-        };
-
         setLoading(true);
 
         const call = apiFactory.makePostAvailability({
@@ -143,9 +137,7 @@ export function CreateAvailabilityScreen(props) {
             endTime: endTime,
             selectedSubjects: selectedSubjects,
             user: user,
-            successHandler: successHandler,
-            errorHandler: errorHandler,
-            catchHandler: errorHandler
+            successHandler: successHandler
         });
         call();
     };
@@ -214,16 +206,14 @@ export function CreateAvailabilityScreen(props) {
         return options;
     };
 
-    const [failed, setFailed] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
-
     const [loading, setLoading] = useState(false);
 
     return (
         <BaseScreen
             titleText={"Create Availability"}
             needAuthenticated={true}
-            setUser={setUser}>
+            setUser={setUser}
+            errorPrefix={'Error creating availability'}>
 
             <table className="AvailabilityForm">
                 <tr>
@@ -307,11 +297,6 @@ export function CreateAvailabilityScreen(props) {
                 </tr>
             </table>
 
-            <div className="Centered MaxWidth">
-                { failed &&
-                    <p className="ErrorMessage">{errorMessage}</p>
-                }
-            </div>
         </BaseScreen>
     );
 }

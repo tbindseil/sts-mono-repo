@@ -7,14 +7,13 @@ import {TextInput} from '../forms/TextInput';
 import {FormButton} from '../forms/FormButton';
 import {PasswordRequirements} from './PasswordRequirements';
 import {BaseScreen} from '../base-components/BaseScreen';
+import {ErrorRegistry} from '../base-components/ErrorRegistry';
 
 export function ChangePasswordScreen() {
     const history = useHistory();
 
     const [user, setUser] = useState(undefined)
 
-    const [failed, setFailed] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
     const [oldPassword, setOldPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -35,20 +34,20 @@ export function ChangePasswordScreen() {
 
     const onFinish = async () => {
         if (newPassword !== confirmPassword) {
-            setErrorMessage("password entries do not match");
-            setFailed(true); // TJTAG
+            ErrorRegistry.getInstance().setFailed(true);
+            ErrorRegistry.getInstance().setErrorMessage("password entries do not match");
             return;
         }
 
         Auth.changePassword(user, oldPassword, newPassword)
             .then(data => history.push("/profile"))
             .catch(err => {
-                setFailed(true);
+                ErrorRegistry.getInstance().setFailed(true);
                 var message = "Error Changing Password";
                 if (err.message) {
                     message += ": " + err.message;
                 }
-                setErrorMessage(message);
+                ErrorRegistry.getInstance().setErrorMessage(message);
             });
     };
 
@@ -61,10 +60,6 @@ export function ChangePasswordScreen() {
             <div className={"Centered MaxWidth"}>
 
                 <PasswordRequirements/>
-
-                { failed &&
-                    <p className="ErrorMessage">{errorMessage}</p>
-                }
 
                 <form
                     className={"AuthForm"}

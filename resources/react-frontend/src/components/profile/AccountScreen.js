@@ -48,22 +48,12 @@ function AccountBody(props) {
 
     const [editting, setEditting] = useState(false);
 
-    const [failed, setFailed] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
-
     const [user, setUser] = useState(undefined);
     useEffect(() => {
         checkAuthenticated(() => history.push("/anonymous-user"), setUser);
     }, [
         history, setUser
     ]);
-
-    const errorHandler = (error) => {
-        const newProfile = {};
-        setProfile(newProfile);
-        const standardErrorHandler = makeStandardErrorHandler(setFailed, setErrorMessage, "Error getting profile");
-        standardErrorHandler();
-    };
 
     const getProfile = useCallback(() => {
         if (!user) {
@@ -81,9 +71,7 @@ function AccountBody(props) {
 
         const call = apiFactory.makeGetUser({
             username: user.username,
-            successHandler: successHandler,
-            errorHandler: errorHandler,
-            catchHandler: errorHandler
+            successHandler: successHandler
         });
         call();
     }, [
@@ -108,8 +96,6 @@ function AccountBody(props) {
         const call = apiFactory.makePutUser({
             user: user,
             successHandler: () => {},
-            errorHandler: errorHandler,
-            catchHandler: errorHandler,
             body: JSON.stringify(profile)
         });
 
@@ -189,10 +175,6 @@ function AccountBody(props) {
             }
 
                     </table>
-
-                    { failed &&
-                        <p className="ErrorMessage">{errorMessage}</p>
-                    }
 
                 </div>
 

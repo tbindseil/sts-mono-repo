@@ -6,13 +6,11 @@ import {CognitoIdentityProvider} from '@aws-sdk/client-cognito-identity-provider
 
 import {apiFactory} from '../fetch-enhancements/fetch-call-builders';
 import {BaseScreen} from '../base-components/BaseScreen';
+import {ErrorRegistry} from '../base-components/ErrorRegistry';
 
 export function DeleteScreen() {
-    const history = useHistory();
-
     const [user, setUser] = useState(undefined)
 
-    const [failed, setFailed] = useState(false);
     const [confirming, setConfirming] = useState(false);
 
     const onFinish = async (values) => {
@@ -28,15 +26,18 @@ export function DeleteScreen() {
             };
             cognitoIdentityProvider.deleteUser(params, function(err, data)  {
                 if (err) {
-                    // TODO yikes..
-                    setFailed(true);
+                    ErrorRegistry.getInstance().setFailed(true);
+                    var message = "Error Deleting User";
+                    if (err.message) {
+                        message += ": " + err.message;
+                    }
+                    ErrorRegistry.getInstance().setErrorMessage(message);
+                    return;
                 }
 
                 const call = apiFactory.makeDeleteUser({
                     user: user,
-                    successHandler: () => {},
-                    setFailed: setFailed,
-                    setErrorMessage: () => {history.push("/")}
+                    successHandler: () => {}
                 });
                 call();
 
@@ -44,7 +45,13 @@ export function DeleteScreen() {
                 setUser(null);
             });
         } catch (err) {
-            setFailed(true);
+            ErrorRegistry.getInstance().setFailed(true);
+            var message = "Error Deleting User";
+            if (err.message) {
+                message += ": " + err.message;
+            }
+            ErrorRegistry.getInstance().setErrorMessage(message);
+            return;
         }
     };
 
@@ -59,9 +66,6 @@ export function DeleteScreen() {
             setUser={setUser}>
 
             <div className="Centered MaxWidth">
-                { failed &&
-                    <p className="ErrorMessage">Error deleting account</p>
-                }
 
                 <button onClick={onFinish}>
                     Delete Account

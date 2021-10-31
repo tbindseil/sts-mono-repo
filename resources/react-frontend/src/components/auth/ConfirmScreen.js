@@ -6,12 +6,11 @@ import {Auth} from 'aws-amplify';
 import {TextInput} from '../forms/TextInput';
 import {LoadingFormButton} from '../forms/FormButton';
 import {BaseScreen} from '../base-components/BaseScreen';
+import {ErrorRegistry} from '../base-components/ErrorRegistry';
 
 export function ConfirmScreen(props) {
     const history = useHistory();
 
-    const [failed, setFailed] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
     const [username, setUsername] = useState("");
     const [code, setCode] = useState("");
 
@@ -36,12 +35,12 @@ export function ConfirmScreen(props) {
         }).then(data => {
             history.push("/login");
         }).catch(err => {
-            setFailed(true);
+            ErrorRegistry.getInstance().setFailed(true);
             var message = "Error Confirming";
             if (err.message) {
                 message += ": " + err.message;
             }
-            setErrorMessage(message);
+            ErrorRegistry.getInstance().setErrorMessage(message);
         }).finally(() => {
             setLoading(false);
         });
@@ -52,12 +51,12 @@ export function ConfirmScreen(props) {
         Auth.resendSignUp(username).then(() => {
             // do nothing
         }).catch(err => {
-            setFailed(true);
+            ErrorRegistry.getInstance().setFailed(true);
             var message = "Error Resending Code";
             if (err.message) {
                 message += ": " + err.message;
             }
-            setErrorMessage(message);
+            ErrorRegistry.getInstance().setErrorMessage(message);
         }).finally(() => {
             setLoading(false);
         });
@@ -74,10 +73,6 @@ export function ConfirmScreen(props) {
                     <br/>
                     Note that the code will only be emailed to the parent's email address.
                 </p>
-
-                { failed &&
-                    <p className="ErrorMessage">{errorMessage}</p>
-                }
             </div>
 
             <form

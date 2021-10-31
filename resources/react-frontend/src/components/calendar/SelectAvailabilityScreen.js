@@ -35,11 +35,6 @@ export function SelectAvailabilityScreen(props) {
     );
 
 
-    const [failed, setFailed] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
-
-    const [loading, setLoading] = useState(false);
-
     // TODO need to ignore own users availabilities
     // maybe I also need to consider that the user shouldn't be able to make requests while they have availabilities
     const getAvailabilities = useCallback(
@@ -74,9 +69,7 @@ export function SelectAvailabilityScreen(props) {
                 subject: subject,
                 startTime: startTime,
                 endTime: endTime,
-                successHandler: successHandler,
-                setFailed: setFailed,
-                setErrorMessage: setErrorMessage
+                successHandler: successHandler
             });
             call();
         },
@@ -100,9 +93,7 @@ export function SelectAvailabilityScreen(props) {
                 const call = apiFactory.makeGetAvailabilityStatus({
                     availId: avail.id,
                     user: user,
-                    successHandler: successHandler,
-                    setFailed: setFailed,
-                    setErrorMessage: setErrorMessage
+                    successHandler: successHandler
                 });
                 call();
             });
@@ -141,9 +132,7 @@ export function SelectAvailabilityScreen(props) {
         const call = apiFactory.makePostRequestStatusCall({user: user,
             availId: availId,
             username: user.username,
-            successHandler: successHandler,
-            setFailed: setFailed,
-            setErrorMessage: setErrorMessage
+            successHandler: successHandler
         });
         call();
     };
@@ -161,9 +150,7 @@ export function SelectAvailabilityScreen(props) {
             fromUser: user.username,
             forAvailability: forAvailability,
             newStatus: newStatus,
-            successHandler: successHandler,
-            setFailed: setFailed,
-            setErrorMessage: setErrorMessage
+            successHandler: successHandler
         });
         call();
     };
@@ -293,12 +280,6 @@ export function SelectAvailabilityScreen(props) {
                     </td>
                 </tr>
             </table>
-
-            <div className="Centered MaxWidth">
-                { failed &&
-                    <p className="ErrorMessage">{errorMessage}</p>
-                }
-            </div>
 
         </BaseScreen>
     );

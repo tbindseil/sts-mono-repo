@@ -49,9 +49,7 @@ export function MyCalendarScreen(props) {
                 subject: "*",
                 startTime: startTime,
                 endTime: endTime,
-                successHandler: successHandler,
-                setFailed: setFailed,
-                setErrorMessage: setErrorMessage
+                successHandler: successHandler
             });
             call();
         },
@@ -63,9 +61,6 @@ export function MyCalendarScreen(props) {
     }, [
         user, getAvailabilities
     ]);
-
-    const [failed, setFailed] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
 
     // looks like defaults don't refresh when navigating to the same page
     const [jumpToDate, setJumpToDate] = useState(selectedDate);
@@ -145,10 +140,6 @@ export function MyCalendarScreen(props) {
             titleText={"Log Out"}
             needAuthenticated={true}
             setUser={setUser}>
-
-            { failed &&
-                <p className="ErrorMessage">{errorMessage}</p>
-            }
 
             <MediaQuery minWidth={765}>
                 <BigScreenNavigationTable

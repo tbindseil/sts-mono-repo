@@ -7,30 +7,24 @@ const USER_LAMBDA_URL = 'https://oercmchy3l.execute-api.us-west-2.amazonaws.com/
 const AVAILABILITY_LAMBDA_URL = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
 const AVAILABILITY_REQUEST_URL = 'https://04c0w1j888.execute-api.us-west-2.amazonaws.com/prod/';
 
-// ok,
-// clear error handlers
-// add error handlers
-// default error handlers
 
 export const apiFactory = {
 
     setFailed: undefined,
     setErrorMessage: undefined,
-    setPrefix: undefined,
 
-    configure: (newSetFailed, newSetErrorMessage, newPrefix) => {
+    configure: (newSetFailed, newSetErrorMessage) => {
         apiFactory.setFailed = newSetFailed;
         apiFactory.setErrorMessage = newSetErrorMessage;
-        apiFactory.prefix = newPrefix;
     },
 
     makeBasicFetchCall:  (props) => {
         // default error handling
         if (!props.errorHandler) {
-            props.errorHandler = makeStandardErrorHandler(props.setFailed, props.setErrorMessage, props.errorMessagePrefix);
+            props.errorHandler = makeStandardErrorHandler(apiFactory.setFailed, apiFactory.setErrorMessage, props.errorMessagePrefix);
         }
         if (!props.catchHandler) {
-            props.catchHandler = makeStandardErrorHandler(props.setFailed, props.setErrorMessage, `In catch: ${props.errorMessagePrefix}`);
+            props.catchHandler = makeStandardErrorHandler(apiFactory.setFailed, apiFactory.setErrorMessage, `In catch: ${props.errorMessagePrefix}`);
         }
 
         props.headers ?
@@ -77,10 +71,8 @@ export const apiFactory = {
             user: props.user,
             method: 'POST',
             body: body,
-            successHandler: props.successHandler,
-            setFailed: props.setFailed,
-            setErrorMessage: props.setErrorMessage,
-            errorMessagePrefix: 'Error posting request'
+            errorMessagePrefix: 'Error posting request',
+            ...props
         });
     },
 
@@ -96,10 +88,8 @@ export const apiFactory = {
                 fromUser: props.fromUser,
                 status: props.newStatus
             }),
-            successHandler: props.successHandler,
-            setFailed: props.setFailed,
-            setErrorMessage: props.setErrorMessage,
-            errorMessagePrefix: "Error updating request"
+            errorMessagePrefix: "Error updating request",
+            ...props
         });
     },
 
@@ -108,10 +98,8 @@ export const apiFactory = {
         return apiFactory.makeBasicFetchCall({
             url: USER_LAMBDA_URL + props.username,
             method: 'GET',
-            successHandler: props.successHandler,
-            setFailed: props.setFailed,
-            errorHandler: props.errorHandler,
-            catchHandler: props.catchHandler
+            errorMessagePrefix: "Error getting user",
+            ...props
         });
     },
 
@@ -119,6 +107,7 @@ export const apiFactory = {
         return apiFactory.makeAuthenticatedFetchCall({
             url: USER_LAMBDA_URL + props.user.username,
             method: 'PUT',
+            errorMessagePrefix: 'Error updating user',
             ...props
         });
     },
@@ -127,6 +116,7 @@ export const apiFactory = {
         return apiFactory.makeBasicFetchCall({
             url: USER_LAMBDA_URL,
             method: 'POST',
+            errorMessagePrefix: 'Error creating user',
             ...props
         });
     },
@@ -135,6 +125,7 @@ export const apiFactory = {
         return apiFactory.makeBasicFetchCall({ // TODO this needs to be authenticated
             url: USER_LAMBDA_URL + props.user.username,
             method: 'DELETE',
+            errorMessagePrefix: 'Error deleting user',
             ...props
         });
     },
@@ -152,10 +143,8 @@ export const apiFactory = {
             url: url,
             user: props.user,
             method: 'GET',
-            successHandler: props.successHandler,
-            setFailed: props.setFailed,
-            setErrorMessage: props.setErrorMessage,
-            errorMessagePrefix: "Error getting availability status"
+            errorMessagePrefix: "Error getting availability status",
+            ...props
         });
     },
 
@@ -181,6 +170,7 @@ export const apiFactory = {
             url: AVAILABILITY_LAMBDA_URL,
             method: 'POST',
             body: JSON.stringify(availability),
+            errorMessagePrefix: 'Error creating availability',
             ...props
         });
     },
@@ -202,10 +192,8 @@ export const apiFactory = {
             url: url,
             user: props.user,
             method: 'GET',
-            successHandler: props.successHandler,
-            setFailed: props.setFailed,
-            setErrorMessage: props.setErrorMessage,
-            errorMessagePrefix: "Error getting availabilities"
+            errorMessagePrefix: "Error getting availabilities",
+            ...props
         });
     },
 
@@ -214,10 +202,8 @@ export const apiFactory = {
             url: `${AVAILABILITY_LAMBDA_URL}/status/${props.availId}`,
             user: props.user,
             method: 'GET',
-            successHandler: props.successHandler,
-            setFailed: props.setFailed,
-            setErrorMessage: props.setErrorMessage,
-            errorMessagePrefix: "Error getting availability status"
+            errorMessagePrefix: "Error getting availability status",
+            ...props
         });
     },
 
