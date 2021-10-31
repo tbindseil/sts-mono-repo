@@ -36,6 +36,7 @@ export function RegisterScreen() {
         const value = target.value;
         const name = target.name;
 
+        // TODO could probably do this sleeker with a map
         if (name === "username") {
             setUsername(value);
         } else if (name === "password") {
@@ -234,7 +235,7 @@ export function RegisterScreen() {
                     type={"password"}/>
                 <br/>
 
-                    <LoadingFormButton
+                <LoadingFormButton
                     loading={loading}
                     onClick={onFinish}
                     value={"Register"}/>

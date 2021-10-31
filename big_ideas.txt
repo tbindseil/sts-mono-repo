@@ -436,7 +436,7 @@ web page should be grid that fills at least full screen but can stretch vertical
             =-=
             another option: pass in both classes to the class - NOPE!
     * revamp grid
-    * revamp error stuff - TJTAG
+    * revamp error stuff - done
         * seems tightly coupled to loading stuff
             * so what is loading? one api call at a time??
               if so, then we can just pass a flag in (man, lots of props..)
@@ -452,6 +452,12 @@ web page should be grid that fills at least full screen but can stretch vertical
             * regardless, I'm ripping it out and doing the error stuff, then I'll come back
                 * actually, instead of ripping out i'll just leave it, seems like the loading form button could be interesting
     * revamp authed vs unauthed - done
+    * revamp/do loading stuff
+        * submit buttons - pretty much done
+        * loading calendar contenets
+        * loading info table contents (maybe I could make this info component now, I think I tried that in the past..)
+        * loading selectable table contents (probably same as info loading table contents)
+        * loading selected calendar slot - naw, just jump
 
 ~~~~~
 

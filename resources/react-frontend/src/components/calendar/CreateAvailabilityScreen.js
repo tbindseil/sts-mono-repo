@@ -137,7 +137,8 @@ export function CreateAvailabilityScreen(props) {
             endTime: endTime,
             selectedSubjects: selectedSubjects,
             user: user,
-            successHandler: successHandler
+            successHandler: successHandler,
+            finallyHandler: () => { setLoading(false) }
         });
         call();
     };
