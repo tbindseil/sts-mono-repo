@@ -1,54 +1,3 @@
-
-
-//
-// so I think that the pieces of the 'BaseScreen' will have to come from
-// props
-//
-// why?
-//
-// otherwise nothing can go in there
-//
-// or,
-// the <BaseComponent> element can have children
-// like <BaseComponent> element wraps everything
-//
-// but then, what does that accomplish?
-// and really, should it be called OutlineComponent
-//
-// maybe I could have several standard pieces
-// and a standard arangment
-// here, i think the standard arangement is equivalent
-// to base component
-//
-// so what are some standard pieces?
-// from a quick look through the app:
-//
-// All (or almost) pages:
-// * nav bar aka header
-// * section title
-// * paragraph headers
-// * body
-// * * middle part
-// * * side borders
-// * footer
-//
-// Not as frequent
-// * tables (requests sent/received/request avail)
-// * 2 column input forms (login, register, confirm, edit profile, create availability)
-// * 2 column info forms (show profile, show avail)
-// * calendar (my calendar/calendar)
-//
-// the prior of those two sets of components is basescreen
-//
-// i also think basescreen handles small vs large screens
-
-
-
-
-
-
-
-
 import React, {useEffect, useState} from 'react';
 import MediaQuery from 'react-responsive';
 
@@ -102,6 +51,7 @@ function BaseBody(props) {
     const [failed, setFailed] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
+    // TODO do i need to detach upon component destruction?
     ErrorRegistry.getInstance().set_setFailed(setFailed);
     ErrorRegistry.getInstance().set_setErrorMessage(setErrorMessage);
 
@@ -134,18 +84,7 @@ function BaseBody(props) {
                         <p className="ErrorMessage">{errorMessage}</p>
                     }
 
-
             </header>
         </>
     );
 }
-
-
-// basically considering making a poor mans redux for errors
-// one singleton error state registry, with methods like setFailed, setErrorMessage
-// concrete screens call error_registry.instance().setFailed(true)/setErrorMessage('it broke')
-// base class component, upon instantiation and creation of setFailed and setErrorMessage, calls:
-// error_reigstry.instance().set_setFailed(setFailed) and error_reigstry.instance().set_setErrorMessage(setErrorMessage)
-// hten, when concrete screen calls setFailed, error_registry just forwards it to what was set
-//
-// TODO the only thing is to detach upon component destruction

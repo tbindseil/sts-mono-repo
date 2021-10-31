@@ -16,20 +16,3 @@ export const makeStandardErrorHandler = (setFailed, setErrorMessage, errorMessag
         setErrorMessage(message);
     };
 };
-
-// could I maybe have this happen automagically?
-// one way would involve cases and fallthroughs
-// ie
-// if (makeStandardErrorAndCatchHandlers != null) {
-//      set vals
-// } else {
-//      vals are expected to be provided
-// }
-// TODO should be able to deprecate the below
-// TODO really could do deprecation
-export const makeStandardErrorAndCatchHandlers = (setFailed, setErrorMessage, errorMessagePrefix = "") => {
-    const cancelRequestErrorHandler = makeStandardErrorHandler(setFailed, setErrorMessage, errorMessagePrefix);
-    const cancelRequestCatchHandler = makeStandardErrorHandler(setFailed, setErrorMessage, `in catch: ${errorMessagePrefix}`);
-
-    return [cancelRequestErrorHandler, cancelRequestCatchHandler];
-}

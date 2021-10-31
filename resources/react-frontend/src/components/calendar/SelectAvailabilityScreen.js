@@ -59,9 +59,6 @@ export function SelectAvailabilityScreen(props) {
                 setAvailabilities(availabilitiesWithDates);
             };
 
-            // TODO, use ...errorProps here, then maybe even roll them into a component
-            // gonna put this in a new folder (named ?? base-components)
-            // I should move header and footer there
             const endTime = moment(startTime).add('minute', 30).toDate();
             const call = apiFactory.makeGetAvailabilities({
                 user: user,
