@@ -6,7 +6,7 @@ import {Auth} from 'aws-amplify';
 import {TextInput} from '../forms/TextInput';
 import {LoadingFormButton} from '../forms/FormButton';
 import {PasswordRequirements} from './PasswordRequirements';
-import {makePostUser} from '../fetch-enhancements/fetch-call-builders';
+import {apiFactory} from '../fetch-enhancements/fetch-call-builders';
 import {BaseScreen} from '../base-components/BaseScreen';
 
 export function RegisterScreen() {
@@ -97,7 +97,7 @@ export function RegisterScreen() {
                     bio: bio,
                 }
 
-                const call = makePostUser({
+                const call = apiFactory.makePostUser({
                     body: JSON.stringify(profile),
                     successHandler: () => {},
                     setFailed: setFailed,

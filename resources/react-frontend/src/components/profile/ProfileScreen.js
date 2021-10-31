@@ -11,7 +11,7 @@ import {Bottom} from '../header/Bottom';
 import {Title} from '../layout/Title';
 import {FormTableRow} from '../forms/TextInput'
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
-import {makePutUser, makeGetUser, makeGetAvailabilityRequests, makeUpdateRequestStatus} from '../fetch-enhancements/fetch-call-builders';
+import {apiFactory} from '../fetch-enhancements/fetch-call-builders';
 import {makeStandardErrorHandler} from "../fetch-enhancements/error-handling";
 
 export function ProfileScreen() {
@@ -77,7 +77,7 @@ function ProfileBody(props) {
             setProfile(newProfile);
         };
 
-        const call = makeGetUser({
+        const call = apiFactory.makeGetUser({
             username: user.username,
             successHandler: successHandler,
             errorHandler: errorHandler,
@@ -97,7 +97,7 @@ function ProfileBody(props) {
             setRequestsSent(result);
         };
 
-        const call = makeGetAvailabilityRequests({forUser: "",
+        const call = apiFactory.makeGetAvailabilityRequests({forUser: "",
             forAvailability: 0,
             fromUser: user.username,
             user: user,
@@ -119,7 +119,7 @@ function ProfileBody(props) {
             setRequestsReceived(result);
         };
 
-        const call = makeGetAvailabilityRequests({forUser: user.username,
+        const call = apiFactory.makeGetAvailabilityRequests({forUser: user.username,
             forAvailability: 0,
             fromUser: "",
             user: user,
@@ -167,7 +167,7 @@ function ProfileBody(props) {
     }
 
     const onSave = () => {
-        const call = makePutUser({
+        const call = apiFactory.makePutUser({
             user: user,
             successHandler: () => {},
             errorHandler: errorHandler,
@@ -207,7 +207,7 @@ function ProfileBody(props) {
             getRequestsReceived();
         };
 
-        const call = makeUpdateRequestStatus({
+        const call = apiFactory.makeUpdateRequestStatus({
             user: user,
             fromUser: fromUser,
             forAvailability: forAvailability,

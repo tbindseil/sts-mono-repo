@@ -425,7 +425,7 @@ web page should be grid that fills at least full screen but can stretch vertical
             the solution: have a single registry of classnames. fetch classnames based on screen size enum or something
             =-=
             ok, so that didnt' work, it appears media query must be a part of a component. So, maybe I make the components first, each (commonly used one) that can decide for itself
-            so which are commonly used:
+            so which are commonly used: - done (ScreenSizeConfigurable)
                 so far only 2
                     * <hr className={props.underlineClass}/>
                     * <p className={props.textClass}>
@@ -436,8 +436,8 @@ web page should be grid that fills at least full screen but can stretch vertical
             =-=
             another option: pass in both classes to the class - NOPE!
     * revamp grid
-    * revamp error stuff
-    * revamp authed vs unauthed
+    * revamp error stuff - TJTAG
+    * revamp authed vs unauthed - done
 
 ~~~~~
 

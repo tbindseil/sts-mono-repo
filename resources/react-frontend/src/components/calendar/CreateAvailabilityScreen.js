@@ -10,7 +10,7 @@ import subjects from '../../configs/subjects';
 
 import {LoadingFormButton} from '../forms/FormButton';
 import {makeStandardErrorHandler} from "../fetch-enhancements/error-handling";
-import {makePostAvailability} from '../fetch-enhancements/fetch-call-builders';
+import {apiFactory} from '../fetch-enhancements/fetch-call-builders';
 import {BaseScreen} from '../base-components/BaseScreen';
 
 export function CreateAvailabilityScreen(props) {
@@ -137,7 +137,7 @@ export function CreateAvailabilityScreen(props) {
 
         setLoading(true);
 
-        const call = makePostAvailability({
+        const call = apiFactory.makePostAvailability({
             day: day,
             startTime: startTime,
             endTime: endTime,

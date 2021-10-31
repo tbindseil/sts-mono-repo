@@ -7,7 +7,7 @@ import moment from 'moment';
 import './Calendar.css';
 import {Calendar} from './Calendar';
 import {BigScreenNavigationTable, SmallScreenNavigationTable, goToDate} from './NavigationTable';
-import {makeGetAvailabilities} from '../fetch-enhancements/fetch-call-builders';
+import {apiFactory} from '../fetch-enhancements/fetch-call-builders';
 import {BaseScreen} from '../base-components/BaseScreen';
 import {ScreenSizeConfigurable} from '../base-components/ScreenSizeConfigurable';
 
@@ -43,7 +43,7 @@ export function MyCalendarScreen(props) {
 
             const startTime = moment(selectedDate).startOf('week').toDate();
             const endTime = moment(selectedDate).endOf('week').toDate();
-            const call = makeGetAvailabilities({
+            const call = apiFactory.makeGetAvailabilities({
                 user: user,
                 username: user.username,
                 subject: "*",

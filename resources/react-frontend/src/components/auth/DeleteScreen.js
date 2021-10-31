@@ -4,7 +4,7 @@ import {useHistory} from 'react-router-dom';
 import {Auth} from "aws-amplify";
 import {CognitoIdentityProvider} from '@aws-sdk/client-cognito-identity-provider';
 
-import {makeDeleteUser} from '../fetch-enhancements/fetch-call-builders';
+import {apiFactory} from '../fetch-enhancements/fetch-call-builders';
 import {BaseScreen} from '../base-components/BaseScreen';
 
 export function DeleteScreen() {
@@ -32,7 +32,7 @@ export function DeleteScreen() {
                     setFailed(true);
                 }
 
-                const call = makeDeleteUser({
+                const call = apiFactory.makeDeleteUser({
                     user: user,
                     successHandler: () => {},
                     setFailed: setFailed,

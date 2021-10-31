@@ -11,7 +11,7 @@ import {Title} from '../layout/Title';
 import {FormTableRow} from '../forms/TextInput'
 import {checkAuthenticated} from "../auth/CheckAuthenticated";
 import {makeStandardErrorHandler} from "../fetch-enhancements/error-handling";
-import {makePutUser, makeGetUser} from '../fetch-enhancements/fetch-call-builders';
+import {apiFactory} from '../fetch-enhancements/fetch-call-builders';
 
 /**
  * So, I dont think we should be able to edit parent name or parent email, which are the only
@@ -79,7 +79,7 @@ function AccountBody(props) {
             setProfile(newProfile);
         };
 
-        const call = makeGetUser({
+        const call = apiFactory.makeGetUser({
             username: user.username,
             successHandler: successHandler,
             errorHandler: errorHandler,
@@ -105,7 +105,7 @@ function AccountBody(props) {
     }
 
     const onSave = (profile) => {
-        const call = makePutUser({
+        const call = apiFactory.makePutUser({
             user: user,
             successHandler: () => {},
             errorHandler: errorHandler,

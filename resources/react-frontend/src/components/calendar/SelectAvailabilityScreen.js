@@ -3,7 +3,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import moment from 'moment';
 import {useHistory} from 'react-router-dom';
 
-import {makePostRequestStatusCall, makeUpdateRequestStatus, makeGetAvailabilities, makeGetAvailabilityStatus} from '../fetch-enhancements/fetch-call-builders';
+import {apiFactory} from '../fetch-enhancements/fetch-call-builders';
 import {BaseScreen} from '../base-components/BaseScreen';
 
 // TODO cool idea, allow start time and subject to be selectable here
@@ -68,7 +68,7 @@ export function SelectAvailabilityScreen(props) {
             // gonna put this in a new folder (named ?? base-components)
             // I should move header and footer there
             const endTime = moment(startTime).add('minute', 30).toDate();
-            const call = makeGetAvailabilities({
+            const call = apiFactory.makeGetAvailabilities({
                 user: user,
                 username: "*",
                 subject: subject,
@@ -97,7 +97,7 @@ export function SelectAvailabilityScreen(props) {
             };
 
             availabilities.forEach(avail => {
-                const call = makeGetAvailabilityStatus({
+                const call = apiFactory.makeGetAvailabilityStatus({
                     availId: avail.id,
                     user: user,
                     successHandler: successHandler,
@@ -138,7 +138,7 @@ export function SelectAvailabilityScreen(props) {
             getStatuses(availabilities);
         };
 
-        const call = makePostRequestStatusCall({user: user,
+        const call = apiFactory.makePostRequestStatusCall({user: user,
             availId: availId,
             username: user.username,
             successHandler: successHandler,
@@ -156,7 +156,7 @@ export function SelectAvailabilityScreen(props) {
             getStatuses(availabilities);
         };
 
-        const call = makeUpdateRequestStatus({
+        const call = apiFactory.makeUpdateRequestStatus({
             user: user,
             fromUser: user.username,
             forAvailability: forAvailability,
