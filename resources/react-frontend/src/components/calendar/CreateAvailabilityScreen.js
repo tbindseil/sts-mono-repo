@@ -11,7 +11,7 @@ import subjects from '../../configs/subjects';
 import {LoadingFormButton} from '../forms/FormButton';
 import {apiFactory} from '../fetch-enhancements/fetch-call-builders';
 import {BaseScreen} from '../base-components/BaseScreen';
-import {ErrorRegistry} from './ErrorRegistry';
+import {ErrorRegistry} from '../base-components/ErrorRegistry';
 
 export function CreateAvailabilityScreen(props) {
     const history = useHistory();

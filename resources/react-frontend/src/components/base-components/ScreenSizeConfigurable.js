@@ -21,9 +21,9 @@ export function ScreenSizeConfigurable(props) {
 
     switch (wrapped.type) {
         case 'p':
-            return <p {...proops}> {props.children} </p>;
+            return <p {...proops}> {props.children.props.children} </p>;
         case 'div':
-            return <div {...proops}> {props.children} </div>;
+            return <div {...proops}> {props.children.props.children} </div>;
         default:
             throw new ScreenSizeConfigurableException(`type ${wrapped.type} not yet supported`);
     }
