@@ -17,8 +17,34 @@ button {
   height: 100%;
 }
 
+/* focusing on big screen */
 .TopLevelContainer {
   height: 100%;
+  display: grid; /* that fucked it up */
+  grid-template-columns: 1fr 6fr 1fr; /* seems like ordering the items would help a lot, this fucked it up again */
+  grid-template-rows: 75px minmax(1fr, min-content) 25px; /* this is the crux, how to tell the middle row to be at least enough to fill page but never cut off stuff */ /* i changed 74 to 75 */ /* auto or max-content instead of min-content? */
+
+  grid-template-areas:
+    "HeaderItem HeaderItem HeaderItem"
+    /* "SideBorderItem MainItem SideBorderItem" */
+    "MainItem MainItem MainItem"
+    "FooterItem FooterItem FooterItem";
+}
+
+.HeaderItem {
+  grid-area: HeaderItem;
+}
+
+.SideBorderItem {
+  grid-area: SideBorderItem;
+}
+
+.MainItem {
+  grid-area: MainItem;
+}
+
+.FooterItem {
+  grid-area: FooterItem;
 }
 
 .Centered {
@@ -147,6 +173,7 @@ button {
   margin-top: 0px;
 }
 
+/* TODO come back to this shiz... */
 .PageBorder {
   clear: both;
   border-left: 10vw solid #b4c7e7;

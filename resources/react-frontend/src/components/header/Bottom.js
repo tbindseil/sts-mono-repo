@@ -4,7 +4,7 @@ import burger from '../../images/burger.png';
 
 export const Bottom = (props) => {
     return (
-        <div className="Footer">
+        <div className="Footer FooterItem">
             <p>Students Teaching Students</p>
         </div>
     );
@@ -12,7 +12,7 @@ export const Bottom = (props) => {
 
 export const InDepthBottom = (props) => {
     return (
-        <div className="Footer InDepthFooter">
+        <div className="Footer InDepthFooter FooterItem">
             <div className="InDepthFooterTitle">
                 <p>Students Teaching Students</p>
             </div>
@@ -46,7 +46,7 @@ export const InDepthBottomHamburger = (props) => {
     }
 
     return (
-        <div className="Footer InDepthFooter">
+        <div className="Footer InDepthFooter FooterItem">
             <div className="InDepthFooterTitle">
                 <p>Students Teaching Students</p>
             </div>

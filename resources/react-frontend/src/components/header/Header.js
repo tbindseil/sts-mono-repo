@@ -22,7 +22,7 @@ export function Header() {
     // TODO profile button is rendered after user deletes account
     // it goes away with a refresh
     return (
-        <ul id="NavBar" className="NavBar">
+        <ul id="NavBar" className="NavBar HeaderItem">
 
             <a className="NavLogo"  marginLeft="0px" href="/home"> <img width="100px" height="52px"src={logo} alt="logo"/></a>
 

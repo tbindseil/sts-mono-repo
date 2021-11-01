@@ -69,7 +69,7 @@ function BaseBody(props) {
     ]);
 
     return (
-        <>
+        <div className="MainItem">
             <header className={props.pageBorderClass}>
 
                 <Title
@@ -85,6 +85,6 @@ function BaseBody(props) {
                     }
 
             </header>
-        </>
+        </div>
     );
 }
