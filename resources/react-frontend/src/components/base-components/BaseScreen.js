@@ -69,7 +69,7 @@ function BaseBody(props) {
     ]);
 
     return (
-        <div className="MainItem">
+        <div className="MainItem App">
             <header className={props.pageBorderClass}>
 
                 <Title

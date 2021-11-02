@@ -22,7 +22,17 @@ button {
   height: 100%;
   display: grid; /* that fucked it up */
   grid-template-columns: 1fr 6fr 1fr; /* seems like ordering the items would help a lot, this fucked it up again */
-  grid-template-rows: 75px minmax(1fr, min-content) 25px; /* this is the crux, how to tell the middle row to be at least enough to fill page but never cut off stuff */ /* i changed 74 to 75 */ /* auto or max-content instead of min-content? */
+  /*grid-template-rows: 75px minmax(calc(100% - 115px), min-content) 40px; /* this is the crux, how to tell the middle row to be at least enough to fill page but never cut off stuff */ /* i changed 74 to 75 */ /* auto or max-content instead of min-content? */
+
+  /* grid-template-rows: 75px minmax(1fr, min-content) 40px; */
+
+  /* grid-template-rows: 75px minmax(calc(100% - 115px), max-content) 40px; */
+
+  grid-template-rows: 75px calc(100% - 115px) 40px;
+
+  /* it doesn't grow the way i want it to when i do the calc inside the min max function */
+  /* and there is also that weird thing on the bottom of the main area */
+
 
   grid-template-areas:
     "HeaderItem HeaderItem HeaderItem"
@@ -41,6 +51,7 @@ button {
 
 .MainItem {
   grid-area: MainItem;
+  overflow-y: scroll;
 }
 
 .FooterItem {
