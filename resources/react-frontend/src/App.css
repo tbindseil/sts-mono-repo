@@ -17,28 +17,15 @@ button {
   height: 100%;
 }
 
-/* focusing on big screen */
+/* need to account for small screens */
 .TopLevelContainer {
   height: 100%;
-  display: grid; /* that fucked it up */
-  grid-template-columns: 1fr 6fr 1fr; /* seems like ordering the items would help a lot, this fucked it up again */
-  /*grid-template-rows: 75px minmax(calc(100% - 115px), min-content) 40px; /* this is the crux, how to tell the middle row to be at least enough to fill page but never cut off stuff */ /* i changed 74 to 75 */ /* auto or max-content instead of min-content? */
-
-  /* grid-template-rows: 75px minmax(1fr, min-content) 40px; */
-
-  /* grid-template-rows: 75px minmax(calc(100% - 115px), max-content) 40px; */
-
+  display: grid;
   grid-template-rows: 75px calc(100% - 115px) 40px;
-
-  /* it doesn't grow the way i want it to when i do the calc inside the min max function */
-  /* and there is also that weird thing on the bottom of the main area */
-
-
   grid-template-areas:
-    "HeaderItem HeaderItem HeaderItem"
-    /* "SideBorderItem MainItem SideBorderItem" */
-    "MainItem MainItem MainItem"
-    "FooterItem FooterItem FooterItem";
+    "HeaderItem"
+    "MainItem"
+    "FooterItem";
 }
 
 .HeaderItem {
@@ -52,7 +39,7 @@ button {
 .MainItem {
   grid-area: MainItem;
   overflow-y: scroll;
-  height: minmax(100%, auto);
+  height: minmax(100%, auto); /* probably needs to be min-height: 100%; */
 }
 
 .FooterItem {
@@ -64,10 +51,11 @@ button {
   margin: 0 auto;
 }
 
-.MaxWidth {
+.MaxWidth { /* apparently this is critical? */
   max-width: 700px;
 }
 
+/* mainText and mainText2 could easily be combined with percentage borders, if that is possible */
 .mainText {
   text-align: justify;
   font-family: Arial;
@@ -100,17 +88,11 @@ button {
   font-variant: small-caps;
 }
 
+/* could combine the following 2 with percentages-ie vw units (1vw = 1% of width of broser) */
 .Underline {
   border: 1px solid grey;
   margin-left: 150px;
   margin-right: 150px;
-}
-
-/* Home screen underline is wider */
-.HomeUnderline {
-  border: 1px solid grey;
-  margin-left: 50px;
-  margin-right: 50px;
 }
 
 .Underline2 {
@@ -174,17 +156,6 @@ button {
   padding-top: 10px;
 }
 
-.PageBorderCalendar {
-  clear: both;
-  border-left: 10vw solid #b4c7e7;
-  border-right: 10vw solid #b4c7e7;
-  border-top: 0px solid #005D8c;
-  border-bottom: 0px solid #005D8c;
-  padding-top: 5px;
-  padding-bottom: 10px;
-  margin-top: 0px;
-}
-
 /* TODO come back to this shiz... */
 .PageBorder {
   clear: both;
@@ -197,11 +168,6 @@ button {
   margin-top: 0px;
 
   min-height: 100%;
-
-  /* height: 100%; */
-  /* height: minmax(100%, auto); */
-  /* height: calc(100% - 75px); /* uh, stretching the page border to at least the bottom is a major pain */
-  /* height: minmax(100%, auto); */ /* moving this to MainItem */
 }
 
 .PageBorder2 {
@@ -211,8 +177,9 @@ button {
   border-top: 0px solid #005D8c;
   border-bottom: 0px solid #005D8c;
   padding-top: 5px;
-  padding-bottom: 100px;
   margin-top: 0px;
+
+  min-height: 100%;
 }
 
 .arrow {
