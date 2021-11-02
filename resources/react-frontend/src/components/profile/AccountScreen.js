@@ -1,19 +1,12 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import MediaQuery from 'react-responsive';
 
 import {useHistory} from 'react-router-dom';
 import {cloneDeep} from 'lodash';
 
 import './Profile.css';
-import {Header} from '../header/Header';
-import {InDepthBottom, InDepthBottomHamburger} from '../header/Bottom';
-import {Title} from '../layout/Title';
 import {FormTableRow} from '../forms/TextInput'
-import {checkAuthenticated} from "../auth/CheckAuthenticated";
-import {makeStandardErrorHandler} from "../fetch-enhancements/error-handling";
 import {apiFactory} from '../fetch-enhancements/fetch-call-builders';
-
-// TODO base screenify account and profile, then clean up css
+import {BaseScreenInDepthBase} from '../base-components/BaseScreen';
 
 /**
  * So, I dont think we should be able to edit parent name or parent email, which are the only
@@ -22,40 +15,11 @@ import {apiFactory} from '../fetch-enhancements/fetch-call-builders';
  */
 
 export function AccountScreen() {
-    return (
-        <div className="TopLevelContainer">
-            <Header/>
-
-            <MediaQuery minWidth={765}>
-                <AccountBody
-                    pageBorderClass={"PageBorder"}
-                    underlineClass={"Underline"}/>
-                <InDepthBottom/>
-            </MediaQuery>
-
-            <MediaQuery maxWidth={765}>
-                <AccountBody
-                    pageBorderClass={"PageBorder2"}
-                    underlineClass={"Underline2"}/>
-
-                <InDepthBottomHamburger/>
-            </MediaQuery>
-
-        </div>
-    );
-};
-
-function AccountBody(props) {
     const history = useHistory();
 
     const [editting, setEditting] = useState(false);
 
     const [user, setUser] = useState(undefined);
-    useEffect(() => {
-        checkAuthenticated(() => history.push("/anonymous-user"), setUser);
-    }, [
-        history, setUser
-    ]);
 
     const getProfile = useCallback(() => {
         if (!user) {
@@ -127,60 +91,58 @@ function AccountBody(props) {
     }
 
     return (
-        <>
-            <header className={props.pageBorderClass}>
+        <BaseScreenInDepthBase
+            titleText={"Account Screen"}
+            needAuthenticated={true}
+            setUser={setUser}>
 
-                <Title
-                    titleText={"Account"}
-                    underlineClass={props.underlineClass}/>
+            <div className="Centered MaxWidth">
+                <table className="ProfileTable">
+                    <FormTableRow
+                        onChange={handleChange}
+                        name={"parentEmail"}
+                        label={"Parent Email:"}
+                        value={profile.parentEmail}
+                        readOnly={true}/>
 
-                <div className="Centered MaxWidth">
-                    <table className="ProfileTable">
-                        <FormTableRow
-                            onChange={handleChange}
-                            name={"parentEmail"}
-                            label={"Parent Email:"}
-                            value={profile.parentEmail}
-                            readOnly={true}/>
+                    <FormTableRow
+                        onChange={handleChange}
+                        name={"parentName"}
+                        label={"Parent Name:"}
+                        placeHolder={"<parent name>"}
+                        value={profile.parentName}
+                        readOnly={!editting}/>
 
-                        <FormTableRow
-                            onChange={handleChange}
-                            name={"parentName"}
-                            label={"Parent Name:"}
-                            placeHolder={"<parent name>"}
-                            value={profile.parentName}
-                            readOnly={!editting}/>
+        { //ditting ?
+                        // <tr>
+                            // <td>
+                                // <button onClick={onCancel}>
+                                    // Cancel
+                                // </button>
+                            // </td>
+                            // <td>
+                                // <button onClick={onFinish}>
+                                    // Update Profile
+                                // </button>
+                            // </td>
+                        // </tr> :
+                        // <tr>
+                            // <td>
+                                // <button onClick={editProfileOnClickHandler}>
+                                    // Edit
+                                // </button>
+                            // </td>
+                            // <td>
+                            // </td>
+                        // </tr>
+                    // }
+        }
+            
 
-        { // { editting ?
-                            // <tr>
-                                // <td>
-                                    // <button onClick={onCancel}>
-                                        // Cancel
-                                    // </button>
-                                // </td>
-                                // <td>
-                                    // <button onClick={onFinish}>
-                                        // Update Profile
-                                    // </button>
-                                // </td>
-                            // </tr> :
-                            // <tr>
-                                // <td>
-                                    // <button onClick={editProfileOnClickHandler}>
-                                        // Edit
-                                    // </button>
-                                // </td>
-                                // <td>
-                                // </td>
-                            // </tr>
-                        // }
-            }
+                </table>
 
-                    </table>
+            </div>
 
-                </div>
-
-            </header>
-        </>
+        </BaseScreenInDepthBase>
     );
 }

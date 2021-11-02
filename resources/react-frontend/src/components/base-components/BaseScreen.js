@@ -5,7 +5,7 @@ import {useHistory} from 'react-router-dom';
 
 // TODO move below to base-components
 import {Header} from '../header/Header';
-import {Bottom} from '../header/Bottom';
+import {Bottom, InDepthBottom, InDepthBottomHamburger} from '../header/Bottom';
 import {Title} from '../layout/Title';
 import {checkAuthenticated, checkUnauthenticated} from "../auth/CheckAuthenticated";
 import {ErrorRegistry} from './ErrorRegistry';
@@ -44,6 +44,45 @@ export function BaseScreen(props) {
         </div>
     );
 };
+
+export function BaseScreenInDepthBase(props) {
+    return (
+        <div className="TopLevelContainer">
+            <Header/>
+
+            <MediaQuery minWidth={765}>
+                <BaseBody
+                    pageBorderClass={"PageBorder"}
+                    underlineClass={"Underline"}
+                    titleText={props.titleText}
+                    setUser={props.setUser}
+                    needAuthenticated={props.needAuthenticated}
+                    needUnauthenticated={props.needUnauthenticated}>
+                    {props.children}
+                </BaseBody>
+
+                <InDepthBottom/>
+
+            </MediaQuery>
+
+            <MediaQuery maxWidth={765}>
+                <BaseBody
+                    pageBorderClass={"PageBorder2"}
+                    underlineClass={"Underline2"}
+                    titleText={props.titleText}
+                    setUser={props.setUser}
+                    needAuthenticated={props.needAuthenticated}
+                    needUnauthenticated={props.needUnauthenticated}>
+                    {props.children}
+                </BaseBody>
+
+                <InDepthBottomHamburger/>
+
+            </MediaQuery>
+
+        </div>
+    );
+}
 
 function BaseBody(props) {
     const history = useHistory();

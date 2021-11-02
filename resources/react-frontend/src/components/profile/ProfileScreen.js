@@ -1,52 +1,18 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import MediaQuery from 'react-responsive';
 
 import moment from 'moment';
-import {useHistory} from 'react-router-dom';
 import {cloneDeep} from 'lodash';
 
 import './Profile.css';
-import {Header} from '../header/Header';
-import {Bottom} from '../header/Bottom';
-import {Title} from '../layout/Title';
 import {FormTableRow} from '../forms/TextInput'
-import {checkAuthenticated} from "../auth/CheckAuthenticated";
 import {apiFactory} from '../fetch-enhancements/fetch-call-builders';
-import {makeStandardErrorHandler} from "../fetch-enhancements/error-handling";
+import {BaseScreen} from '../base-components/BaseScreen';
 
 export function ProfileScreen() {
-    return (
-        <div className="TopLevelContainer">
-            <Header/>
-
-            <MediaQuery minWidth={765}>
-                <ProfileBody
-                    pageBorderClass={"PageBorder"}
-                    underlineClass={"Underline"}/>
-            </MediaQuery>
-
-            <MediaQuery maxWidth={765}>
-                <ProfileBody
-                    pageBorderClass={"PageBorder2"}
-                    underlineClass={"Underline2"}/>
-            </MediaQuery>
-
-            <Bottom/>
-        </div>
-    );
-};
-
-function ProfileBody(props) {
-    const history = useHistory();
 
     const [editting, setEditting] = useState(false);
 
     const [user, setUser] = useState(undefined);
-    useEffect(() => {
-        checkAuthenticated(() => history.push("/anonymous-user"), setUser);
-    }, [
-        history, setUser
-    ]);
 
     const getProfile = useCallback(() => {
         if (!user) {
@@ -268,209 +234,206 @@ function ProfileBody(props) {
     }
 
     return (
-        <>
-            <header className={props.pageBorderClass}>
+        <BaseScreen
+            titleText={"Profile Screen"}
+            needAuthenticated={true}
+            setUser={setUser}>
 
-                <Title
-                    titleText={"Profile"}
-                    underlineClass={props.underlineClass}/>
+            <div className="Centered MaxWidth">
+                <table className="ProfileTable">
+                    <FormTableRow
+                        onChange={handleChange}
+                        name={"email"}
+                        label={"Email:"}
+                        value={profile.email}
+                        readOnly={true}/>
 
-                <div className="Centered MaxWidth">
-                    <table className="ProfileTable">
-                        <FormTableRow
-                            onChange={handleChange}
-                            name={"email"}
-                            label={"Email:"}
-                            value={profile.email}
-                            readOnly={true}/>
+                    <FormTableRow
+                        onChange={handleChange}
+                        name={"username"}
+                        label={"Username:"}
+                        value={profile.username}
+                        readOnly={true}/>
 
-                        <FormTableRow
-                            onChange={handleChange}
-                            name={"username"}
-                            label={"Username:"}
-                            value={profile.username}
-                            readOnly={true}/>
+                    <FormTableRow
+                        onChange={handleChange}
+                        name={"firstName"}
+                        label={"First Name:"}
+                        placeHolder={"<firstname>"}
+                        value={profile.firstName}
+                        readOnly={!editting}/>
 
-                        <FormTableRow
-                            onChange={handleChange}
-                            name={"firstName"}
-                            label={"First Name:"}
-                            placeHolder={"<firstname>"}
-                            value={profile.firstName}
-                            readOnly={!editting}/>
+                    <FormTableRow
+                        onChange={handleChange}
+                        name={"lastName"}
+                        label={"Last Name:"}
+                        placeHolder={"<lastname>"}
+                        value={profile.lastName}
+                        readOnly={!editting}/>
 
-                        <FormTableRow
-                            onChange={handleChange}
-                            name={"lastName"}
-                            label={"Last Name:"}
-                            placeHolder={"<lastname>"}
-                            value={profile.lastName}
-                            readOnly={!editting}/>
+            { // TODO somehow got weird dates when 1s were put in for registration
+            }
 
-                { // TODO somehow got weird dates when 1s were put in for registration
-                }
+                    <FormTableRow
+                        onChange={handleChange}
+                        name={"school"}
+                        label={"School:"}
+                        placeHolder={"Where do you study?"}
+                        value={profile.school}
+                        readOnly={!editting}/>
 
-                        <FormTableRow
-                            onChange={handleChange}
-                            name={"school"}
-                            label={"School:"}
-                            placeHolder={"Where do you study?"}
-                            value={profile.school}
-                            readOnly={!editting}/>
+                    <FormTableRow
+                        onChange={handleChange}
+                        name={"grade"}
+                        label={"Grade:"}
+                        placeHolder={"K-12? Junior in College? Young at Heart??"}
+                        value={profile.grade}
+                        readOnly={!editting}/>
 
-                        <FormTableRow
-                            onChange={handleChange}
-                            name={"grade"}
-                            label={"Grade:"}
-                            placeHolder={"K-12? Junior in College? Young at Heart??"}
-                            value={profile.grade}
-                            readOnly={!editting}/>
+                    <FormTableRow
+                        onChange={handleChange}
+                        name={"age"}
+                        label={"Age:"}
+                        placeHolder={"K-12? Junior in College? Young at Heart??"}
+                        value={profile.age}
+                        readOnly={!editting}/>
 
-                        <FormTableRow
-                            onChange={handleChange}
-                            name={"age"}
-                            label={"Age:"}
-                            placeHolder={"K-12? Junior in College? Young at Heart??"}
-                            value={profile.age}
-                            readOnly={!editting}/>
+                    <FormTableRow
+                        onChange={handleChange}
+                        name={"bio"}
+                        label={"Bio:"}
+                        placeHolder={"Tell us a little about where you are in your scholastic journey.."}
+                        value={profile.bio}
+                        readOnly={!editting}/>
 
-                        <FormTableRow
-                            onChange={handleChange}
-                            name={"bio"}
-                            label={"Bio:"}
-                            placeHolder={"Tell us a little about where you are in your scholastic journey.."}
-                            value={profile.bio}
-                            readOnly={!editting}/>
+                    { editting ?
+                        <tr>
+                            <td>
+                                <button onClick={onCancel}>
+                                    Cancel
+                                </button>
+                            </td>
+                            <td>
+                                <button onClick={onFinish}>
+                                    Update Profile
+                                </button>
+                            </td>
+                        </tr> :
+                        <tr>
+                            <td>
+                                <button onClick={editProfileOnClickHandler}>
+                                    Edit
+                                </button>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                    }
 
-                        { editting ?
-                            <tr>
-                                <td>
-                                    <button onClick={onCancel}>
-                                        Cancel
-                                    </button>
-                                </td>
-                                <td>
-                                    <button onClick={onFinish}>
-                                        Update Profile
-                                    </button>
-                                </td>
-                            </tr> :
-                            <tr>
-                                <td>
-                                    <button onClick={editProfileOnClickHandler}>
-                                        Edit
-                                    </button>
-                                </td>
-                                <td>
-                                </td>
-                            </tr>
+                </table>
+
+                <h2>
+                    Requests Sent
+                </h2>
+                <table className="Centered ProfileRequestsTable">
+                    <thead>
+                        <tr>
+                            <th>
+                                Start Time
+                            </th>
+                            <th>
+                                Subjects
+                            </th>
+                            <th>
+                                Tutor
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                            <th>
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            Array.from(Object.entries(requestsSent)).map(requestEntry =>
+                                <tr>
+                                    <td>
+                                        {moment(requestEntry[1].startTime).format("LT")}
+                                    </td>
+                                    <td>
+                                        {requestEntry[1].subject}
+                                    </td>
+                                    <td>
+                                        {requestEntry[1].tutor}
+                                    </td>
+                                    <td>
+                                        {requestEntry[1].status}
+                                    </td>
+                                    <td>
+                                        {
+                                            makeRequestSentActionButton(requestEntry[1].forAvailability, requestEntry[1].status)
+                                        }
+                                    </td>
+                                </tr>
+                            )
                         }
+                    </tbody>
+                </table>
 
-                    </table>
+                <h2>
+                    Requests Received
+                </h2>
+                <table className="Centered ProfileRequestsTable">
+                    <thead>
+                        <tr>
+                            <th>
+                                Start Time
+                            </th>
+                            <th>
+                                Subjects
+                            </th>
+                            <th>
+                                Student
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                            <th>
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            Array.from(Object.entries(requestsReceived)).map(requestEntry =>
+                                <tr>
+                                    <td>
+                                        {`${moment(requestEntry[1].startTime).format("L")} ${moment(requestEntry[1].startTime).format("LT")}`}
+                                    </td>
+                                    <td>
+                                        {requestEntry[1].subject}
+                                    </td>
+                                    <td>
+                                        {requestEntry[1].fromUser}
+                                    </td>
+                                    <td>
+                                        {requestEntry[1].status}
+                                    </td>
+                                    <td>
+                                        {
+                                            makeRequestReceivedActionButton(requestEntry[1].forAvailability, requestEntry[1].fromUser, requestEntry[1].status)
+                                        }
+                                    </td>
+                                </tr>
+                            )
+                        }
+                    </tbody>
+                </table>
 
-                    <h2>
-                        Requests Sent
-                    </h2>
-                    <table className="Centered ProfileRequestsTable">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Start Time
-                                </th>
-                                <th>
-                                    Subjects
-                                </th>
-                                <th>
-                                    Tutor
-                                </th>
-                                <th>
-                                    Status
-                                </th>
-                                <th>
-                                    Action
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                Array.from(Object.entries(requestsSent)).map(requestEntry =>
-                                    <tr>
-                                        <td>
-                                            {moment(requestEntry[1].startTime).format("LT")}
-                                        </td>
-                                        <td>
-                                            {requestEntry[1].subject}
-                                        </td>
-                                        <td>
-                                            {requestEntry[1].tutor}
-                                        </td>
-                                        <td>
-                                            {requestEntry[1].status}
-                                        </td>
-                                        <td>
-                                            {
-                                                makeRequestSentActionButton(requestEntry[1].forAvailability, requestEntry[1].status)
-                                            }
-                                        </td>
-                                    </tr>
-                                )
-                            }
-                        </tbody>
-                    </table>
+            </div>
 
-                    <h2>
-                        Requests Received
-                    </h2>
-                    <table className="Centered ProfileRequestsTable">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Start Time
-                                </th>
-                                <th>
-                                    Subjects
-                                </th>
-                                <th>
-                                    Student
-                                </th>
-                                <th>
-                                    Status
-                                </th>
-                                <th>
-                                    Action
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                Array.from(Object.entries(requestsReceived)).map(requestEntry =>
-                                    <tr>
-                                        <td>
-                                            {`${moment(requestEntry[1].startTime).format("L")} ${moment(requestEntry[1].startTime).format("LT")}`}
-                                        </td>
-                                        <td>
-                                            {requestEntry[1].subject}
-                                        </td>
-                                        <td>
-                                            {requestEntry[1].fromUser}
-                                        </td>
-                                        <td>
-                                            {requestEntry[1].status}
-                                        </td>
-                                        <td>
-                                            {
-                                                makeRequestReceivedActionButton(requestEntry[1].forAvailability, requestEntry[1].fromUser, requestEntry[1].status)
-                                            }
-                                        </td>
-                                    </tr>
-                                )
-                            }
-                        </tbody>
-                    </table>
-
-                </div>
-
-            </header>
-        </>
+        </BaseScreen>
     );
 }
