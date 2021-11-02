@@ -17,7 +17,6 @@ import {BaseScreen} from './BaseScreen';
 import {ErrorRegistry} from './ErrorRegistry';
 
 
-
 import {ScreenSizeConfigurable} from './ScreenSizeConfigurable';
 
 export function TestScreen(props) {

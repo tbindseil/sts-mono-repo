@@ -137,7 +137,7 @@ export function MyCalendarScreen(props) {
 
     return (
         <BaseScreen
-            titleText={"Log Out"}
+            titleText={"My Calender"}
             needAuthenticated={true}
             setUser={setUser}>
 

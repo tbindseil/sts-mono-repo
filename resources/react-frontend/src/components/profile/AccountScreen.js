@@ -13,6 +13,8 @@ import {checkAuthenticated} from "../auth/CheckAuthenticated";
 import {makeStandardErrorHandler} from "../fetch-enhancements/error-handling";
 import {apiFactory} from '../fetch-enhancements/fetch-call-builders';
 
+// TODO base screenify account and profile, then clean up css
+
 /**
  * So, I dont think we should be able to edit parent name or parent email, which are the only
  * things on the account page. So I'm commenting out the edit button but leaving the code
