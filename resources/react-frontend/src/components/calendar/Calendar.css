@@ -47,6 +47,14 @@ table.AvailabilityForm label {
   width: 160px;
 }
 
-.RepeatingDaySelector {
-    width: 22px;
+table.RepeatingDaySelector button {
+  width: 25px;
+}
+
+table.RepeatingDaySelector button.UnselectedDayOfWeek {
+  background-color: grey
+}
+
+table.RepeatingDaySelector button.SelectedDayOfWeek {
+  background-color: red
 }

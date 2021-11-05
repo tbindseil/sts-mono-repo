@@ -91,16 +91,6 @@ function RepeatingDaySelector(props) {
         },
     ];
 
-    // TODO overriding whatever happens is difficult, maybe because it is in calendar?
-    const selectedStyle = {
-        'width': '25px',
-        'backgroundColor': 'red'
-    }
-    const unselectedStyle = {
-        'width': '25px',
-        'backgroundColor': 'grey'
-    }
-
     return (
         <tr>
             <td>
@@ -109,12 +99,12 @@ function RepeatingDaySelector(props) {
                 </label>
             </td>
             <td>
-                <table>
+                <table className={"RepeatingDaySelector"}>
                     <tr>
                         {
                             DaysOfTheWeek.map(d =>
                                 <td>
-                                    <button onClick={d.onClick} style={props.selectedDays.has(d.long) ? selectedStyle : unselectedStyle}>
+                                    <button onClick={d.onClick} className={props.selectedDays.has(d.long) ? 'SelectedDayOfWeek' : 'UnselectedDayOfWeek'}>
                                         {d.short}
                                     </button>
                                 </td>
