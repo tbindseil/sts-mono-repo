@@ -215,6 +215,7 @@ export function CreateAvailabilityScreen(props) {
     // a bunch of postAvails
     const [repeating, setRepeating] = useState(false);
     const [selectedDays, setSelectedDays] = useState(new Set());
+    const [numberOfWeeks, setNumberOfWeeks] = useState('');
 
     return (
         <BaseScreen
@@ -251,7 +252,9 @@ export function CreateAvailabilityScreen(props) {
                     day={day}
                     handleChangeDay={handleChangeDay}
                     selectedDays={selectedDays}
-                    setSelectedDays={setSelectedDays}/>
+                    setSelectedDays={setSelectedDays}
+                    setNumberOfWeeks={setNumberOfWeeks}
+                    numberOfWeeks={numberOfWeeks}/>
 
                 <tr>
                     <td>

@@ -4,9 +4,11 @@ import moment from 'moment';
 export function CreateAvailabilityDaySelector(props) {
     if (props.repeating) {
         return (
-                <RepeatingDaySelector
-                    selectedDays={props.selectedDays}
-                    setSelectedDays={props.setSelectedDays}/>
+            <RepeatingDaySelector
+                selectedDays={props.selectedDays}
+                setSelectedDays={props.setSelectedDays}
+                numberOfWeeks={props.numberOfWeeks}
+                setNumberOfWeeks={props.setNumberOfWeeks}/>
         );
     } else {
         return (
@@ -92,6 +94,8 @@ function RepeatingDaySelector(props) {
     ];
 
     return (
+        <>
+
         <tr>
             <td>
                 <label>
@@ -114,5 +118,17 @@ function RepeatingDaySelector(props) {
                 </table>
             </td>
         </tr>
+        <tr>
+            <td>
+                <label>
+                    Number of Weeks
+                </label>
+            </td>
+            <td>
+                <input value={props.numberOfWeeks} onChange={event => props.setNumberOfWeeks(event.target.value.replace(/\D/,''))}/>
+            </td>
+        </tr>
+
+        </>
     );
 }
