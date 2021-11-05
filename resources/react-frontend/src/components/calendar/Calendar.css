@@ -46,3 +46,7 @@ table.AvailabilityForm input {
 table.AvailabilityForm label {
   width: 160px;
 }
+
+.RepeatingDaySelector {
+    width: 22px;
+}

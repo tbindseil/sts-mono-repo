@@ -1,13 +1,12 @@
-import React, {useState} from 'react';
+import React from 'react';
 import moment from 'moment';
-import {Radio} from 'semantic-ui-react';
 
 export function CreateAvailabilityDaySelector(props) {
     if (props.repeating) {
         return (
                 <RepeatingDaySelector
-                    handleChangeDay={props.handleChangeDay}
-                    day={props.day}/>
+                    selectedDays={props.selectedDays}
+                    setSelectedDays={props.setSelectedDays}/>
         );
     } else {
         return (
@@ -16,18 +15,6 @@ export function CreateAvailabilityDaySelector(props) {
                 day={props.day}/>
         );
     }
-
-    /*return ( // why doesn't that work?
-        {
-            props.repeating ?
-                <RepeatingDaySelector
-                    handleChangeDay={props.handleChangeDay}
-                    day={props.day}/> :
-                <DaySelector
-                    handleChangeDay={props.handleChangeDay}
-                    day={props.day}/>
-        }
-    );*/
 }
 
 function DaySelector(props) {
@@ -50,88 +37,92 @@ function DaySelector(props) {
     );
 }
 
+// take in 7 set repeating day functions, setMonday(true/false), etc
+// what does the data look like?
+// a list of week day
 function RepeatingDaySelector(props) {
-    const RepeatCadence = {
-        MONTHLY: 'MONTHLY',
-        WEEKLY: 'WEEKLY'
-    };
-    const [cadence, setCadence] = useState(RepeatCadence.WEEKLY);
-
-    const handleCadenceChange = (event, {value}) => {
-        switch (value) {
-            case RepeatCadence.MONTHLY:
-                setCadence(RepeatCadence.MONTHLY);
-                break;
-            case RepeatCadence.WEEKLY:
-                setCadence(RepeatCadence.WEEKLY);
-                break;
-            default:
-                console.log("invalid cadence selected:");
-                console.log(value);
-                break;
+    const updateSelectedDays = (selectedDay) => {
+        if (props.selectedDays.has(selectedDay)) {
+            const newSet = new Set(props.selectedDays);
+            newSet.delete(selectedDay);
+            props.setSelectedDays(newSet);
+        } else {
+            const newSet = new Set(props.selectedDays);
+            newSet.add(selectedDay);
+            props.setSelectedDays(newSet);
         }
-    };
+    }
 
+    const DaysOfTheWeek = [
+        {
+            short: 'S',
+            long: 'Sunday',
+            onClick: () => updateSelectedDays('Sunday')
+        },
+        {
+            short: 'M',
+            long: 'Monday',
+            onClick: () => updateSelectedDays('Monday')
+        },
+        {
+            short: 'T',
+            long: 'Tuesday',
+            onClick: () => updateSelectedDays('Tuesday')
+        },
+        {
+            short: 'W',
+            long: 'Wednesday',
+            onClick: () => updateSelectedDays('Wednesday')
+        },
+        {
+            short: 'T',
+            long: 'Thursday',
+            onClick: () => updateSelectedDays('Thursday')
+        },
+        {
+            short: 'F',
+            long: 'Friday',
+            onClick: () => updateSelectedDays('Friday')
+        },
+        {
+            short: 'S',
+            long: 'Saturday',
+            onClick: () => updateSelectedDays('Saturday')
+        },
+    ];
+
+    // TODO overriding whatever happens is difficult, maybe because it is in calendar?
+    const selectedStyle = {
+        'width': '25px',
+        'backgroundColor': 'red'
+    }
+    const unselectedStyle = {
+        'width': '25px',
+        'backgroundColor': 'grey'
+    }
 
     return (
-        <>
-            <tr>
-                <td>
-                        <Radio
-                            label='Monthly?'
-                            name='radioGroup'
-                            value={RepeatCadence.MONTHLY}
-                            checked={cadence === RepeatCadence.MONTHLY}
-                            onChange={handleCadenceChange}/>
-                </td>
-                <td>
-                        <Radio
-                            label='Weekly?'
-                            name='radioGroup'
-                            value={RepeatCadence.WEEKLY}
-                            checked={cadence === RepeatCadence.WEEKLY}
-                            onChange={handleCadenceChange}/>
-                </td>
-            </tr>
-            <tr>
-                {
-                }
-            </tr>
-        </>
-    );
-}
-
-// 7 squares in one row
-function WeekSelector(props) {
-    return (
-        <>
+        <tr>
             <td>
                 <label>
-                    does
+                    Weekly Schedule
                 </label>
             </td>
             <td>
-                <label>
-                    does
-                </label>
+                <table>
+                    <tr>
+                        {
+                            DaysOfTheWeek.map(d =>
+                                <td>
+                                    <button onClick={d.onClick} style={props.selectedDays.has(d.long) ? selectedStyle : unselectedStyle}>
+                                        {d.short}
+                                    </button>
+                                </td>
+                            )
+                        }
+                    </tr>
+                </table>
             </td>
-        </>
-    );
-}
-
-function MonthSelector(props) {
-    return (
-        <>
-            <td>
-                <label>
-                    does
-                </label>
-            </td>
-            <td>
-                <label>
-                    does
-                </label>
-            </td>
-        </>
+        </tr>
     );
 }
