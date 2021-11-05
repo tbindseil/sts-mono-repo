@@ -4,10 +4,11 @@ import {useHistory} from 'react-router-dom';
 import moment from 'moment';
 
 import Multiselect from 'multiselect-react-dropdown'; // TODO should this just be a drop down also?
-import {Dropdown} from 'semantic-ui-react';
+import {Checkbox, Dropdown} from 'semantic-ui-react';
 
 import subjects from '../../configs/subjects';
 
+import {CreateAvailabilityDaySelector} from './CreateAvailabilityDaySelector';
 import {LoadingFormButton} from '../forms/FormButton';
 import {apiFactory} from '../fetch-enhancements/fetch-call-builders';
 import {BaseScreen} from '../base-components/BaseScreen';
@@ -114,6 +115,7 @@ export function CreateAvailabilityScreen(props) {
     // first, create avail to post
     // then, make post call
     const onFinish = async () => {
+        // TODO handle repeating?
         if (selectedSubjects.length === 0) {
             ErrorRegistry.getInstance().setFailed(true);
             ErrorRegistry.getInstance().setErrorMessage('Must select at least one subject');
@@ -209,12 +211,20 @@ export function CreateAvailabilityScreen(props) {
 
     const [loading, setLoading] = useState(false);
 
+    // so basically gonna just do a thin wrapper around
+    // a bunch of postAvails
+    const [repeating, setRepeating] = useState(false);
+
     return (
         <BaseScreen
             titleText={"Create Availability"}
             needAuthenticated={true}
             setUser={setUser}
             errorPrefix={'Error creating availability'}>
+
+            <div className={"Centered"}>
+                <Checkbox label={"Repeating?"} onChange={() => setRepeating(!repeating)}/>
+            </div>
 
             <table className="AvailabilityForm">
                 <tr>
@@ -234,21 +244,12 @@ export function CreateAvailabilityScreen(props) {
                         />
                     </td>
                 </tr>
-                <tr>
-                    <td>
-                        <label for="day">
-                            Day:
-                        </label>
-                    </td>
-                    <td>
-                        <input
-                            onChange={handleChangeDay}
-                            type="date"
-                            name="day"
-                            value={moment(day).format("YYYY-MM-DD")}
-                        />
-                    </td>
-                </tr>
+
+                <CreateAvailabilityDaySelector
+                    repeating={repeating}
+                    day={day}
+                    handleChangeDay={handleChangeDay}/>
+
                 <tr>
                     <td>
                         <label for="startTime">

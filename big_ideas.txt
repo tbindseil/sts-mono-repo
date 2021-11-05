@@ -541,3 +541,4 @@ ok, starting a new list, the above got pretty messy
     * History and validating classes
         * might be cool and involve cron jobs
     * permissions
+    * create availability screen needs to start at selected time (if it makes sense)
