@@ -3,6 +3,8 @@ import React, {useCallback, useEffect, useState} from 'react';
 import moment from 'moment';
 import {cloneDeep} from 'lodash';
 
+import {Checkbox} from 'semantic-ui-react';
+
 import './Profile.css';
 import {FormTableRow} from '../forms/TextInput'
 import {apiFactory} from '../fetch-enhancements/fetch-call-builders';
@@ -164,6 +166,11 @@ export function ProfileScreen() {
         });
         call();
     };
+
+    const [filterCanceledSent, setFilterCanceledSent] = useState(true);
+    const [filterDeniedSent, setFilterDeniedSent] = useState(true);
+    const [filterCanceledReceived, setFilterCanceledReceived] = useState(true);
+    const [filterDeniedReceived, setFilterDeniedReceived] = useState(true);
 
     const makeRequestSentActionButton = (forAvailability, status) => {
         const cancelRequest = (event) => {
@@ -335,6 +342,8 @@ export function ProfileScreen() {
                 <h2>
                     Requests Sent
                 </h2>
+                <Checkbox label="Show Canceled" onChange={() => setFilterCanceledSent(!filterCanceledSent)}/>
+                <Checkbox label="Show Denied" onChange={() => setFilterDeniedSent(!filterDeniedSent)}/>
                 <table className="Centered ProfileRequestsTable">
                     <thead>
                         <tr>
@@ -357,27 +366,30 @@ export function ProfileScreen() {
                     </thead>
                     <tbody>
                         {
-                            Array.from(Object.entries(requestsSent)).map(requestEntry =>
-                                <tr>
-                                    <td>
-                                        {moment(requestEntry[1].startTime).format("LT")}
-                                    </td>
-                                    <td>
-                                        {requestEntry[1].subject}
-                                    </td>
-                                    <td>
-                                        {requestEntry[1].tutor}
-                                    </td>
-                                    <td>
-                                        {requestEntry[1].status}
-                                    </td>
-                                    <td>
-                                        {
-                                            makeRequestSentActionButton(requestEntry[1].forAvailability, requestEntry[1].status)
-                                        }
-                                    </td>
-                                </tr>
-                            )
+                            Array.from(Object.entries(requestsSent))
+                                .filter(requestEntry => !(filterCanceledSent && requestEntry[1].status === "CANCELED"))
+                                .filter(requestEntry => !(filterDeniedSent && requestEntry[1].status === "DENIED"))
+                                .map(requestEntry =>
+                                    <tr>
+                                        <td>
+                                            {moment(requestEntry[1].startTime).format("LT")}
+                                        </td>
+                                        <td>
+                                            {requestEntry[1].subject}
+                                        </td>
+                                        <td>
+                                            {requestEntry[1].tutor}
+                                        </td>
+                                        <td>
+                                            {requestEntry[1].status}
+                                        </td>
+                                        <td>
+                                            {
+                                                makeRequestSentActionButton(requestEntry[1].forAvailability, requestEntry[1].status)
+                                            }
+                                        </td>
+                                    </tr>
+                                )
                         }
                     </tbody>
                 </table>
@@ -385,6 +397,8 @@ export function ProfileScreen() {
                 <h2>
                     Requests Received
                 </h2>
+                <Checkbox label="Show Canceled" onChange={() => setFilterCanceledReceived(!filterCanceledReceived)}/>
+                <Checkbox label="Show Denied" onChange={() => setFilterDeniedReceived(!filterDeniedReceived)}/>
                 <table className="Centered ProfileRequestsTable">
                     <thead>
                         <tr>
@@ -407,27 +421,30 @@ export function ProfileScreen() {
                     </thead>
                     <tbody>
                         {
-                            Array.from(Object.entries(requestsReceived)).map(requestEntry =>
-                                <tr>
-                                    <td>
-                                        {`${moment(requestEntry[1].startTime).format("L")} ${moment(requestEntry[1].startTime).format("LT")}`}
-                                    </td>
-                                    <td>
-                                        {requestEntry[1].subject}
-                                    </td>
-                                    <td>
-                                        {requestEntry[1].fromUser}
-                                    </td>
-                                    <td>
-                                        {requestEntry[1].status}
-                                    </td>
-                                    <td>
-                                        {
-                                            makeRequestReceivedActionButton(requestEntry[1].forAvailability, requestEntry[1].fromUser, requestEntry[1].status)
-                                        }
-                                    </td>
-                                </tr>
-                            )
+                            Array.from(Object.entries(requestsReceived))
+                                .filter(requestEntry => !(filterCanceledReceived && requestEntry[1].status === "CANCELED"))
+                                .filter(requestEntry => !(filterDeniedReceived && requestEntry[1].status === "DENIED"))
+                                .map(requestEntry =>
+                                    <tr>
+                                        <td>
+                                            {`${moment(requestEntry[1].startTime).format("L")} ${moment(requestEntry[1].startTime).format("LT")}`}
+                                        </td>
+                                        <td>
+                                            {requestEntry[1].subject}
+                                        </td>
+                                        <td>
+                                            {requestEntry[1].fromUser}
+                                        </td>
+                                        <td>
+                                            {requestEntry[1].status}
+                                        </td>
+                                        <td>
+                                            {
+                                                makeRequestReceivedActionButton(requestEntry[1].forAvailability, requestEntry[1].fromUser, requestEntry[1].status)
+                                            }
+                                        </td>
+                                    </tr>
+                                )
                         }
                     </tbody>
                 </table>

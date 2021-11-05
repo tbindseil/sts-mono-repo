@@ -459,6 +459,8 @@ web page should be grid that fills at least full screen but can stretch vertical
         * loading selectable table contents (probably same as info loading table contents)
         * loading selected calendar slot - naw, just jump
 
+* show options for showing requests sent and recieved on profile (() include canceled, () include denied, etc) - done
+
 ~~~~~
 
 so far, a lot of whats left above is notifications,
@@ -527,3 +529,15 @@ weird problem #2, need to send requester with get avail calls in case denied. Th
 ====================================================================================================================================================================
 Next time I do a model change, I need to write a script to update all packages, that was tooooo much man
 ====================================================================================================================================================================
+
+
+
+
+11/3/21
+ok, starting a new list, the above got pretty messy
+    * loading stuff
+    * repeating avail stuff - TJTAG
+    * how much of an avail to select stuff
+    * History and validating classes
+        * might be cool and involve cron jobs
+    * permissions
