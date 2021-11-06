@@ -3,6 +3,7 @@ setup.py
 src/models/__init__.py
 src/models/availability.py
 src/models/availability_request.py
+src/models/repeating_availability.py
 src/models/user.py
 src/sts_models_tj.egg-info/PKG-INFO
 src/sts_models_tj.egg-info/SOURCES.txt

@@ -9,5 +9,3 @@ class RepeatingAvailability(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     availabilities = relationship("Availability", cascade="all, delete, delete-orphan")
-
-    def __init__(self):

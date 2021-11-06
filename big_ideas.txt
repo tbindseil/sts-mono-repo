@@ -536,15 +536,24 @@ Next time I do a model change, I need to write a script to update all packages, 
 11/3/21
 ok, starting a new list, the above got pretty messy
     * loading stuff
-    * repeating avail stuff - TJTAG
+
+    * series avail stuff - TJTAG
         * what about deleting? do they need to delete all or can they delete one and delete the whole series with it?
         * that requires a change to the model
-            * could do a RepeatingAvailability
+            * could do a RepeatingAvailability - need to rename
             * could extend current Availability to have an optional reference to a RepeatingAvailability
                 * then, when deleting, have the possiblility to delete series or occurance.
                     * If deleting series, delete all avails with the same repeat.
                     * If deleting occurance, just delete the avail, if no more avail, delete series
                         * this implies that all avails are created with the series
+        * ok, do i need a new lambda? I'd say so
+            * delete occurance goes to avail lambda
+            * delete series goes to repeating lambda
+            * create series goes to repeating lambda
+            * don't need get series, already getting individuals and with individuals could come knowledge of series
+            * don't need update series, easy to delete and recreate
+
+
     * how much of an avail to select stuff
     * History and validating classes
         * might be cool and involve cron jobs
