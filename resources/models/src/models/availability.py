@@ -33,6 +33,8 @@ class Availability(Base):
 
     requests = relationship("AvailabilityRequest", cascade="all, delete, delete-orphan")
 
+    repeatingAvailability = Column(Integer, ForeignKey('repeating_availability.id'), nullable=True)
+
     def __init__(self, subjects, startTime, endTime, tutor):
         self.subjects = subjects
         self.startTime = startTime
