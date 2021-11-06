@@ -29,6 +29,7 @@ from models import Base
 from models.user import User
 from models.availability import Availability
 from models.availability_request import AvailabilityRequest
+from models.availability_series import AvailabilitySeries
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
