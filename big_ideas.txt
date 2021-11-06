@@ -525,6 +525,8 @@ weird problem #2, need to send requester with get avail calls in case denied. Th
         honestly, I probably need the block list, but that could be made unneccasry if the class functionality is utilized
 
 
+i have neglected to think of client server much until this... (does client make avails and series, or does making series make avails as well?)
+
 
 ====================================================================================================================================================================
 Next time I do a model change, I need to write a script to update all packages, that was tooooo much man
@@ -552,6 +554,8 @@ ok, starting a new list, the above got pretty messy
             * create series goes to avail series lambda
             * don't need get series, already getting individuals and with individuals could come knowledge of series
             * don't need update series, easy to delete and recreate
+        * so for this new lambda.. does it also create the requests, or is that the clients job? - server
+        * ok, so what about start and end week offset? - deal with that later
 
 
     * how much of an avail to select stuff
