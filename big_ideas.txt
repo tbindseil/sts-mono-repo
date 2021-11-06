@@ -556,6 +556,8 @@ ok, starting a new list, the above got pretty messy
             * don't need update series, easy to delete and recreate
         * so for this new lambda.. does it also create the requests, or is that the clients job? - server
         * ok, so what about start and end week offset? - deal with that later
+            * just send both
+        * delete with option to orphan? no, too complicated
 
 
     * how much of an avail to select stuff

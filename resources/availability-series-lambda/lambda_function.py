@@ -68,18 +68,24 @@ def post_output_translator(raw_output):
 
 
 def delete_input_translator(event, context):
-    return event['queryStringParameters']['echoInput']
+    return event['path'].split('/')[-1]
 
 def delete_handler(input, session, delete_claims):
-    to_echo = input
-    return to_echo 
+    availability_series_id_to_delete = input
+
+    # TODO make sure only tutor can delete series
+
+    series = session.query(AvailabilitySession).filter(AvailabilitySession.id==availability_series_id_to_delete).one()
+
+    for avail in series.availabilities:
+        session.delete(avail)
+
+    session.delete(series)
+
+    return "success"
 
 def delete_output_translator(raw_output):
-    to_echo = raw_output
-    availabilities = raw_output
-
-    response = {'to_echo': to_echo}
-    return 200, json.dumps(response)
+    return success_response_output()
 
 
 def lambda_handler(event, context):
