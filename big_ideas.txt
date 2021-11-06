@@ -540,16 +540,16 @@ ok, starting a new list, the above got pretty messy
     * series avail stuff - TJTAG
         * what about deleting? do they need to delete all or can they delete one and delete the whole series with it?
         * that requires a change to the model
-            * could do a RepeatingAvailability - need to rename
-            * could extend current Availability to have an optional reference to a RepeatingAvailability
+            * could do an AvailabilitySeries
+            * could extend current Availability to have an optional reference to a AvailabilitySeries
                 * then, when deleting, have the possiblility to delete series or occurance.
-                    * If deleting series, delete all avails with the same repeat.
+                    * If deleting series, delete all avails with the same series.
                     * If deleting occurance, just delete the avail, if no more avail, delete series
                         * this implies that all avails are created with the series
         * ok, do i need a new lambda? I'd say so
             * delete occurance goes to avail lambda
-            * delete series goes to repeating lambda
-            * create series goes to repeating lambda
+            * delete series goes to avail series lambda
+            * create series goes to avail series lambda
             * don't need get series, already getting individuals and with individuals could come knowledge of series
             * don't need update series, easy to delete and recreate
 

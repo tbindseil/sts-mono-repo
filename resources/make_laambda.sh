@@ -38,3 +38,12 @@ EOF
 
 
 # TODO maybe make cdk stack also?
+# TODO could certainly utilize a prototype pattern here
+# probably something like:
+# mkdir "$LAMBDA_DIR"
+# cd $LAMBDA_DIR
+# python3 -m venv ./venv
+# cp ../prototype/* ./
+# venv
+# pip intall -r requirements.txt
+# deactivate
