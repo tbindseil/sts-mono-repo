@@ -1,10 +1,12 @@
 import json
+import jsondatetime
+from datetime import datetime
 
-from guided_lambda_handler.guided_lambda_handler import GLH, invalid_http_method_factory
+from guided_lambda_handler.guided_lambda_handler import GLH, invalid_http_method_factory, success_response_output, InputException
 
 
 class AvailabiltySeriesRequest():
-    def __init__(self, sunday, monday, tuesday, wednesday, thursday, friday, saturday, numWeeks, subjects, startTime, endTime)
+    def __init__(self, sunday, monday, tuesday, wednesday, thursday, friday, saturday, num_weeks, subjects, start_time, end_time):
         self.weekday_dict = {
                 '0': sunday,
                 '1': monday,
@@ -14,17 +16,24 @@ class AvailabiltySeriesRequest():
                 '5': friday,
                 '6': saturday,
         }
-        self.numWeeks = numWeeks
-        self.startTime = startTime
-        self.endTime  = endTime
+        self.num_weeks = num_weeks
+        self.subjects = subjects
+        self.start_time = start_time
+        self.end_time  = end_time
 
 
+# could cast start/endTime to time from datetime to make it explicit that i am only concerned with time...
 def post_input_translator(event, context):
-    qsp_map = json.loads(event['queryStringParameters']['echoInput'])
+    qsp_map = jsondatetime.loads(event['body']['postAvailabilitySeriesInput'])
 
-    # could cast start/endTime to time from datetime to make it explicit that i am only concerned with time...
+    if (not isinstance(qsp_map['startTime'], datetime)
+            or not isinstance(qsp_map['endTime'], datetime)):
+        raise InputException('startTime and endTime must be dates')
 
-    availability_series_request = AvailabiltySeriesRequest(qsp_map['sunday'], qsp_map['monday'], qsp_map['tuesday'], qsp_map['wednesday'], qsp_map['thursday'], qsp_map['friday'], qsp_map['saturday'], qsp_map['numWeeks'], qsp_map['startTime'], qsp_map['endTime'])
+    if qsp_map['startTime'] >= qsp_map['endTime']:
+        raise InputException('startTime must be before endTime')
+
+    availability_series_request = AvailabiltySeriesRequest(qsp_map['sunday'], qsp_map['monday'], qsp_map['tuesday'], qsp_map['wednesday'], qsp_map['thursday'], qsp_map['friday'], qsp_map['saturday'], qsp_map['numWeeks'], qsp_map['subjects'], qsp_map['startTime'], qsp_map['endTime'])
 
     return availability_series_request
 
@@ -44,7 +53,7 @@ def post_handler(input, session, post_claims):
     cognito_id = claims["cognito:username"]
     user = session.query(User).filter(User.cognitoId==cognito_id).one()
 
-    prototype = Availability(availability_series_request.subjects, availability_series_request.startTime, availability_series_request.endTime, availability_series_request.tutor.cognitoId)
+    prototype = Availability(availability_series_request.subjects, availability_series_request.start_time, availability_series_request.end_time, availability_series_request.tutor.cognitoId)
 
     today_date = today()
     prototype.startTime.day = today_date.day
@@ -52,7 +61,7 @@ def post_handler(input, session, post_claims):
     prototype.startTime.year = today_date.year
 
     one_day = timedelta(1)
-    for i in range(1, numWeeks):
+    for i in range(1, num_weeks):
         for key, value in availability_series_request.weekday_dict:
             if value:
                 create_avail(prototype, user)
@@ -64,7 +73,7 @@ def post_handler(input, session, post_claims):
     return 'success'
 
 def post_output_translator(raw_output):
-    return 200, json.dumps(raw_output)
+    return success_response_output()
 
 
 def delete_input_translator(event, context):
