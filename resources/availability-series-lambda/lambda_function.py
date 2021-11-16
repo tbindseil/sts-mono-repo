@@ -1,8 +1,10 @@
 import json
 import jsondatetime
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from guided_lambda_handler.guided_lambda_handler import GLH, invalid_http_method_factory, success_response_output, InputException
+from models.user import User
+from models.availability import Availability
 
 
 class AvailabiltySeriesRequest():
@@ -46,27 +48,30 @@ def create_avail(posted_availability, tutor):
 
     tutor.availabilities.append(posted_availability)
 
-def post_handler(input, session, post_claims):
+def post_handler(input, session, get_claims):
     availability_series_request = input
 
     claims = get_claims()
     cognito_id = claims["cognito:username"]
     user = session.query(User).filter(User.cognitoId==cognito_id).one()
 
-    prototype = Availability(availability_series_request.subjects, availability_series_request.start_time, availability_series_request.end_time, availability_series_request.tutor.cognitoId)
+    prototype = Availability(availability_series_request.subjects, availability_series_request.start_time, availability_series_request.end_time, cognito_id)
 
-    today_date = today()
-    prototype.startTime.day = today_date.day
-    prototype.startTime.month = today_date.month
-    prototype.startTime.year = today_date.year
+    today_date = datetime.today()
+    upcoming_sunday = today_date
+    while upcoming_sunday.isoweekday() != 7:
+        upcoming_sunday += timedelta(days=1)
+    prototype.startTime = datetime.combine(upcoming_sunday.date(), prototype.startTime.time())
+    prototype.endTime = datetime.combine(upcoming_sunday.date(), prototype.endTime.time())
 
-    one_day = timedelta(1)
-    for i in range(1, num_weeks):
-        for key, value in availability_series_request.weekday_dict:
+    for i in range(0, availability_series_request.num_weeks):
+        for key, value in availability_series_request.weekday_dict.items():
             if value:
-                create_avail(prototype, user)
-            prototype.startTime += one_day
-            prototype.endTime += one_day
+                # need to deep copy before saving
+                copied_prototype = Availability(prototype.subjects, prototype.startTime, prototype.endTime, prototype.tutor)
+                create_avail(copied_prototype, user)
+            prototype.startTime += timedelta(days=1)
+            prototype.endTime += timedelta(days=1)
 
     session.add(user)
 

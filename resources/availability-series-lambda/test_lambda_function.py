@@ -1,13 +1,14 @@
 import unittest
 from unittest.mock import MagicMock
 import json
-from datetime import datetime
+from datetime import datetime, timedelta, time
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, and_
 from sqlalchemy.orm import sessionmaker
 
 from models import Base
 from models.user import User
+from models.availability import Availability
 
 import lambda_function
 from lambda_function import AvailabiltySeriesRequest
@@ -110,9 +111,46 @@ class TestLambdaFunction(unittest.TestCase):
         }}
 
     def test_post_creates_avails(self):
-        print("TODO")
-        # availability_series_request = AvailabiltySeriesRequest(True, False, True, False, True, False, True, 2, qsp_map['startTime'], qsp_map['endTime'])
+        expected_weekly_pattern = [True, False, True, False, True, False, True]
+        num_weeks = 2
+        expected_subjects = 'subjects'
+        expected_start = datetime(year=2023, month=1, day=15, hour=13)
+        expected_end = datetime(year=2023, month=1, day=15, hour=14)
 
+        num_initial_availabilities = self.session.query(Availability).count()
+        self.assertEqual(num_initial_availabilities, 0)
+
+        availability_series_request = AvailabiltySeriesRequest(expected_weekly_pattern[0], expected_weekly_pattern[1], expected_weekly_pattern[2], expected_weekly_pattern[3], expected_weekly_pattern[4], expected_weekly_pattern[5], expected_weekly_pattern[6], num_weeks, expected_subjects, expected_start, expected_end)
+        output = lambda_function.post_handler(availability_series_request, self.session, self.get_claims)
+
+        availability_query = self.session.query(Availability)
+
+        # need to have 8 total
+        num_initial_availabilities = availability_query.count()
+        self.assertEqual(num_initial_availabilities, 8)
+
+        # all need to have expected start and end times
+        for avail in availability_query:
+            self.assertEqual(avail.subjects, expected_subjects)
+            self.assertEqual(avail.startTime.time(), expected_start.time())
+            self.assertEqual(avail.endTime.time(), expected_end.time())
+
+        # need to be on ... certain days ...
+        moving_date = datetime.combine(datetime.today().date(), expected_start.time())
+        # moving_date = expected_start
+        while moving_date.isoweekday() != 7:
+            moving_date += timedelta(days=1)
+
+        for i in range(num_weeks):
+            for expected in expected_weekly_pattern:
+                if expected:
+                    moving_date_date = moving_date.date()
+                    zero_time = time(0, 0)
+                    start_of_query = datetime.combine(moving_date_date, zero_time)
+                    end_of_query = start_of_query + timedelta(days=1)
+                    self.session.query(Availability).filter(and_(Availability.startTime>=start_of_query, Availability.endTime<=end_of_query)).one()
+
+                moving_date += timedelta(days=1)
 
     def test_post_does_not_create_any_avails_when_even_one_would_overlap_with_existing_avail(self):
         print("TODO")
