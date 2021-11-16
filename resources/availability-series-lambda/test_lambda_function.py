@@ -110,6 +110,23 @@ class TestLambdaFunction(unittest.TestCase):
             })
         }}
 
+    def test_post_creates_series(self):
+        expected_weekly_pattern = [True, False, True, False, True, False, True]
+        num_weeks = 2
+        expected_subjects = 'subjects'
+        expected_start = datetime(year=2023, month=1, day=15, hour=13)
+        expected_end = datetime(year=2023, month=1, day=15, hour=14)
+
+        num_initial_availabilities = self.session.query(Availability).count()
+        self.assertEqual(num_initial_availabilities, 0)
+
+        availability_series_request = AvailabiltySeriesRequest(expected_weekly_pattern[0], expected_weekly_pattern[1], expected_weekly_pattern[2], expected_weekly_pattern[3], expected_weekly_pattern[4], expected_weekly_pattern[5], expected_weekly_pattern[6], num_weeks, expected_subjects, expected_start, expected_end)
+        output = lambda_function.post_handler(availability_series_request, self.session, self.get_claims)
+        self.session.commit()
+
+        created_series = self.session.query(AvailabilitySeries).filter(AvailabilitySeries.id==).one() # TJTAG, need to: 1) add series to user 2) create and save series in post handler 3) check that it is created somehow (check for 0 beforehand and 1 after maybe since i won't have the series id?), then move on to delete
+        self.assertEqual(len(created_series.availabilities), 8)
+
     def test_post_creates_avails(self):
         expected_weekly_pattern = [True, False, True, False, True, False, True]
         num_weeks = 2
@@ -195,7 +212,10 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertEqual(input, '1')
 
     def test_delete_is_passthrough(self):
-        print("TODO")
+        # # start = datetime(year=2023, month=1, day=15, hour=13)
+        # end = datetime(year=2023, month=1, day=15, hour=14)
+        # avail_part_of_series = Availability('subjects', start, end, self.cognito_id)
+        # avail_not_part_of_series = Availability('subjects', start, end, self.cognito_id)
 
     def test_delete_output_translator(self):
         raw_output = 199, "not_raw_output"

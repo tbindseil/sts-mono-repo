@@ -69,6 +69,7 @@ def post_handler(input, session, get_claims):
             if value:
                 # need to deep copy before saving
                 copied_prototype = Availability(prototype.subjects, prototype.startTime, prototype.endTime, prototype.tutor)
+                # copied_prototype.
                 create_avail(copied_prototype, user)
             prototype.startTime += timedelta(days=1)
             prototype.endTime += timedelta(days=1)
