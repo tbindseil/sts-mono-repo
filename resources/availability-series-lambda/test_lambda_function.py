@@ -114,6 +114,8 @@ class TestLambdaFunction(unittest.TestCase):
         expected_weekly_pattern = [True, False, True, False, True, False, True]
         num_weeks = 2
         expected_subjects = 'subjects'
+        # the date aspect of this is irrelevant
+        # the time is extracted, and the avails are made starting on the nearest sunday (could be today I guess..)
         expected_start = datetime(year=2023, month=1, day=15, hour=13)
         expected_end = datetime(year=2023, month=1, day=15, hour=14)
 
@@ -122,6 +124,7 @@ class TestLambdaFunction(unittest.TestCase):
 
         availability_series_request = AvailabiltySeriesRequest(expected_weekly_pattern[0], expected_weekly_pattern[1], expected_weekly_pattern[2], expected_weekly_pattern[3], expected_weekly_pattern[4], expected_weekly_pattern[5], expected_weekly_pattern[6], num_weeks, expected_subjects, expected_start, expected_end)
         output = lambda_function.post_handler(availability_series_request, self.session, self.get_claims)
+        self.session.commit()
 
         availability_query = self.session.query(Availability)
 
@@ -137,7 +140,6 @@ class TestLambdaFunction(unittest.TestCase):
 
         # need to be on ... certain days ...
         moving_date = datetime.combine(datetime.today().date(), expected_start.time())
-        # moving_date = expected_start
         while moving_date.isoweekday() != 7:
             moving_date += timedelta(days=1)
 
@@ -153,7 +155,33 @@ class TestLambdaFunction(unittest.TestCase):
                 moving_date += timedelta(days=1)
 
     def test_post_does_not_create_any_avails_when_even_one_would_overlap_with_existing_avail(self):
-        print("TODO")
+        upcoming_sunday = datetime.today()
+        while upcoming_sunday.isoweekday() != 7:
+            upcoming_sunday += timedelta(days=1)
+
+        existing_start_time = datetime.combine(upcoming_sunday.date(), time(13, 0))
+        existing_end_time = datetime.combine(upcoming_sunday.date(), time(14, 0))
+
+        existing_availability = Availability("subjects", existing_start_time, existing_end_time, self.cognito_id)
+        user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
+        user.availabilities.append(existing_availability)
+        self.session.add(user)
+        self.session.commit()
+
+        expected_weekly_pattern = [True, False, True, False, True, False, True]
+        num_weeks = 2
+        expected_subjects = 'subjects'
+        expected_start = datetime(year=2023, month=1, day=15, hour=13)
+        expected_end = datetime(year=2023, month=1, day=15, hour=14)
+
+        num_initial_availabilities = self.session.query(Availability).count()
+        self.assertEqual(num_initial_availabilities, 1)
+
+        availability_series_request = AvailabiltySeriesRequest(expected_weekly_pattern[0], expected_weekly_pattern[1], expected_weekly_pattern[2], expected_weekly_pattern[3], expected_weekly_pattern[4], expected_weekly_pattern[5], expected_weekly_pattern[6], num_weeks, expected_subjects, expected_start, expected_end)
+
+        with self.assertRaises(Exception) as e:
+            output = lambda_function.post_handler(availability_series_request, self.session, self.get_claims)
+        self.assertEqual(str(e.exception), 'Posted availability overlaps with existing availability')
 
     def test_post_output_translator(self):
         raw_output = 199, "not_raw_output"
