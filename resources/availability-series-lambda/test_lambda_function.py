@@ -190,7 +190,9 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertEqual("success", actual_response)
 
     def test_delete_input_translator(self):
-        print("TODO")
+        event = {'path': "url/id/for/avail/series/to/delete/is/1"}
+        input = lambda_function.delete_input_translator(event, "context")
+        self.assertEqual(input, '1')
 
     def test_delete_is_passthrough(self):
         print("TODO")
