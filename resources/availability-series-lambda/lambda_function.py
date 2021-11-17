@@ -68,10 +68,7 @@ def post_handler(input, session, get_claims):
 
     series = AvailabilitySeries(cognito_id)
 
-    print("num_weeks is:")
-    print(availability_series_request.num_weeks)
-
-    for i in range(0, availability_series_request.num_weeks):
+    for i in range(0, int(availability_series_request.num_weeks)):
         for key, value in availability_series_request.weekday_dict.items():
             if value:
                 # need to deep copy before saving

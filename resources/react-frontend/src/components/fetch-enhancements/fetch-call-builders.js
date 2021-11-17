@@ -46,7 +46,7 @@ export const apiFactory = {
                     error => props.errorHandler(error)
                 )
                 .catch(error => props.catchHandler(error))
-                .finally(() => props.finallyHandler());
+                .finally(() => props.finallyHandler ? props.finallyHandler() : () => {});
         };
 
         return fetchCall;
@@ -230,7 +230,7 @@ export const apiFactory = {
             friday: props.friday,
             saturday: props.saturday,
             numWeeks: props.numWeeks,
-            subjects: props.subjects,
+            subjects: props.subjects.map(subject => subject.name).join(','),
             startTime: availStart,
             endTime: availEnd,
         };

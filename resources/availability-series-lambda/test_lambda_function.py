@@ -111,7 +111,7 @@ class TestLambdaFunction(unittest.TestCase):
 
     def test_post_creates_series(self):
         expected_weekly_pattern = [True, False, True, False, True, False, True]
-        num_weeks = 2
+        num_weeks = '2'
         expected_subjects = 'subjects'
         expected_start = datetime(year=2023, month=1, day=15, hour=13)
         expected_end = datetime(year=2023, month=1, day=15, hour=14)
@@ -129,7 +129,7 @@ class TestLambdaFunction(unittest.TestCase):
 
     def test_post_creates_avails(self):
         expected_weekly_pattern = [True, False, True, False, True, False, True]
-        num_weeks = 2
+        num_weeks = '2'
         expected_subjects = 'subjects'
         # the date aspect of this is irrelevant
         # the time is extracted, and the avails are made starting on the nearest sunday (could be today I guess..)
@@ -160,7 +160,7 @@ class TestLambdaFunction(unittest.TestCase):
         while moving_date.isoweekday() != 7:
             moving_date += timedelta(days=1)
 
-        for i in range(num_weeks):
+        for i in range(int(num_weeks)):
             for expected in expected_weekly_pattern:
                 if expected:
                     moving_date_date = moving_date.date()
@@ -186,7 +186,7 @@ class TestLambdaFunction(unittest.TestCase):
         self.session.commit()
 
         expected_weekly_pattern = [True, False, True, False, True, False, True]
-        num_weeks = 2
+        num_weeks = '2'
         expected_subjects = 'subjects'
         expected_start = datetime(year=2023, month=1, day=15, hour=13)
         expected_end = datetime(year=2023, month=1, day=15, hour=14)
