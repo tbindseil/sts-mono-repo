@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from guided_lambda_handler.guided_lambda_handler import GLH, invalid_http_method_factory, success_response_output, InputException
 from models.user import User
 from models.availability import Availability
+from models.availability_series import AvailabilitySeries
 
 
 class AvailabiltySeriesRequest():
@@ -39,13 +40,14 @@ def post_input_translator(event, context):
 
     return availability_series_request
 
-def create_avail(posted_availability, tutor):
+def create_avail(posted_availability, tutor, series):
     for avail in tutor.availabilities:
         if ((avail.startTime < posted_availability.endTime and avail.startTime >= posted_availability.startTime) or
                 (avail.endTime <= posted_availability.endTime and avail.endTime > posted_availability.startTime) or
                 (avail.startTime <= posted_availability.startTime and avail.endTime >= posted_availability.endTime)):
             raise Exception('Posted availability overlaps with existing availability')
 
+    series.availabilities.append(posted_availability)
     tutor.availabilities.append(posted_availability)
 
 def post_handler(input, session, get_claims):
@@ -64,16 +66,19 @@ def post_handler(input, session, get_claims):
     prototype.startTime = datetime.combine(upcoming_sunday.date(), prototype.startTime.time())
     prototype.endTime = datetime.combine(upcoming_sunday.date(), prototype.endTime.time())
 
+    series = AvailabilitySeries(cognito_id)
+
     for i in range(0, availability_series_request.num_weeks):
         for key, value in availability_series_request.weekday_dict.items():
             if value:
                 # need to deep copy before saving
                 copied_prototype = Availability(prototype.subjects, prototype.startTime, prototype.endTime, prototype.tutor)
                 # copied_prototype.
-                create_avail(copied_prototype, user)
+                create_avail(copied_prototype, user, series)
             prototype.startTime += timedelta(days=1)
             prototype.endTime += timedelta(days=1)
 
+    user.availability_series.append(series)
     session.add(user)
 
     return 'success'
@@ -90,7 +95,7 @@ def delete_handler(input, session, delete_claims):
 
     # TODO make sure only tutor can delete series
 
-    series = session.query(AvailabilitySession).filter(AvailabilitySession.id==availability_series_id_to_delete).one()
+    series = session.query(AvailabilitySeries).filter(AvailabilitySeries.id==availability_series_id_to_delete).one()
 
     for avail in series.availabilities:
         session.delete(avail)

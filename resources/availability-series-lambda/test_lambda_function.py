@@ -9,6 +9,7 @@ from sqlalchemy.orm import sessionmaker
 from models import Base
 from models.user import User
 from models.availability import Availability
+from models.availability_series import AvailabilitySeries
 
 import lambda_function
 from lambda_function import AvailabiltySeriesRequest
@@ -124,7 +125,8 @@ class TestLambdaFunction(unittest.TestCase):
         output = lambda_function.post_handler(availability_series_request, self.session, self.get_claims)
         self.session.commit()
 
-        created_series = self.session.query(AvailabilitySeries).filter(AvailabilitySeries.id==).one() # TJTAG, need to: 1) add series to user 2) create and save series in post handler 3) check that it is created somehow (check for 0 beforehand and 1 after maybe since i won't have the series id?), then move on to delete
+        user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
+        created_series = user.availability_series[0]
         self.assertEqual(len(created_series.availabilities), 8)
 
     def test_post_creates_avails(self):
@@ -211,11 +213,30 @@ class TestLambdaFunction(unittest.TestCase):
         input = lambda_function.delete_input_translator(event, "context")
         self.assertEqual(input, '1')
 
-    def test_delete_is_passthrough(self):
-        # # start = datetime(year=2023, month=1, day=15, hour=13)
-        # end = datetime(year=2023, month=1, day=15, hour=14)
-        # avail_part_of_series = Availability('subjects', start, end, self.cognito_id)
-        # avail_not_part_of_series = Availability('subjects', start, end, self.cognito_id)
+    def test_delete_deletes(self):
+        start = datetime(year=2023, month=1, day=15, hour=13)
+        end = datetime(year=2023, month=1, day=15, hour=14)
+        avail_part_of_series = Availability('subjects', start, end, self.cognito_id)
+        avail_not_part_of_series = Availability('subjects', start, end, self.cognito_id)
+
+        series = AvailabilitySeries(self.cognito_id)
+        series.availabilities.append(avail_part_of_series)
+
+        self.session.add(series)
+        self.session.add(avail_part_of_series)
+        self.session.add(avail_not_part_of_series)
+        self.session.commit()
+
+        user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
+        self.assertEqual(len(user.availabilities), 2)
+        self.assertEqual(len(user.availability_series), 1)
+
+        output = lambda_function.delete_handler(series.id, self.session, self.get_claims)
+        self.session.commit()
+
+        user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
+        self.assertEqual(len(user.availabilities), 1)
+        self.assertEqual(len(user.availability_series), 0)
 
     def test_delete_output_translator(self):
         raw_output = 199, "not_raw_output"
