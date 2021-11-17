@@ -4,7 +4,7 @@ import {makeStandardErrorHandler} from "../fetch-enhancements/error-handling";
 
 // TODO maybe import from cdk output eventually?
 const USER_LAMBDA_URL = 'https://oercmchy3l.execute-api.us-west-2.amazonaws.com/prod/';
-const AVAILABILITY_LAMBDA_URL = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
+const AVAILABILITY_LAMBDA_URL = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod/'
 const AVAILABILITY_REQUEST_URL = 'https://04c0w1j888.execute-api.us-west-2.amazonaws.com/prod/';
 const AVAILABILITY_SERIES_URL = 'https://t9u6av4bm0.execute-api.us-west-2.amazonaws.com/prod/';
 
@@ -40,7 +40,10 @@ export const apiFactory = {
                 headers: props.headers,
                 body: props.body
             })
+                .then(result => { console.log("result is:"); console.log(result); return result; })
                 .then(result => result.json())
+                // .then((result) => result.json ? result.json() : result)
+                .then(result_json => { console.log("result_json is:"); console.log(result_json); return result_json; })
                 .then(
                     result => props.successHandler(result),
                     error => props.errorHandler(error)
@@ -199,9 +202,19 @@ export const apiFactory = {
         });
     },
 
+    makeDeleteAvailability: (props) => {
+        return apiFactory.makeAuthenticatedFetchCall({
+            url: AVAILABILITY_LAMBDA_URL + props.availabilityId,
+            user: props.user,
+            method: 'DELETE',
+            errorMessagePrefix: 'Error deleting availability',
+            ...props
+        });
+    },
+
     makeGetAvailabilityStatus: (props) => {
         return apiFactory.makeAuthenticatedFetchCall({
-            url: `${AVAILABILITY_LAMBDA_URL}/status/${props.availId}`,
+            url: `${AVAILABILITY_LAMBDA_URL}status/${props.availId}`,
             user: props.user,
             method: 'GET',
             errorMessagePrefix: "Error getting availability status",

@@ -131,8 +131,6 @@ export function CreateAvailabilityScreen(props) {
             });
         };
 
-        console.log('numberOfWeeks is:');
-        console.log(numberOfWeeks);
         setLoading(true);
         if (repeating) {
             const call = apiFactory.makePostAvailabilitySeries({

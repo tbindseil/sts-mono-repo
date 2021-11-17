@@ -4,39 +4,31 @@ import {useHistory} from 'react-router-dom';
 import moment from 'moment';
 import {Checkbox} from 'semantic-ui-react';
 
+import {apiFactory} from '../fetch-enhancements/fetch-call-builders';
 import {BaseScreen} from '../base-components/BaseScreen';
 
 export function DeleteAvailabilityScreen(props) {
-    const baseUrl = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod/'
-
     const history = useHistory();
 
     const [user, setUser] = useState(undefined)
 
     const [deleteSeries, setDeleteSeries] = useState(false);
 
-    const deleteAvailability = async () => {
-        const url = baseUrl + availability.id;
-        const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
-        const response = await fetch(url, {
-            method: 'DELETE',
-            mode: 'cors',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': tokenString
-            },
-        });
-        return response;
-    }
-
     const onClickDelete = async () => {
-        await deleteAvailability();
-        history.push({
-            pathname: "/my-calendar",
-            state: {
-                selectedDate: availability.startDate
-            }
+        const successHandler = (result) => {
+            history.push({
+                pathname: "/my-calendar",
+                state: {
+                    selectedDate: availability.startDate
+                }
+            });
+        };
+        const call = apiFactory.makeDeleteAvailability({
+            availabilityId: availability.id,
+            user: user,
+            successHandler: successHandler,
         });
+        call();
     };
 
     const onCancel = () => {
