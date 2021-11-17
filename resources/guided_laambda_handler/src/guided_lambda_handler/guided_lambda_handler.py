@@ -73,6 +73,7 @@ class GLH():
             response_code, response_body = self.translate_output(raw_output)
 
             session.commit()
+        # TODO for below exceptions, the response body needs to be json.dumps(sdfsd)
         except InputException as e:
             response_code = 400
             exception_str = str(e)

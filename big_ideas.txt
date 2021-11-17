@@ -532,14 +532,7 @@ i have neglected to think of client server much until this... (does client make 
 Next time I do a model change, I need to write a script to update all packages, that was tooooo much man
 ====================================================================================================================================================================
 
-
-
-
-11/3/21
-ok, starting a new list, the above got pretty messy
-    * loading stuff
-
-    * series avail stuff - TJTAG
+    * series avail stuff - done
         * what about deleting? do they need to delete all or can they delete one and delete the whole series with it?
         * that requires a change to the model
             * could do an AvailabilitySeries
@@ -560,8 +553,16 @@ ok, starting a new list, the above got pretty messy
         * delete with option to orphan? no, too complicated
 
 
+
+
+11/3/21
+ok, starting a new list, the above got pretty messy
+    * loading stuff
+    * start of week offset for series
+    * json.dumps on errors from glh
     * how much of an avail to select stuff
     * History and validating classes
         * might be cool and involve cron jobs
     * permissions
     * create availability screen needs to start at selected time (if it makes sense)
+    * groups

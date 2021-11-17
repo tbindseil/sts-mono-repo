@@ -15,6 +15,7 @@ export function DeleteAvailabilityScreen(props) {
     const [deleteSeries, setDeleteSeries] = useState(false);
 
     const onClickDelete = async () => {
+        // TODO loading stuff ...
         const successHandler = (result) => {
             history.push({
                 pathname: "/my-calendar",
@@ -23,12 +24,22 @@ export function DeleteAvailabilityScreen(props) {
                 }
             });
         };
-        const call = apiFactory.makeDeleteAvailability({
-            availabilityId: availability.id,
-            user: user,
-            successHandler: successHandler,
-        });
-        call();
+
+        if (deleteSeries) {
+            const call = apiFactory.makeDeleteAvailabilitySeries({
+                availabilitySeriesId: availability.availabilitySeries,
+                user: user,
+                successHandler: successHandler,
+            });
+            call();
+        } else {
+            const call = apiFactory.makeDeleteAvailability({
+                availabilityId: availability.id,
+                user: user,
+                successHandler: successHandler,
+            });
+            call();
+        }
     };
 
     const onCancel = () => {

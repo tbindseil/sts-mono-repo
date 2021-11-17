@@ -40,10 +40,7 @@ export const apiFactory = {
                 headers: props.headers,
                 body: props.body
             })
-                .then(result => { console.log("result is:"); console.log(result); return result; })
                 .then(result => result.json())
-                // .then((result) => result.json ? result.json() : result)
-                .then(result_json => { console.log("result_json is:"); console.log(result_json); return result_json; })
                 .then(
                     result => props.successHandler(result),
                     error => props.errorHandler(error)
