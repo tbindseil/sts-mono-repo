@@ -35,7 +35,8 @@ export function MyCalendarScreen(props) {
                         startTime: moment.utc(avail.startTime).local().toDate(),
                         subjects: avail.subjects,
                         tutor: avail.tutor,
-                        id: id
+                        id: id,
+                        availabilitySeries: avail.availabilitySeries
                     });
                 }
                 setAvailabilities(availabilitiesWithDates);

@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 
 import {useHistory} from 'react-router-dom';
 import moment from 'moment';
+import {Checkbox} from 'semantic-ui-react';
 
 import {BaseScreen} from '../base-components/BaseScreen';
 
@@ -12,8 +13,9 @@ export function DeleteAvailabilityScreen(props) {
 
     const [user, setUser] = useState(undefined)
 
-    const deleteAvailability = async () => {
+    const [deleteSeries, setDeleteSeries] = useState(false);
 
+    const deleteAvailability = async () => {
         const url = baseUrl + availability.id;
         const tokenString = 'Bearer ' + user.signInUserSession.idToken.jwtToken;
         const response = await fetch(url, {
@@ -89,6 +91,15 @@ export function DeleteAvailabilityScreen(props) {
                         </button>
                     </td>
                 </tr>
+                {
+                    availability.availabilitySeries ?
+                        <tr>
+                            <Checkbox style={{'marginRight': '0px'}} label={"Delete series?"} onChange={() => setDeleteSeries(!deleteSeries)}/>
+                        </tr>
+                    :
+                        <>
+                        </>
+                }
             </table>
 
         </BaseScreen>

@@ -245,4 +245,12 @@ export const apiFactory = {
         });
     },
 
+    makeDeleteAvailabilitySeries: (props) => {
+        return apiFactory.makeBasicFetchCall({
+            url: AVAILABILITY_SERIES_URL + props.availabilitySeriesId,
+            method: 'DELETE',
+            errorMessagePrefix: 'Error deleting availability series',
+            ...props
+        });
+    },
 };

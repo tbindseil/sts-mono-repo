@@ -9,6 +9,7 @@ from guided_lambda_handler.translators import json_to_model
 from models.user import User
 from models.availability import Availability
 from models.availability_request import AvailabilityRequest
+from models.availability_series import AvailabilitySeries
 
 
 def get_input_translator(event, context):
@@ -61,6 +62,7 @@ def get_output_translator(raw_output):
             'startTime': avail.startTime.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
             'endTime': avail.endTime.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
             'tutor': avail.tutor,
+            'availabilitySeries': avail.availabilitySeries
         }
 
     return 200, json.dumps(response)
