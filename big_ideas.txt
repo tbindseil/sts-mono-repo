@@ -565,4 +565,87 @@ ok, starting a new list, the above got pretty messy
         * might be cool and involve cron jobs
     * permissions
     * create availability screen needs to start at selected time (if it makes sense)
-    * groups
+
+    * groups - TJTAG
+        * the purpose of groups is to allow schools/districts/any organization to utilize the capabilities of this site while limiting exposure to the others that are on the site
+        * groups need to be recursive, specifically a group can contain other groups and/or (need to decide which..) individuals
+            * and/or discussion:
+                * what would it look like to have an individual in a group with subgroups?
+                * maybe group structure is:
+                                           Generic School
+                                           |-> Math -> algebra -> {personA, personB}
+                                           |       |-> geometry -> {personB, personC}
+                                           |-> Art  -> painting -> {personD}
+                                           |       |-> photography -> {personE}
+                    * Is the above equivalent to the following?:
+                                           Generic School
+                                           |-> Math -> algebra -> {personA}
+                                           |       |-> geometry -> {personC}
+                                           |       |-> {personB}
+                                           |-> Art  -> painting -> {personD}
+                                           |       |-> photography -> {personE}
+                    * (I think only personB matters here)
+                    * from the perspective of a tutor:
+                        * In either scenario I can currently only tutor for algebra and geometry
+                        * in the second scenario, I will automatically be added to all groups made under the Math group
+                        * in the first scenario, I will not automatically be added to all groups made under the Math group
+                        * (both of the above 2, groups under groups are also considered)
+                        * (in all of these bullets, if a student searches for tutors in a group, then a tutor will show up iff the tutor is in that group or any group in the children(all the way down) or parents(all the way up).... uh oh!
+                            * maybe this means that users can only search for tutors in leaf groups?
+                                * the con to this is that it is restricted.  If a particular district wanted looser control, they couldn't simply have a pool of affiliated tutors that students can search through
+                            * ok, so maybe individuals can only be in leaf groups
+                                * how can they be added to the whole school/subject/grade level/etc?
+                                    * add them to that group and have it dfs to leaf groups and add individual to all leaf groups
+
+                * ok, this is whacky, what do i want out of search filtration based on group membership?
+                    * as a student, i want to be able to find tutors
+                    * as a tutor, i want students to be able to find my availabilities
+                    * as a tutot, i want to make myself available for only what I am capable of tutoring
+
+                * i am realizing this is incredibly flexible and might be too flexible
+
+                * i could do it such that groups can contain individuals xor groups. then, if a group wants both, it just can create a <group name>Overacrching group
+                    * following the above example:
+                                           Generic School
+                                           |-> Math -> algebra -> {personA}
+                                           |       |-> geometry -> {personC}
+                                           |       |-> MathOverarching -> {personB}
+                                           |-> Art  -> painting -> {personD}
+                                           |       |-> photography -> {personE}
+
+        * ^ definitely want a tool to print group structures
+        * another question is do students need to be in groups? and do we need to have two lists, one for students and one for tutors?
+            * could be solved by making tutors have the ability to control their visibility
+        * are availabilities associated with a group - o shit!
+        * groups need to have an owner, owner must approve requests to join or create subgroups
+            * this implies requests for group membership
+        * parent/child pointers?
+        * this is really going to necessitate some form of permissions control
+        * this might usurp the need for subjects, and those are way incomplete anyway
+
+
+        * working def of a group:
+
+
+            Group:
+                id: int
+                name: string
+                groupOwner: fk to user.cognitoId
+                parent: fk to group.id
+                children: relationship to Group (one [group] to many [groups]?)
+                individuals: relationship to User (many [users] to many [groups])
+                availabilities: relationship to Availability (one [group] to many [availabilities])
+
+
+            changes to Availability:
+                add column for group.id (all groups stem from origin group, if no group id provided, point to origin group)
+
+
+            changes to User: # this part gets a little fucked up because idk how to have different group relationships
+                ownedGroups: relationship to groups (one [user] to many [groups])
+                groupsIn: relationship to groups (one [user] to many [groups])
+
+
+
+
+
