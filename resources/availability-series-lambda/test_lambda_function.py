@@ -63,8 +63,7 @@ class TestLambdaFunction(unittest.TestCase):
 
     def test_post_input_translator_throws_when_start_or_end_time_not_dates(self):
         expected_availability_series_request = AvailabiltySeriesRequest(True, False, True, False, True, False, True, 2, 'subjects', 'expected_start', 'expected_end')
-        event = {"body": {
-            "postAvailabilitySeriesInput": json.dumps({
+        event = {"body": json.dumps({
                 'sunday': expected_availability_series_request.weekday_dict['0'],
                 'monday': expected_availability_series_request.weekday_dict['1'],
                 'tuesday': expected_availability_series_request.weekday_dict['2'],
@@ -77,7 +76,7 @@ class TestLambdaFunction(unittest.TestCase):
                 'startTime': expected_availability_series_request.start_time,
                 'endTime': expected_availability_series_request.end_time
             })
-        }}
+        }
 
         with self.assertRaises(InputException) as e:
             input = lambda_function.post_input_translator(event, "context")
@@ -95,8 +94,7 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertEqual(str(e.exception), 'startTime must be before endTime')
 
     def create_post_input_event(self, availability_series_request):
-        return {"body": {
-            "postAvailabilitySeriesInput": json.dumps({
+        return {"body": json.dumps({
                 'sunday': availability_series_request.weekday_dict['0'],
                 'monday': availability_series_request.weekday_dict['1'],
                 'tuesday': availability_series_request.weekday_dict['2'],
@@ -109,7 +107,7 @@ class TestLambdaFunction(unittest.TestCase):
                 'startTime': availability_series_request.start_time.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
                 'endTime': availability_series_request.end_time.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
             })
-        }}
+        }
 
     def test_post_creates_series(self):
         expected_weekly_pattern = [True, False, True, False, True, False, True]

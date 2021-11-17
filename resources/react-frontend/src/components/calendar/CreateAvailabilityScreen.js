@@ -9,6 +9,7 @@ import {Checkbox, Dropdown} from 'semantic-ui-react';
 import subjects from '../../configs/subjects';
 
 import {CreateAvailabilityDaySelector} from './CreateAvailabilityDaySelector';
+import {DaysOfTheWeek} from './DaysOfTheWeek';
 import {LoadingFormButton} from '../forms/FormButton';
 import {apiFactory} from '../fetch-enhancements/fetch-call-builders';
 import {BaseScreen} from '../base-components/BaseScreen';
@@ -115,7 +116,6 @@ export function CreateAvailabilityScreen(props) {
     // first, create avail to post
     // then, make post call
     const onFinish = async () => {
-        // TODO handle repeating?
         if (selectedSubjects.length === 0) {
             ErrorRegistry.getInstance().setFailed(true);
             ErrorRegistry.getInstance().setErrorMessage('Must select at least one subject');
@@ -131,18 +131,39 @@ export function CreateAvailabilityScreen(props) {
             });
         };
 
+        console.log('numberOfWeeks is:');
+        console.log(numberOfWeeks);
         setLoading(true);
-
-        const call = apiFactory.makePostAvailability({
-            day: day,
-            startTime: startTime,
-            endTime: endTime,
-            selectedSubjects: selectedSubjects,
-            user: user,
-            successHandler: successHandler,
-            finallyHandler: () => { setLoading(false) }
-        });
-        call();
+        if (repeating) {
+            const call = apiFactory.makePostAvailabilitySeries({
+                sunday: selectedDays.has(DaysOfTheWeek[0].long),
+                monday: selectedDays.has(DaysOfTheWeek[1].long),
+                tuesday: selectedDays.has(DaysOfTheWeek[2].long),
+                wednesday: selectedDays.has(DaysOfTheWeek[3].long),
+                thursday: selectedDays.has(DaysOfTheWeek[4].long),
+                friday: selectedDays.has(DaysOfTheWeek[5].long),
+                saturday: selectedDays.has(DaysOfTheWeek[6].long),
+                numWeeks: numberOfWeeks,
+                subjects: selectedSubjects,
+                startTime: startTime,
+                endTime: endTime,
+                user: user,
+                successHandler: successHandler,
+                finallyHandler: () => { setLoading(false) }
+            });
+            call();
+        } else {
+            const call = apiFactory.makePostAvailability({
+                day: day,
+                startTime: startTime,
+                endTime: endTime,
+                selectedSubjects: selectedSubjects,
+                user: user,
+                successHandler: successHandler,
+                finallyHandler: () => { setLoading(false) }
+            });
+            call();
+        }
     };
 
     const onCancel = () => {

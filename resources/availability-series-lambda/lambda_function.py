@@ -27,7 +27,7 @@ class AvailabiltySeriesRequest():
 
 # could cast start/endTime to time from datetime to make it explicit that i am only concerned with time...
 def post_input_translator(event, context):
-    qsp_map = jsondatetime.loads(event['body']['postAvailabilitySeriesInput'])
+    qsp_map = jsondatetime.loads(event['body'])
 
     if (not isinstance(qsp_map['startTime'], datetime)
             or not isinstance(qsp_map['endTime'], datetime)):
@@ -67,6 +67,9 @@ def post_handler(input, session, get_claims):
     prototype.endTime = datetime.combine(upcoming_sunday.date(), prototype.endTime.time())
 
     series = AvailabilitySeries(cognito_id)
+
+    print("num_weeks is:")
+    print(availability_series_request.num_weeks)
 
     for i in range(0, availability_series_request.num_weeks):
         for key, value in availability_series_request.weekday_dict.items():

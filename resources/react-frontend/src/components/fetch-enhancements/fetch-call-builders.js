@@ -6,6 +6,7 @@ import {makeStandardErrorHandler} from "../fetch-enhancements/error-handling";
 const USER_LAMBDA_URL = 'https://oercmchy3l.execute-api.us-west-2.amazonaws.com/prod/';
 const AVAILABILITY_LAMBDA_URL = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod'
 const AVAILABILITY_REQUEST_URL = 'https://04c0w1j888.execute-api.us-west-2.amazonaws.com/prod/';
+const AVAILABILITY_SERIES_URL = 'https://t9u6av4bm0.execute-api.us-west-2.amazonaws.com/prod/';
 
 
 export const apiFactory = {
@@ -18,7 +19,7 @@ export const apiFactory = {
         apiFactory.setErrorMessage = newSetErrorMessage;
     },
 
-    makeBasicFetchCall:  (props) => {
+    makeBasicFetchCall: (props) => {
         // default error handling
         if (!props.errorHandler) {
             props.errorHandler = makeStandardErrorHandler(apiFactory.setFailed, apiFactory.setErrorMessage, props.errorMessagePrefix);
@@ -44,13 +45,14 @@ export const apiFactory = {
                     result => props.successHandler(result),
                     error => props.errorHandler(error)
                 )
-                .catch(error => props.catchHandler(error));
+                .catch(error => props.catchHandler(error))
+                .finally(() => props.finallyHandler());
         };
 
         return fetchCall;
     },
 
-    makeAuthenticatedFetchCall:  (props) => {
+    makeAuthenticatedFetchCall: (props) => {
         const tokenString = 'Bearer ' + props.user.signInUserSession.idToken.jwtToken;
         props.headers ?
             props.headers['Authorization'] = tokenString
@@ -94,7 +96,7 @@ export const apiFactory = {
     },
 
     // TODO so far I haven't ensured I can send error message or failed either
-    makeGetUser:  (props) => {
+    makeGetUser: (props) => {
         return apiFactory.makeBasicFetchCall({
             url: USER_LAMBDA_URL + props.username,
             method: 'GET',
@@ -103,7 +105,7 @@ export const apiFactory = {
         });
     },
 
-    makePutUser:  (props) => {
+    makePutUser: (props) => {
         return apiFactory.makeAuthenticatedFetchCall({
             url: USER_LAMBDA_URL + props.user.username,
             method: 'PUT',
@@ -112,7 +114,7 @@ export const apiFactory = {
         });
     },
 
-    makePostUser:  (props) => {
+    makePostUser: (props) => {
         return apiFactory.makeBasicFetchCall({
             url: USER_LAMBDA_URL,
             method: 'POST',
@@ -121,7 +123,7 @@ export const apiFactory = {
         });
     },
 
-    makeDeleteUser:  (props) => {
+    makeDeleteUser: (props) => {
         return apiFactory.makeBasicFetchCall({ // TODO this needs to be authenticated
             url: USER_LAMBDA_URL + props.user.username,
             method: 'DELETE',
@@ -130,7 +132,7 @@ export const apiFactory = {
         });
     },
 
-    makeGetAvailabilityRequests:  (props) => {
+    makeGetAvailabilityRequests: (props) => {
         const url = new URL(AVAILABILITY_REQUEST_URL);
         const getAvailRequestsReceivedInput = {
             forUser: props.forUser,
@@ -148,7 +150,7 @@ export const apiFactory = {
         });
     },
 
-    makePostAvailability:  (props) => {
+    makePostAvailability: (props) => {
         const availStart = moment(props.day).set('hour', props.startTime.hours()).set('minute', props.startTime.minutes()).toDate();
         const availEndMoment = moment(props.day).set('hour', props.endTime.hours()).set('minute', props.endTime.minutes());
 
@@ -159,7 +161,7 @@ export const apiFactory = {
 
         const availEnd = availEndMoment.toDate();
 
-        const availability = { // Continue here, why am i getting failures herer?
+        const availability = {
             subjects: props.selectedSubjects.map(subject => subject.name).join(','),
             startTime: availStart,
             endTime: availEnd,
@@ -175,7 +177,7 @@ export const apiFactory = {
         });
     },
 
-    makeGetAvailabilities:  (props) => {
+    makeGetAvailabilities: (props) => {
         const url = new URL(AVAILABILITY_LAMBDA_URL);
 
         const requestStartTime = moment(props.startTime).toDate();
@@ -197,12 +199,48 @@ export const apiFactory = {
         });
     },
 
-    makeGetAvailabilityStatus:  (props) => {
+    makeGetAvailabilityStatus: (props) => {
         return apiFactory.makeAuthenticatedFetchCall({
             url: `${AVAILABILITY_LAMBDA_URL}/status/${props.availId}`,
             user: props.user,
             method: 'GET',
             errorMessagePrefix: "Error getting availability status",
+            ...props
+        });
+    },
+
+    makePostAvailabilitySeries: (props) => {
+        const timeElapsed = Date.now();
+        const today = new Date(timeElapsed);
+        const availStart = moment(today).set('hour', props.startTime.hours()).set('minute', props.startTime.minutes()).toDate();
+        const availEndMoment = moment(today).set('hour', props.endTime.hours()).set('minute', props.endTime.minutes());
+
+        // gotta deal with 12AM...
+        if (props.endTime.hours() === 0 && props.endTime.minutes() === 0) {
+            availEndMoment.add('day', 1);
+        }
+
+        const availEnd = availEndMoment.toDate();
+        const availabilitySeriesRequest = {
+            sunday: props.sunday,
+            monday: props.monday,
+            tuesday: props.tuesday,
+            wednesday: props.wednesday,
+            thursday: props.thursday,
+            friday: props.friday,
+            saturday: props.saturday,
+            numWeeks: props.numWeeks,
+            subjects: props.subjects,
+            startTime: availStart,
+            endTime: availEnd,
+        };
+
+        return apiFactory.makeAuthenticatedFetchCall({
+            url: `${AVAILABILITY_SERIES_URL}/`,
+            user: props.user,
+            method: 'POST',
+            body: JSON.stringify(availabilitySeriesRequest),
+            errorMessagePrefix: "Error getting availability series",
             ...props
         });
     },

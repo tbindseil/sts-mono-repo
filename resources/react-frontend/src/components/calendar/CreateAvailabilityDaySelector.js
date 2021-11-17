@@ -1,6 +1,8 @@
 import React from 'react';
 import moment from 'moment';
 
+import {DaysOfTheWeek} from './DaysOfTheWeek';
+
 export function CreateAvailabilityDaySelector(props) {
     if (props.repeating) {
         return (
@@ -53,45 +55,9 @@ function RepeatingDaySelector(props) {
             newSet.add(selectedDay);
             props.setSelectedDays(newSet);
         }
-    }
+    };
 
-    const DaysOfTheWeek = [
-        {
-            short: 'S',
-            long: 'Sunday',
-            onClick: () => updateSelectedDays('Sunday')
-        },
-        {
-            short: 'M',
-            long: 'Monday',
-            onClick: () => updateSelectedDays('Monday')
-        },
-        {
-            short: 'T',
-            long: 'Tuesday',
-            onClick: () => updateSelectedDays('Tuesday')
-        },
-        {
-            short: 'W',
-            long: 'Wednesday',
-            onClick: () => updateSelectedDays('Wednesday')
-        },
-        {
-            short: 'T',
-            long: 'Thursday',
-            onClick: () => updateSelectedDays('Thursday')
-        },
-        {
-            short: 'F',
-            long: 'Friday',
-            onClick: () => updateSelectedDays('Friday')
-        },
-        {
-            short: 'S',
-            long: 'Saturday',
-            onClick: () => updateSelectedDays('Saturday')
-        },
-    ];
+    const ArmedDaysOfTheWeek = DaysOfTheWeek.map(dotw => ({ ...dotw, onClick: () => updateSelectedDays(dotw.long)}));
 
     return (
         <>
@@ -106,7 +72,7 @@ function RepeatingDaySelector(props) {
                 <table className={"RepeatingDaySelector"}>
                     <tr>
                         {
-                            DaysOfTheWeek.map(d =>
+                            ArmedDaysOfTheWeek.map(d =>
                                 <td>
                                     <button onClick={d.onClick} className={props.selectedDays.has(d.long) ? 'SelectedDayOfWeek' : 'UnselectedDayOfWeek'}>
                                         {d.short}
