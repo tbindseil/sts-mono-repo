@@ -1,5 +1,6 @@
 import json
 import datetime
+from datetime import datetime
 import dateutil.parser
 
 try:
@@ -49,8 +50,12 @@ def iteritems(source):
             iteritems(v)
         elif isinstance(v, string_types):
             try:
-                source[k] = dateutil.parser.parse(v, ignoretz=True)
+                # only acceptable format:
+                # "2021-11-17T01:00:50.205Z"
+                source[k] = datetime.strptime(v, "%Y-%m-%dT%H:%M:%S.%fZ")
             except:
                 pass
 
     return source
+
+
