@@ -30,6 +30,8 @@ class User(Base):
     bio = Column(String(511)) # TODO variable length string(s)
     admin = Column(Boolean, nullable=False, default=False)
 
+    availability_series = relationship("AvailabilitySeries", cascade"all, delete, delete-orphan")
+
     availabilities = relationship("Availability", cascade="all, delete, delete-orphan")
 
     requestsSent = relationship("AvailabilityRequest", cascade="all, delete, delete-orphan")
