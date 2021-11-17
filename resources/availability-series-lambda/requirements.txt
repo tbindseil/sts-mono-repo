@@ -7,7 +7,7 @@ chardet==4.0.0
 colorama==0.4.3
 docutils==0.15.2
 ecdsa==0.14.1
-guided-lambda-handler-tj==0.0.21
+guided-lambda-handler-tj==0.0.22
 idna==2.10
 jmespath==0.10.0
 pyasn1==0.4.8

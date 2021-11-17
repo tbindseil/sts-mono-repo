@@ -202,9 +202,9 @@ class TestLambdaFunction(unittest.TestCase):
 
     def test_post_output_translator(self):
         raw_output = 199, "not_raw_output"
-        actual_code, actual_response = lambda_function.delete_output_translator(raw_output)
+        actual_code, actual_response = lambda_function.post_output_translator(raw_output)
         self.assertEqual(200, actual_code)
-        self.assertEqual("success", actual_response)
+        self.assertEqual(json.dumps("success"), actual_response)
 
     def test_delete_input_translator(self):
         event = {'path': "url/id/for/avail/series/to/delete/is/1"}
@@ -240,7 +240,7 @@ class TestLambdaFunction(unittest.TestCase):
         raw_output = 199, "not_raw_output"
         actual_code, actual_response = lambda_function.delete_output_translator(raw_output)
         self.assertEqual(200, actual_code)
-        self.assertEqual("success", actual_response)
+        self.assertEqual(json.dumps("success"), actual_response)
 
     def tearDown(self):
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
