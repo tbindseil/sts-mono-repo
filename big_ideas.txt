@@ -624,6 +624,7 @@ ok, starting a new list, the above got pretty messy
         * this might usurp the need for subjects, and those are way incomplete anyway
 
 
+        * ok, these are basically posix groups...
         * working def of a group:
 
 
@@ -631,10 +632,11 @@ ok, starting a new list, the above got pretty messy
                 id: int
                 name: string
                 groupOwner: fk to user.cognitoId
+                groupAdmins: relationship to user.cognitoId (many [groups] to many [users]) { read this as one group can have many users and one user can have many groups }
                 parent: fk to group.id
                 children: relationship to Group (one [group] to many [groups]?)
                 individuals: relationship to User (many [users] to many [groups])
-                availabilities: relationship to Availability (one [group] to many [availabilities])
+                availabilities: relationship to Availability (many [groups] to many [availabilities])
 
 
             changes to Availability:
@@ -643,9 +645,20 @@ ok, starting a new list, the above got pretty messy
 
             changes to User: # this part gets a little fucked up because idk how to have different group relationships
                 ownedGroups: relationship to groups (one [user] to many [groups])
+                groupsAdmin: relationship to groups (many [user] to many [groups])
                 groupsIn: relationship to groups (one [user] to many [groups])
 
 
+        * ok, so for avails, can be open to all, open to some.  when some, selecting a group gives option to auto select children, recursively
 
+
+
+    # no need to track availabilities if we are already tracking users in groups
+    # an availability shows up when searching within that group
+    # a group can only be searched for by members
+    # membership is controlled by admins
+    # adminship is controlled by owner
+    # availabilities = relationship("Availability", secondary='group_availabilities_link')
+    # availabilitiesWithChildren = relationship("Availability", secondary='group_availabilities_with_children_link')
 
 
