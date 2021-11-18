@@ -1,5 +1,5 @@
 from . import Base
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, ForeignKey, String
 from sqlalchemy.orm import relationship
 
 # Availability class is used, so we must define it here or else it has to be definied by clients of the Group class,

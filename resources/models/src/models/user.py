@@ -37,6 +37,9 @@ class User(Base):
     requestsSent = relationship("AvailabilityRequest", cascade="all, delete, delete-orphan")
     # deprecateddd requestsReceived = relationship("AvailabilityRequest", cascade="all, delete, delete-orphan") # ooo this could be bad
 
+    groups = relationship("Group", secondary='group_members_link')
+    adminGroups = relationship("Group", secondary='group_admins_link')
+
     def __init__(self, parentName, parentEmail, email, cognitoId, firstName, lastName, school, grade, age, address, bio=""):
         self.parentName = parentName
         self.parentEmail = parentEmail
