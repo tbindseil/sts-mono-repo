@@ -123,13 +123,35 @@ class TestLambdaFunction(unittest.TestCase):
             self.session.commit()
         self.assertEqual(str(e.exception), 'Issue adding group to parent')
 
-    def est_post_output_translator(self):
-        expected_to_echo = 'to_echo'
-        response = {'to_echo': expected_to_echo}
-        expected_output = 200, json.dumps(response)
+    def test_post_throws_when_bad_parent_has_members(self):
+        user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
 
-        actual_output = lambda_function.post_output_translator(expected_to_echo)
-        self.assertEqual(expected_output, actual_output)
+        expectedParentGroup = 'expectedParentGroup'
+        parentGroup = Group(expectedParentGroup, self.cognito_id)
+        parentGroup.members.append(user)
+        self.session.add(parentGroup)
+        self.session.commit()
+
+        expectedGroupName = 'expectedGroupName'
+        input = expectedGroupName, parentGroup.id
+
+        with self.assertRaises(Exception) as e:
+            output = lambda_function.post_handler(input, self.session, self.get_claims)
+            self.session.commit()
+        self.assertEqual(str(e.exception), 'Parent already has members')
+
+    def test_post_output_translator(self):
+        raw_output = 199, "not_raw_output"
+        actual_code, actual_response = lambda_function.post_output_translator(raw_output)
+        self.assertEqual(200, actual_code)
+        self.assertEqual(json.dumps("success"), actual_response)
+
+
+    def test_put_output_translator(self):
+        raw_output = 199, "not_raw_output"
+        actual_code, actual_response = lambda_function.put_output_translator(raw_output)
+        self.assertEqual(200, actual_code)
+        self.assertEqual(json.dumps("success"), actual_response)
 
 
     def assertGroupEqual(self, expectedGroup, actualGroup):
@@ -147,18 +169,20 @@ class TestLambdaFunction(unittest.TestCase):
 
 
 
-# post group
-    # if no parent given, assigned to origin
+# post group - done
+    # no parent given
     # if parent has members, exception
     # group is added as child of parent
-    # name unique?
-# put member to group
-    # only admin can do that, shoot what about all this permissions hype?
-# remove member from group
-# put admin to group
-# remove admin from group
-# put child group to group
-# remove child group from group
-# switch a groups parent (?)
+    # if parent not a groupid, exception
+
+# only admin or owner can do the following, shoot what about all this permissions hype?
+# post member to group
+# delete member from group
+# move group by switching a group's parent (?) post to <api url>/groups/<group id>/<new parent id>
+
+# only owner can do the following, shoot what about all this permissions hype?
+# post admin to group
+# delete admin from group
+
 # get group
 # delete group
