@@ -24,21 +24,27 @@ def post_input_translator(event, context):
     body = json.loads(event["body"])
 
     try:
-        parentGroup = body["parentGroup"]
+        parentGroupId = body["parentGroup"]
     except KeyError:
-        parentGroup = None
+        parentGroupId = None
 
-    return body["groupName"], parentGroup
+    return body["groupName"], parentGroupId
 
 def post_handler(input, session, get_claims):
-    groupName, parentGroup = input
+    groupName, parentGroupId = input
 
     claims = get_claims()
     cognito_id = claims["cognito:username"]
 
     group = Group(groupName, cognito_id)
-    if parentGroup:
-        group.parentGroup = parentGroup
+    if parentGroupId:
+        try:
+            parentGroup = session.query(Group).filter(Group.id==parentGroupId).one()
+            parentGroup.childrenGroups.append(group)
+            session.add(parentGroup)
+            # group.parentGroup = parentGroupId
+        except:
+            raise Exception('Issue adding group to parent')
 
     session.add(group)
 

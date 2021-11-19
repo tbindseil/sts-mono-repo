@@ -103,10 +103,25 @@ class TestLambdaFunction(unittest.TestCase):
         input = expectedGroupName, parentGroup.id
 
         output = lambda_function.post_handler(input, self.session, self.get_claims)
+        self.session.commit()
 
         actualGroup = self.session.query(Group).filter(Group.name==expectedGroupName).one()
 
         self.assertGroupEqual(actualGroup, expectedGroup)
+
+    def test_post_throws_when_bad_parent_given(self):
+        expectedParentGroup = 'expectedParentGroup'
+        parentGroup = Group(expectedParentGroup, self.cognito_id)
+        self.session.add(parentGroup)
+        self.session.commit()
+
+        expectedGroupName = 'expectedGroupName'
+        input = expectedGroupName, (parentGroup.id + 42)
+
+        with self.assertRaises(Exception) as e:
+            output = lambda_function.post_handler(input, self.session, self.get_claims)
+            self.session.commit()
+        self.assertEqual(str(e.exception), 'Issue adding group to parent')
 
     def est_post_output_translator(self):
         expected_to_echo = 'to_echo'
