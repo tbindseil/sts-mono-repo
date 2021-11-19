@@ -3,6 +3,8 @@ from datetime import datetime
 from . import Base
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 
+# see __init__.py for explanation as to how to import models within models
+
 
 class AvailabilityRequest(Base):
     """ Availability Request Model for storing the state of a request a student makes for a tutoring session"""

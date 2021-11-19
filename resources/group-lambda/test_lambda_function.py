@@ -87,9 +87,9 @@ class TestLambdaFunction(unittest.TestCase):
 
         group = self.session.query(Group).one()
 
-        self.asserEqual(group.groupName, expectedGroupName)
-        self.asserEqual(group.groupOwner, self.cognito_id)
-        self.asserEqual(group.parentGroup, expectedParentGroup)
+        self.assertEqual(group.name, expectedGroupName)
+        self.assertEqual(group.groupOwner, self.cognito_id)
+        self.assertEqual(group.parentGroup, expectedParentGroup)
 
     def est_post_output_translator(self):
         expected_to_echo = 'to_echo'

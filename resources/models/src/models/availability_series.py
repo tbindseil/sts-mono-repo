@@ -2,6 +2,8 @@ from . import Base
 from sqlalchemy import Column, Integer, ForeignKey, String
 from sqlalchemy.orm import relationship
 
+# see __init__.py for explanation as to how to import models within models
+
 
 class AvailabilitySeries(Base):
     """Availability Series Model for connecting availabilities made as a repeating series"""

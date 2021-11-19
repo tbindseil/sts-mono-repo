@@ -4,10 +4,11 @@ from . import Base
 from sqlalchemy import Column, DateTime, Boolean, Integer, String
 from sqlalchemy.orm import relationship
 
-# Availability class is used, so we must define it here or else it has to be definied by clients of the User class,
-# and they don't necessarily know that they need to do this
+# see __init__.py for explanation as to how to import models within models
 from .availability import Availability
 from .group import Group
+from .group_members_link import GroupMembersLink
+from .group_admins_link import GroupAdminsLink
 
 
 class User(Base):

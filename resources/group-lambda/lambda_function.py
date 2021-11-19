@@ -1,6 +1,7 @@
 import json
 
 from guided_lambda_handler.guided_lambda_handler import GLH, invalid_http_method_factory
+from models.user import User
 from models.group import Group
 
 

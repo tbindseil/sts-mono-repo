@@ -4,8 +4,7 @@ from . import Base
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-# AvailabilityRequest class is used, so we must define it here or else it has to be definied by clients of the used class,
-# and they don't necessarily know that they need to do this
+# see __init__.py for explanation as to how to import models within models
 from .availability_request import AvailabilityRequest
 from .availability_series import AvailabilitySeries
 
