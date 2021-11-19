@@ -79,17 +79,34 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertEqual((expectedGroupName, None), actual_input)
 
     def test_post_no_parent_given(self):
-        expectedParentGroup = 'expectedParentGroup'
+        expectedParentGroup = None
         expectedGroupName = 'expectedGroupName'
+        expectedGroup = Group(expectedGroupName, self.cognito_id)
         input = expectedGroupName, expectedParentGroup
 
         output = lambda_function.post_handler(input, self.session, self.get_claims)
+        self.session.commit()
 
-        group = self.session.query(Group).one()
+        actualGroup = self.session.query(Group).one()
 
-        self.assertEqual(group.name, expectedGroupName)
-        self.assertEqual(group.groupOwner, self.cognito_id)
-        self.assertEqual(group.parentGroup, expectedParentGroup)
+        self.assertGroupEqual(actualGroup, expectedGroup)
+
+    def test_post_parent_given(self):
+        expectedParentGroup = 'expectedParentGroup'
+        parentGroup = Group(expectedParentGroup, self.cognito_id)
+        self.session.add(parentGroup)
+        self.session.commit()
+
+        expectedGroupName = 'expectedGroupName'
+        expectedGroup = Group(expectedGroupName, self.cognito_id)
+        expectedGroup.parentGroup = parentGroup.id
+        input = expectedGroupName, parentGroup.id
+
+        output = lambda_function.post_handler(input, self.session, self.get_claims)
+
+        actualGroup = self.session.query(Group).filter(Group.name==expectedGroupName).one()
+
+        self.assertGroupEqual(actualGroup, expectedGroup)
 
     def est_post_output_translator(self):
         expected_to_echo = 'to_echo'
@@ -100,9 +117,15 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertEqual(expected_output, actual_output)
 
 
+    def assertGroupEqual(self, expectedGroup, actualGroup):
+        self.assertEqual(expectedGroup.name, actualGroup.name)
+        self.assertEqual(expectedGroup.groupOwner, actualGroup.groupOwner)
+        self.assertEqual(expectedGroup.parentGroup, actualGroup.parentGroup)
+
     def tearDown(self):
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
         self.session.delete(user)
+        self.session.query(Group).delete()
         self.session.commit()
 
 
