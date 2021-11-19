@@ -4,8 +4,8 @@ from sqlalchemy.orm import relationship
 
 # Availability class is used, so we must define it here or else it has to be definied by clients of the Group class,
 # and they don't necessarily know that they need to do this
-from .user import User
-from .availability import Availability
+# from .user import User
+# from .availability import Availability
 
 
 class Group(Base):
