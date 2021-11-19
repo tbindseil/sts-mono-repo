@@ -7,6 +7,7 @@ from sqlalchemy.orm import sessionmaker
 
 from models import Base
 from models.user import User
+from models.group import Group
 
 import lambda_function
 
@@ -59,6 +60,43 @@ class TestLambdaFunction(unittest.TestCase):
         expected_output = 200, json.dumps(response)
 
         actual_output = lambda_function.get_output_translator(expected_to_echo)
+        self.assertEqual(expected_output, actual_output)
+
+
+    def test_post_input_translator(self):
+        expectedParentGroup = 'expectedParentGroup'
+        expectedGroupName = 'expectedGroupName'
+        event = {'body': json.dumps({'groupName': expectedGroupName, 'parentGroup': expectedParentGroup}) }
+
+        actual_input = lambda_function.post_input_translator(event, "context")
+        self.assertEqual((expectedGroupName, expectedParentGroup), actual_input)
+
+    def test_post_input_translator_no_parent_group(self):
+        expectedGroupName = 'expectedGroupName'
+        event = {'body': json.dumps({'groupName': expectedGroupName}) }
+
+        actual_input = lambda_function.post_input_translator(event, "context")
+        self.assertEqual((expectedGroupName, None), actual_input)
+
+    def test_post_no_parent_given(self):
+        expectedParentGroup = 'expectedParentGroup'
+        expectedGroupName = 'expectedGroupName'
+        input = expectedGroupName, expectedParentGroup
+
+        output = lambda_function.post_handler(input, self.session, self.get_claims)
+
+        group = self.session.query(Group).one()
+
+        self.asserEqual(group.groupName, expectedGroupName)
+        self.asserEqual(group.groupOwner, self.cognito_id)
+        self.asserEqual(group.parentGroup, expectedParentGroup)
+
+    def est_post_output_translator(self):
+        expected_to_echo = 'to_echo'
+        response = {'to_echo': expected_to_echo}
+        expected_output = 200, json.dumps(response)
+
+        actual_output = lambda_function.post_output_translator(expected_to_echo)
         self.assertEqual(expected_output, actual_output)
 
 

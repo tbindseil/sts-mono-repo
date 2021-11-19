@@ -662,3 +662,5 @@ ok, starting a new list, the above got pretty messy
     # availabilitiesWithChildren = relationship("Availability", secondary='group_availabilities_with_children_link')
 
 
+
+sudo certbot renew

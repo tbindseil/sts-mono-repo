@@ -6,11 +6,9 @@ from guided_lambda_handler.guided_lambda_handler import GLH, invalid_http_method
 def get_input_translator(event, context):
     return event['queryStringParameters']['echoInput']
 
-
 def get_handler(input, session, get_claims):
     to_echo = input
     return to_echo
-
 
 def get_output_translator(raw_output):
     to_echo = raw_output
