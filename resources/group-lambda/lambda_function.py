@@ -84,19 +84,19 @@ def put_parent_handler(input, session, get_claims):
     claimed_user = session.query(User).filter(User.cognitoId==cognito_id).one()
 
     try:
-        parent_group = session.query(Group).filter(Group.id==new_parent_id).one()
+        new_parent_group = session.query(Group).filter(Group.id==new_parent_id).one()
     except:
         raise Exception('Issue adding group to parent')
 
-    if len(parent_group.members) > 0:
+    if len(new_parent_group.members) > 0:
         raise Exception('Parent already has members')
 
-    old_parent_group.childrenGroups.remove(group)
-    session.add(old_parent_group)
-    parent_group.childrenGroups.append(group)
-    session.add(parent_group)
+    check_admin(new_parent_group.groupOwner, new_parent_group.admins, claimed_user)
 
-    check_admin(group.groupOwner, group.admins, claimed_user)
+    new_parent_group.childrenGroups.append(group)
+    session.add(group)
+    session.add(new_parent_group)
+    session.add(old_parent_group)
 
     return 'success'
 
@@ -183,7 +183,7 @@ def delete_handler(input, session, get_claims):
 
 
 def check_admin(group_owner, group_admins, claimed_user):
-    if group_owner != claimed_user.cognito_id and claimed_user in group_admins:
+    if group_owner != claimed_user.cognitoId and claimed_user not in group_admins:
         raise AuthException('can only perform this action if you are group owner or admin')
 
 def check_owner(group_owner, cognito_id):

@@ -57,6 +57,9 @@ class TestLambdaFunction(unittest.TestCase):
         claims = {"cognito:username": self.cognito_id}
         self.get_claims = MagicMock()
         self.get_claims.return_value = claims
+        another_claims = {"cognito:username": self.another_cognito_id}
+        self.another_get_claims = MagicMock()
+        self.another_get_claims.return_value = another_claims
 
 
     def test_group_input_translator(self):
@@ -207,7 +210,7 @@ class TestLambdaFunction(unittest.TestCase):
 
         with self.assertRaises(Exception) as e:
             output = lambda_function.post_handler(input, self.session, self.get_claims)
-            self.session.commit()
+        self.session.commit()
         self.assertEqual(str(e.exception), 'Issue adding group to parent')
 
     def test_post_throws_when_bad_parent_has_members(self):
@@ -224,8 +227,101 @@ class TestLambdaFunction(unittest.TestCase):
 
         with self.assertRaises(Exception) as e:
             output = lambda_function.post_handler(input, self.session, self.get_claims)
-            self.session.commit()
+        self.session.commit()
         self.assertEqual(str(e.exception), 'Parent already has members')
+
+
+    def test_group_and_entity_input_translator(self):
+        event = {'path': "url/id/for/group/and/entity/is/1/and/2"}
+        input = lambda_function.group_and_entity_input_translator(event, "context")
+        self.assertEqual(input, ('1', '2'))
+
+
+    def test_put_parent_handler_switches_parents(self):
+        group = Group('gn', self.cognito_id)
+        old_parent_group = Group('old_pg', self.cognito_id)
+        new_parent_group = Group('new_pg', self.cognito_id)
+        old_parent_group.childrenGroups.append(group)
+
+        self.session.add(group)
+        self.session.add(old_parent_group)
+        self.session.add(new_parent_group)
+        self.session.commit()
+
+        self.assertEqual(group.parentGroup, old_parent_group.id)
+
+        input = str(group.id), str(new_parent_group.id)
+        output = lambda_function.put_parent_handler(input, self.session, self.get_claims)
+        self.session.commit()
+
+        self.assertEqual(group.parentGroup, new_parent_group.id)
+
+    def test_put_parent_handler_throws_when_requestor_not_parent_group_admin(self):
+        group = Group('gn', self.cognito_id)
+        old_parent_group = Group('old_pg', self.cognito_id)
+        new_parent_group = Group('new_pg_wtf', self.cognito_id)
+        old_parent_group.childrenGroups.append(group)
+
+        self.session.add(group)
+        self.session.add(old_parent_group)
+        self.session.add(new_parent_group)
+        self.session.commit()
+
+        self.assertEqual(group.parentGroup, old_parent_group.id)
+
+        # wtf?
+        # print("len(new_parent_group.members) is :")
+        # print(len(new_parent_group.members))
+        del new_parent_group.members[:]
+
+        input = str(group.id), str(new_parent_group.id)
+        with self.assertRaises(AuthException) as e:
+            output = lambda_function.put_parent_handler(input, self.session, self.another_get_claims)
+        self.session.commit()
+        self.assertEqual(str(e.exception), 'can only perform this action if you are group owner or admin')
+
+    def test_put_parent_handler_throws_when_new_group_already_has_members(self):
+        group = Group('gn', self.cognito_id)
+        old_parent_group = Group('old_pg', self.cognito_id)
+        new_parent_group = Group('new_pg', self.cognito_id)
+        old_parent_group.childrenGroups.append(group)
+
+        another_user = self.session.query(User).filter(User.cognitoId==self.another_cognito_id).one()
+        new_parent_group.members.append(another_user)
+
+        self.session.add(group)
+        self.session.add(old_parent_group)
+        self.session.add(new_parent_group)
+        self.session.commit()
+
+        self.assertEqual(group.parentGroup, old_parent_group.id)
+
+        input = str(group.id), str(new_parent_group.id)
+        with self.assertRaises(Exception) as e:
+            output = lambda_function.put_parent_handler(input, self.session, self.another_get_claims)
+        self.session.commit()
+        self.assertEqual(str(e.exception), 'Parent already has members')
+
+    def test_put_parent_handler_throws_when_invalid_new_group_id(self):
+        group = Group('gn', self.cognito_id)
+        old_parent_group = Group('old_pg', self.cognito_id)
+        old_parent_group.childrenGroups.append(group)
+
+        self.session.add(group)
+        self.session.add(old_parent_group)
+        self.session.commit()
+
+        self.assertEqual(group.parentGroup, old_parent_group.id)
+
+        input = str(group.id), '42'
+        with self.assertRaises(Exception) as e:
+            output = lambda_function.put_parent_handler(input, self.session, self.another_get_claims)
+        self.session.commit()
+        self.assertEqual(str(e.exception), 'Issue adding group to parent')
+
+
+    def test_post_member_handler(self):
+        print("todo")
 
 
     def test_delete_deletes_for_owner(self):
@@ -248,7 +344,7 @@ class TestLambdaFunction(unittest.TestCase):
 
         with self.assertRaises(AuthException) as e:
             output = lambda_function.delete_handler(initial_group.id, self.session, self.get_claims)
-            self.session.commit()
+        self.session.commit()
         self.assertEqual(str(e.exception), 'can only perform this action if you are group owner')
 
     def assertGroupEqual(self, expectedGroup, actualGroup):
@@ -265,12 +361,6 @@ class TestLambdaFunction(unittest.TestCase):
 
 
 
-# post group - done
-    # no parent given
-    # if parent has members, exception
-    # group is added as child of parent
-    # if parent not a groupid, exception
-
 # only admin or owner can do the following, shoot what about all this permissions hype?
 # post member to group - test
 # delete member from group - test
@@ -279,5 +369,3 @@ class TestLambdaFunction(unittest.TestCase):
 # only owner can do the following, shoot what about all this permissions hype?
 # post admin to group - test
 # delete admin from group - test
-
-# delete group - delete everything - test
