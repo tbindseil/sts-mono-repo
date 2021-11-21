@@ -176,13 +176,13 @@ class TestLambdaFunction(unittest.TestCase):
     # if parent not a groupid, exception
 
 # only admin or owner can do the following, shoot what about all this permissions hype?
-# post member to group
-# delete member from group
-# move group by switching a group's parent (?) post to <api url>/groups/<group id>/<new parent id>
+# post member to group - test
+# delete member from group - test
+# move group by switching a group's parent (?) post to <api url>/groups/<group id>/<new parent id> - test
 
 # only owner can do the following, shoot what about all this permissions hype?
-# post admin to group
-# delete admin from group
+# post admin to group - test
+# delete admin from group - test
 
-# get group
-# delete group
+# get group - return everything - test
+# delete group - delete everything - test

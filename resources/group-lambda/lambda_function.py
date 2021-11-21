@@ -6,19 +6,35 @@ from models.group import Group
 
 
 def get_input_translator(event, context):
-    return event['queryStringParameters']['echoInput']
+    return event['path'].split('/')[-1]
 
 def get_handler(input, session, get_claims):
-    to_echo = input
-    return to_echo
+    group_id = input
+
+    group = session.query(Group).filter(Group.id==group_id).one()
+
+    return group;
 
 def get_output_translator(raw_output):
-    to_echo = raw_output
-    availabilities = raw_output
+    group = raw_output
+    response = {
+        'id': group.id,
+        'name': group.name,
+        'parentGroup': group.parentGroup,
+        'groupOwner': group.groupOwner,
+        'admins': [],
+        'members': [],
+        'childrenGroups': []
+    }
 
-    response = {'to_echo': to_echo}
+    for admin in group.admins:
+        response['admins'].append(admin.cognitoId)
+    for member in group.members:
+        response['members'].append(member.cognitoId)
+    for child_group in group.childGroups:
+        response['childrenGroups'].append(child_group.id)
+
     return 200, json.dumps(response)
-
 
 def post_input_translator(event, context):
     body = json.loads(event["body"])
@@ -54,8 +70,35 @@ def post_handler(input, session, get_claims):
     return "success"
 
 
-def collection_input_translator(event, context):
+def group_and_entity_input_translator(event, context):
     return event['path'].split('/')[-3], event['path'].split('/')[-1]
+
+def put_parent_handler(input, session, get_claims):
+    group_id, new_parent_id = input
+
+    group = session.query(Group).filter(Group.id==group_id).one()
+    old_parent_group = session.query(Group).filter(Group.id==group.parentGroup).one()
+
+    claims = get_claims()
+    cognito_id = claims["cognito:username"]
+    claimed_user = session.query(User).filter(User.cognitoId==cognito_id).one()
+
+    try:
+        parent_group = session.query(Group).filter(Group.id==new_parent_id).one()
+    except:
+        raise Exception('Issue adding group to parent')
+
+    if len(parent_group.members) > 0:
+        raise Exception('Parent already has members')
+
+    old_parent_group.childrenGroups.remove(group)
+    session.add(old_parent_group)
+    parent_group.childrenGroups.append(group)
+    session.add(parent_group)
+
+    check_admin(group.owner, group.admins, claimed_user)
+
+    return 'success'
 
 def post_member_handler(input, session, get_claims):
     group_id, member_id = input
@@ -67,8 +110,7 @@ def post_member_handler(input, session, get_claims):
     cognito_id = claims["cognito:username"]
     claimed_user = session.query(User).filter(User.cognitoId==cognito_id).one()
 
-    if group.owner != cognito_id and claimed_user in group.admins:
-        raise AuthException('can only add member if you are group owner or admin')
+    check_admin(group.owner, group.admins, claimed_user)
 
     group.members.append(new_member)
     session.add(group)
@@ -85,8 +127,7 @@ def delete_member_handler(input, session, get_claims):
     cognito_id = claims["cognito:username"]
     claimed_user = session.query(User).filter(User.cognitoId==cognito_id).one()
 
-    if group.owner != cognito_id and claimed_user in group.admins:
-        raise AuthException('can only remove member if you are group owner or admin')
+    check_admin(group.owner, group.admins, claimed_user)
 
     group.members.remove(member_to_delete)
     session.add(group)
@@ -102,8 +143,7 @@ def post_admin_handler(input, session, get_claims):
     claims = get_claims()
     cognito_id = claims["cognito:username"]
 
-    if group.owner != cognito_id:
-        raise AuthException('can only add group admin if you are group owner')
+    check_owner(group.owner, claimed_user)
 
     group.admins.append(new_admin)
     session.add(group)
@@ -120,8 +160,7 @@ def delete_admin_handler(input, session, get_claims):
     cognito_id = claims["cognito:username"]
     claimed_user = session.query(User).filter(User.cognitoId==cognito_id).one()
 
-    if group.owner != cognito_id and claimed_user in group.admins:
-        raise AuthException('can only remove admin if you are group owner')
+    check_owner(group.owner, claimed_user)
 
     group.admins.remove(admin_to_delete)
     session.add(group)
@@ -144,6 +183,15 @@ def delete_output_translator(raw_output):
     return 200, json.dumps(response)
 
 
+def check_admin(group_owner, group_admins, claimed_user):
+    if group_owner != claimed_user.cognito_id and claimed_user in group_admins:
+        raise AuthException('can only perform this action if you are group owner or admin')
+
+def check_owner(group_owner, claimed_user):
+    if group_owner != claimed_user.cognito_id:
+        raise AuthException('can only perform this action if you are group owner')
+
+
 def lambda_handler(event, context):
     """
     controls groups
@@ -157,15 +205,19 @@ def lambda_handler(event, context):
 
     if "/member/" in path:
         if method == "POST":
-            post_member_glh = GLH(collection_input_translator, post_member_handler, success_response_output)
+            post_member_glh = GLH(group_and_entity_input_translator, post_member_handler, success_response_output)
         if method == "DELETE":
-            delete_member_glh = GLH(collection_input_translator, delete_member_handler, success_response_output)
+            delete_member_glh = GLH(group_and_entity_input_translator, delete_member_handler, success_response_output)
 
     if "/admin/" in path:
         if method == "POST":
-            post_admin_glh = GLH(collection_input_translator, post_admin_handler, success_response_output)
+            post_admin_glh = GLH(group_and_entity_input_translator, post_admin_handler, success_response_output)
         if method == "DELETE":
-            delete_admin_glh = GLH(collection_input_translator, delete_admin_handler, success_response_output)
+            delete_admin_glh = GLH(group_and_entity_input_translator, delete_admin_handler, success_response_output)
+
+    if "/parent/" in path:
+        if method == "PUT":
+            put_parent_glh = GLH(group_and_entity_input_translator, put_parent_handler, success_response_output)
 
     if method == "GET":
         get_glh = GLH(get_input_translator, get_handler, get_output_translator)
