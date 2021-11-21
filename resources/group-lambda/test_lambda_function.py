@@ -5,6 +5,7 @@ import json
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+from guided_lambda_handler.guided_lambda_handler import AuthException
 from models import Base
 from models.user import User
 from models.group import Group
@@ -34,7 +35,23 @@ class TestLambdaFunction(unittest.TestCase):
                 bio = "user.bio",
         )
 
+        self.another_cognito_id = "another_cognito_id"
+        another_test_user = User(
+                email="another_email",
+                cognitoId=self.another_cognito_id,
+                parentName = "another_user.parentName",
+                parentEmail = "another_user.parentEmail",
+                firstName = "another_user.firstName",
+                lastName = "another_user.lastName",
+                school = "another_user.school",
+                grade = "another_user.grade",
+                age = "another_user.age",
+                address = "another_user.address",
+                bio = "another_user.bio",
+        )
+
         self.session.add(test_user)
+        self.session.add(another_test_user)
         self.session.commit()
 
         claims = {"cognito:username": self.cognito_id}
@@ -42,9 +59,9 @@ class TestLambdaFunction(unittest.TestCase):
         self.get_claims.return_value = claims
 
 
-    def test_get_input_translator(self):
+    def test_group_input_translator(self):
         event = {'path': "url/id/for/group/to/get/is/1"}
-        input = lambda_function.get_input_translator(event, "context")
+        input = lambda_function.group_input_translator(event, "context")
         self.assertEqual(input, '1')
 
     def test_get_gets(self):
@@ -211,14 +228,36 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertEqual(str(e.exception), 'Parent already has members')
 
 
+    def test_delete_deletes_for_owner(self):
+        initial_group = Group('gn', self.cognito_id)
+        self.session.add(initial_group)
+        self.session.commit()
+
+        self.assertEqual(self.session.query(Group).count(), 1)
+
+        output = lambda_function.delete_handler(initial_group.id, self.session, self.get_claims)
+
+        self.assertEqual(self.session.query(Group).count(), 0)
+
+    def test_delete_throws_when_not_owner(self):
+        initial_group = Group('gn', self.another_cognito_id)
+        self.session.add(initial_group)
+        self.session.commit()
+
+        self.assertEqual(self.session.query(Group).count(), 1)
+
+        with self.assertRaises(AuthException) as e:
+            output = lambda_function.delete_handler(initial_group.id, self.session, self.get_claims)
+            self.session.commit()
+        self.assertEqual(str(e.exception), 'can only perform this action if you are group owner')
+
     def assertGroupEqual(self, expectedGroup, actualGroup):
         self.assertEqual(expectedGroup.name, actualGroup.name)
         self.assertEqual(expectedGroup.groupOwner, actualGroup.groupOwner)
         self.assertEqual(expectedGroup.parentGroup, actualGroup.parentGroup)
 
     def tearDown(self):
-        user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
-        self.session.delete(user)
+        self.session.query(User).delete()
         self.session.query(Group).delete()
         self.session.commit()
 
@@ -241,5 +280,4 @@ class TestLambdaFunction(unittest.TestCase):
 # post admin to group - test
 # delete admin from group - test
 
-# get group - return everything - test
 # delete group - delete everything - test

@@ -1,11 +1,11 @@
 import json
 
-from guided_lambda_handler.guided_lambda_handler import GLH, invalid_http_method_factory, success_response_output
+from guided_lambda_handler.guided_lambda_handler import GLH, invalid_http_method_factory, AuthException, success_response_output
 from models.user import User
 from models.group import Group
 
 
-def get_input_translator(event, context):
+def group_input_translator(event, context):
     return event['path'].split('/')[-1]
 
 def get_handler(input, session, get_claims):
@@ -96,7 +96,7 @@ def put_parent_handler(input, session, get_claims):
     parent_group.childrenGroups.append(group)
     session.add(parent_group)
 
-    check_admin(group.owner, group.admins, claimed_user)
+    check_admin(group.groupOwner, group.admins, claimed_user)
 
     return 'success'
 
@@ -110,7 +110,7 @@ def post_member_handler(input, session, get_claims):
     cognito_id = claims["cognito:username"]
     claimed_user = session.query(User).filter(User.cognitoId==cognito_id).one()
 
-    check_admin(group.owner, group.admins, claimed_user)
+    check_admin(group.groupOwner, group.admins, claimed_user)
 
     group.members.append(new_member)
     session.add(group)
@@ -127,7 +127,7 @@ def delete_member_handler(input, session, get_claims):
     cognito_id = claims["cognito:username"]
     claimed_user = session.query(User).filter(User.cognitoId==cognito_id).one()
 
-    check_admin(group.owner, group.admins, claimed_user)
+    check_admin(group.groupOwner, group.admins, claimed_user)
 
     group.members.remove(member_to_delete)
     session.add(group)
@@ -143,7 +143,7 @@ def post_admin_handler(input, session, get_claims):
     claims = get_claims()
     cognito_id = claims["cognito:username"]
 
-    check_owner(group.owner, claimed_user)
+    check_owner(group.groupOwner, cognito_id)
 
     group.admins.append(new_admin)
     session.add(group)
@@ -158,9 +158,8 @@ def delete_admin_handler(input, session, get_claims):
 
     claims = get_claims()
     cognito_id = claims["cognito:username"]
-    claimed_user = session.query(User).filter(User.cognitoId==cognito_id).one()
 
-    check_owner(group.owner, claimed_user)
+    check_owner(group.groupOwner, cognito_id)
 
     group.admins.remove(admin_to_delete)
     session.add(group)
@@ -168,27 +167,27 @@ def delete_admin_handler(input, session, get_claims):
     return 'success'
 
 
-def delete_input_translator(event, context):
-    return event['queryStringParameters']['echoInput']
-
 def delete_handler(input, session, get_claims):
-    to_echo = input
-    return to_echo
+    group_id = input
 
-def delete_output_translator(raw_output):
-    to_echo = raw_output
-    availabilities = raw_output
+    group = session.query(Group).filter(Group.id==group_id).one()
 
-    response = {'to_echo': to_echo}
-    return 200, json.dumps(response)
+    claims = get_claims()
+    cognito_id = claims["cognito:username"]
+
+    check_owner(group.groupOwner, cognito_id)
+
+    session.delete(group)
+
+    return 'success'
 
 
 def check_admin(group_owner, group_admins, claimed_user):
     if group_owner != claimed_user.cognito_id and claimed_user in group_admins:
         raise AuthException('can only perform this action if you are group owner or admin')
 
-def check_owner(group_owner, claimed_user):
-    if group_owner != claimed_user.cognito_id:
+def check_owner(group_owner, cognito_id):
+    if group_owner != cognito_id:
         raise AuthException('can only perform this action if you are group owner')
 
 
@@ -220,13 +219,13 @@ def lambda_handler(event, context):
             put_parent_glh = GLH(group_and_entity_input_translator, put_parent_handler, success_response_output)
 
     if method == "GET":
-        get_glh = GLH(get_input_translator, get_handler, get_output_translator)
+        get_glh = GLH(group_input_translator, get_handler, get_output_translator)
         return get_glh.handle(event, context)
     if method == "POST":
         post_glh = GLH(post_input_translator, post_handler, success_response_output)
         return post_glh.handle(event, context)
     if method == "DELETE":
-        delete_glh = GLH(delete_indelete_translator, delete_handler, success_response_output)
+        delete_glh = GLH(group_input_translator, delete_handler, success_response_output)
         return delete_glh.handle(event, context)
     else:
         valid_http_methods = ["GET", "POST", "DELETE"]
