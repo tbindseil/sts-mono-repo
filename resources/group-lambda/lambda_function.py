@@ -31,7 +31,7 @@ def get_output_translator(raw_output):
         response['admins'].append(admin.cognitoId)
     for member in group.members:
         response['members'].append(member.cognitoId)
-    for child_group in group.childGroups:
+    for child_group in group.childrenGroups:
         response['childrenGroups'].append(child_group.id)
 
     return 200, json.dumps(response)

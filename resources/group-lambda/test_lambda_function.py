@@ -44,16 +44,16 @@ class TestLambdaFunction(unittest.TestCase):
 
     def test_get_input_translator(self):
         event = {'path': "url/id/for/group/to/get/is/1"}
-        input = lambda_function.delete_input_translator(event, "context")
+        input = lambda_function.get_input_translator(event, "context")
         self.assertEqual(input, '1')
 
     def test_get_gets(self):
         expected_group = Group('gn', 'owner')
-        session.add(expected_group)
-        session.commit()
+        self.session.add(expected_group)
+        self.session.commit()
 
         output = lambda_function.get_handler(expected_group.id, self.session, self.get_claims)
-        session.commit()
+        self.session.commit()
 
         self.assertGroupEqual(output, expected_group)
 
@@ -112,9 +112,12 @@ class TestLambdaFunction(unittest.TestCase):
         )
 
         child_group1 = Group('gn1', 'owner1')
+        child_group1.id = 55
         child_group2 = Group('gn2', 'owner2')
+        child_group2.id = 56
 
         expected_group = Group('gn', 'owner')
+        expected_group.id = 12
         expected_group.parentGroup = 42
         expected_group.members.append(member1)
         expected_group.members.append(member2)
@@ -123,13 +126,11 @@ class TestLambdaFunction(unittest.TestCase):
         expected_group.childrenGroups.append(child_group1)
         expected_group.childrenGroups.append(child_group2)
 
-        expected_output_body = 'bb'
+        expected_output_body = '{"id": 12, "name": "gn", "parentGroup": 42, "groupOwner": "owner", "admins": ["cognito_id3", "cognito_id4"], "members": ["cognito_id1", "cognito_id2"], "childrenGroups": [55, 56]}'
         expected_output = 200, expected_output_body
 
         actual_output = lambda_function.get_output_translator(expected_group)
-        print("actual_output is:")
-        print(actual_output)
-        self.assertGroupEqual(expected_output, actual_output)
+        self.assertEqual(expected_output, actual_output)
 
 
     def test_post_input_translator(self):
@@ -208,19 +209,6 @@ class TestLambdaFunction(unittest.TestCase):
             output = lambda_function.post_handler(input, self.session, self.get_claims)
             self.session.commit()
         self.assertEqual(str(e.exception), 'Parent already has members')
-
-    def test_post_output_translator(self):
-        raw_output = 199, "not_raw_output"
-        actual_code, actual_response = lambda_function.post_output_translator(raw_output)
-        self.assertEqual(200, actual_code)
-        self.assertEqual(json.dumps("success"), actual_response)
-
-
-    def test_put_output_translator(self):
-        raw_output = 199, "not_raw_output"
-        actual_code, actual_response = lambda_function.put_output_translator(raw_output)
-        self.assertEqual(200, actual_code)
-        self.assertEqual(json.dumps("success"), actual_response)
 
 
     def assertGroupEqual(self, expectedGroup, actualGroup):
