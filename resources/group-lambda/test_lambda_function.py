@@ -43,24 +43,93 @@ class TestLambdaFunction(unittest.TestCase):
 
 
     def test_get_input_translator(self):
-        expected_input = 'input'
-        event = {"queryStringParameters": {'echoInput': expected_input}}
+        event = {'path': "url/id/for/group/to/get/is/1"}
+        input = lambda_function.delete_input_translator(event, "context")
+        self.assertEqual(input, '1')
 
-        actual_input = lambda_function.get_input_translator(event, "context")
-        self.assertEqual(expected_input, actual_input)
+    def test_get_gets(self):
+        expected_group = Group('gn', 'owner')
+        session.add(expected_group)
+        session.commit()
 
-    def test_get_is_passthrough(self):
-        expected_to_echo = 'input'
-        actual_to_echo = lambda_function.get_handler(expected_to_echo, self.session, self.get_claims)
-        self.assertEqual(expected_to_echo, actual_to_echo)
+        output = lambda_function.get_handler(expected_group.id, self.session, self.get_claims)
+        session.commit()
+
+        self.assertGroupEqual(output, expected_group)
 
     def test_get_output_translator(self):
-        expected_to_echo = 'to_echo'
-        response = {'to_echo': expected_to_echo}
-        expected_output = 200, json.dumps(response)
+        member1 = User(
+                email="email1",
+                cognitoId=self.cognito_id + '1',
+                parentName = "user.parentName1",
+                parentEmail = "user.parentEmail1",
+                firstName = "user.firstName1",
+                lastName = "user.lastName1",
+                school = "user.school1",
+                grade = "user.grade1",
+                age = "user.age1",
+                address = "user.address1",
+                bio = "user.bio1",
+        )
+        member2 = User(
+                email="email2",
+                cognitoId=self.cognito_id + '2',
+                parentName = "user.parentName2",
+                parentEmail = "user.parentEmail2",
+                firstName = "user.firstName2",
+                lastName = "user.lastName2",
+                school = "user.school2",
+                grade = "user.grade2",
+                age = "user.age2",
+                address = "user.address2",
+                bio = "user.bio2",
+        )
+        admin1 = User(
+                email="email3",
+                cognitoId=self.cognito_id + '3',
+                parentName = "user.parentName3",
+                parentEmail = "user.parentEmail3",
+                firstName = "user.firstName3",
+                lastName = "user.lastName3",
+                school = "user.school3",
+                grade = "user.grade3",
+                age = "user.age3",
+                address = "user.address3",
+                bio = "user.bio3",
+        )
+        admin2 = User(
+                email="email4",
+                cognitoId=self.cognito_id + '4',
+                parentName = "user.parentName4",
+                parentEmail = "user.parentEmail4",
+                firstName = "user.firstName4",
+                lastName = "user.lastName4",
+                school = "user.school4",
+                grade = "user.grade4",
+                age = "user.age4",
+                address = "user.address4",
+                bio = "user.bio4",
+        )
 
-        actual_output = lambda_function.get_output_translator(expected_to_echo)
-        self.assertEqual(expected_output, actual_output)
+        child_group1 = Group('gn1', 'owner1')
+        child_group2 = Group('gn2', 'owner2')
+
+        expected_group = Group('gn', 'owner')
+        expected_group.parentGroup = 42
+        expected_group.members.append(member1)
+        expected_group.members.append(member2)
+        expected_group.admins.append(admin1)
+        expected_group.admins.append(admin2)
+        expected_group.childrenGroups.append(child_group1)
+        expected_group.childrenGroups.append(child_group2)
+
+        expected_output_body = 'bb'
+        expected_output = 200, expected_output_body
+
+        actual_output = lambda_function.get_output_translator(expected_group)
+        print("actual_output is:")
+        print(actual_output)
+        self.assertGroupEqual(expected_output, actual_output)
 
 
     def test_post_input_translator(self):
