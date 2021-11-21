@@ -34,6 +34,9 @@ def response_factory(status, body):
 # TODO can remove need for output translators defined in lambda_function files by making this fit the
 # type of the output response(raw_output)
 def success_response_output():
+    return success_response_output()
+
+def success_response_output():
     return 200, json.dumps("success")
 
 

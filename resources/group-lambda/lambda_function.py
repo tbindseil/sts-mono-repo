@@ -53,11 +53,8 @@ def post_handler(input, session, get_claims):
 
     return "success"
 
-def post_output_translator(raw_output):
-    return success_response_output()
 
-
-def post_member_input_translator(event, context):
+def collection_input_translator(event, context):
     return event['path'].split('/')[-3], event['path'].split('/')[-1]
 
 def post_member_handler(input, session, get_claims):
@@ -96,14 +93,6 @@ def delete_member_handler(input, session, get_claims):
 
     return 'success'
 
-# TODO, maybe if no arg provided in GLH for output translator, then use success response output
-def post_member_output_translator(raw_output):
-    return success_response_output()
-
-
-def post_admin_input_translator(event, context):
-    return event['path'].split('/')[-3], event['path'].split('/')[-1]
-
 def post_admin_handler(input, session, get_claims):
     group_id, admin_id = input
 
@@ -139,20 +128,6 @@ def delete_admin_handler(input, session, get_claims):
 
     return 'success'
 
-def post_admin_output_translator(raw_output):
-    return success_response_output()
-
-
-def put_input_translator(event, context):
-    return event['queryStringParameters']['echoInput']
-
-def put_handler(input, session, get_claims):
-    to_echo = input
-    return to_echo
-
-def put_output_translator(raw_output):
-    return success_response_output()
-
 
 def delete_input_translator(event, context):
     return event['queryStringParameters']['echoInput']
@@ -177,17 +152,29 @@ def lambda_handler(event, context):
     print("event is:")
     print(event)
 
-    if event["httpMethod"] == "GET":
+    path = event["path"]
+    method = event["httpMethod"]
+
+    if "/member/" in path:
+        if method == "POST":
+            post_member_glh = GLH(collection_input_translator, post_member_handler, success_response_output)
+        if method == "DELETE":
+            delete_member_glh = GLH(collection_input_translator, delete_member_handler, success_response_output)
+
+    if "/admin/" in path:
+        if method == "POST":
+            post_admin_glh = GLH(collection_input_translator, post_admin_handler, success_response_output)
+        if method == "DELETE":
+            delete_admin_glh = GLH(collection_input_translator, delete_admin_handler, success_response_output)
+
+    if method == "GET":
         get_glh = GLH(get_input_translator, get_handler, get_output_translator)
         return get_glh.handle(event, context)
-    if event["httpMethod"] == "POST":
-        post_glh = GLH(post_input_translator, post_handler, post_output_translator)
+    if method == "POST":
+        post_glh = GLH(post_input_translator, post_handler, success_response_output)
         return post_glh.handle(event, context)
-    if event["httpMethod"] == "PUT":
-        put_glh = GLH(put_input_translator, put_handler, put_output_translator)
-        return put_glh.handle(event, context)
-    if event["httpMethod"] == "DELETE":
-        delete_glh = GLH(delete_indelete_translator, delete_handler, delete_outdelete_translator)
+    if method == "DELETE":
+        delete_glh = GLH(delete_indelete_translator, delete_handler, success_response_output)
         return delete_glh.handle(event, context)
     else:
         valid_http_methods = ["GET", "POST", "DELETE"]
