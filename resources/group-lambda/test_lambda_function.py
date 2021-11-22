@@ -387,11 +387,14 @@ class TestLambdaFunction(unittest.TestCase):
         print(count)
         # print(link_count)
 
+        # the below works
         user_query = self.session.query(User)
         for u in user_query:
-            # u.groups = []
             self.session.delete(u)
-        # user_query.delete()
+
+        # the below doesnt
+        # self.session.query(User).delete()
+
         self.session.query(Group).delete()
         # group_query = self.session.query(Group)
         # for g in group_query:
