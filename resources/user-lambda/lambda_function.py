@@ -51,6 +51,7 @@ def put_handler(input, session, get_claims):
     return user
 
 
+# TODO deassociated many to many for groups and admin groups
 def delete_handler(input, session, get_claims):
     cognito_id, request_body = input
 
