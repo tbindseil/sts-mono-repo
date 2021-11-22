@@ -9,7 +9,7 @@ from guided_lambda_handler.guided_lambda_handler import AuthException
 from models import Base
 from models.user import User
 from models.group import Group
-from models.group_members_link import GroupMembersLink
+# from models.group_members_link import GroupMembersLink
 
 import lambda_function
 
@@ -383,23 +383,26 @@ class TestLambdaFunction(unittest.TestCase):
     def tearDown(self):
         print("start of tearDown, number of groups is:")
         count = self.session.query(Group).count()
-        link_count = self.session.query(GroupMembersLink).count()
+        # link_count = self.session.query(GroupMembersLink).count()
         print(count)
-        print(link_count)
+        # print(link_count)
 
         user_query = self.session.query(User)
         for u in user_query:
-            u.groups = []
-            # session.add(u)
-        user_query.delete()
+            # u.groups = []
+            self.session.delete(u)
+        # user_query.delete()
         self.session.query(Group).delete()
-        self.session.commit()
+        # group_query = self.session.query(Group)
+        # for g in group_query:
+            # self.session.delete(g)
+        # self.session.commit()
 
         print("end of tearDown, number of groups is:")
         count = self.session.query(Group).count()
-        link_count = self.session.query(GroupMembersLink).count()
+        # link_count = self.session.query(GroupMembersLink).count()
         print(count)
-        print(link_count)
+        # print(link_count)
 
 
 
