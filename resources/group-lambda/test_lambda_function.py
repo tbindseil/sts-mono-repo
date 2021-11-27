@@ -391,6 +391,77 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertEqual(len(group.members), 1)
 
 
+    def test_post_admin_handler_adds_admin(self):
+        group = Group('gn', self.cognito_id)
+
+        self.session.add(group)
+        self.session.commit()
+
+        self.assertEqual(len(group.admins), 0)
+
+        input = group.id, self.another_cognito_id
+        output = lambda_function.post_admin_handler(input, self.session, self.get_claims)
+
+        group = self.session.query(Group).filter(Group.id==group.id).one()
+
+        self.assertEqual(len(group.admins), 1)
+
+    def test_post_admin_handler_throws_when_requestor_not_admin(self):
+        group = Group('gn', self.cognito_id)
+
+        self.session.add(group)
+        self.session.commit()
+
+        self.assertEqual(len(group.admins), 0)
+
+        input = group.id, self.another_cognito_id
+        with self.assertRaises(AuthException) as e:
+            output = lambda_function.post_admin_handler(input, self.session, self.another_get_claims)
+        self.session.commit()
+        self.assertEqual(str(e.exception), 'can only perform this action if you are group owner')
+
+        group = self.session.query(Group).filter(Group.id==group.id).one()
+
+        self.assertEqual(len(group.admins), 0)
+
+    def test_delete_admin_handler_deletes_admin(self):
+        admin_for_group = self.session.query(User).filter(User.cognitoId==self.another_cognito_id).one()
+        group = Group('gn', self.cognito_id)
+        group.admins.append(admin_for_group)
+
+        self.session.add(group)
+        self.session.commit()
+
+        self.assertEqual(len(group.admins), 1)
+
+        input = group.id, self.another_cognito_id
+        output = lambda_function.delete_admin_handler(input, self.session, self.get_claims)
+
+        group = self.session.query(Group).filter(Group.id==group.id).one()
+
+        self.assertEqual(len(group.admins), 0)
+
+    def test_delete_admin_handler_throws_when_requestor_not_admin(self):
+        admin_for_group = self.session.query(User).filter(User.cognitoId==self.another_cognito_id).one()
+        group = Group('gn', self.cognito_id)
+        group.admins.append(admin_for_group)
+
+        self.session.add(group)
+        self.session.commit()
+
+        self.assertEqual(len(group.admins), 1)
+
+        input = group.id, self.another_cognito_id
+        with self.assertRaises(AuthException) as e:
+            output = lambda_function.delete_admin_handler(input, self.session, self.another_get_claims)
+        self.session.commit()
+        self.assertEqual(str(e.exception), 'can only perform this action if you are group owner')
+
+        group = self.session.query(Group).filter(Group.id==group.id).one()
+
+        self.assertEqual(len(group.admins), 1)
+
+
     def test_delete_deletes_for_owner(self):
         initial_group = Group('gn', self.cognito_id)
         self.session.add(initial_group)
@@ -424,16 +495,5 @@ class TestLambdaFunction(unittest.TestCase):
         user_query = self.session.query(User)
         for u in user_query:
             self.session.delete(u)
-        # self.session.commit()
         self.session.query(Group).delete()
-        # group_query = self.session.query(Group)
-        # for g in group_query:
-            # self.session.delete(g)
         self.session.commit()
-
-
-
-
-# only owner can do the following, shoot what about all this permissions hype?
-# post admin to group - test
-# delete admin from group - test
