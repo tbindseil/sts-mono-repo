@@ -9,7 +9,6 @@ from guided_lambda_handler.guided_lambda_handler import AuthException
 from models import Base
 from models.user import User
 from models.group import Group
-# from models.group_members_link import GroupMembersLink
 
 import lambda_function
 
@@ -20,10 +19,6 @@ class TestLambdaFunction(unittest.TestCase):
         Base.metadata.create_all(self.engine)
         Session = sessionmaker(bind=self.engine)
         self.session = Session()
-
-        print("start of setup, number of groups is:")
-        count = self.session.query(Group).count()
-        print(count)
 
         self.cognito_id = "cognito_id"
         test_user = User(
@@ -66,20 +61,13 @@ class TestLambdaFunction(unittest.TestCase):
         self.another_get_claims = MagicMock()
         self.another_get_claims.return_value = another_claims
 
-        print("end of setup, number of groups is:")
-        count = self.session.query(Group).count()
-        print(count)
 
-        print("end of setup, groups for user is:")
-        print(len(another_test_user.groups))
-
-
-    def est_group_input_translator(self):
+    def test_group_input_translator(self):
         event = {'path': "url/id/for/group/to/get/is/1"}
         input = lambda_function.group_input_translator(event, "context")
         self.assertEqual(input, '1')
 
-    def est_get_gets(self):
+    def test_get_gets(self):
         expected_group = Group('gn', 'owner')
         self.session.add(expected_group)
         self.session.commit()
@@ -89,7 +77,7 @@ class TestLambdaFunction(unittest.TestCase):
 
         self.assertGroupEqual(output, expected_group)
 
-    def est_get_output_translator(self):
+    def test_get_output_translator(self):
         member1 = User(
                 email="email1",
                 cognitoId=self.cognito_id + '1',
@@ -165,7 +153,7 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertEqual(expected_output, actual_output)
 
 
-    def est_post_input_translator(self):
+    def test_post_input_translator(self):
         expectedParentGroup = 'expectedParentGroup'
         expectedGroupName = 'expectedGroupName'
         event = {'body': json.dumps({'groupName': expectedGroupName, 'parentGroup': expectedParentGroup}) }
@@ -173,14 +161,14 @@ class TestLambdaFunction(unittest.TestCase):
         actual_input = lambda_function.post_input_translator(event, "context")
         self.assertEqual((expectedGroupName, expectedParentGroup), actual_input)
 
-    def est_post_input_translator_no_parent_group(self):
+    def test_post_input_translator_no_parent_group(self):
         expectedGroupName = 'expectedGroupName'
         event = {'body': json.dumps({'groupName': expectedGroupName}) }
 
         actual_input = lambda_function.post_input_translator(event, "context")
         self.assertEqual((expectedGroupName, None), actual_input)
 
-    def est_post_no_parent_given(self):
+    def test_post_no_parent_given(self):
         expectedParentGroup = None
         expectedGroupName = 'expectedGroupName'
         expectedGroup = Group(expectedGroupName, self.cognito_id)
@@ -193,7 +181,7 @@ class TestLambdaFunction(unittest.TestCase):
 
         self.assertGroupEqual(actualGroup, expectedGroup)
 
-    def est_post_parent_given(self):
+    def test_post_parent_given(self):
         expectedParentGroup = 'expectedParentGroup'
         parentGroup = Group(expectedParentGroup, self.cognito_id)
         self.session.add(parentGroup)
@@ -211,7 +199,7 @@ class TestLambdaFunction(unittest.TestCase):
 
         self.assertGroupEqual(actualGroup, expectedGroup)
 
-    def est_post_throws_when_bad_parent_given(self):
+    def test_post_throws_when_bad_parent_given(self):
         expectedParentGroup = 'expectedParentGroup'
         parentGroup = Group(expectedParentGroup, self.cognito_id)
         self.session.add(parentGroup)
@@ -225,7 +213,7 @@ class TestLambdaFunction(unittest.TestCase):
         self.session.commit()
         self.assertEqual(str(e.exception), 'Issue adding group to parent')
 
-    def est_post_throws_when_bad_parent_has_members(self):
+    def test_post_throws_when_bad_parent_has_members(self):
         user = self.session.query(User).filter(User.cognitoId==self.cognito_id).one()
 
         expectedParentGroup = 'expectedParentGroup'
@@ -243,13 +231,13 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertEqual(str(e.exception), 'Parent already has members')
 
 
-    def est_group_and_entity_input_translator(self):
+    def test_group_and_entity_input_translator(self):
         event = {'path': "url/id/for/group/and/entity/is/1/and/2"}
         input = lambda_function.group_and_entity_input_translator(event, "context")
         self.assertEqual(input, ('1', '2'))
 
 
-    def est_put_parent_handler_switches_parents(self):
+    def test_put_parent_handler_switches_parents(self):
         group = Group('gn', self.cognito_id)
         old_parent_group = Group('old_pg', self.cognito_id)
         new_parent_group = Group('new_pg', self.cognito_id)
@@ -269,34 +257,18 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertEqual(group.parentGroup, new_parent_group.id)
 
     def test_put_parent_handler_throws_when_requestor_not_parent_group_admin(self):
-        print("start of test, number of groups is:")
-        count = self.session.query(Group).count()
-        print(count)
-
         group = Group('gn', self.cognito_id)
         old_parent_group = Group('old_pg', self.cognito_id)
         new_parent_group = Group('new_pg_wtf', self.cognito_id)
         old_parent_group.childrenGroups.append(group)
 
-        print("before session.add, len(new_parent_group.members) is:")
-        print(len(new_parent_group.members))
-
         self.session.add(group)
         self.session.add(old_parent_group)
         self.session.add(new_parent_group)
-        print("before session.commit, len(new_parent_group.members) is:")
-        print(len(new_parent_group.members))
 
         self.session.commit()
-        print("after session.commit, len(new_parent_group.members) is:")
-        print(len(new_parent_group.members))
 
         self.assertEqual(group.parentGroup, old_parent_group.id)
-
-        # wtf?
-        # print("len(new_parent_group.members) is :")
-        # print(len(new_parent_group.members))
-        # del new_parent_group.members[:]
 
         input = str(group.id), str(new_parent_group.id)
         with self.assertRaises(AuthException) as e:
@@ -305,10 +277,6 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertEqual(str(e.exception), 'can only perform this action if you are group owner or admin')
 
     def test_put_parent_handler_throws_when_new_group_already_has_members(self):
-        print("start of test, number of groups is:")
-        count = self.session.query(Group).count()
-        print(count)
-
         group = Group('gn', self.cognito_id)
         old_parent_group = Group('old_pg', self.cognito_id)
         new_parent_group = Group('new_pg', self.cognito_id)
@@ -330,7 +298,7 @@ class TestLambdaFunction(unittest.TestCase):
         self.session.commit()
         self.assertEqual(str(e.exception), 'Parent already has members')
 
-    def est_put_parent_handler_throws_when_invalid_new_group_id(self):
+    def test_put_parent_handler_throws_when_invalid_new_group_id(self):
         group = Group('gn', self.cognito_id)
         old_parent_group = Group('old_pg', self.cognito_id)
         old_parent_group.childrenGroups.append(group)
@@ -348,11 +316,11 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertEqual(str(e.exception), 'Issue adding group to parent')
 
 
-    def est_post_member_handler(self):
+    def test_post_member_handler(self):
         print("todo")
 
 
-    def est_delete_deletes_for_owner(self):
+    def test_delete_deletes_for_owner(self):
         initial_group = Group('gn', self.cognito_id)
         self.session.add(initial_group)
         self.session.commit()
@@ -363,7 +331,7 @@ class TestLambdaFunction(unittest.TestCase):
 
         self.assertEqual(self.session.query(Group).count(), 0)
 
-    def est_delete_throws_when_not_owner(self):
+    def test_delete_throws_when_not_owner(self):
         initial_group = Group('gn', self.another_cognito_id)
         self.session.add(initial_group)
         self.session.commit()
@@ -381,31 +349,12 @@ class TestLambdaFunction(unittest.TestCase):
         self.assertEqual(expectedGroup.parentGroup, actualGroup.parentGroup)
 
     def tearDown(self):
-        print("start of tearDown, number of groups is:")
-        count = self.session.query(Group).count()
-        # link_count = self.session.query(GroupMembersLink).count()
-        print(count)
-        # print(link_count)
-
-        # the below works
+        # need to pull objects into memory to trigger deletion of associations
         user_query = self.session.query(User)
         for u in user_query:
             self.session.delete(u)
-
-        # the below doesnt
-        # self.session.query(User).delete()
-
         self.session.query(Group).delete()
-        # group_query = self.session.query(Group)
-        # for g in group_query:
-            # self.session.delete(g)
-        # self.session.commit()
-
-        print("end of tearDown, number of groups is:")
-        count = self.session.query(Group).count()
-        # link_count = self.session.query(GroupMembersLink).count()
-        print(count)
-        # print(link_count)
+        self.session.commit()
 
 
 
