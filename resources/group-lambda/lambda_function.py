@@ -112,7 +112,8 @@ def post_member_handler(input, session, get_claims):
 
     check_admin(group.groupOwner, group.admins, claimed_user)
 
-    group.members.append(new_member)
+    if new_member not in group.members:
+        group.members.append(new_member)
     session.add(group)
 
     return 'success'
@@ -145,7 +146,8 @@ def post_admin_handler(input, session, get_claims):
 
     check_owner(group.groupOwner, cognito_id)
 
-    group.admins.append(new_admin)
+    if new_admin not in group.admins:
+        group.admins.append(new_admin)
     session.add(group)
 
     return 'success'
