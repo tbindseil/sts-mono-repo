@@ -73,8 +73,16 @@ def get_put_output_translator(raw_output):
         'grade': user.grade,
         'age': user.age,
         'address': user.address,
-        'bio': user.bio
+        'bio': user.bio,
+        'groups': [],
+        'adminGroups': []
     })
+
+    for g in user.groups:
+        response['groups'].append(g.id)
+    for g in user.adminGroups:
+        response['adminGroups'].append(g.id)
+
     return 200, response
 
 

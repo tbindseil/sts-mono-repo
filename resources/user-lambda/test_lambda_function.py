@@ -134,7 +134,9 @@ class TestLambdaFunction(unittest.TestCase):
             'grade': self.test_user.grade,
             'age': self.test_user.age,
             'address': self.test_user.address,
-            'bio': self.test_user.bio
+            'bio': self.test_user.bio,
+            'groups': [],
+            'adminGroups': []
         })
 
         self.assertEqual((200, expected_json), actual_response)
