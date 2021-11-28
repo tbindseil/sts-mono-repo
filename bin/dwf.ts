@@ -10,6 +10,7 @@ import { AvailabilityLambdaServiceStack } from "../lib/lambdas/availability-lamb
 import { AvailabilityRequestLambdaServiceStack } from "../lib/lambdas/availability-request-lambda-stack";
 import { AvailabilitySeriesLambdaServiceStack } from "../lib/lambdas/availability-series-lambda-stack";
 import { UserRegisteredLambdaServiceStack } from "../lib/lambdas/user-registered-stack";
+import { GroupLambdaServiceStack } from "../lib/lambdas/group-lambda-stack";
 
 const app = new App();
 
@@ -40,6 +41,10 @@ const availabilityRequestLambdaServiceStack = new AvailabilityRequestLambdaServi
 });
 
 const availabilitySeriesLambdaServiceStack = new AvailabilitySeriesLambdaServiceStack(app, 'AvailabilitySeriesLambdaServiceStack', {
+    dbSecret: rdsStack.dbSecret
+});
+
+const groupServiceStack = new GroupLambdaServiceStack(app, 'GroupLambdaServiceStack', {
     dbSecret: rdsStack.dbSecret
 });
 
