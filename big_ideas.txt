@@ -664,3 +664,9 @@ ok, starting a new list, the above got pretty messy
 
 
 sudo certbot renew
+
+
+groups on the ui:
+    * groups screen vs group screen vs create group screen
+    * groups is search by text, so search saint charles east high school
+    * group is details for a particular group, so see stc east and its parent, membership status, request membership button, owner, children groups, etc

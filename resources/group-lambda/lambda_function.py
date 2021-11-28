@@ -67,7 +67,11 @@ def post_handler(input, session, get_claims):
 
     session.add(group)
 
-    return "success"
+    return group
+
+def post_output_translator(raw_output):
+    group = raw_output
+    return 200, json.dumps({'groupId': group.id})
 
 
 def group_and_entity_input_translator(event, context):
@@ -224,7 +228,7 @@ def lambda_handler(event, context):
         get_glh = GLH(group_input_translator, get_handler, get_output_translator)
         return get_glh.handle(event, context)
     if method == "POST":
-        post_glh = GLH(post_input_translator, post_handler, success_response_output)
+        post_glh = GLH(post_input_translator, post_handler, post_output_translator)
         return post_glh.handle(event, context)
     if method == "DELETE":
         delete_glh = GLH(group_input_translator, delete_handler, success_response_output)

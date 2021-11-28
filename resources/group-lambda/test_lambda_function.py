@@ -230,6 +230,15 @@ class TestLambdaFunction(unittest.TestCase):
         self.session.commit()
         self.assertEqual(str(e.exception), 'Parent already has members')
 
+    def test_post_output_translator(self):
+        group = Group('gn', self.cognito_id)
+        self.session.add(group)
+        self.session.commit()
+
+        response = lambda_function.post_output_translator(group)
+
+        self.assertEqual(response, (200, json.dumps({'groupId': group.id})))
+
 
     def test_group_and_entity_input_translator(self):
         event = {'path': "url/id/for/group/and/entity/is/1/and/2"}

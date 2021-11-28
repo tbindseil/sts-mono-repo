@@ -19,6 +19,8 @@ export const BigScreenProfileButton = () => {
                     <div className="DropDownContent ProfileDropDownContent">
                         <a className="NavBarDropDownItem" href="/profile">Profile</a>
                         <a className="NavBarDropDownItem" href="/account">Account</a>
+                        <a className="NavBarDropDownItem" href="/groups">Groups</a>
+                        <a className="NavBarDropDownItem" href="/create-group">Create Group</a>
                         <a className="NavBarDropDownItem" href="/my-calendar">My Calendar</a>
                         <a className="NavBarDropDownItem" href="/calendar">Calendar</a>
                     </div>
@@ -68,6 +70,8 @@ export const SmallScreenProfileButton = () => {
                     </div>
                 </section>
                 <a style={{display: extraProfileDisplay}} className="HamburgerItem" href="/account">Account</a>
+                <a style={{display: extraProfileDisplay}} className="HamburgerItem" href="/groups">Groups</a>
+                <a style={{display: extraProfileDisplay}} className="HamburgerItem" href="/create-group">Create Group</a>
                 <a style={{display: extraProfileDisplay}} className="HamburgerItem" href="/my-calendar">My Calendar</a>
                 <a style={{display: extraProfileDisplay}} className="HamburgerItem" href="/calendar">Calendar</a>
             </>

@@ -68,9 +68,9 @@ class GLH():
 
             raw_output = self.on_handle(input, session, get_claims)
 
-            response_code, response_body = self.translate_output(raw_output)
-
             session.commit()
+
+            response_code, response_body = self.translate_output(raw_output)
         # TODO for below exceptions, the response body needs to be json.dumps(sdfsd)
         except InputException as e:
             response_code = 400

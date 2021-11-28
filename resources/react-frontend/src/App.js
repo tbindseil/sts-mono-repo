@@ -24,13 +24,18 @@ import {DeleteScreen} from "./components/auth/DeleteScreen";
 
 import {ProfileScreen} from "./components/profile/ProfileScreen";
 import {AccountScreen} from "./components/profile/AccountScreen";
+
+import {GroupsScreen} from "./components/groups/GroupsScreen";
+import {GroupScreen} from "./components/groups/GroupScreen";
+import {CreateGroupScreen} from "./components/groups/CreateGroupScreen";
+
 import {CalendarScreen} from "./components/calendar/CalendarScreen";
 import {MyCalendarScreen} from "./components/calendar/MyCalendarScreen";
 import {CreateAvailabilityScreen} from "./components/calendar/CreateAvailabilityScreen";
 import {SelectAvailabilityScreen} from './components/calendar/SelectAvailabilityScreen';
 import {DeleteAvailabilityScreen} from "./components/calendar/DeleteAvailabilityScreen";
 
-import {TestScreen} from "./components/base-components/TestScreen";
+// import {TestScreen} from "./components/base-components/TestScreen";
 
 // TODO add blue
 Amplify.configure(awsConfig);
@@ -57,13 +62,20 @@ const App = () => {
 
         <Route path={"/profile"} component={ProfileScreen}/>
         <Route path={"/account"} component={AccountScreen}/>
+
+        <Route path={"/groups"} component={GroupsScreen}/>
+        <Route path={"/group"} component={GroupScreen}/>
+        <Route path={"/create-group"} component={CreateGroupScreen}/>
+
         <Route path={"/calendar"} component={CalendarScreen}/>
         <Route path={"/my-calendar"} component={MyCalendarScreen}/>
         <Route path={"/create-availability"} component={CreateAvailabilityScreen}/>
         <Route path={"/select-availability"} component={SelectAvailabilityScreen}/>
         <Route path={"/delete-availability"} component={DeleteAvailabilityScreen}/>
 
-        <Route path={"/test"} component={TestScreen}/>
+      {
+        // <Route path={"/test"} component={TestScreen}/>
+      }
       </Switch>
     </div>
   );

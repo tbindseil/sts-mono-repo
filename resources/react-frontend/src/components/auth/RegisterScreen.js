@@ -10,7 +10,7 @@ import {apiFactory} from '../fetch-enhancements/fetch-call-builders';
 import {BaseScreen} from '../base-components/BaseScreen';
 import {ErrorRegistry} from '../base-components/ErrorRegistry';
 
-export function RegisterScreen() {
+export function RegisterScreen(props) {
     const history = useHistory();
 
     const [username, setUsername] = useState("");

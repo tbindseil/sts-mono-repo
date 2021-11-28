@@ -372,7 +372,7 @@ export function ProfileScreen() {
                                 .map(requestEntry =>
                                     <tr>
                                         <td>
-                                            {moment(requestEntry[1].startTime).format("LT")}
+                                            {`${moment(requestEntry[1].startTime).format("L")} ${moment(requestEntry[1].startTime).format("LT")}`}
                                         </td>
                                         <td>
                                             {requestEntry[1].subject}

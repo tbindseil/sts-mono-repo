@@ -7,6 +7,7 @@ const USER_LAMBDA_URL = 'https://oercmchy3l.execute-api.us-west-2.amazonaws.com/
 const AVAILABILITY_LAMBDA_URL = 'https://k2ajudwpt0.execute-api.us-west-2.amazonaws.com/prod/'
 const AVAILABILITY_REQUEST_URL = 'https://04c0w1j888.execute-api.us-west-2.amazonaws.com/prod/';
 const AVAILABILITY_SERIES_URL = 'https://t9u6av4bm0.execute-api.us-west-2.amazonaws.com/prod/';
+const GROUP_LAMBDA_URL = 'https://s6hddy45rk.execute-api.us-west-2.amazonaws.com/prod/';
 
 
 export const apiFactory = {
@@ -260,6 +261,25 @@ export const apiFactory = {
             url: AVAILABILITY_SERIES_URL + props.availabilitySeriesId,
             method: 'DELETE',
             errorMessagePrefix: 'Error deleting availability series',
+            ...props
+        });
+    },
+
+    makeGetGroup: (props) => {
+        return apiFactory.makeAuthenticatedFetchCall({
+            url: GROUP_LAMBDA_URL + props.groupId,
+            method: 'GET',
+            errorMessagePrefix: 'Error getting group',
+            ...props
+        });
+    },
+
+    makePostGroup: (props) => {
+        return apiFactory.makeAuthenticatedFetchCall({
+            url: GROUP_LAMBDA_URL,
+            method: 'POST',
+            body: props.body,
+            errorMessagePrefix: 'Error creating group',
             ...props
         });
     },
